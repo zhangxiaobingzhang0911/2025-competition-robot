@@ -1,4 +1,4 @@
-package frc.robot.subsystems.indicator;
+package frc.robot.subsystems.IndicatorSubsystem;
 
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.drivers.led.AddressableLEDPattern;

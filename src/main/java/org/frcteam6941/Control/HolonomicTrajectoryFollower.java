@@ -66,8 +66,12 @@ public class HolonomicTrajectoryFollower extends PathPlannerTrajectoryFollowerBa
         if (this.lastState != null) {
             Translation2d targetDisplacement = lastState.pose.getTranslation()
                     .minus(this.lastState.pose.getTranslation());
-            double feedForwardGain = feedforward.calculate(lastState.linearVelocity,
-                    lastState.linearVelocity*lastState.timeSeconds) / 12.0;
+
+            double feedForwardGain = feedforward.getKs() * Math.signum(lastState.linearVelocity)
+                    + feedforward.getKv() * lastState.linearVelocity
+                    + feedforward.getKa() * lastState.linearVelocity * lastState.timeSeconds;
+//          This is an unreliable fix for deprecated function
+//          double feedForwardGain = feedforward.calculate(lastState.linearVelocity, lastState.linearVelocity*lastState.timeSeconds) / 12.0;
 
             if (targetDisplacement.getNorm() != 0.00) { // Prevent NaN cases
                 Translation2d feedForwardVector = targetDisplacement
@@ -129,8 +133,8 @@ public class HolonomicTrajectoryFollower extends PathPlannerTrajectoryFollowerBa
         if (isPathFollowing() && this.lastState != null && getCurrentTrajectory() != null) {
 
             Logger.recordOutput("swerve/PathPlanner/lastState", this.lastState.pose);
-            Logger.recordOutput("swerve/PathPlanner/xErrorV", xController.getVelocityError());
-            Logger.recordOutput("swerve/PathPlanner/xErrorP", xController.getPositionError());
+            Logger.recordOutput("swerve/PathPlanner/xErrorV", xController.getErrorDerivative());
+            Logger.recordOutput("swerve/PathPlanner/xErrorP", xController.getError());
 
 
         }

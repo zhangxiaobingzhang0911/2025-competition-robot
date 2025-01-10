@@ -13,8 +13,10 @@ import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Inches;
@@ -47,7 +49,14 @@ public final class RobotConstants {
     public static final double LOOPER_DT = 1 / 100.0;
     public static final boolean TUNING = true;
     public static String CAN_BUS_NAME = "6941CANivore1";
+    public static final CommandXboxController driverController = new CommandXboxController(0);
+    public static final CommandXboxController operatorController = new CommandXboxController(1);
     
+    public static class IndicatorConstants {
+        public static final int LED_PORT = 0;
+        public static final int LED_BUFFER_LENGTH = 17;
+    }
+
 
     public static class SwerveConstants {
 
@@ -150,7 +159,8 @@ public final class RobotConstants {
         private static final double COUPLE_RATIO = 3.5;
         private static final boolean STEER_MOTOR_REVERSED = true;
 
-        
+        public static final Measure<DistanceUnit> wheelCircumferenceMeters = Meters
+                .of(wheelRadius.magnitude() * 2 * Math.PI);        
 
         public static final LegacySwerveModuleConstantsFactory ConstantCreator = new LegacySwerveModuleConstantsFactory()
                 .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)

@@ -1,17 +1,15 @@
 package frc.robot.display;
 
-import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.subsystems.SwerveSubsystem.SwerveSubsystem;
+import frc.robot.subsystems.swerve.Swerve;
 import org.frcteam6941.Looper.Updatable;
 
 public class Display implements Updatable {
-    FieldView fieldView;
-    SwerveSubsystem swerveSubsystem;
-
     private static Display instance;
+    FieldView fieldView;
+    Swerve swerve;
 
     private Display() {
-        swerveSubsystem = SwerveSubsystem.getInstance();
+        swerve = Swerve.getInstance();
         fieldView = new FieldView();
     }
 
@@ -22,15 +20,11 @@ public class Display implements Updatable {
         return instance;
     }
 
-    public void setFerryLocation(Translation2d pos) {
-        fieldView.setFerryLocation(pos);
-    }
-
     @Override
     public void update(double time, double dt) {
         fieldView.update(
-            swerveSubsystem.getLocalizer().getLatestPose(), 
-            swerveSubsystem.getLocalizer().getPredictedPose(0.02)
+                swerve.getLocalizer().getLatestPose(),
+                swerve.getLocalizer().getPredictedPose(0.02)
         );
     }
 }

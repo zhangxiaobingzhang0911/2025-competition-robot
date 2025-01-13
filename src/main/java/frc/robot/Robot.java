@@ -1,21 +1,19 @@
 package frc.robot;
 
+import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.SwerveSubsystem.SwerveSubsystem;
-
-import java.io.IOException;
-
+import frc.robot.subsystems.swerve.Swerve;
 import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
-import com.pathplanner.lib.util.FileVersionException;
+import java.io.IOException;
 
 public class Robot extends LoggedRobot {
-    SwerveSubsystem swerve = SwerveSubsystem.getInstance();
+    Swerve swerve = Swerve.getInstance();
     private Command m_autonomousCommand;
     private RobotContainer robotContainer;
 
@@ -49,16 +47,16 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousInit() {
         try {
-          m_autonomousCommand = robotContainer.getAutonomousCommand();
+            m_autonomousCommand = robotContainer.getAutonomousCommand();
         } catch (FileVersionException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         } catch (IOException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         } catch (ParseException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
         if (m_autonomousCommand != null) {

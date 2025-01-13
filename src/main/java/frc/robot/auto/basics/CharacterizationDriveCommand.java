@@ -7,8 +7,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
-import frc.robot.subsystems.SwerveSubsystem.SwerveSubsystem;
-
+import frc.robot.subsystems.swerve.Swerve;
 
 import java.util.ArrayList;
 
@@ -19,7 +18,7 @@ public class CharacterizationDriveCommand extends Command {
     private final ArrayList<Double> yVoltages = new ArrayList<>();
     private final ArrayList<Double> xVelocities = new ArrayList<>();
     private final ArrayList<Double> xFalconVelocities = new ArrayList<>();
-    private SwerveSubsystem drivetrain;
+    private Swerve drivetrain;
     private double startVoltage;
     private double deltaVoltage;
     private final Runnable r = () -> {
@@ -67,7 +66,7 @@ public class CharacterizationDriveCommand extends Command {
     };
     private final Notifier n = new Notifier(r);
 
-    public CharacterizationDriveCommand(SwerveSubsystem drivetrain, double startVoltage, double deltaVoltage, double maxVoltage) {
+    public CharacterizationDriveCommand(Swerve drivetrain, double startVoltage, double deltaVoltage, double maxVoltage) {
         this.drivetrain = drivetrain;
         this.startVoltage = startVoltage;
         this.deltaVoltage = deltaVoltage;

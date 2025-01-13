@@ -4,37 +4,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.units.AngularVelocityUnit;
-import edu.wpi.first.units.CurrentUnit;
-import edu.wpi.first.units.DistanceUnit;
-import edu.wpi.first.units.LinearVelocityUnit;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.VoltageUnit;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Velocity;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
-import org.frcteam6941.Swerve.SwerveSetpointGenerator.KinematicLimits;
-
-import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstantsFactory;
-import com.team254.lib.geometry.Translation2d;
-
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.units.*;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Utils.TunableNumber;
+import org.frcteam6941.Swerve.SwerveSetpointGenerator.KinematicLimits;
+
+import static edu.wpi.first.units.Units.*;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -46,12 +26,12 @@ import frc.robot.Utils.TunableNumber;
  */
 public final class RobotConstants {
     public static final boolean disableHAL = false;
-    public static final double LOOPER_DT = 1 / 100.0;
+    public static final double LOOPER_DT = 1 / 50.0;
     public static final boolean TUNING = true;
-    public static String CAN_BUS_NAME = "6941CANivore1";
     public static final CommandXboxController driverController = new CommandXboxController(0);
     public static final CommandXboxController operatorController = new CommandXboxController(1);
-    
+    public static String CAN_BUS_NAME = "6941CANivore1";
+
     public static class IndicatorConstants {
         public static final int LED_PORT = 0;
         public static final int LED_BUFFER_LENGTH = 17;
@@ -61,7 +41,7 @@ public final class RobotConstants {
     public static class SwerveConstants {
 
         public static final int PIGEON_ID = 14;
-/**
+        /**
          * Gearing between the drive motor output shaft and the wheel.
          */
         public static final double DRIVE_GEAR_RATIO = 6.7460317460317460317460317460317;
@@ -105,8 +85,15 @@ public final class RobotConstants {
         /**
          * Theoretical free speed (m/s) at 12v applied output;
          */
-
-
+        public static final Measure<DistanceUnit> wheelCircumferenceMeters = Meters
+                .of(wheelRadius.magnitude() * 2 * Math.PI);
+        public static final SimpleMotorFeedforward DRIVETRAIN_FEEDFORWARD = new SimpleMotorFeedforward(
+                0.69522, 2.3623, 0.19367);
+        public static final double statorCurrent = 110;
+        public static final double supplyCurrent = 50;
+        public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
+        public static final double deadband = maxSpeed.magnitude() * 0.01;
+        public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.01;
         /**
          * Swerve steering gains
          */
@@ -127,19 +114,17 @@ public final class RobotConstants {
                 .withKS(0)
                 .withKV(0.12)
                 .withKA(0);
-
         private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
-                /**
-                 * The closed-loop output type to use for the drive motors;
-                 * This affects the PID/FF gains for the drive motors
-                 */
+        /**
+         * The closed-loop output type to use for the drive motors;
+         * This affects the PID/FF gains for the drive motors
+         */
         private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
-        
         /**
          * The closed-loop output type to use for the steer motors;
          * This affects the PID/FF gains for the steer motors
          */
-        
+
         private static final double STEER_INERTIA = 0.00001;
         /**
          * Simulation only
@@ -158,10 +143,6 @@ public final class RobotConstants {
          */
         private static final double COUPLE_RATIO = 3.5;
         private static final boolean STEER_MOTOR_REVERSED = true;
-
-        public static final Measure<DistanceUnit> wheelCircumferenceMeters = Meters
-                .of(wheelRadius.magnitude() * 2 * Math.PI);        
-
         public static final LegacySwerveModuleConstantsFactory ConstantCreator = new LegacySwerveModuleConstantsFactory()
                 .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
                 .withSteerMotorGearRatio(STEER_GEAR_RATIO)
@@ -179,7 +160,6 @@ public final class RobotConstants {
                 .withFeedbackSource(LegacySwerveModuleConstants.SteerFeedbackType.SyncCANcoder)
                 .withCouplingGearRatio(COUPLE_RATIO)
                 .withSteerMotorInverted(STEER_MOTOR_REVERSED);
-
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 13;
         private static final int FRONT_LEFT_STEER_MOTOR_ID = 4;
         private static final int FRONT_LEFT_ENCODER_ID = 8;
@@ -250,24 +230,17 @@ public final class RobotConstants {
                 new edu.wpi.first.math.geometry.Translation2d(SwerveConstants.BackRight.LocationX,
                         SwerveConstants.BackRight.LocationY)};
 
-        public static final SimpleMotorFeedforward DRIVETRAIN_FEEDFORWARD = new SimpleMotorFeedforward(
-                0.69522, 2.3623, 0.19367);
-
-        public static final double statorCurrent = 110;
-        public static final double supplyCurrent = 50;
-
-        public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
-        
         public static class headingController {
             public static final frc.robot.Utils.TunableNumber HEADING_KP = new frc.robot.Utils.TunableNumber(
-              "HEADING PID/kp", 0.09);
+                    "HEADING PID/kp", 0.09);
             public static final frc.robot.Utils.TunableNumber HEADING_KI = new frc.robot.Utils.TunableNumber(
-              "HEADING PID/ki", 0.000);
+                    "HEADING PID/ki", 0.000);
             public static final frc.robot.Utils.TunableNumber HEADING_KD = new frc.robot.Utils.TunableNumber(
-              "HEADING PID/kd", 0.004);
+                    "HEADING PID/kd", 0.004);
             public static final frc.robot.Utils.TunableNumber MAX_ERROR_CORRECTION_ANGLE = new frc.robot.Utils.TunableNumber(
-              "HEADING/Max Error Correction Angle", 120.0);
+                    "HEADING/Max Error Correction Angle", 120.0);
         }
+
         public static class steerGainsClass {
             public static final TunableNumber STEER_KP = new TunableNumber("STEER PID/kp", 120);
             public static final TunableNumber STEER_KI = new TunableNumber("STEER PID/ki", 0.2);
@@ -286,12 +259,5 @@ public final class RobotConstants {
             public static final TunableNumber DRIVE_KS = new TunableNumber("DRIVE PID/ks", 0.045);
         }
 
-        public static final double deadband = maxSpeed.magnitude() * 0.01;
-        public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.01;
-    
-    }
-    public static class OperatorConstants {
-        public static final int kDriverControllerPort = 0;
-    
     }
 }

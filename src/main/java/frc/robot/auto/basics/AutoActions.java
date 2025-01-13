@@ -1,29 +1,28 @@
 package frc.robot.auto.basics;
 
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj2.command.*;
-
-import frc.robot.subsystems.SwerveSubsystem.SwerveSubsystem;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Utils.AllianceFlipUtil;
+import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import lombok.Synchronized;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.simple.parser.ParseException;
-
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-import com.pathplanner.lib.util.FileVersionException;
-import com.pathplanner.lib.util.PathPlannerLogging;
-
 public class AutoActions {
-    private final static SwerveSubsystem swerve = SwerveSubsystem.getInstance();
+    private final static Swerve swerve = Swerve.getInstance();
 
     @Getter
-    private static Map<String, Command> eventMap = new HashMap<>();
+    private static final Map<String, Command> eventMap = new HashMap<>();
 
     static {
     }
@@ -35,20 +34,20 @@ public class AutoActions {
     //         eventMap
     // );
 
-//load Traj from Path and flip according to alliance
+    //load Traj from Path and flip according to alliance
     @Synchronized
     public static PathPlannerTrajectory getTrajectory(String name) throws FileVersionException, IOException, ParseException {
-        if (AllianceFlipUtil.shouldFlip()){
+        if (AllianceFlipUtil.shouldFlip()) {
             return new PathPlannerTrajectory(
-            PathPlannerPath.fromPathFile(name).flipPath(),
-            swerve.getChassisSpeeds(),
-            swerve.getLocalizer().getLatestPose().getRotation(), null
+                    PathPlannerPath.fromPathFile(name).flipPath(),
+                    swerve.getChassisSpeeds(),
+                    swerve.getLocalizer().getLatestPose().getRotation(), null
             );
-        }else{
+        } else {
             return new PathPlannerTrajectory(
-            PathPlannerPath.fromPathFile(name),
-            swerve.getChassisSpeeds(),
-            swerve.getLocalizer().getLatestPose().getRotation(), null
+                    PathPlannerPath.fromPathFile(name),
+                    swerve.getChassisSpeeds(),
+                    swerve.getLocalizer().getLatestPose().getRotation(), null
             );
         }
     }
@@ -65,7 +64,6 @@ public class AutoActions {
     //     return PathPlanner.loadPathGroup(name, constraints);
     // }
 
-    
 
     // ToDo: think about following with events
 

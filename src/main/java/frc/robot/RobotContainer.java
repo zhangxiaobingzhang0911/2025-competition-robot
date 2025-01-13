@@ -4,20 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.RobotConstants.OperatorConstants;
-import frc.robot.Utils.AllianceFlipUtil;
-import frc.robot.auto.basics.AutoActions;
-import frc.robot.display.Display;
-import frc.robot.subsystems.SwerveSubsystem.SwerveSubsystem;
-import lombok.Getter;
-
-import java.io.IOException;
-
-import org.frcteam6941.Looper.UpdateManager;
-import org.json.simple.parser.ParseException;
-
 import com.pathplanner.lib.util.FileVersionException;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,6 +13,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Utils.AllianceFlipUtil;
+import frc.robot.auto.basics.AutoActions;
+import frc.robot.display.Display;
+import frc.robot.subsystems.swerve.Swerve;
+import lombok.Getter;
+import org.frcteam6941.Looper.UpdateManager;
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -34,41 +30,41 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  SwerveSubsystem swerveSubsystem = SwerveSubsystem.getInstance();
-  CommandXboxController driverController = new CommandXboxController(0);
-  CommandXboxController operatorController = new CommandXboxController(1);
-  Display display = Display.getInstance();
+    @Getter
+    private final UpdateManager updateManager;
+    Swerve swerve = Swerve.getInstance();
+    CommandXboxController driverController = new CommandXboxController(0);
+    CommandXboxController operatorController = new CommandXboxController(1);
+    Display display = Display.getInstance();
+    // The robot's subsystems and commands are defined here...
 
-  @Getter
-    private UpdateManager updateManager;
-  // The robot's subsystems and commands are defined here...
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-      updateManager = new UpdateManager(swerveSubsystem,
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+        updateManager = new UpdateManager(swerve,
                 display);
         updateManager.registerAll();
 
         configureBindings();
-        System.out.println("Init Completed!");
 
-    // Configure the trigger bindings
-    configureBindings();
-  }
+        // Configure the trigger bindings
+        configureBindings();
+    }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    swerveSubsystem.setDefaultCommand(Commands
-                .runOnce(() -> swerveSubsystem.drive(
+    /**
+     * Use this method to define your trigger->command mappings. Triggers can be created via the
+     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+     * predicate, or via the named factories in {@link
+     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
+     * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+     * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+     * joysticks}.
+     */
+    private void configureBindings() {
+        // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+        swerve.setDefaultCommand(Commands
+                .runOnce(() -> swerve.drive(
                                 new Translation2d(
                                         -RobotConstants.driverController.getLeftY()
                                                 * RobotConstants.SwerveConstants.maxSpeed.magnitude(),
@@ -78,35 +74,35 @@ public class RobotContainer {
                                         * RobotConstants.SwerveConstants.maxAngularRate.magnitude(),
                                 true,
                                 false),
-                        swerveSubsystem));
+                        swerve));
 
         // initial
         RobotConstants.driverController.start().onTrue(
                 Commands.runOnce(() -> {
-                    swerveSubsystem.resetHeadingController();
-                    swerveSubsystem.resetPose(
+                    swerve.resetHeadingController();
+                    swerve.resetPose(
                             new Pose2d(
                                     AllianceFlipUtil.apply(
                                             new Translation2d(0, 0)),
                                     Rotation2d.fromDegrees(
-                                            swerveSubsystem.getLocalizer().getLatestPose().getRotation().getDegrees())));
+                                            swerve.getLocalizer().getLatestPose().getRotation().getDegrees())));
                 }).ignoringDisable(true));
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-  }
+        // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   * @throws ParseException 
-   * @throws IOException 
-   * @throws FileVersionException 
-   */
-  public Command getAutonomousCommand() throws FileVersionException, IOException, ParseException {
-    // An example command will be run in autonomous
-    return new SequentialCommandGroup(
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     * @throws ParseException
+     * @throws IOException
+     * @throws FileVersionException
+     */
+    public Command getAutonomousCommand() throws FileVersionException, IOException, ParseException {
+        // An example command will be run in autonomous
+        return new SequentialCommandGroup(
                 AutoActions.waitFor(0.000001),
                 AutoActions.followTrajectory(AutoActions.getTrajectory("T_4"), true, true)
         );
-  }
+    }
 }

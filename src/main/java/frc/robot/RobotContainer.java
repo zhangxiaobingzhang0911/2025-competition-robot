@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.display.Display;
+import frc.robot.subsystems.apriltagvision.AprilTagVision;
+import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
@@ -32,6 +34,11 @@ import java.io.IOException;
 public class RobotContainer {
     @Getter
     private final UpdateManager updateManager;
+    @Getter
+    AprilTagVision aprilTagVision = new AprilTagVision(
+            this::getAprilTagLayoutType,
+            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
+            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
@@ -104,5 +111,15 @@ public class RobotContainer {
                 AutoActions.waitFor(0.000001),
                 AutoActions.followTrajectory(AutoActions.getTrajectory("T_4"), true, true)
         );
+    }
+
+    public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
+//        if (aprilTagsSpeakerOnly.getAsBoolean()) {
+//            return FieldConstants.AprilTagLayoutType.SPEAKERS_ONLY;
+//        } else if (aprilTagsAmpOnly.getAsBoolean()) {
+//            return FieldConstants.AprilTagLayoutType.AMPS_ONLY;
+//        } else {
+        return FieldConstants.defaultAprilTagType;
+//        }
     }
 }

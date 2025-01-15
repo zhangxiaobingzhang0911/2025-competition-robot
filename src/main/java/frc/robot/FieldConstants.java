@@ -26,11 +26,11 @@ public class FieldConstants {
 
     @Getter
     public enum AprilTagLayoutType {
-        OFFICIAL("2025-official"),
-        OFFICIAL2024("2024-official"),
-        SPEAKERS_ONLY("2024-speakers"),
-        AMPS_ONLY("2024-amps"),
-        WPI("2024-wpi");
+        OFFICIAL("2025-official");
+//        OFFICIAL2024("2024-official"),
+//        SPEAKERS_ONLY("2024-speakers"),
+//        AMPS_ONLY("2024-amps"),
+//        WPI("2024-wpi");
 
         private final AprilTagFieldLayout layout;
         private final String layoutString;
@@ -59,5 +59,4 @@ public class FieldConstants {
             }
         }
     }
-
 }

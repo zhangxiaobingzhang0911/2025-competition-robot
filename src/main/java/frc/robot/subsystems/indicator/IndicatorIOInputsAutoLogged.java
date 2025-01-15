@@ -1,4 +1,4 @@
-package frc.robot.subsystems.indicator;
+package frc.robot.subsystems.IndicatorSubsystem;
 
 import java.lang.Cloneable;
 import java.lang.Override;

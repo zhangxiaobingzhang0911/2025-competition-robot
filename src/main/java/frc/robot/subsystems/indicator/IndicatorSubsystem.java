@@ -1,8 +1,8 @@
-package frc.robot.subsystems.indicator;
+package frc.robot.subsystems.IndicatorSubsystem;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.indicator.IndicatorIO.Patterns;
+import frc.robot.subsystems.IndicatorSubsystem.IndicatorIO.Patterns;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 

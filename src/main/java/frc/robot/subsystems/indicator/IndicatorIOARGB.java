@@ -1,4 +1,4 @@
-package frc.robot.subsystems.indicator;
+package frc.robot.subsystems.IndicatorSubsystem;
 
 import frc.robot.drivers.led.AddressableLEDWrapper;
 import frc.robot.drivers.led.patterns.SolidColorPattern;

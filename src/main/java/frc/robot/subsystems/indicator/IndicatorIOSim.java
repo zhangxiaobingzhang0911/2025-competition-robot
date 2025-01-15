@@ -1,4 +1,4 @@
-package frc.robot.subsystems.indicator;
+package frc.robot.subsystems.IndicatorSubsystem;
 
 public class IndicatorIOSim implements IndicatorIO {
     private Patterns currentPattern = Patterns.NORMAL;

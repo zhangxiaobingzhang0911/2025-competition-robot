@@ -6,8 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -43,6 +43,7 @@ public class RobotContainer {
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
     Display display = Display.getInstance();
+    double lastResetTime = 0.0;
     // The robot's subsystems and commands are defined here...
 
     /**
@@ -69,7 +70,6 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
         swerve.setDefaultCommand(Commands
                 .runOnce(() -> swerve.drive(
                                 new Translation2d(
@@ -83,18 +83,23 @@ public class RobotContainer {
                                 false),
                         swerve));
 
-        // initial
         RobotConstants.driverController.start().onTrue(
                 Commands.runOnce(() -> {
-                    swerve.resetHeadingController();
-                    swerve.resetPose(
-                            new Pose2d(
-                                    AllianceFlipUtil.apply(
-                                            new Translation2d(0, 0)),
-                                    Rotation2d.fromDegrees(
-                                            swerve.getLocalizer().getLatestPose().getRotation().getDegrees())));
+                    /*
+                        TODO: the reset command will be activated twice when the start button is pressed only once,
+                        this is only a temporary solution to avoid execute the command twice within 0.01s,
+                        please fix the bug
+                    */
+                    if (Timer.getFPGATimestamp() - lastResetTime > 0.01) {
+                        swerve.resetHeadingController();
+                        swerve.resetPose(
+                                new Pose2d(
+                                        AllianceFlipUtil.apply(
+                                                new Translation2d(0, 0)),
+                                        swerve.getLocalizer().getLatestPose().getRotation()));
+                    }
+                    lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
-        // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     }
 
     /**

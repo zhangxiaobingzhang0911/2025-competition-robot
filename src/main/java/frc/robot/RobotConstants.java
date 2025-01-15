@@ -30,7 +30,7 @@ public final class RobotConstants {
     public static final boolean TUNING = true;
     public static final CommandXboxController driverController = new CommandXboxController(0);
     public static final CommandXboxController operatorController = new CommandXboxController(1);
-    public static String CAN_BUS_NAME = "6941CANivore1";
+    public static String CAN_BUS_NAME = "9620CANivore1";
 
     public static class IndicatorConstants {
         public static final int LED_PORT = 0;

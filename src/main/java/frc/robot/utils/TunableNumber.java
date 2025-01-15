@@ -1,4 +1,4 @@
-package frc.robot.Utils;
+package frc.robot.utils;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotConstants;
@@ -11,7 +11,7 @@ import frc.robot.RobotConstants;
 public class TunableNumber {
     private static final String tableKey = "TunableNumbers";
 
-    private String key;
+    private final String key;
     private double defaultValue;
     private double lastHasChangedValue = defaultValue;
 

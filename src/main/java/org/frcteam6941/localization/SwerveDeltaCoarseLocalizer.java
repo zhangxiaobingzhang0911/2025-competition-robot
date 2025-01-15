@@ -1,4 +1,4 @@
-package org.frcteam6941.Localization;
+package org.frcteam6941.localization;
 
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
@@ -20,15 +20,15 @@ import org.frcteam6941.utils.MovingAveragePose2d;
 
 public class SwerveDeltaCoarseLocalizer implements Localizer {
     private final Object statusLock = new Object();
-    private SwerveDriveOdometry swerveOdometry;
-    private SwerveDrivePoseEstimator poseEstimator;
+    private final SwerveDriveOdometry swerveOdometry;
+    private final SwerveDrivePoseEstimator poseEstimator;
+    private final int poseBufferSize;
+    private final int velocityBufferSize;
+    private final int accelerationBufferSize;
     private Pose2d previousPose = null;
     private Pose2d previousVelocity = new Pose2d();
     private double distanceDriven = 0.0;
     private InterpolatingTreeMap<Double, Pose2d> fieldToVehicle;
-    private int poseBufferSize;
-    private int velocityBufferSize;
-    private int accelerationBufferSize;
     private Pose2d vehicleVelocityMeasured;
     private MovingAveragePose2d vehicleVelocityMeasuredFilter;
     private Pose2d vehicleAccelerationMeasured;

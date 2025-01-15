@@ -1,11 +1,10 @@
-package org.frcteam6941.Control;
-
-import java.util.Optional;
+package org.frcteam6941.control;
 
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+
+import java.util.Optional;
 
 public abstract class PathPlannerTrajectoryFollowerBase<DriveSignalType> {
     private final Object trajectoryLock = new Object();

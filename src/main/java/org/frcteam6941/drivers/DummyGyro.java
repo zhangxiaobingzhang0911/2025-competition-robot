@@ -1,4 +1,4 @@
-package org.frcteam6941.Drivers;
+package org.frcteam6941.drivers;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -21,16 +21,6 @@ public class DummyGyro implements Gyro {
         return yaw;
     }
 
-    @Override
-    public Rotation2d getRoll() {
-        return roll;
-    }
-
-    @Override
-    public Rotation2d getPitch() {
-        return pitch;
-    }
-
     /**
      * Sets the yaw register to read the specified value.
      *
@@ -41,6 +31,11 @@ public class DummyGyro implements Gyro {
         this.yaw = Rotation2d.fromDegrees(angleDeg);
     }
 
+    @Override
+    public Rotation2d getRoll() {
+        return roll;
+    }
+
     /**
      * Sets the roll register to read the specified value.
      *
@@ -49,6 +44,11 @@ public class DummyGyro implements Gyro {
     @Override
     public void setRoll(double angleDeg) {
         this.roll = Rotation2d.fromDegrees(angleDeg);
+    }
+
+    @Override
+    public Rotation2d getPitch() {
+        return pitch;
     }
 
     /**
@@ -63,10 +63,10 @@ public class DummyGyro implements Gyro {
 
     @Override
     public double[] getRaw() {
-        return new double[] {
-            (yaw.getDegrees() - previousYaw.getDegrees()) / dt,
-            (pitch.getDegrees() - previousPitch.getDegrees()) / dt,
-            (roll.getDegrees() - previousRoll.getDegrees()) / dt
+        return new double[]{
+                (yaw.getDegrees() - previousYaw.getDegrees()) / dt,
+                (pitch.getDegrees() - previousPitch.getDegrees()) / dt,
+                (roll.getDegrees() - previousRoll.getDegrees()) / dt
         };
     }
 }

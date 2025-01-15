@@ -19,7 +19,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import frc.robot.FieldConstants;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.ExtensionMethod;
@@ -47,10 +46,6 @@ public class RobotState {
     private static final InterpolatingTreeMap<Double, FlywheelSpeeds> superPoopFlywheelSpeedsMap =
             new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), FlywheelSpeeds::interpolate);
     private static final double autoFarShotCompensationDegrees = 0.0; // 0.6 at NECMP
-    private static final Translation2d superPoopTarget =
-            FieldConstants.Subwoofer.centerFace
-                    .getTranslation()
-                    .interpolate(FieldConstants.ampCenter, 0.5);
     private static final LoggedTunableNumber demoTargetDistance =
             new LoggedTunableNumber("RobotState/DemoTargetDistance", 2.0);
     private static RobotState instance;

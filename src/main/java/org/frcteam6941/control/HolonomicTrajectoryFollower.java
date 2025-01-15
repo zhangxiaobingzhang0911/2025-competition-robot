@@ -1,4 +1,4 @@
-package org.frcteam6941.Control;
+package org.frcteam6941.control;
 
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
@@ -56,7 +56,7 @@ public class HolonomicTrajectoryFollower extends PathPlannerTrajectoryFollowerBa
 
         actualPose = currentPose;
 
-        lastState = (PathPlannerTrajectoryState) trajectory.sample(time);
+        lastState = trajectory.sample(time);
         double x = xController.calculate(currentPose.getX(), lastState.pose.getX());
         double y = yController.calculate(currentPose.getY(), lastState.pose.getY());
         double rotation = 0.0;

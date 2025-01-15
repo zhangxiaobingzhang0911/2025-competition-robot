@@ -1,12 +1,12 @@
-package org.frcteam6941.Control;
+package org.frcteam6941.control;
 
 import edu.wpi.first.math.geometry.Translation2d;
 
 /**
  * Drive Signal for Holonomic Drivetrains.
- * 
- * @param translation Translation with x and y component, ranging from -1 to 1.
- * @param rotation Rotational Magnitude, ranging from -1 to 1.
+ *
+ * @param translation   Translation with x and y component, ranging from -1 to 1.
+ * @param rotation      Rotational Magnitude, ranging from -1 to 1.
  * @param fieldOriented Whether the signal is relative to the field or not.
  */
 public class HolonomicDriveSignal {

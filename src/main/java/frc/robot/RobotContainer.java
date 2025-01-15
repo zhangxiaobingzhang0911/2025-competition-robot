@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Utils.AllianceFlipUtil;
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.display.Display;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
-import org.frcteam6941.Looper.UpdateManager;
+import org.frcteam6941.looper.UpdateManager;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;

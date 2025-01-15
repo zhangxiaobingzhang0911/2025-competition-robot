@@ -11,8 +11,8 @@ import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstantsFactory;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Utils.TunableNumber;
-import org.frcteam6941.Swerve.SwerveSetpointGenerator.KinematicLimits;
+import frc.robot.utils.TunableNumber;
+import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -231,13 +231,13 @@ public final class RobotConstants {
                         SwerveConstants.BackRight.LocationY)};
 
         public static class headingController {
-            public static final frc.robot.Utils.TunableNumber HEADING_KP = new frc.robot.Utils.TunableNumber(
+            public static final frc.robot.utils.TunableNumber HEADING_KP = new frc.robot.utils.TunableNumber(
                     "HEADING PID/kp", 0.09);
-            public static final frc.robot.Utils.TunableNumber HEADING_KI = new frc.robot.Utils.TunableNumber(
+            public static final frc.robot.utils.TunableNumber HEADING_KI = new frc.robot.utils.TunableNumber(
                     "HEADING PID/ki", 0.000);
-            public static final frc.robot.Utils.TunableNumber HEADING_KD = new frc.robot.Utils.TunableNumber(
+            public static final frc.robot.utils.TunableNumber HEADING_KD = new frc.robot.utils.TunableNumber(
                     "HEADING PID/kd", 0.004);
-            public static final frc.robot.Utils.TunableNumber MAX_ERROR_CORRECTION_ANGLE = new frc.robot.Utils.TunableNumber(
+            public static final frc.robot.utils.TunableNumber MAX_ERROR_CORRECTION_ANGLE = new frc.robot.utils.TunableNumber(
                     "HEADING/Max Error Correction Angle", 120.0);
         }
 

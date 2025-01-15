@@ -1,4 +1,4 @@
-package org.frcteam6941.Swerve;
+package org.frcteam6941.swerve;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -15,7 +15,7 @@ public class SwerveSetpoint {
     @Override
     public String toString() {
         String ret = mChassisSpeeds.toString() + "\n";
-        for (int i = 0; i < mModuleStates.length; ++i ) {
+        for (int i = 0; i < mModuleStates.length; ++i) {
             ret += "  " + mModuleStates[i].toString() + "\n";
         }
         return ret;

@@ -1,4 +1,4 @@
-package org.frcteam6941.Swerve;
+package org.frcteam6941.swerve;
 
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -9,7 +9,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.core.CoreTalonFX;
-import com.ctre.phoenix6.mechanisms.swerve.*;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;

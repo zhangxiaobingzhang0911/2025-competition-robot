@@ -17,19 +17,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.SwerveConstants;
-import frc.robot.Utils.AllianceFlipUtil;
+import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
-import org.frcteam6941.Control.HolonomicDriveSignal;
-import org.frcteam6941.Control.HolonomicTrajectoryFollower;
-import org.frcteam6941.Drivers.DummyGyro;
-import org.frcteam6941.Drivers.Gyro;
-import org.frcteam6941.Drivers.Pigeon2Gyro;
-import org.frcteam6941.Localization.Localizer;
-import org.frcteam6941.Localization.SwerveDeltaCoarseLocalizer;
-import org.frcteam6941.Looper.Updatable;
-import org.frcteam6941.Swerve.*;
+import org.frcteam6941.control.HolonomicDriveSignal;
+import org.frcteam6941.control.HolonomicTrajectoryFollower;
+import org.frcteam6941.drivers.DummyGyro;
+import org.frcteam6941.drivers.Gyro;
+import org.frcteam6941.drivers.Pigeon2Gyro;
+import org.frcteam6941.localization.Localizer;
+import org.frcteam6941.localization.SwerveDeltaCoarseLocalizer;
+import org.frcteam6941.looper.Updatable;
+import org.frcteam6941.swerve.*;
 import org.frcteam6941.utils.AngleNormalization;
 import org.littletonrobotics.junction.Logger;
 
@@ -75,7 +75,7 @@ public class Swerve implements Updatable, Subsystem {
     private SwerveSetpoint setpoint;
     private SwerveSetpoint previousSetpoint;
     @Getter
-    private org.frcteam6941.Swerve.SwerveSetpointGenerator.KinematicLimits kinematicLimits;
+    private org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits kinematicLimits;
     @Getter
     @Setter
     private State state = State.DRIVE;
@@ -318,7 +318,7 @@ public class Swerve implements Updatable, Subsystem {
         driveSignal = new HolonomicDriveSignal(new edu.wpi.first.math.geometry.Translation2d(), 0.0, true, false);
     }
 
-    public void setKinematicsLimit(org.frcteam6941.Swerve.SwerveSetpointGenerator.KinematicLimits limit) {
+    public void setKinematicsLimit(org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits limit) {
         kinematicLimits = limit;
     }
 

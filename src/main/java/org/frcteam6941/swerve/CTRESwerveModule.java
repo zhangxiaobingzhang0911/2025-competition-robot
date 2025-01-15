@@ -1,4 +1,4 @@
-package org.frcteam6941.Swerve;
+package org.frcteam6941.swerve;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;

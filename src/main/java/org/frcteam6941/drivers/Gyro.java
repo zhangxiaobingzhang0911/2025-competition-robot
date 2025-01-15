@@ -1,14 +1,19 @@
-package org.frcteam6941.Drivers;
+package org.frcteam6941.drivers;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public interface Gyro {
     Rotation2d getYaw();
-    Rotation2d getPitch();
-    Rotation2d getRoll();
-    double[] getRaw();
 
     void setYaw(double angle);
+
+    Rotation2d getPitch();
+
     void setPitch(double angle);
-	void setRoll(double angle);
+
+    Rotation2d getRoll();
+
+    void setRoll(double angle);
+
+    double[] getRaw();
 }

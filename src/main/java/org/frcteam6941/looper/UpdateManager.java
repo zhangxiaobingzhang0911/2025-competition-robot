@@ -1,4 +1,4 @@
-package org.frcteam6941.Looper;
+package org.frcteam6941.looper;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
@@ -30,7 +30,7 @@ public class UpdateManager {
         }
     };
     private final Notifier updaterSimulationThread = new Notifier(simulationRunnable);
-    private Runnable enableRunnable = new Runnable() {
+    private final Runnable enableRunnable = new Runnable() {
         @Override
         public void run() {
             synchronized (taskRunningLock_) {
@@ -92,8 +92,7 @@ public class UpdateManager {
 
     public void registerAll() {
         updatables.forEach((Updatable u) -> {
-            if (u instanceof Subsystem) {
-                Subsystem adapted = (Subsystem) u;
+            if (u instanceof Subsystem adapted) {
                 CommandScheduler.getInstance().registerSubsystem(adapted);
             }
         });

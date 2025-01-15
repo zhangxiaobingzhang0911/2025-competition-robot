@@ -24,16 +24,13 @@ public class Pigeon2Gyro implements Gyro {
     @Override
     public Rotation2d getYaw() {
         // Rotation2d angle = getUnadjustedYaw().minus(yawAdjustmentAngle);
-        //angle.getDegrees();
         double angle = getUnadjustedYaw().getDegrees();
         angle -= yawAdjustmentAngle.getDegrees();
         angle %= 360;
-        //System.out.println(angle);
         if (inverted) {
             return new Rotation2d(Math.toRadians(-angle));
             //return angle.unaryMinus();
         }
-        //System.out.println("ADJ = " + angle);
         return new Rotation2d(Math.toRadians(angle));
         //return angle;
     }

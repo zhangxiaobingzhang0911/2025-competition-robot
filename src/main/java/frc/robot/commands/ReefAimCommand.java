@@ -1,6 +1,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -51,7 +52,7 @@ public  class ReefAimCommand extends Command
      */
     @Override
     public void execute() {
-        this.swerve.drive(this.transform.getTranslation(), this.transform.getRotation().getRadians(), true, false);
+        this.swerve.drive(this.transform.getTranslation(), MathUtil.angleModulus(this.transform.getRotation().getRadians()), false, false);
         this.isFinished = true;
     }
     

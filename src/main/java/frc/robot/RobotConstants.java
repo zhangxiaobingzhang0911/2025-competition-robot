@@ -9,6 +9,9 @@ import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputTy
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstantsFactory;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.utils.TunableNumber;
@@ -259,5 +262,10 @@ public final class RobotConstants {
             public static final TunableNumber DRIVE_KS = new TunableNumber("DRIVE PID/ks", 0.045);
         }
 
+    }
+
+    public static final class ReefAimConstants {
+        public static final Transform2d tagLeftToRobot = new Transform2d(); // vec(robot) - vec(tag) when shooting left coral
+        public static final Transform2d tagRightToRobot = new Transform2d();
     }
 }

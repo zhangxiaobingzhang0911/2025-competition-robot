@@ -43,6 +43,8 @@ public class AprilTagVision extends SubsystemBase {
     private double lastDemoTagPoseTimestamp = 0.0;
     private double lastPrint;
     private double frameUpdateCount;
+
+    @Getter
     private ArrayList<Pose3d> allTagPoses;
 
     @Getter

@@ -31,7 +31,6 @@ public class MoveToTarget extends Command {
     public void execute() {
         // Get the robot's current pose
         Twist2d currentPose = Swerve.getChassisTwist();
-
         // Calculate the difference in position and orientation
         double deltaX = targetPose.getX() - currentPose.dx;
         double deltaY = targetPose.getY() - currentPose.dy;

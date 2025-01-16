@@ -51,7 +51,7 @@ public  class ReefAimCommand extends Command
      */
     @Override
     public void execute() {
-        this.swerve.drive(this.transform.getTranslation(), this.transform.getRotation().getRadians(), false, false);
+        this.swerve.drive(this.transform.getTranslation(), this.transform.getRotation().getRadians(), true, false);
         this.isFinished = true;
     }
     

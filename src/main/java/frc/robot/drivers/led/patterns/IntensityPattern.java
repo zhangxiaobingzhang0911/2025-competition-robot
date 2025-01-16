@@ -3,7 +3,9 @@ package frc.robot.drivers.led.patterns;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
+
 import lombok.Setter;
+
 import frc.robot.drivers.led.AddressableLEDPattern;
 
 public class IntensityPattern implements AddressableLEDPattern {

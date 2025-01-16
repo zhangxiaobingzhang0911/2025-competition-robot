@@ -3,6 +3,7 @@ package frc.robot.drivers.led.patterns;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
+
 import frc.robot.drivers.led.AddressableLEDPattern;
 
 public class BlinkingPattern implements AddressableLEDPattern {

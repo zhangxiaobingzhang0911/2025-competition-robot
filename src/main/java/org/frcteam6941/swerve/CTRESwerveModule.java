@@ -3,8 +3,10 @@ package org.frcteam6941.swerve;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
+
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+
 import frc.robot.RobotConstants;
 
 public class CTRESwerveModule implements SwerveModuleBase {

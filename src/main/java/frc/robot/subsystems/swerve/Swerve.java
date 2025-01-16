@@ -1,14 +1,16 @@
 package frc.robot.subsystems.swerve;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.team254.lib.util.MovingAverage;
+import com.team254.lib.geometry.Twist2d;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -17,12 +19,15 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.SwerveConstants;
 import frc.robot.utils.AllianceFlipUtil;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
+
 import org.frcteam6941.control.HolonomicDriveSignal;
 import org.frcteam6941.control.HolonomicTrajectoryFollower;
 import org.frcteam6941.drivers.DummyGyro;
@@ -32,6 +37,7 @@ import org.frcteam6941.localization.Localizer;
 import org.frcteam6941.localization.SwerveDeltaCoarseLocalizer;
 import org.frcteam6941.looper.Updatable;
 import org.frcteam6941.swerve.*;
+import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 import org.frcteam6941.utils.AngleNormalization;
 import org.littletonrobotics.junction.Logger;
 
@@ -73,11 +79,11 @@ public class Swerve implements Updatable, Subsystem {
     @Setter
     private double headingVelocityFeedforward = 0.00;
     // Control Targets
-    private HolonomicDriveSignal driveSignal = new HolonomicDriveSignal(new edu.wpi.first.math.geometry.Translation2d(), 0.0, true, false);
+    private HolonomicDriveSignal driveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
     private SwerveSetpoint setpoint;
     private SwerveSetpoint previousSetpoint;
     @Getter
-    private org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits kinematicLimits;
+    private KinematicLimits kinematicLimits;
     @Getter
     @Setter
     private State state = State.DRIVE;
@@ -109,7 +115,8 @@ public class Swerve implements Updatable, Subsystem {
         headingController.enableContinuousInput(0, 360.0);
         swerveKinematics = new SwerveDriveKinematics(
                 RobotConstants.SwerveConstants.modulePlacements);
-        swerveLocalizer = new SwerveDeltaCoarseLocalizer(swerveKinematics, 50, 20, 20, getModulePositions());
+        swerveLocalizer = new SwerveDeltaCoarseLocalizer(swerveKinematics, 50, 
+        20, 20, getModulePositions());
 
         gyro.setYaw(0.0);
         swerveLocalizer.reset(new Pose2d(), getModulePositions());
@@ -158,14 +165,14 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     private static double getDriveBaseRadius() {
-        var moduleLocations = new edu.wpi.first.math.geometry.Translation2d[]{
-                new edu.wpi.first.math.geometry.Translation2d(RobotConstants.SwerveConstants.FrontLeft.LocationX,
+        var moduleLocations = new Translation2d[]{
+                new Translation2d(RobotConstants.SwerveConstants.FrontLeft.LocationX,
                         RobotConstants.SwerveConstants.FrontLeft.LocationY),
-                new edu.wpi.first.math.geometry.Translation2d(RobotConstants.SwerveConstants.FrontRight.LocationX,
+                new Translation2d(RobotConstants.SwerveConstants.FrontRight.LocationX,
                         RobotConstants.SwerveConstants.FrontRight.LocationY),
-                new edu.wpi.first.math.geometry.Translation2d(RobotConstants.SwerveConstants.BackLeft.LocationX,
+                new Translation2d(RobotConstants.SwerveConstants.BackLeft.LocationX,
                         RobotConstants.SwerveConstants.BackLeft.LocationY),
-                new edu.wpi.first.math.geometry.Translation2d(RobotConstants.SwerveConstants.BackRight.LocationX,
+                new Translation2d(RobotConstants.SwerveConstants.BackRight.LocationX,
                         RobotConstants.SwerveConstants.BackRight.LocationY)
         };
 
@@ -183,7 +190,7 @@ public class Swerve implements Updatable, Subsystem {
     }
 
 
-    public edu.wpi.first.math.kinematics.ChassisSpeeds getChassisSpeeds() {
+    public ChassisSpeeds getChassisSpeeds() {
         return swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
@@ -205,11 +212,11 @@ public class Swerve implements Updatable, Subsystem {
      * @param dt          Delta time between updates.
      */
     private void updateModules(HolonomicDriveSignal driveSignal, double dt) {
-        edu.wpi.first.math.kinematics.ChassisSpeeds desiredChassisSpeed;
+        ChassisSpeeds desiredChassisSpeed;
 
         if (driveSignal == null) {
-            desiredChassisSpeed = new edu.wpi.first.math.kinematics.ChassisSpeeds(0.0, 0.0, 0.0);
-            driveSignal = new HolonomicDriveSignal(new edu.wpi.first.math.geometry.Translation2d(), 0.0, true, false);
+            desiredChassisSpeed = new ChassisSpeeds(0.0, 0.0, 0.0);
+            driveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
         } else {
 
             double x = driveSignal.getTranslation().getX();
@@ -229,11 +236,11 @@ public class Swerve implements Updatable, Subsystem {
                 }
 
             else
-                desiredChassisSpeed = new edu.wpi.first.math.kinematics.ChassisSpeeds(x, y, rotation);
+                desiredChassisSpeed = new ChassisSpeeds(x, y, rotation);
         }
 
         edu.wpi.first.math.geometry.Twist2d twist = new Pose2d().log(new Pose2d(
-                new edu.wpi.first.math.geometry.Translation2d(
+                new Translation2d(
                         desiredChassisSpeed.vxMetersPerSecond * RobotConstants.LOOPER_DT,
                         desiredChassisSpeed.vyMetersPerSecond * RobotConstants.LOOPER_DT),
                 new Rotation2d(
@@ -254,9 +261,9 @@ public class Swerve implements Updatable, Subsystem {
         }
     }
 
-    public com.team254.lib.geometry.Twist2d getChassisTwist() {
-        edu.wpi.first.math.kinematics.ChassisSpeeds speeds = getChassisSpeeds();
-        return new com.team254.lib.geometry.Twist2d(
+    public Twist2d getChassisTwist() {
+        ChassisSpeeds speeds = getChassisSpeeds();
+        return new Twist2d(
                 speeds.vxMetersPerSecond * RobotConstants.LOOPER_DT,
                 speeds.vyMetersPerSecond * RobotConstants.LOOPER_DT,
                 speeds.omegaRadiansPerSecond * RobotConstants.LOOPER_DT);
@@ -287,14 +294,14 @@ public class Swerve implements Updatable, Subsystem {
      *                              drive.
      * @param isFieldOriented       Is the drive signal field oriented.
      */
-    public void drive(edu.wpi.first.math.geometry.Translation2d translationalVelocity, double rotationalVelocity,
+    public void drive(Translation2d translationalVelocity, double rotationalVelocity,
                       boolean isFieldOriented, boolean isOpenLoop) {
 
         if (Math.abs(translationalVelocity.getX()) < RobotConstants.SwerveConstants.deadband) {
-            translationalVelocity = new edu.wpi.first.math.geometry.Translation2d(0, translationalVelocity.getY());
+            translationalVelocity = new Translation2d(0, translationalVelocity.getY());
         }
         if (Math.abs(translationalVelocity.getY()) < RobotConstants.SwerveConstants.deadband) {
-            translationalVelocity = new edu.wpi.first.math.geometry.Translation2d(translationalVelocity.getX(), 0);
+            translationalVelocity = new Translation2d(translationalVelocity.getX(), 0);
         }
         if (Math.abs(rotationalVelocity) < RobotConstants.SwerveConstants.rotationalDeadband) {
             rotationalVelocity = 0;
@@ -348,10 +355,10 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     public void stopMovement() {
-        driveSignal = new HolonomicDriveSignal(new edu.wpi.first.math.geometry.Translation2d(), 0.0, true, false);
+        driveSignal = new HolonomicDriveSignal(new Translation2d(), 0.0, true, false);
     }
 
-    public void setKinematicsLimit(org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits limit) {
+    public void setKinematicsLimit(KinematicLimits limit) {
         kinematicLimits = limit;
     }
 
@@ -382,9 +389,10 @@ public class Swerve implements Updatable, Subsystem {
      */
     private void setModuleStatesBrake() {
         for (SwerveModuleBase mod : swerveMods) {
-            edu.wpi.first.math.geometry.Translation2d modulePosition = RobotConstants.SwerveConstants.modulePlacements[mod.getModuleNumber()];
+            Translation2d modulePosition = RobotConstants.SwerveConstants.modulePlacements[mod.getModuleNumber()];
             Rotation2d angle = new Rotation2d(modulePosition.getX(), modulePosition.getY());
-            mod.setDesiredState(new SwerveModuleState(0.0, angle.plus(Rotation2d.fromDegrees(180.0))), false, true);
+            mod.setDesiredState(new SwerveModuleState(0.0, angle.plus(Rotation2d.fromDegrees(180.0))),
+             false, true);
         }
     }
 

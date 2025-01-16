@@ -12,7 +12,10 @@ public class FieldView {
 
     private final Field2d mField2d = new Field2d();
     //    NetworkTableInstance.
-    DoubleArraySubscriber doubleArray = NetworkTableInstance.getDefault().getDoubleArrayTopic("/orangePi5Plus/output/demo_observations/").subscribe(new double[]{}, PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true));
+    DoubleArraySubscriber doubleArray = NetworkTableInstance.getDefault().
+                                                                        getDoubleArrayTopic("/orangePi5Plus/output/demo_observations/").
+                                                                        subscribe(new double[]{}, PubSubOption.keepDuplicates(true), 
+                                                                        PubSubOption.sendAll(true));
 
     public FieldView() {
         SmartDashboard.putData(mField2d);

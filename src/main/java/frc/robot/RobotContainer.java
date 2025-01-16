@@ -5,25 +5,29 @@
 package frc.robot;
 
 import com.pathplanner.lib.util.FileVersionException;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.*;
+
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
+
 import lombok.Getter;
+
 import org.frcteam6941.looper.UpdateManager;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.function.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -34,6 +38,7 @@ import java.io.IOException;
 public class RobotContainer {
     @Getter
     private final UpdateManager updateManager;
+
     @Getter
     AprilTagVision aprilTagVision = new AprilTagVision(
             this::getAprilTagLayoutType,
@@ -44,7 +49,6 @@ public class RobotContainer {
     CommandXboxController operatorController = new CommandXboxController(1);
     Display display = Display.getInstance();
     double lastResetTime = 0.0;
-    private Command autoCommand = null;
 
     // The robot's subsystems and commands are defined here...
 
@@ -64,11 +68,11 @@ public class RobotContainer {
 
     /**
      * Use this method to define your trigger->command mappings. Triggers can be created via the
-     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+     * {@link Trigger#Trigger(BooleanSupplier)} constructor with an arbitrary
      * predicate, or via the named factories in {@link
-     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-     * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-     * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+     * CommandGenericHID}'s subclasses for {@link
+     * CommandXboxController Xbox}/{@link CommandPS4Controller
+     * PS4} controllers or {@link CommandJoystick Flight
      * joysticks}.
      */
     private void configureBindings() {

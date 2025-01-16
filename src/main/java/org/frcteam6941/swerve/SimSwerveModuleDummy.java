@@ -1,8 +1,10 @@
 package org.frcteam6941.swerve;
 
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
+
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+
 import frc.robot.RobotConstants;
 
 public class SimSwerveModuleDummy implements SwerveModuleBase {

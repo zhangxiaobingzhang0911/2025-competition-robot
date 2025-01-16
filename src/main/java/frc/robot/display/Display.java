@@ -1,6 +1,7 @@
 package frc.robot.display;
 
 import frc.robot.subsystems.swerve.Swerve;
+
 import org.frcteam6941.looper.Updatable;
 
 public class Display implements Updatable {

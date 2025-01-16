@@ -1,6 +1,7 @@
 package frc.robot.drivers.led.patterns;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+
 import frc.robot.drivers.led.AddressableLEDPattern;
 
 public class RainbowPattern implements AddressableLEDPattern {

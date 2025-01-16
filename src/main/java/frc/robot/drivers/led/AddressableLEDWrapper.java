@@ -4,9 +4,12 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.util.Color;
+
 import lombok.Getter;
 import lombok.Setter;
+
 import frc.robot.drivers.led.patterns.SolidColorPattern;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardString;
 
 @SuppressWarnings("PMD")
@@ -24,6 +27,7 @@ public class AddressableLEDWrapper {
 
 	private double period = 0.05;
 
+	@SuppressWarnings("deprecation")
 	private final LoggedDashboardString dashboardBuffer = new LoggedDashboardString("Buffer");
 
 	public AddressableLEDWrapper(int port, int length) {

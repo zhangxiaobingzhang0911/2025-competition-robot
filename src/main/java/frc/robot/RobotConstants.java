@@ -8,17 +8,16 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstantsFactory;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.units.*;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.utils.TunableNumber;
-import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
-
 import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
+import frc.robot.utils.TunableNumber;
+
+import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -28,22 +27,28 @@ import static edu.wpi.first.units.Units.*;
  * constants are needed, to reduce verbosity.
  */
 public final class RobotConstants {
+    // basic constants
     public static final boolean disableHAL = false;
     public static final double LOOPER_DT = 1 / 50.0;
     public static final boolean TUNING = true;
+    //controller
     public static final CommandXboxController driverController = new CommandXboxController(0);
     public static final CommandXboxController operatorController = new CommandXboxController(1);
+    //canbus name
     public static String CAN_BUS_NAME = "rio";
 
     public static class IndicatorConstants {
+        //TODO:adapt when needed
         public static final int LED_PORT = 0;
         public static final int LED_BUFFER_LENGTH = 17;
     }
 
 
     public static class SwerveConstants {
-
+        //pigeon id
         public static final int PIGEON_ID = 14;
+
+        //swerve driving
         /**
          * Gearing between the drive motor output shaft and the wheel.
          */
@@ -52,18 +57,25 @@ public final class RobotConstants {
          * Gearing between the steer motor output shaft and the azimuth gear.
          */
         public static final double STEER_GEAR_RATIO = 21.428571428571428571428571428571;
+
+        /**
+         * Max Voltage Output in voltage.
+         */
         public static final Measure<VoltageUnit> MAX_VOLTAGE = Volts.of(12.0);
         /**
          * Radius of the wheel in meters.
          */
         public static final Measure<DistanceUnit> wheelRadius = Meters.of(0.0479);
-
         /**
          * The max speed of the swerve (should not larger than speedAt12Volts)
          */
         public static final Measure<LinearVelocityUnit> maxSpeed = MetersPerSecond.of(4.5);
+        /**
+         * The max angular speed of the swerve.
+         */
         public static final Measure<AngularVelocityUnit> maxAngularRate = RotationsPerSecond.of(1.5 * Math.PI);
 
+        //kinematiclimits
         public static final KinematicLimits DRIVETRAIN_UNCAPPED = new KinematicLimits(
                 maxSpeed.magnitude(),
                 11.0,
@@ -80,6 +92,7 @@ public final class RobotConstants {
                 2.0,
                 5.0,
                 1500.0);
+
         public static final Measure<LinearVelocityUnit> speedAt12Volts = maxSpeed;
         /**
          * The stator current at which the wheels start to slip
@@ -88,10 +101,13 @@ public final class RobotConstants {
         /**
          * Theoretical free speed (m/s) at 12v applied output;
          */
+
+        //ffw & wheel c
         public static final Measure<DistanceUnit> wheelCircumferenceMeters = Meters
                 .of(wheelRadius.magnitude() * 2 * Math.PI);
         public static final SimpleMotorFeedforward DRIVETRAIN_FEEDFORWARD = new SimpleMotorFeedforward(
                 0.69522, 2.3623, 0.19367);
+
         public static final double statorCurrent = 110;
         public static final double supplyCurrent = 50;
         public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
@@ -163,6 +179,7 @@ public final class RobotConstants {
                 .withFeedbackSource(LegacySwerveModuleConstants.SteerFeedbackType.SyncCANcoder)
                 .withCouplingGearRatio(COUPLE_RATIO)
                 .withSteerMotorInverted(STEER_MOTOR_REVERSED);
+        //Front Left
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
         private static final int FRONT_LEFT_STEER_MOTOR_ID = 0;
         private static final int FRONT_LEFT_ENCODER_ID = 2;
@@ -222,15 +239,16 @@ public final class RobotConstants {
                 backRightXPos.magnitude(),
                 backRightYPos.magnitude(),
                 true);
+        //swervemodule
         public static LegacySwerveModuleConstants[] modules = {FrontLeft, FrontRight, BackLeft, BackRight};
-        public static final edu.wpi.first.math.geometry.Translation2d[] modulePlacements = new edu.wpi.first.math.geometry.Translation2d[]{
-                new edu.wpi.first.math.geometry.Translation2d(SwerveConstants.FrontLeft.LocationX,
+        public static final Translation2d[] modulePlacements = new Translation2d[]{
+                new Translation2d(SwerveConstants.FrontLeft.LocationX,
                         SwerveConstants.FrontLeft.LocationY),
-                new edu.wpi.first.math.geometry.Translation2d(SwerveConstants.FrontRight.LocationX,
+                new Translation2d(SwerveConstants.FrontRight.LocationX,
                         SwerveConstants.FrontRight.LocationY),
-                new edu.wpi.first.math.geometry.Translation2d(SwerveConstants.BackLeft.LocationX,
+                new Translation2d(SwerveConstants.BackLeft.LocationX,
                         SwerveConstants.BackLeft.LocationY),
-                new edu.wpi.first.math.geometry.Translation2d(SwerveConstants.BackRight.LocationX,
+                new Translation2d(SwerveConstants.BackRight.LocationX,
                         SwerveConstants.BackRight.LocationY)};
 
         public static class headingController {

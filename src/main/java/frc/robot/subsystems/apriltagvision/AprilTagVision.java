@@ -11,20 +11,24 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.subsystems.swerve.Swerve;
+
 import lombok.Getter;
 import lombok.experimental.ExtensionMethod;
+
 import org.littletonrobotics.GeomUtil;
 import org.littletonrobotics.LoggedTunableNumber;
 import org.littletonrobotics.RobotState;
 import org.littletonrobotics.junction.Logger;
+import static org.littletonrobotics.RobotState.VisionObservation;
 
 import java.util.*;
 import java.util.function.Supplier;
 
 import static frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.*;
 import static frc.robot.subsystems.apriltagvision.AprilTagVisionIO.AprilTagVisionIOInputs;
-import static org.littletonrobotics.RobotState.VisionObservation;
+
 
 /**
  * Vision subsystem for AprilTag vision.
@@ -34,7 +38,7 @@ public class AprilTagVision extends SubsystemBase {
     private static final LoggedTunableNumber timestampOffset =
             new LoggedTunableNumber("AprilTagVision/TimestampOffset", -(1.0 / 50.0));
     private static final double demoTagPosePersistenceSecs = 0.5;
-    private final Supplier<frc.robot.FieldConstants.AprilTagLayoutType> aprilTagTypeSupplier;
+    private final Supplier<AprilTagLayoutType> aprilTagTypeSupplier;
     private final AprilTagVisionIO[] io;
     private final AprilTagVisionIOInputs[] inputs;
     private final Map<Integer, Double> lastFrameTimes = new HashMap<>();
@@ -53,7 +57,7 @@ public class AprilTagVision extends SubsystemBase {
     private Pose3d robotPose3d;
 
 
-    public AprilTagVision(Supplier<frc.robot.FieldConstants.AprilTagLayoutType> aprilTagTypeSupplier, AprilTagVisionIO... io) {
+    public AprilTagVision(Supplier<AprilTagLayoutType> aprilTagTypeSupplier, AprilTagVisionIO... io) {
         this.aprilTagTypeSupplier = aprilTagTypeSupplier;
         this.io = io;
         inputs = new AprilTagVisionIOInputs[io.length];

@@ -44,6 +44,8 @@ public class RobotContainer {
     CommandXboxController operatorController = new CommandXboxController(1);
     Display display = Display.getInstance();
     double lastResetTime = 0.0;
+    private Command autoCommand = null;
+
     // The robot's subsystems and commands are defined here...
 
     /**

@@ -2,29 +2,33 @@ package frc.robot.commands;
 
 import com.team254.lib.geometry.Twist2d;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.swerve.Swerve;
 
 public class MoveToTarget extends Command {
 
     private final Swerve Swerve;
-    private final Pose2d targetPose;
+    private Pose3d targetPose;
+    private final AprilTagVision aprilTagVision;
     //private static final double MAX_SPEED = 1.0; // Maximum speed in meters per second
     private static final double TARGET_RADIUS = 0.2; // 20 cm radius for stopping
 
-    public MoveToTarget(Swerve Swerve, Pose2d targetPose) {
+    public MoveToTarget(Swerve Swerve, AprilTagVision aprilTagVision) {
         this.Swerve = Swerve;
-        this.targetPose = targetPose;
-        addRequirements(Swerve);
+        this.aprilTagVision = aprilTagVision;
+        addRequirements(Swerve, aprilTagVision);
     }
 
     @Override
     public void initialize() {
         System.out.println("Starting MoveToTarget command.");
+        this.targetPose = aprilTagVision.getClosestTagPose();
     }
 
     @Override

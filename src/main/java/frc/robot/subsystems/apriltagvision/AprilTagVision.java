@@ -43,6 +43,7 @@ public class AprilTagVision extends SubsystemBase {
     private double lastDemoTagPoseTimestamp = 0.0;
     private double lastPrint;
     private double frameUpdateCount;
+    private ArrayList<Pose3d> allTagPoses;
 
     @Getter
     private Pose3d cameraPose;
@@ -328,6 +329,33 @@ public class AprilTagVision extends SubsystemBase {
         }
         RobotState.getInstance().setDemoTagPose(demoTagPose);
 
+    }
+
+
+    public Pose3d getClosestTagPose() {
+        // If no tag poses are detected, return null
+        if (allTagPoses.isEmpty()) {
+            return null;
+        }
+
+        // Get the robot's current pose (replace with your own robot pose logic)
+        Pose3d robotPose = this.robotPose3d;
+
+        // Initialize variables to track the closest tag pose and minimum distance
+        Pose3d closestTagPose = null;
+        double minDistance = Double.MAX_VALUE;
+
+        // Loop through all tag poses and find the closest one
+        for (Pose3d tagPose : allTagPoses) {
+            double distance = robotPose.getTranslation().getDistance(tagPose.getTranslation());
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestTagPose = tagPose;
+            }
+        }
+
+        // Return the closest tag pose
+        return closestTagPose;
     }
 }
 

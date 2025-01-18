@@ -12,6 +12,8 @@ import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstantsFactory;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.units.*;
+import edu.wpi.first.units.measure.Voltage;
+
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -285,5 +287,26 @@ public final class RobotConstants {
     public static final class ReefAimConstants {
         public static final Transform2d tagLeftToRobot = new Transform2d(); // vec(robot) - vec(tag) when shooting left coral
         public static final Transform2d tagRightToRobot = new Transform2d();
+    }
+
+    public static final class ElevatorConstants {
+        public static final int LEFT_ELEVATOR_MOTOR_ID = 41;
+        public static final int RIGHT_ELEVATOR_MOTOR_ID = 42;
+
+        public static final Measure<VoltageUnit> elevatorConstantVoltage = Volts.of(-4);
+        public static final TunableNumber skewValue = new TunableNumber("Elevator skew", 0);
+        public static double kToFFactor = 0.2;
+        public static boolean useSmartDashboardForSkew = false;
+        public static boolean useShootOnMove = false;
+
+        public static class ElevatorGainsClass {
+                public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 0.2);
+                public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
+                public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0.001);
+                public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka", 0.0037512677);
+                public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.113);// 0.107853495
+                public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.28475008);
+            }
+        
     }
 }

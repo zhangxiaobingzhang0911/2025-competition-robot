@@ -115,7 +115,6 @@ public class RobotState {
         return instance;
     }
 
-
     public void setDemoTagPose(Pose3d demoTagPose) {
         this.demoTagPose = demoTagPose;
         latestDemoParamters = null;
@@ -157,7 +156,6 @@ public class RobotState {
     public Pose2d getEstimatedPose() {
         return estimatedPose;
     }
-
 
     public record VisionObservation(Pose2d visionPose, double timestamp, Matrix<N3, N1> stdDevs) {
     }

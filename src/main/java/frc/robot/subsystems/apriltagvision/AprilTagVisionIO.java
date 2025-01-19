@@ -11,15 +11,22 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface AprilTagVisionIO {
+    // Updates the inputs of the AprilTag vision system
     default void updateInputs(AprilTagVisionIOInputs inputs) {
     }
 
+    // Class representing the input data for the AprilTag vision system
     class AprilTagVisionIOInputs implements LoggableInputs {
+        // Array of timestamps corresponding to each frame
         public double[] timestamps = new double[]{};
+        // 2D array of frames captured by the vision system
         public double[][] frames = new double[][]{};
+        // A single demo frame for visualization or testing purposes
         public double[] demoFrame = new double[]{};
+        // Frames per second of the vision system
         public long fps = 0;
 
+        // Logs the input data to the provided LogTable
         @Override
         public void toLog(LogTable table) {
             table.put("Timestamps", timestamps);
@@ -31,6 +38,7 @@ public interface AprilTagVisionIO {
             table.put("Fps", fps);
         }
 
+        // Restores the input data from the provided LogTable
         @Override
         public void fromLog(LogTable table) {
             timestamps = table.get("Timestamps", new double[]{0.0});

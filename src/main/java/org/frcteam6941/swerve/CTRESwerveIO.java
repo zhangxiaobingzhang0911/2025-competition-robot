@@ -1,6 +1,5 @@
 package org.frcteam6941.swerve;
 
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -14,18 +13,16 @@ import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-
 import frc.robot.RobotConstants;
-
 import lombok.Getter;
 
+// Represents the input/output operations for a swerve module using CTRE hardware
 public class CTRESwerveIO {
     @Getter
     private final CoreTalonFX driveMotor, steerMotor;
@@ -54,7 +51,7 @@ public class CTRESwerveIO {
     @Getter
     private SwerveModuleState targetState = new SwerveModuleState();
 
-
+    // Initializes the CTRESwerveIO with given constants and CAN bus name
     public CTRESwerveIO(LegacySwerveModuleConstants constants, String canbusName) {
         // motors
         driveMotor = new CoreTalonFX(constants.DriveMotorId, canbusName);
@@ -87,6 +84,7 @@ public class CTRESwerveIO {
         voltageOpenLoopSetter.UpdateFreqHz = 0.0;
     }
 
+    // Retrieves the current position of the swerve module, optionally refreshing the status signals
     public SwerveModulePosition getPosition(boolean refreshSignals) {
         if (refreshSignals) {
             sigDrivePosition.refresh();
@@ -103,22 +101,18 @@ public class CTRESwerveIO {
         return internalState;
     }
 
-
+    // Applies the given swerve module state to the hardware using default drive request type
     public void apply(SwerveModuleState state, LegacySwerveModule.DriveRequestType driveRequestType) {
         apply(state, driveRequestType, LegacySwerveModule.SteerRequestType.MotionMagic);
     }
 
+    // Applies the given swerve module state to the hardware with specified drive and steer request types
     public void apply(SwerveModuleState state, LegacySwerveModule.DriveRequestType driveRequestType, LegacySwerveModule.SteerRequestType steerRequestType) {
         double angleToSetDeg;
         SwerveModuleState optimized;
         optimized = SwerveModuleState.optimize(state, internalState.angle);
         targetState = optimized;
         angleToSetDeg = optimized.angle.getRotations();
-
-        // README: why use setters instead of instantiating a new one every call?
-        // well first the original implementation used it.
-        // second this method gets called quite a lot; if instantiation is used,
-        // it may overwhelm the GC and crash the entire robot!
 
         // steer
         requestSwitch:
@@ -172,6 +166,7 @@ public class CTRESwerveIO {
 
     }
 
+    // Returns the current state of the swerve module based on motor velocities and positions
     public SwerveModuleState getCurrentState() {
         return new SwerveModuleState(
                 sigDriveVelocity.getValueAsDouble() / driveRotationsPerMeter,
@@ -179,9 +174,8 @@ public class CTRESwerveIO {
         );
     }
 
+    // Initializes the motor configurations using the provided constants
     private void initMotorConfigs(LegacySwerveModuleConstants constants) {
-        // copied from official implementation.
-        // do not modify unless you really sure what you're doing!
         // drive
         TalonFXConfiguration driveConfigs = constants.DriveMotorInitialConfigs;
         driveConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;

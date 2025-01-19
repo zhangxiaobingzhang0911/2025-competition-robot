@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.utils.TunableNumber;
 
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -39,13 +40,18 @@ public final class RobotConstants {
     //canbus name
     public static String CAN_BUS_NAME = "rio";
 
+    /**
+     * Constants related to the robot's indicators, such as LEDs.
+     */
     public static class IndicatorConstants {
         //TODO:adapt when needed
         public static final int LED_PORT = 0;
         public static final int LED_BUFFER_LENGTH = 17;
     }
 
-
+    /**
+     * Constants specific to the swerve drivetrain configuration.
+     */
     public static class SwerveConstants {
         //pigeon id
         public static final int PIGEON_ID = 14;
@@ -77,7 +83,7 @@ public final class RobotConstants {
          */
         public static final Measure<AngularVelocityUnit> maxAngularRate = RotationsPerSecond.of(1.5 * Math.PI);
 
-        //kinematiclimits
+        // Kinematic limits for different driving modes
         public static final KinematicLimits DRIVETRAIN_UNCAPPED = new KinematicLimits(
                 maxSpeed.magnitude(),
                 11.0,
@@ -115,6 +121,7 @@ public final class RobotConstants {
         public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
         public static final double deadband = maxSpeed.magnitude() * 0.05;
         public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.05;
+
         /**
          * Swerve steering gains
          */
@@ -125,6 +132,7 @@ public final class RobotConstants {
                 .withKS(0)
                 .withKV(0)
                 .withKA(0);
+
         /**
          * Swerve driving gains
          */
@@ -253,6 +261,9 @@ public final class RobotConstants {
                 new Translation2d(SwerveConstants.BackRight.LocationX,
                         SwerveConstants.BackRight.LocationY)};
 
+        /**
+         * Constants for the heading controller used in the swerve drivetrain.
+         */
         public static class headingController {
             public static final frc.robot.utils.TunableNumber HEADING_KP = new frc.robot.utils.TunableNumber(
                     "HEADING PID/kp", 0.09);
@@ -264,6 +275,9 @@ public final class RobotConstants {
                     "HEADING/Max Error Correction Angle", 120.0);
         }
 
+        /**
+         * Constants for the steer motor gains in the swerve drivetrain.
+         */
         public static class steerGainsClass {
             public static final TunableNumber STEER_KP = new TunableNumber("STEER PID/kp", 120);
             public static final TunableNumber STEER_KI = new TunableNumber("STEER PID/ki", 0.2);
@@ -273,6 +287,9 @@ public final class RobotConstants {
             public static final TunableNumber STEER_KS = new TunableNumber("STEER PID/ks", 0);
         }
 
+        /**
+         * Constants for the drive motor gains in the swerve drivetrain.
+         */
         public static class driveGainsClass {
             public static final TunableNumber DRIVE_KP = new TunableNumber("DRIVE PID/kp", 0.03);
             public static final TunableNumber DRIVE_KI = new TunableNumber("DRIVE PID/ki", 0);
@@ -284,11 +301,17 @@ public final class RobotConstants {
 
     }
 
+    /**
+     * Constants specific to the reef aim mechanism.
+     */
     public static final class ReefAimConstants {
         public static final Transform2d tagLeftToRobot = new Transform2d(); // vec(robot) - vec(tag) when shooting left coral
         public static final Transform2d tagRightToRobot = new Transform2d();
     }
 
+    /**
+     * Constants related to the elevator subsystem.
+     */
     public static final class ElevatorConstants {
         public static final int LEFT_ELEVATOR_MOTOR_ID = 41;
         public static final int RIGHT_ELEVATOR_MOTOR_ID = 42;
@@ -299,14 +322,17 @@ public final class RobotConstants {
         public static boolean useSmartDashboardForSkew = false;
         public static boolean useShootOnMove = false;
 
+        /**
+         * Constants for the elevator motor gains.
+         */
         public static class ElevatorGainsClass {
-                public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 0.2);
-                public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
-                public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0.001);
-                public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka", 0.0037512677);
-                public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.113);// 0.107853495
-                public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.28475008);
-            }
+            public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 0.2);
+            public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
+            public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0.001);
+            public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka", 0.0037512677);
+            public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.113);// 0.107853495
+            public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.28475008);
+        }
         
     }
 }

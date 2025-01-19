@@ -29,7 +29,6 @@ import java.util.function.Supplier;
 import static frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.*;
 import static frc.robot.subsystems.apriltagvision.AprilTagVisionIO.AprilTagVisionIOInputs;
 
-
 /**
  * Vision subsystem for AprilTag vision.
  */
@@ -56,7 +55,9 @@ public class AprilTagVision extends SubsystemBase {
     @Getter
     private Pose3d robotPose3d;
 
-
+    /**
+     * Constructs the AprilTagVision subsystem with a supplier for the AprilTag layout type and an array of IO instances.
+     */
     public AprilTagVision(Supplier<AprilTagLayoutType> aprilTagTypeSupplier, AprilTagVisionIO... io) {
         this.aprilTagTypeSupplier = aprilTagTypeSupplier;
         this.io = io;
@@ -71,6 +72,9 @@ public class AprilTagVision extends SubsystemBase {
         }
     }
 
+    /**
+     * Called periodically to update the vision subsystem with new data from IO instances.
+     */
     @Override
     public void periodic() {
         for (int i = 0; i < io.length; i++) {
@@ -78,31 +82,30 @@ public class AprilTagVision extends SubsystemBase {
             Logger.processInputs("AprilTagVision/Inst" + i, inputs[i]);
         }
 
-        // Loop over instances
+        // Loop over instances to process all frames and poses
         List<Pose2d> allRobotPoses = new ArrayList<>();
         List<Pose3d> allRobotPoses3d = new ArrayList<>();
         List<VisionObservation> allVisionObservations = new ArrayList<>();
 
         for (int instanceIndex = 0; instanceIndex < io.length; instanceIndex++) {
-            // Loop over frames
+            // Loop over frames to extract and process data
             for (int frameIndex = 0; frameIndex < inputs[instanceIndex].timestamps.length; frameIndex++) {
                 lastFrameTimes.put(instanceIndex, Timer.getFPGATimestamp());
                 var timestamp = inputs[instanceIndex].timestamps[frameIndex] + timestampOffset.get();
                 var values = inputs[instanceIndex].frames[frameIndex];
 
-
-                // Exit if blank frame
+                // Handle blank frame by continuing to the next iteration
                 if (values.length == 0 || values[0] == 0) {
                     continue;
                 }
 
-                // Switch based on number of poses
+                // Determine how to process the poses based on the number of poses detected in the frame
                 cameraPose = null;
                 robotPose3d = null;
                 boolean useVisionRotation = false;
                 switch ((int) values[0]) {
                     case 1:
-                        // One pose (multi-tag), use directly
+                        // Process a single pose (multi-tag scenario)
                         cameraPose =
                                 new Pose3d(
                                         values[2],
@@ -116,7 +119,7 @@ public class AprilTagVision extends SubsystemBase {
 
                         break;
                     case 2:
-                        // Two poses (one tag), disambiguate
+                        // Process two poses and disambiguate based on error
                         double error0 = values[1];
                         double error1 = values[9];
                         Pose3d cameraPose0 =
@@ -136,8 +139,7 @@ public class AprilTagVision extends SubsystemBase {
                         Pose3d robotPose3d1 =
                                 cameraPose1.transformBy(cameraPoses[instanceIndex].toTransform3d().inverse());
 
-
-                        // Check for ambiguity and select based on estimated rotation
+                        // Select the most likely pose based on the estimated rotation
                         if (error0 < error1 * ambiguityThreshold || error1 < error0 * ambiguityThreshold) {
                             Rotation2d currentRotation =
                                     Swerve.getInstance().getLocalizer().getCoarseFieldPose(timestamp).getRotation();
@@ -147,23 +149,20 @@ public class AprilTagVision extends SubsystemBase {
                                     < Math.abs(currentRotation.minus(visionRotation1).getRadians())) {
                                 cameraPose = cameraPose0;
                                 robotPose3d = robotPose3d0;
-                                //Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/CameraPose", cameraPose0);
                             } else {
                                 cameraPose = cameraPose1;
                                 robotPose3d = robotPose3d1;
-                                //Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/CameraPose", cameraPose1);
                             }
-
                         }
                         break;
                 }
 
-                // Exit if no data
+                // Skip further processing if no valid data is available
                 if (cameraPose == null || robotPose3d == null) {
                     continue;
                 }
 
-                // Exit if robot pose is off the field
+                // Validate that the robot pose is within the field boundaries
                 if (robotPose3d.getX() < -fieldBorderMargin
                         || robotPose3d.getX() > frc.robot.FieldConstants.fieldLength + fieldBorderMargin
                         || robotPose3d.getY() < -fieldBorderMargin
@@ -173,10 +172,10 @@ public class AprilTagVision extends SubsystemBase {
                     continue;
                 }
 
-                // Get 2D robot pose
+                // Convert the 3D robot pose to a 2D pose
                 Pose2d robotPose = robotPose3d.toPose2d();
 
-                // Get tag poses and update last detection times
+                // Collect tag poses and update the last detection times for each tag
                 List<Pose3d> tagPoses = new ArrayList<>();
                 for (int i = (values[0] == 1 ? 9 : 17); i < values.length; i++) {
                     int tagId = (int) values[i];
@@ -187,14 +186,14 @@ public class AprilTagVision extends SubsystemBase {
                 }
                 if (tagPoses.isEmpty()) continue;
 
-                // Calculate average distance to tag
+                // Compute the average distance from the camera to the detected tags
                 double totalDistance = 0.0;
                 for (Pose3d tagPose : tagPoses) {
                     totalDistance += tagPose.getTranslation().getDistance(cameraPose.getTranslation());
                 }
                 double avgDistance = totalDistance / tagPoses.size();
 
-                // Add observation to list
+                // Create a vision observation based on the robot pose, timestamp, and calculated standard deviations
                 double xyStdDev =
                         xyStdDevCoefficient
                                 * Math.pow(avgDistance, 2.0)
@@ -214,7 +213,7 @@ public class AprilTagVision extends SubsystemBase {
                 allRobotPoses3d.add(robotPose3d);
                 frameUpdateCount += 1;
 
-                // Log data from instance
+                // Log the latency and robot pose information for the current instance
                 Logger.recordOutput(
                         "AprilTagVision/Inst" + instanceIndex + "/LatencySecs",
                         Timer.getFPGATimestamp() - timestamp);
@@ -223,8 +222,7 @@ public class AprilTagVision extends SubsystemBase {
                 Logger.recordOutput(
                         "AprilTagVision/Inst" + instanceIndex + "/TagPoses", tagPoses.toArray(Pose3d[]::new));
             }
-
-            // Record demo tag pose
+// Record demo tag pose if available
             if (inputs[instanceIndex].demoFrame.length > 0) {
                 var values = inputs[instanceIndex].demoFrame;
                 double error0 = values[0];
@@ -245,7 +243,7 @@ public class AprilTagVision extends SubsystemBase {
                                                 new Quaternion(values[12], values[13], values[14], values[15]))));
                 Pose3d fieldToTagPose;
 
-                // Find best pose
+                // Determine the best pose based on error values and ambiguity threshold
                 if (demoTagPose == null && error0 < error1) {
                     fieldToTagPose = fieldToTagPose0;
                 } else if (demoTagPose == null && error0 >= error1) {
@@ -283,35 +281,35 @@ public class AprilTagVision extends SubsystemBase {
                     }
                 }
 
-                // Save pose
+                // Save the determined pose if it's not null
                 if (fieldToTagPose != null) {
                     demoTagPose = fieldToTagPose;
                     lastDemoTagPoseTimestamp = Timer.getFPGATimestamp();
                 }
 
-                // If no frames from instances, clear robot pose
+                // Clear robot pose if no frames from instances
                 if (inputs[instanceIndex].timestamps.length == 0) {
                     Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/RobotPose", new Pose2d());
                     Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/RobotPose3d", new Pose3d());
                 }
 
-                // If no recent frames from instance, clear tag poses
+                // Clear tag poses if no recent frames from instance
                 if (Timer.getFPGATimestamp() - lastFrameTimes.get(instanceIndex) > targetLogTimeSecs) {
                     //noinspection RedundantArrayCreation
                     Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/TagPoses", new Pose3d[]{});
                 }
             }
 
-            // Clear demo tag pose
+            // Clear demo tag pose if it's been too long since last detection
             if (Timer.getFPGATimestamp() - lastDemoTagPoseTimestamp > demoTagPosePersistenceSecs) {
                 demoTagPose = null;
             }
 
-            // Log robot poses
+            // Log all detected robot poses
             Logger.recordOutput("AprilTagVision/RobotPoses", allRobotPoses.toArray(Pose2d[]::new));
             Logger.recordOutput("AprilTagVision/RobotPoses3d", allRobotPoses3d.toArray(Pose3d[]::new));
 
-            // Log tag poses
+            // Log all recently detected tag poses
             List<Pose3d> allTagPoses = new ArrayList<>();
             for (Map.Entry<Integer, Double> detectionEntry : lastTagDetectionTimes.entrySet()) {
                 if (Timer.getFPGATimestamp() - detectionEntry.getValue() < targetLogTimeSecs) {
@@ -324,7 +322,7 @@ public class AprilTagVision extends SubsystemBase {
             }
             Logger.recordOutput("AprilTagVision/TagPoses", allTagPoses.toArray(Pose3d[]::new));
 
-            // Log demo tag pose
+            // Log the demo tag pose and its ID
             if (demoTagPose == null) {
                 Logger.recordOutput("AprilTagVision/DemoTagPose", new Pose3d[]{});
             } else {
@@ -338,13 +336,14 @@ public class AprilTagVision extends SubsystemBase {
     }
 
 
+    // Return the closest detected tag pose to the robot's current pose
     public Pose3d getClosestTagPose() {
         // If no tag poses are detected, return null
         if (allTagPoses.isEmpty()) {
             return null;
         }
 
-        // Get the robot's current pose (replace with your own robot pose logic)
+        // Get the robot's current pose
         Pose3d robotPose = this.robotPose3d;
 
         // Initialize variables to track the closest tag pose and minimum distance
@@ -364,4 +363,3 @@ public class AprilTagVision extends SubsystemBase {
         return closestTagPose;
     }
 }
-

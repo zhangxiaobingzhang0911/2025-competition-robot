@@ -4,19 +4,21 @@
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file at
 // the root directory of this project.
-
+ 
 package frc.robot.subsystems.apriltagvision;
-
+ 
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.Timer;
-
+ 
 import java.util.function.Supplier;
-
+ 
 import static frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.cameraIds;
 import static frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.instanceNames;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.AprilTagLayoutType;
-
+ 
+// This class implements the AprilTagVisionIO interface for the Northstar vision system.
+// It handles the configuration and data retrieval for AprilTag detection using NetworkTables.
 public class AprilTagVisionIONorthstar implements AprilTagVisionIO {
     private static final int cameraResolutionWidth = 1280;
     private static final int cameraResolutionHeight = 720;
@@ -35,7 +37,9 @@ public class AprilTagVisionIONorthstar implements AprilTagVisionIO {
     private final IntegerSubscriber fpsSubscriber;
     private final Timer disconnectedTimer = new Timer();
     private AprilTagLayoutType lastAprilTagType = null;
-
+ 
+    // Constructor for AprilTagVisionIONorthstar.
+    // Initializes the configuration and subscribers for the given camera index.
     public AprilTagVisionIONorthstar(Supplier<AprilTagLayoutType> aprilTagTypeSupplier, int index) {
         this.aprilTagTypeSupplier = aprilTagTypeSupplier;
         var northstarTable = NetworkTableInstance.getDefault().getTable(instanceNames[index]);
@@ -52,7 +56,7 @@ public class AprilTagVisionIONorthstar implements AprilTagVisionIO {
         configTable.getIntegerTopic("buffersize").publish().set(buffersize);
         configTable.getDoubleTopic("fiducial_size_m").publish().set(FieldConstants.aprilTagWidth);
         tagLayoutPublisher = configTable.getStringTopic("tag_layout").publish();
-
+ 
         var outputTable = northstarTable.getSubTable("output");
         observationSubscriber =
                 outputTable
@@ -65,10 +69,12 @@ public class AprilTagVisionIONorthstar implements AprilTagVisionIO {
                         .subscribe(
                                 new double[]{}, PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true));
         fpsSubscriber = outputTable.getIntegerTopic("fps").subscribe(0);
-
+ 
         disconnectedTimer.start();
     }
-
+ 
+    // Updates the inputs with the latest data from the NetworkTables.
+    // Publishes the current AprilTag layout and retrieves observations and FPS information.
     public void updateInputs(AprilTagVisionIOInputs inputs) {
         // Publish tag layout
         var aprilTagType = aprilTagTypeSupplier.get();
@@ -76,7 +82,7 @@ public class AprilTagVisionIONorthstar implements AprilTagVisionIO {
             lastAprilTagType = aprilTagType;
             tagLayoutPublisher.set(aprilTagType.getLayoutString());
         }
-
+ 
         // Get observations
         var queue = observationSubscriber.readQueue();
         inputs.timestamps = new double[queue.length];
@@ -90,7 +96,7 @@ public class AprilTagVisionIONorthstar implements AprilTagVisionIO {
             inputs.demoFrame = demoFrame;
         }
         inputs.fps = fpsSubscriber.get();
-
+ 
         // Update disconnected alert
         if (queue.length > 0) {
             disconnectedTimer.reset();

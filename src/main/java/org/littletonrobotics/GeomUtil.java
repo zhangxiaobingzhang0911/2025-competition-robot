@@ -15,7 +15,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
  */
 public class GeomUtil {
     /**
-     * Creates a pure translating transform
+     * Creates a pure translating transform from a Translation2d.
      *
      * @param translation The translation to create the transform with
      * @return The resulting transform
@@ -25,7 +25,7 @@ public class GeomUtil {
     }
 
     /**
-     * Creates a pure translating transform
+     * Creates a pure translating transform from x and y coordinates.
      *
      * @param x The x coordinate of the translation
      * @param y The y coordinate of the translation
@@ -36,7 +36,7 @@ public class GeomUtil {
     }
 
     /**
-     * Creates a pure rotating transform
+     * Creates a pure rotating transform from a Rotation2d.
      *
      * @param rotation The rotation to create the transform with
      * @return The resulting transform
@@ -46,7 +46,7 @@ public class GeomUtil {
     }
 
     /**
-     * Converts a Pose2d to a Transform2d to be used in a kinematic chain
+     * Converts a Pose2d to a Transform2d to be used in a kinematic chain.
      *
      * @param pose The pose that will represent the transform
      * @return The resulting transform
@@ -55,6 +55,12 @@ public class GeomUtil {
         return new Transform2d(pose.getTranslation(), pose.getRotation());
     }
 
+    /**
+     * Computes the inverse of a Pose2d.
+     *
+     * @param pose The pose to invert
+     * @return The inverted pose
+     */
     public static Pose2d inverse(Pose2d pose) {
         Rotation2d rotationInverse = pose.getRotation().unaryMinus();
         return new Pose2d(
@@ -62,8 +68,7 @@ public class GeomUtil {
     }
 
     /**
-     * Converts a Transform2d to a Pose2d to be used as a position or as the start of a kinematic
-     * chain
+     * Converts a Transform2d to a Pose2d to be used as a position or as the start of a kinematic chain.
      *
      * @param transform The transform that will represent the pose
      * @return The resulting pose
@@ -73,7 +78,7 @@ public class GeomUtil {
     }
 
     /**
-     * Creates a pure translated pose
+     * Creates a pure translated pose from a Translation2d.
      *
      * @param translation The translation to create the pose with
      * @return The resulting pose
@@ -83,7 +88,7 @@ public class GeomUtil {
     }
 
     /**
-     * Creates a pure rotated pose
+     * Creates a pure rotated pose from a Rotation2d.
      *
      * @param rotation The rotation to create the pose with
      * @return The resulting pose
@@ -93,7 +98,7 @@ public class GeomUtil {
     }
 
     /**
-     * Multiplies a twist by a scaling factor
+     * Multiplies a Twist2d by a scaling factor.
      *
      * @param twist  The twist to multiply
      * @param factor The scaling factor for the twist components
@@ -104,7 +109,7 @@ public class GeomUtil {
     }
 
     /**
-     * Converts a Pose3d to a Transform3d to be used in a kinematic chain
+     * Converts a Pose3d to a Transform3d to be used in a kinematic chain.
      *
      * @param pose The pose that will represent the transform
      * @return The resulting transform
@@ -114,8 +119,7 @@ public class GeomUtil {
     }
 
     /**
-     * Converts a Transform3d to a Pose3d to be used as a position or as the start of a kinematic
-     * chain
+     * Converts a Transform3d to a Pose3d to be used as a position or as the start of a kinematic chain.
      *
      * @param transform The transform that will represent the pose
      * @return The resulting pose
@@ -125,7 +129,7 @@ public class GeomUtil {
     }
 
     /**
-     * Converts a ChassisSpeeds to a Twist2d by extracting two dimensions (Y and Z). chain
+     * Converts a ChassisSpeeds to a Twist2d by extracting two dimensions (Y and Z).
      *
      * @param speeds The original translation
      * @return The resulting translation

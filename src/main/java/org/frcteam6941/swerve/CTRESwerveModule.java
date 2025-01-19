@@ -1,47 +1,51 @@
 package org.frcteam6941.swerve;
-
+ 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
-
+ 
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-
+ 
 import frc.robot.RobotConstants;
-
+ 
+// Represents a swerve module using CTRE hardware components
 public class CTRESwerveModule implements SwerveModuleBase {
     private final int moduleNumber;
     private final CTRESwerveIO module;
-
-    // edu.wpi.first.math.geometry.Rotation2d angleLowSpeed = new edu.wpi.first.math.geometry.Rotation2d(0, 0);
-    // boolean lowSpeed = false;
+ 
+    // Constructor to initialize the swerve module with an ID, constants, and CAN bus name
     public CTRESwerveModule(int id, LegacySwerveModuleConstants constants, String canbusName) {
         moduleNumber = id;
         module = new CTRESwerveIO(constants, canbusName);
     }
-
+ 
+    // Returns the module number of this swerve module
     @Override
     public int getModuleNumber() {
         return moduleNumber;
     }
-
+ 
+    // Gets the current state of the swerve module including speed and angle
     @Override
     public SwerveModuleState getState() {
         return module.getCurrentState();
     }
-
+ 
+    // Retrieves the position of the swerve module
     @Override
     public SwerveModulePosition getPosition() {
         return module.getInternalState();
     }
-
+ 
+    // Updates the signals for the swerve module, typically called in a periodic loop
     @Override
     public void updateSignals() {
         // module.getPosition(true);
         SwerveModulePosition pos = module.getPosition(true);
     }
-
-    // int cnt = 0;
+ 
+    // Sets the desired state for the swerve module, including speed and angle, with options for open loop control and motion override
     @Override
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, boolean overrideMotion) {
         module.getSteerMotor().getConfigurator().apply(new Slot0Configs()
@@ -58,25 +62,15 @@ public class CTRESwerveModule implements SwerveModuleBase {
                 .withKA(RobotConstants.SwerveConstants.driveGainsClass.DRIVE_KA.get())
                 .withKV(RobotConstants.SwerveConstants.driveGainsClass.DRIVE_KV.get())
                 .withKS(RobotConstants.SwerveConstants.driveGainsClass.DRIVE_KS.get()));
-        // if (Math.abs(desiredState.speedMetersPerSecond) <= 0.15 * Constants.SwerveConstants.maxSpeed.magnitude()) {
-        // 	if (!lowSpeed) {
-        // 		angleLowSpeed = desiredState.angle;
-        // 		lowSpeed = true;
-        // 	}
-        // 	desiredState.angle = angleLowSpeed;
-        // }
-        // else if (lowSpeed) {
-        // 	lowSpeed = false;
-        // }
-
+ 
         module.apply(desiredState, isOpenLoop ? DriveRequestType.OpenLoopVoltage : DriveRequestType.Velocity);
         // System.out.println(moduleNumber + " = " + desiredState.speedMetersPerSecond + " = "
         // 		+ module.getDriveMotor().getMotorVoltage() + " " + module.getSteerMotor().getMotorVoltage());//speed output
-		/*
-		SmartDashboard.putNumber("Speed m/s", desiredState.speedMetersPerSecond);
-		SmartDashboard.putString("Drive Motor Voltage", module.getDriveMotor().getMotorVoltage());
-		SmartDashboard.putNumber("Steer Motor Voltage", module.getSteerMotor().getMotorVoltage());
-		*/
+  /*
+  SmartDashboard.putNumber("Speed m/s", desiredState.speedMetersPerSecond);
+  SmartDashboard.putString("Drive Motor Voltage", module.getDriveMotor().getMotorVoltage());
+  SmartDashboard.putNumber("Steer Motor Voltage", module.getSteerMotor().getMotorVoltage());
+  */
         // cnt++;
         // if (cnt % 50 == 0) {
         // 	System.out.println(desiredState.speedMetersPerSecond);

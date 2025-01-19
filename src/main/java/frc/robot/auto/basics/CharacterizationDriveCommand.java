@@ -1,18 +1,19 @@
 package frc.robot.auto.basics;
-
+ 
 import com.team254.lib.util.PolynomialRegression;
-
+ 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-
+ 
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.swerve.Swerve;
-
+ 
 import java.util.ArrayList;
-
+ 
+// Command to characterize the drivetrain by applying increasing voltage and recording the resulting velocities
 public class CharacterizationDriveCommand extends Command {
     private final double maxVoltage;
     private final Timer prepTimer = new Timer();
@@ -34,10 +35,10 @@ public class CharacterizationDriveCommand extends Command {
             }, true, true);
             return;
         }
-
+ 
         timer.start();
         double targetVoltage = startVoltage + deltaVoltage * timer.get();
-
+ 
         SwerveModuleState individualState = new SwerveModuleState(
                 targetVoltage, new Rotation2d()
         );
@@ -49,7 +50,7 @@ public class CharacterizationDriveCommand extends Command {
                 individualState
         }, true, true);
         yVoltages.add(targetVoltage);
-
+ 
         SwerveModuleState[] moduleStates = drivetrain.getModuleStates();
         double averageVelocity = 0.0;
         double averageFalconVelocity = 0.0;
@@ -64,17 +65,19 @@ public class CharacterizationDriveCommand extends Command {
         averageFalconVelocity /= moduleStates.length;
         xVelocities.add(averageVelocity);
         xFalconVelocities.add(averageFalconVelocity);
-
+ 
     };
     private final Notifier n = new Notifier(r);
-
+ 
+    // Constructor to initialize the command with the drivetrain, start voltage, delta voltage, and maximum voltage
     public CharacterizationDriveCommand(Swerve drivetrain, double startVoltage, double deltaVoltage, double maxVoltage) {
         this.drivetrain = drivetrain;
         this.startVoltage = startVoltage;
         this.deltaVoltage = deltaVoltage;
         this.maxVoltage = maxVoltage;
     }
-
+ 
+    // Initialize the command by resetting timers, clearing drivetrain data, and starting the preparation timer
     @Override
     public void initialize() {
         prepTimer.reset();
@@ -84,20 +87,22 @@ public class CharacterizationDriveCommand extends Command {
         prepTimer.start();
         n.startPeriodic(0.01);
     }
-
+ 
+    // End the command by stopping the notifier, halting drivetrain movement, and resetting timers
+    // Also, perform polynomial regression on collected data to determine drivetrain characteristics
     @Override
     public void end(boolean interrupted) {
         n.stop();
         drivetrain.stopMovement();
         drivetrain.normal();
-
+ 
         System.out.println("--- Linear Characterization of the Drivetrain Ends ---");
         System.out.println("Total Time Taken: " + timer.get());
         prepTimer.reset();
         timer.stop();
-
+ 
         if (xVelocities.isEmpty() || yVoltages.isEmpty() || xFalconVelocities.isEmpty()) return;
-
+ 
         PolynomialRegression regression = new PolynomialRegression(
                 xVelocities.stream().mapToDouble(Math::abs).toArray(),
                 yVoltages.stream().mapToDouble(Math::abs).toArray(), 1);
@@ -110,7 +115,7 @@ public class CharacterizationDriveCommand extends Command {
                         + regression.beta(1) / RobotConstants.SwerveConstants.DRIVE_GEAR_RATIO
                         * RobotConstants.SwerveConstants.wheelCircumferenceMeters.magnitude()
                         + " V / rps");
-
+ 
         PolynomialRegression regressionFalcon = new PolynomialRegression(
                 xFalconVelocities.stream().mapToDouble(Math::abs).toArray(),
                 yVoltages.stream().mapToDouble(Math::abs).toArray(), 1);
@@ -122,7 +127,8 @@ public class CharacterizationDriveCommand extends Command {
                 "Travelled Ticks: " + travelTicks
         );
     }
-
+ 
+    // Determine if the command is finished based on whether the target voltage has reached the maximum voltage
     @Override
     public boolean isFinished() {
         return (startVoltage + deltaVoltage * timer.get()) >= maxVoltage;

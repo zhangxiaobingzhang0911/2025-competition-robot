@@ -44,7 +44,7 @@ public class SwerveSetpointGenerator {
     }
 
     /**
-     * Find the root of the generic 2D parametric function 'func' ugetSing the regula falsi technique. This is a pretty naive way to
+     * Find the root of the generic 2D parametric function 'func' using the regula falsi technique. This is a pretty naive way to
      * do root finding, but it's usually faster than simple bisection while being robust in ways that e.g. the Newton-Raphson
      * method isn't.
      *
@@ -171,11 +171,11 @@ public class SwerveSetpointGenerator {
         // 's' interpolates between start and goal. At 0, we are at prevState and at 1, we are at desiredState.
         double min_s = 1.0;
 
-        // In cases where an individual module is stopped, we want to remember the right steering angle to command (getSince
+        // In cases where an individual module is stopped, we want to remember the right steering angle to command (since
         // inverse kinematics doesn't care about angle, we can be opportunistically lazy).
         List<Optional<Rotation2d>> overrideSteering = new ArrayList<>(modules.length);
         // Enforce steering velocity limits. We do this by taking the derivative of steering angle at the current angle,
-        // and then backing out the maximum interpolant between start and goal states. We remember the minimum across all modules, getSince
+        // and then backing out the maximum interpolant between start and goal states. We remember the minimum across all modules, since
         // that is the active constraint.
         final double max_theta_step = dt * limits.kMaxSteeringVelocity;
         for (int i = 0; i < modules.length; ++i) {
@@ -241,7 +241,7 @@ public class SwerveSetpointGenerator {
             // Find the max s for this drive wheel. Search on the interval between 0 and min_s, because we already know we can't go faster
             // than that.
             // TODOA(for efficiency, do all this on v^2 to save a bunch of sqrts)
-            // TODOA(be smarter about root finding, getSince this is just a quadratic in s: ((xf-x0)*s+x0)^2+((yf-y0)*s+y0)^2)
+            // TODOA(be smarter about root finding, since this is just a quadratic in s: ((xf-x0)*s+x0)^2+((yf-y0)*s+y0)^2)
             final int kMaxIterations = 10;
             double s = min_s * findDriveMaxS(prev_vx[i], prev_vy[i], Math.hypot(prev_vx[i], prev_vy[i]),
                     vx_min_s, vy_min_s, Math.hypot(vx_min_s, vy_min_s),

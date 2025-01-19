@@ -15,6 +15,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
+import frc.robot.commands.ElevatorL1;
+import frc.robot.commands.ElevatorL2;
+import frc.robot.commands.ElevatorL3;
+import frc.robot.commands.ElevatorL4;
+import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
@@ -25,6 +30,8 @@ import lombok.Getter;
 
 import org.frcteam6941.looper.UpdateManager;
 import org.json.simple.parser.ParseException;
+
+import static edu.wpi.first.units.Units.Seconds;
 
 import java.io.IOException;
 import java.util.function.*;
@@ -106,6 +113,10 @@ public class RobotContainer {
                     }
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
+        RobotConstants.driverController.leftBumper().onTrue(ElavatorL1().andThen(rumbleDriver(1.0)));
+        RobotConstants.driverController.rightBumper().onTrue(ElavatorL2().andThen(rumbleDriver(1.0)));
+        RobotConstants.driverController.leftTrigger().onTrue(ElavatorL3().andThen(rumbleDriver(1.0)));
+        RobotConstants.driverController.rightTrigger().onTrue(ElavatorL4().andThen(rumbleDriver(1.0)));
     }
 
     /**
@@ -122,6 +133,22 @@ public class RobotContainer {
                 AutoActions.waitFor(0.000001),
                 AutoActions.followTrajectory(AutoActions.getTrajectory("T_4"), true, true)
         );
+    }
+    private Command rumbleDriver(double seconds) {
+        return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
+    }
+
+    private Command ElavatorL1(){
+        return new ElevatorL1();
+    }
+    private Command ElavatorL2(){
+        return new ElevatorL2();
+    }
+    private Command ElavatorL3(){
+        return new ElevatorL3();
+    }
+    private Command ElavatorL4(){
+        return new ElevatorL4();
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

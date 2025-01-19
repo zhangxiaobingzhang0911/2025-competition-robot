@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
-public class ElevatorL2 {
+import edu.wpi.first.wpilibj2.command.Command;
+
+public class ElevatorL2 extends Command{
     
 }

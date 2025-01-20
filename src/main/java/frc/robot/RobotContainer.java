@@ -23,6 +23,7 @@ import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 
@@ -55,6 +56,7 @@ public class RobotContainer {
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
     Display display = Display.getInstance();
+    ElevatorSubsystem elevator;
     double lastResetTime = 0.0;
 
     // The robot's subsystems and commands are defined here...
@@ -139,16 +141,16 @@ public class RobotContainer {
     }
 
     private Command ElavatorL1(){
-        return new ElevatorL1();
+        return new ElevatorL1(elevator);
     }
     private Command ElavatorL2(){
-        return new ElevatorL2();
+        return new ElevatorL2(elevator);
     }
     private Command ElavatorL3(){
-        return new ElevatorL3();
+        return new ElevatorL3(elevator);
     }
     private Command ElavatorL4(){
-        return new ElevatorL4();
+        return new ElevatorL4(elevator);
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

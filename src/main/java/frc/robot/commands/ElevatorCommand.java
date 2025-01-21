@@ -38,7 +38,7 @@ public class ElevatorCommand extends Command {
                RobotConstants.ElevatorConstants.l3Position,
                RobotConstants.ElevatorConstants.l4Position
        }[this.level];
-       this.absolutePosition = RobotConstants.ElevatorConstants.basePosition + this.relativePosition;
+       this.absolutePosition = this.elevatorSubsystem.getStartingPosition() + this.relativePosition;
     }
 
     /**
@@ -67,7 +67,7 @@ public class ElevatorCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        return this.isFinished;
+        return (this.elevatorSubsystem.getIo().getElevatorPosition() >= RobotConstants.ElevatorConstants.highestPosition + this.elevatorSubsystem.getStartingPosition()) || this.isFinished;
     }
 
     /**

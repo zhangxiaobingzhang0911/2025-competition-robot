@@ -20,6 +20,8 @@ import frc.robot.utils.TunableNumber;
 
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 
+import javax.swing.text.SimpleAttributeSet;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -336,13 +338,11 @@ public final class RobotConstants {
             public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.28475008);
         }
         
-        // Constants for elevator level positions. Todo: tune all constants below
-        public static final double basePosition = 0; // Tune this one for changing offset
-        
-        // Relative
+        // Constants for elevator level positions relative to starting position. Todo: tune all constants below
         public static final double l1Position = 100;
         public static final double l2Position = 200;
         public static final double l3Position = 300;
         public static final double l4Position = 400;
+        public static final double highestPosition = 500;
     }
 }

@@ -6,6 +6,7 @@ import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.RobotConstants;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -67,7 +68,9 @@ public class ElevatorIOSim implements ElevatorIO {
 
     @Override
     public void setElevatorPosition(double position) {
-        // Todo: implement this method here for simulation
+        // Refine this method here for smoother simulation if needed
+        double positionDiffInTurns = position - leftElevatorTalonSim.getAngularPositionRotations();
+        leftElevatorTalonSim.setState(positionDiffInTurns * 2 * Math.PI, 0);
     }
 
     @Override

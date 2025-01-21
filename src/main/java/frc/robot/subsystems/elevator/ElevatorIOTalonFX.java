@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -10,6 +11,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
@@ -39,27 +41,29 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private double targetElevatorVelocity = 0;
 
     public ElevatorIOTalonFX() {
-        TalonFXConfiguration ElevatorMotorConfig = new TalonFXConfiguration();
-        ElevatorMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
-        ElevatorMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        ElevatorMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        ElevatorMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-        ElevatorMotorConfig.Feedback.SensorToMechanismRatio = 1;
-        leftElevatorTalon.getConfigurator().apply(ElevatorMotorConfig);
-        StatusCode response = leftElevatorTalon.getConfigurator().apply(ElevatorMotorConfig);
+        TalonFXConfiguration elevatorMotorConfig = new TalonFXConfiguration();
+        elevatorMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
+        elevatorMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        elevatorMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        elevatorMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+        elevatorMotorConfig.Feedback.SensorToMechanismRatio = 1;
+        elevatorMotorConfig.MotorOutput.Inverted = RobotConstants.ElevatorConstants.leftMotorClockwise ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+        leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
+        StatusCode response = leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
         if (response.isError())
             System.out.println("Left Elevator TalonFX failed config with error" + response);
         response = leftElevatorTalon.clearStickyFaults();
         if (response.isError())
             System.out.println("Left Elevator TalonFX failed sticky fault clearing with error" + response);
-        response = rightElevatorTalon.getConfigurator().apply(ElevatorMotorConfig);
-        if (response.isError())
-            System.out.println("Right Elevator TalonFX failed config with error" + response);
-        response = rightElevatorTalon.clearStickyFaults();
-        if (response.isError())
-            System.out.println("Right Elevator TalonFX failed sticky fault clearing with error" + response);
-        rightElevatorTalon.setControl(new Follower(leftElevatorTalon.getDeviceID(),
-                true));
+        rightElevatorTalon.setControl(new Follower(leftElevatorTalon.getDeviceID(), true));
+//        response = rightElevatorTalon.getConfigurator().apply(ElevatorMotorConfig);
+//        if (response.isError())
+//            System.out.println("Right Elevator TalonFX failed config with error" + response);
+//        response = rightElevatorTalon.clearStickyFaults();
+//        if (response.isError())
+//            System.out.println("Right Elevator TalonFX failed sticky fault clearing with error" + response);
+//        rightElevatorTalon.setControl(new Follower(leftElevatorTalon.getDeviceID(),
+//                true));
     }
 
     public void runVolts(double volts) {
@@ -108,7 +112,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     @Override
     public void setElevatorVelocity(double velocityRPM) {
-        var velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(velocityRPM);
+        double velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(velocityRPM);
         leftElevatorTalon.setControl(new VelocityVoltage(
                 Units.radiansToRotations(velocityRadPerSec)
         ));
@@ -122,6 +126,12 @@ public class ElevatorIOTalonFX implements ElevatorIO {
                 Units.radiansToRotations(velocityRadPerSec)
         ));
         targetElevatorVelocity = velocityRadPerSec;
+    }
+
+    public void setElevatorPosition(double position, double RPM) {
+        double RPS = RPM / 60;
+        double time = this.leftElevatorPosition.getValueAsDouble() / RPS; // seconds
+
     }
 
     @Override

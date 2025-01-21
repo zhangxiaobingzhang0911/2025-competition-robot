@@ -12,7 +12,6 @@ import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstantsFactory;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.units.*;
-import edu.wpi.first.units.measure.Voltage;
 
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -321,6 +320,8 @@ public final class RobotConstants {
         public static double kToFFactor = 0.2;
         public static boolean useSmartDashboardForSkew = false;
         public static boolean useShootOnMove = false;
+        public static boolean leftMotorClockwise = true;
+        public static double elevatorMotorUsualRPM = 200;
 
         /**
          * Constants for the elevator motor gains.

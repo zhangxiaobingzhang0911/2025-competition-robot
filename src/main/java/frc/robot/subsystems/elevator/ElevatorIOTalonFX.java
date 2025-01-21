@@ -1,6 +1,7 @@
 package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -38,14 +39,14 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private double targetElevatorVelocity = 0;
 
     public ElevatorIOTalonFX() {
-        var ElevatorMotorConfig = new TalonFXConfiguration();
+        TalonFXConfiguration ElevatorMotorConfig = new TalonFXConfiguration();
         ElevatorMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
         ElevatorMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         ElevatorMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         ElevatorMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         ElevatorMotorConfig.Feedback.SensorToMechanismRatio = 1;
         leftElevatorTalon.getConfigurator().apply(ElevatorMotorConfig);
-        var response = leftElevatorTalon.getConfigurator().apply(ElevatorMotorConfig);
+        StatusCode response = leftElevatorTalon.getConfigurator().apply(ElevatorMotorConfig);
         if (response.isError())
             System.out.println("Left Elevator TalonFX failed config with error" + response);
         response = leftElevatorTalon.clearStickyFaults();
@@ -116,7 +117,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     @Override
     public void setElevatorVelocity(double velocityRPM, double ffVoltage) {
-        var velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(velocityRPM);
+        double velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(velocityRPM);
         leftElevatorTalon.setControl(new VelocityVoltage(
                 Units.radiansToRotations(velocityRadPerSec)
         ));

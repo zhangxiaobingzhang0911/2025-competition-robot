@@ -320,9 +320,9 @@ public final class RobotConstants {
         public static double kToFFactor = 0.2;
         public static boolean useSmartDashboardForSkew = false;
         public static boolean useShootOnMove = false;
-        public static boolean leftMotorClockwise = true;
-        public static double elevatorMotorRPS = 24; // Todo: change the value for this constant and the one below
-        public static double elevatorMotorAccel = 24; // In rotation * s^{-2}
+        public static final boolean leftMotorClockwise = true;
+        public static final double elevatorMotorRPS = 24; // Todo: change the value for this constant and the one below
+        public static final double elevatorMotorAccel = 24; // In rotation * s^{-2}
 
         /**
          * Constants for the elevator motor gains.
@@ -335,6 +335,14 @@ public final class RobotConstants {
             public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.113);// 0.107853495
             public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.28475008);
         }
-        
+
+        // Constants for elevator level positions. Todo: tune all 5 constants below
+        public static final double basePosition = 0; // Tune this one for changing offset
+
+        // Relative positions to basePosition
+        public static final double l1Position = 100;
+        public static final double l2Position = 200;
+        public static final double l3Position = 300;
+        public static final double l4Position = 400;
     }
 }

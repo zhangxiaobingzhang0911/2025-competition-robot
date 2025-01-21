@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
@@ -62,6 +63,11 @@ public class ElevatorIOSim implements ElevatorIO {
     public void setElevatorVelocity(double velocityRPM) {
         leftElevatorTalonSim.setState(0, velocityRPM);
         targetElevatorVelocity = RadiansPerSecond.of(velocityRPM / 60);
+    }
+
+    @Override
+    public void setElevatorPosition(double position) {
+        // Todo: implement this method here for simulation
     }
 
     @Override

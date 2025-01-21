@@ -15,6 +15,8 @@ public interface ElevatorIO {
 
     void setElevatorVelocity(double velocityRPM);
 
+    void setElevatorPosition(double position);
+
     void runVolts(double volts);
 
     double getVelocity();

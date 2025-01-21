@@ -1,10 +1,13 @@
 package frc.robot.commands;
 
+import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 import java.lang.annotation.Target;
+
+import static edu.wpi.first.units.Units.Volts;
 
 
 public class ElevatorCommand extends Command {
@@ -76,6 +79,6 @@ public class ElevatorCommand extends Command {
      */
     @Override
     public void end(boolean interrupted) {
-
+        this.elevatorSubsystem.getIo().setElevatorDirectVoltage(Volts.of(0));
     }
 }

@@ -15,10 +15,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.ElevatorL1;
-import frc.robot.commands.ElevatorL2;
-import frc.robot.commands.ElevatorL3;
-import frc.robot.commands.ElevatorL4;
+import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
@@ -26,7 +23,6 @@ import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
-
 import lombok.Getter;
 
 import org.frcteam6941.looper.UpdateManager;
@@ -115,10 +111,6 @@ public class RobotContainer {
                     }
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
-        RobotConstants.driverController.leftBumper().onTrue(ElavatorL1().andThen(rumbleDriver(1.0)));
-        RobotConstants.driverController.rightBumper().onTrue(ElavatorL2().andThen(rumbleDriver(1.0)));
-        RobotConstants.driverController.leftTrigger().onTrue(ElavatorL3().andThen(rumbleDriver(1.0)));
-        RobotConstants.driverController.rightTrigger().onTrue(ElavatorL4().andThen(rumbleDriver(1.0)));
     }
 
     /**
@@ -140,17 +132,8 @@ public class RobotContainer {
         return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
     }
 
-    private Command ElavatorL1(){
-        return new ElevatorL1(elevator);
-    }
-    private Command ElavatorL2(){
-        return new ElevatorL2(elevator);
-    }
-    private Command ElavatorL3(){
-        return new ElevatorL3(elevator);
-    }
-    private Command ElavatorL4(){
-        return new ElevatorL4(elevator);
+    private Command ElevatorCommand(){
+        return new ElevatorCommand(elevator, 1);
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

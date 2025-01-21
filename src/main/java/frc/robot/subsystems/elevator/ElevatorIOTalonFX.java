@@ -3,10 +3,12 @@ package frc.robot.subsystems.elevator;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -48,6 +50,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         elevatorMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         elevatorMotorConfig.Feedback.SensorToMechanismRatio = 1;
         elevatorMotorConfig.MotorOutput.Inverted = RobotConstants.ElevatorConstants.leftMotorClockwise ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+        MotionMagicConfigs mmConfigs = elevatorMotorConfig.MotionMagic;
+        mmConfigs.MotionMagicCruiseVelocity = RobotConstants.ElevatorConstants.elevatorMotorRPS;
+        mmConfigs.MotionMagicAcceleration = RobotConstants.ElevatorConstants.elevatorMotorAccel;
         leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
         StatusCode response = leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
         if (response.isError())
@@ -128,10 +133,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         targetElevatorVelocity = velocityRadPerSec;
     }
 
-    public void setElevatorPosition(double position, double RPM) {
-        double RPS = RPM / 60;
-        double time = this.leftElevatorPosition.getValueAsDouble() / RPS; // seconds
-
+    public void setElevatorPosition(double position) {
+        MotionMagicVoltage request = new MotionMagicVoltage(leftElevatorTalon.getPosition().getValueAsDouble());
+        leftElevatorTalon.setControl(request.withPosition(position));
     }
 
     @Override

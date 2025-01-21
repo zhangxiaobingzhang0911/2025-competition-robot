@@ -321,7 +321,8 @@ public final class RobotConstants {
         public static boolean useSmartDashboardForSkew = false;
         public static boolean useShootOnMove = false;
         public static boolean leftMotorClockwise = true;
-        public static double elevatorMotorUsualRPM = 200;
+        public static double elevatorMotorRPS = 24; // Todo: change the value for this constant and the one below
+        public static double elevatorMotorAccel = 24; // In rotation * s^{-2}
 
         /**
          * Constants for the elevator motor gains.

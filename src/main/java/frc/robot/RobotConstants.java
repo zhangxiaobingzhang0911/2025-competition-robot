@@ -335,11 +335,11 @@ public final class RobotConstants {
             public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.113);// 0.107853495
             public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.28475008);
         }
-
-        // Constants for elevator level positions. Todo: tune all 5 constants below
+        
+        // Constants for elevator level positions. Todo: tune all constants below
         public static final double basePosition = 0; // Tune this one for changing offset
-
-        // Relative positions to basePosition
+        
+        // Relative
         public static final double l1Position = 100;
         public static final double l2Position = 200;
         public static final double l3Position = 300;

@@ -143,4 +143,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         return rightElevatorVelocity.getValueAsDouble() * 60;
     }
 
+    public double getElevatorPosition() {
+        return leftElevatorTalon.getPosition().getValueAsDouble();
+    }
+
 }

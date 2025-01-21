@@ -1,29 +1,25 @@
-package frc.robot.commands;
+package frc.robot.commands.TuningCommands;
 
-import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-import java.lang.annotation.Target;
-
 import static edu.wpi.first.units.Units.Volts;
 
+/*
+Used for tuning the elevator constants.
+Bind to a key whileTrue, prints out the absolute starting position on press, prints out how much position is changed on release
+ */
 
-public class ElevatorCommand extends Command {
+public class ElevatorTuningCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
-    private int level; // level = 0 to restore to starting position
-    private double relativePosition;
-    private double absolutePosition;
-    private boolean isFinished;
+    private double initialPosition;
 
-    public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, int level) {
+    public ElevatorTuningCommand(ElevatorSubsystem elevatorSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
         // each subsystem used by the command must be passed into the
         // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(this.elevatorSubsystem);
-        this.level = level;
-        this.isFinished = false;
     }
 
     /**
@@ -31,14 +27,8 @@ public class ElevatorCommand extends Command {
      */
     @Override
     public void initialize() {
-       this.relativePosition = new double[]{
-               0,
-               RobotConstants.ElevatorConstants.l1Position,
-               RobotConstants.ElevatorConstants.l2Position,
-               RobotConstants.ElevatorConstants.l3Position,
-               RobotConstants.ElevatorConstants.l4Position
-       }[this.level];
-       this.absolutePosition = RobotConstants.ElevatorConstants.basePosition + this.relativePosition;
+        this.initialPosition = this.elevatorSubsystem.getIo().getElevatorPosition();
+        System.out.println(this.initialPosition);
     }
 
     /**
@@ -47,8 +37,7 @@ public class ElevatorCommand extends Command {
      */
     @Override
     public void execute() {
-       this.elevatorSubsystem.getIo().setElevatorPosition(this.absolutePosition);
-       this.isFinished = true;
+        this.elevatorSubsystem.getIo().setElevatorVelocity(-RobotConstants.ElevatorConstants.elevatorMotorRPS * 15);
     }
 
     /**
@@ -67,7 +56,8 @@ public class ElevatorCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        return this.isFinished;
+        // TODO: Make this return true when this Command no longer needs to run execute()
+        return false;
     }
 
     /**
@@ -81,5 +71,6 @@ public class ElevatorCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         this.elevatorSubsystem.getIo().setElevatorDirectVoltage(Volts.of(0));
+        System.out.println(this.elevatorSubsystem.getIo().getElevatorPosition() - this.initialPosition);
     }
 }

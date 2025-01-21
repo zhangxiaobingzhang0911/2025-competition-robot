@@ -79,4 +79,8 @@ public class ElevatorIOSim implements ElevatorIO {
     public double getVelocity() {
         return rightElevatorTalonSim.getAngularVelocityRadPerSec() / 6.28 * 60;
     }
+
+    public double getElevatorPosition() {
+        return leftElevatorTalonSim.getAngularPositionRotations();
+    };
 }

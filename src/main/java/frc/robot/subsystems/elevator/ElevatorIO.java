@@ -21,6 +21,8 @@ public interface ElevatorIO {
 
     double getVelocity();
 
+    double getElevatorPosition();
+
 
     @AutoLog
     class ElevatorIOInputs {

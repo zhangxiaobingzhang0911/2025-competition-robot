@@ -14,12 +14,14 @@ Bind to a key whileTrue, prints out the absolute starting position on press, pri
 public class ElevatorTuningCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
     private double initialPosition;
+    private boolean isMovingUp;
 
-    public ElevatorTuningCommand(ElevatorSubsystem elevatorSubsystem) {
+    public ElevatorTuningCommand(ElevatorSubsystem elevatorSubsystem, boolean isMovingUp) {
         this.elevatorSubsystem = elevatorSubsystem;
         // each subsystem used by the command must be passed into the
         // addRequirements() method (which takes a vararg of Subsystem)
         addRequirements(this.elevatorSubsystem);
+        this.isMovingUp = isMovingUp;
     }
 
     /**
@@ -37,7 +39,7 @@ public class ElevatorTuningCommand extends Command {
      */
     @Override
     public void execute() {
-        this.elevatorSubsystem.getIo().setElevatorVelocity(-RobotConstants.ElevatorConstants.elevatorMotorRPS * 15);
+        this.elevatorSubsystem.getIo().setElevatorVelocity(-RobotConstants.ElevatorConstants.elevatorMotorRPS * 15 * (this.isMovingUp ? 1 : -1));
     }
 
     /**

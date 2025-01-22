@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Intaker;
+package frc.robot.subsystems.intaker;
 
 import java.lang.Cloneable;
 import java.lang.Override;

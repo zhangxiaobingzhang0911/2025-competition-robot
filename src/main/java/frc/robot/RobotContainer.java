@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.RumbleCommand;
+import frc.robot.commands.TestingCommands.ElevatorGetPosition;
 import frc.robot.commands.TestingCommands.ElevatorTestCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
@@ -67,7 +68,10 @@ public class RobotContainer {
 
 //        configureBindings();
 
-        elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-driverController.getLeftY(), 0.1)));
+        // Move left joystick up and down to move elevator
+        // Press x to get elevator's current motor position
+        elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-RobotConstants.driverController.getLeftY(), 0.1)));
+        RobotConstants.driverController.x().onTrue(new ElevatorGetPosition(elevator));
     }
 
     /**

@@ -1,27 +1,19 @@
-package frc.robot.commands.TuningCommands;
+package frc.robot.commands.TestingCommands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-import static edu.wpi.first.units.Units.Volts;
 
-/*
-Used for tuning the elevator constants.
-Bind to a key whileTrue, prints out the absolute starting position on press, prints out how much position is changed on release
- */
-
-public class ElevatorTuningCommand extends Command {
+public class ElevatorGetPosition extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
-    private double initialPosition;
-    private boolean isMovingUp;
+    private boolean isFinished;
 
-    public ElevatorTuningCommand(ElevatorSubsystem elevatorSubsystem, boolean isMovingUp) {
+    public ElevatorGetPosition(ElevatorSubsystem elevatorSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
         // each subsystem used by the command must be passed into the
         // addRequirements() method (which takes a vararg of Subsystem)
-        addRequirements(this.elevatorSubsystem);
-        this.isMovingUp = isMovingUp;
+
     }
 
     /**
@@ -29,8 +21,7 @@ public class ElevatorTuningCommand extends Command {
      */
     @Override
     public void initialize() {
-        this.initialPosition = this.elevatorSubsystem.getIo().getElevatorPosition();
-        System.out.println(this.initialPosition);
+        this.isFinished = false;
     }
 
     /**
@@ -39,7 +30,8 @@ public class ElevatorTuningCommand extends Command {
      */
     @Override
     public void execute() {
-        this.elevatorSubsystem.getIo().setElevatorVelocity(-RobotConstants.ElevatorConstants.elevatorMotorRPS * 15 * (this.isMovingUp ? 1 : -1));
+        System.out.println(this.elevatorSubsystem.getIo().getElevatorPosition());
+        this.isFinished = true;
     }
 
     /**
@@ -58,8 +50,7 @@ public class ElevatorTuningCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        // TODO: Make this return true when this Command no longer needs to run execute()
-        return false;
+        return this.isFinished;
     }
 
     /**
@@ -72,7 +63,6 @@ public class ElevatorTuningCommand extends Command {
      */
     @Override
     public void end(boolean interrupted) {
-        this.elevatorSubsystem.getIo().setElevatorDirectVoltage(Volts.of(0));
-        System.out.println(this.elevatorSubsystem.getIo().getElevatorPosition() - this.initialPosition);
+
     }
 }

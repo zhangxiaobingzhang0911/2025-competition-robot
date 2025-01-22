@@ -50,8 +50,6 @@ public class RobotContainer {
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
-    CommandXboxController driverController = new CommandXboxController(0);
-    CommandXboxController operatorController = new CommandXboxController(1);
     Display display = Display.getInstance();
     ElevatorSubsystem elevator;
     double lastResetTime = 0.0;
@@ -132,7 +130,7 @@ public class RobotContainer {
         );
     }
     private Command rumbleDriver(double seconds) {
-        return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
+        return new RumbleCommand(Seconds.of(seconds), RobotConstants.driverController.getHID());
     }
 
 

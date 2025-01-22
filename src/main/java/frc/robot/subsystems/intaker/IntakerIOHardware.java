@@ -8,13 +8,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
-import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.RobotConstants;
 import frc.robot.drivers.BeamBreak;
 
 import static edu.wpi.first.units.Units.*;
 
-public class IntakerIOTalonFX implements IntakerIO {
+public class IntakerIOHardware implements IntakerIO {
 
     private double targetIntakerVelocity = 0;
     private final TalonFX intakerMotor = new TalonFX(
@@ -23,7 +22,7 @@ public class IntakerIOTalonFX implements IntakerIO {
     private final BeamBreak intakerBeamBreak =
             new BeamBreak(RobotConstants.BeamBreakConstants.INTAKER_BEAMBREAK_ID);
 
-    public IntakerIOTalonFX() {
+    public IntakerIOHardware() {
         intakerMotor.getConfigurator().apply(new Slot0Configs()
                 .withKP(0.2)
                 .withKI(0)

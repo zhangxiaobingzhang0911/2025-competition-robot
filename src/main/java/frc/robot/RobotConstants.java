@@ -10,17 +10,16 @@ import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputTy
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstantsFactory;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.*;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.utils.TunableNumber;
+import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 
 import static edu.wpi.first.units.Units.*;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
-import frc.robot.utils.TunableNumber;
-
-import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -40,6 +39,15 @@ public final class RobotConstants {
     public static final CommandXboxController operatorController = new CommandXboxController(1);
     //canbus name
     public static String CAN_BUS_NAME = "rio";
+    // serial baud rate
+    public static int baudRate = 115200;
+
+    /**
+     * Constants related to the robot's vision subsystem.
+     */
+    public static class VisionConstants {
+        public static final SerialPort.Port serialPort = SerialPort.Port.kMXP;
+    }
 
     /**
      * Constants related to the robot's indicators, such as LEDs.
@@ -49,7 +57,7 @@ public final class RobotConstants {
         public static final int LED_PORT = 0;
         public static final int LED_BUFFER_LENGTH = 17;
     }
-    
+
     /**
      * Constants specific to the swerve drivetrain configuration.
      */
@@ -309,6 +317,7 @@ public final class RobotConstants {
         public static final Transform2d tagLeftToRobot = new Transform2d(); // vec(robot) - vec(tag) when shooting left coral
         public static final Transform2d tagRightToRobot = new Transform2d();
     }
+
     public static class BeamBreakConstants {
         public static final int SHOOTER_BEAMBREAK_ID = 3;
         public static final int INTAKER_BEAMBREAK_ID = 2;
@@ -319,15 +328,16 @@ public final class RobotConstants {
 
         public static final MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
                 .withNeutralMode(NeutralModeValue.Brake);
-        
+
         //TODO:test and change RPM
         public final static double triggerRPM = 4500;
-        public static final TunableNumber COLLECTING_RPM  = new TunableNumber("Intaker/collectingRPM", 1500);
+        public static final TunableNumber COLLECTING_RPM = new TunableNumber("Intaker/collectingRPM", 1500);
         public static final TunableNumber OUTTAKING_RPM = new TunableNumber("Intaker/outtakingRPM", -1500);
-        public static final TunableNumber REJECTING_RPM= new TunableNumber("Intaker/rejectingRPM", 1500);
+        public static final TunableNumber REJECTING_RPM = new TunableNumber("Intaker/rejectingRPM", 1500);
         public static final TunableNumber IDLING_RPM = new TunableNumber("Intaker/idlingRPM", 0.0);
 
     }
+
     /**
      * Constants related to the elevator subsystem.
      */
@@ -337,12 +347,18 @@ public final class RobotConstants {
 
         public static final Measure<VoltageUnit> elevatorConstantVoltage = Volts.of(-4);
         public static final TunableNumber skewValue = new TunableNumber("Elevator skew", 0);
-        public static double kToFFactor = 0.2;
-        public static boolean useSmartDashboardForSkew = false;
-        public static boolean useShootOnMove = false;
         public static final boolean leftMotorClockwise = true;
         public static final double elevatorMotorRPS = 24; // Todo: change the value for this constant and the one below
         public static final double elevatorMotorAccel = 24; // In rotation * s^{-2}
+        // Constants for elevator level positions relative to starting position. Todo: tune all constants below
+        public static final double l1Position = 100;
+        public static final double l2Position = 200;
+        public static final double l3Position = 300;
+        public static final double l4Position = 400;
+        public static final double highestPosition = 500;
+        public static double kToFFactor = 0.2;
+        public static boolean useSmartDashboardForSkew = false;
+        public static boolean useShootOnMove = false;
 
         /**
          * Constants for the elevator motor gains.
@@ -355,13 +371,6 @@ public final class RobotConstants {
             public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.113);// 0.107853495
             public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.28475008);
         }
-        
-        // Constants for elevator level positions relative to starting position. Todo: tune all constants below
-        public static final double l1Position = 100;
-        public static final double l2Position = 200;
-        public static final double l3Position = 300;
-        public static final double l4Position = 400;
-        public static final double highestPosition = 500;
-    
-}
+
+    }
 }

@@ -9,31 +9,34 @@ package frc.robot.subsystems.apriltagvision;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants.AprilTagLayoutType;
+import frc.robot.RobotConstants;
 import frc.robot.subsystems.swerve.Swerve;
-
 import lombok.Getter;
 import lombok.experimental.ExtensionMethod;
-
 import org.littletonrobotics.GeomUtil;
 import org.littletonrobotics.LoggedTunableNumber;
 import org.littletonrobotics.RobotState;
 import org.littletonrobotics.junction.Logger;
-import static org.littletonrobotics.RobotState.VisionObservation;
 
 import java.util.*;
 import java.util.function.Supplier;
 
 import static frc.robot.subsystems.apriltagvision.AprilTagVisionConstants.*;
 import static frc.robot.subsystems.apriltagvision.AprilTagVisionIO.AprilTagVisionIOInputs;
+import static org.littletonrobotics.RobotState.VisionObservation;
 
 /**
  * Vision subsystem for AprilTag vision.
  */
 @ExtensionMethod({GeomUtil.class})
 public class AprilTagVision extends SubsystemBase {
+    // Serial
+    public static final SerialPort serial = new SerialPort(RobotConstants.baudRate, RobotConstants.VisionConstants.serialPort);
+    // Others
     private static final LoggedTunableNumber timestampOffset =
             new LoggedTunableNumber("AprilTagVision/TimestampOffset", -(1.0 / 50.0));
     private static final double demoTagPosePersistenceSecs = 0.5;
@@ -46,7 +49,6 @@ public class AprilTagVision extends SubsystemBase {
     private double lastDemoTagPoseTimestamp = 0.0;
     private double lastPrint;
     private double frameUpdateCount;
-
     @Getter
     private ArrayList<Pose3d> allTagPoses;
 
@@ -70,6 +72,10 @@ public class AprilTagVision extends SubsystemBase {
         for (int i = 0; i < io.length; i++) {
             lastFrameTimes.put(i, 0.0);
         }
+
+        // Disable serial termination of \n
+        serial.disableTermination();
+        serial.reset();
     }
 
     /**
@@ -81,6 +87,10 @@ public class AprilTagVision extends SubsystemBase {
             io[i].updateInputs(inputs[i]);
             Logger.processInputs("AprilTagVision/Inst" + i, inputs[i]);
         }
+
+        serial.writeString("OK");
+        serial.flush();
+        System.out.println("Test");
 
         // Loop over instances to process all frames and poses
         List<Pose2d> allRobotPoses = new ArrayList<>();

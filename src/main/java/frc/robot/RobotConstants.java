@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstantsFactory;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.*;
@@ -19,8 +21,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.utils.TunableNumber;
 
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
-
-import javax.swing.text.SimpleAttributeSet;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -49,7 +49,7 @@ public final class RobotConstants {
         public static final int LED_PORT = 0;
         public static final int LED_BUFFER_LENGTH = 17;
     }
-
+    
     /**
      * Constants specific to the swerve drivetrain configuration.
      */
@@ -309,7 +309,25 @@ public final class RobotConstants {
         public static final Transform2d tagLeftToRobot = new Transform2d(); // vec(robot) - vec(tag) when shooting left coral
         public static final Transform2d tagRightToRobot = new Transform2d();
     }
+    public static class BeamBreakConstants {
+        public static final int SHOOTER_BEAMBREAK_ID = 3;
+        public static final int INTAKER_BEAMBREAK_ID = 2;
+    }
 
+    public static class IntakerConstants {
+        public static final int INTAKER_MOTOR_ID = 15;
+
+        public static final MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
+                .withNeutralMode(NeutralModeValue.Brake);
+        
+        //TODO:test and change RPM
+        public final static double triggerRPM = 4500;
+        public static final TunableNumber COLLECTING_RPM  = new TunableNumber("Intaker/collectingRPM", 1500);
+        public static final TunableNumber OUTTAKING_RPM = new TunableNumber("Intaker/outtakingRPM", -1500);
+        public static final TunableNumber REJECTING_RPM= new TunableNumber("Intaker/rejectingRPM", 1500);
+        public static final TunableNumber IDLING_RPM = new TunableNumber("Intaker/idlingRPM", 0.0);
+
+    }
     /**
      * Constants related to the elevator subsystem.
      */
@@ -344,5 +362,6 @@ public final class RobotConstants {
         public static final double l3Position = 300;
         public static final double l4Position = 400;
         public static final double highestPosition = 500;
-    }
+    
+}
 }

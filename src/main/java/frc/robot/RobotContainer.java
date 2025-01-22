@@ -15,12 +15,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
@@ -52,7 +50,6 @@ public class RobotContainer {
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
     Display display = Display.getInstance();
-    ElevatorSubsystem elevator;
     double lastResetTime = 0.0;
 
     // The robot's subsystems and commands are defined here...
@@ -130,10 +127,6 @@ public class RobotContainer {
     }
     private Command rumbleDriver(double seconds) {
         return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
-    }
-
-    private Command ElevatorCommand(){
-        return new ElevatorCommand(elevator, 1);
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

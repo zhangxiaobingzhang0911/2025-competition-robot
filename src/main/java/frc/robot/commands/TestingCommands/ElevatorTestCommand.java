@@ -5,6 +5,8 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 import java.util.function.DoubleSupplier;
 
+import static edu.wpi.first.units.Units.Volts;
+
 
 public class ElevatorTestCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
@@ -66,6 +68,6 @@ public class ElevatorTestCommand extends Command {
      */
     @Override
     public void end(boolean interrupted) {
-
+        this.elevatorSubsystem.getIo().setElevatorDirectVoltage(Volts.of(0));
     }
 }

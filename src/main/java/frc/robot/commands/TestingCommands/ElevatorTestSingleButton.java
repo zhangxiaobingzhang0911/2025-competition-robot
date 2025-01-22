@@ -26,7 +26,7 @@ public class ElevatorTestSingleButton extends Command {
     @Override
     public void initialize() {
        this.initialPosition = this.elevatorSubsystem.getIo().getElevatorPosition();
-       System.out.printf("Initial position %f", this.initialPosition);
+       System.out.printf("Initial position %f\n", this.initialPosition);
     }
 
     /**
@@ -67,6 +67,7 @@ public class ElevatorTestSingleButton extends Command {
      */
     @Override
     public void end(boolean interrupted) {
+       System.out.printf("Position units changed: %f\n", this.elevatorSubsystem.getIo().getElevatorPosition() - this.initialPosition);
        this.elevatorSubsystem.getIo().setElevatorDirectVoltage(Volt.of(0));
     }
 }

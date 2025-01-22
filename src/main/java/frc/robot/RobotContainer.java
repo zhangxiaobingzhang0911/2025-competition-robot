@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
+import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.commands.TestingCommands.ElevatorGetPosition;
 import frc.robot.commands.TestingCommands.ElevatorTestCommand;
@@ -70,6 +71,7 @@ public class RobotContainer {
         // Press x to get elevator's current motor position
         elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-RobotConstants.driverController.getLeftY(), 0.1)));
         RobotConstants.driverController.x().onTrue(new ElevatorGetPosition(elevator));
+        RobotConstants.driverController.y().onTrue(new ElevatorCommand(elevator, 2));
     }
 
     /**

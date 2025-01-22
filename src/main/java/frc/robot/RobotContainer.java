@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.RumbleCommand;
+import frc.robot.commands.TestingCommands.ElevatorTestCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
@@ -65,10 +65,9 @@ public class RobotContainer {
                 display);
         updateManager.registerAll();
 
-        configureBindings();
+//        configureBindings();
 
-        // Configure the trigger bindings
-        configureBindings();
+        elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-driverController.getLeftY(), 0.1)));
     }
 
     /**
@@ -132,9 +131,6 @@ public class RobotContainer {
         return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
     }
 
-    private Command ElevatorCommand(){
-        return new ElevatorCommand(elevator, 1);
-    }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
 //        if (aprilTagsSpeakerOnly.getAsBoolean()) {
@@ -144,5 +140,14 @@ public class RobotContainer {
 //        } else {
         return FieldConstants.defaultAprilTagType;
 //        }
+    }
+
+    // Deadband command to eliminate drifting
+    public static double deadBand(double value, double tolerance) {
+        if(value < tolerance && value > -tolerance) {
+            return 0;
+        } else {
+            return value;
+        }
     }
 }

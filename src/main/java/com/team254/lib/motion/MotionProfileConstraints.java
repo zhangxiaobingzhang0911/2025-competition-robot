@@ -28,10 +28,9 @@ public class MotionProfileConstraints {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof MotionProfileConstraints)) {
+        if (!(obj instanceof MotionProfileConstraints other)) {
             return false;
         }
-        final MotionProfileConstraints other = (MotionProfileConstraints) obj;
         return (other.max_abs_acc() == max_abs_acc()) && (other.max_abs_vel() == max_abs_vel());
     }
 }

@@ -4,7 +4,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
-
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.swerve.Swerve;
@@ -12,17 +11,18 @@ import frc.robot.subsystems.swerve.Swerve;
 public class ReefAimNearest extends Command {
     private final AprilTagVision aprilTagVision; // AprilTagVision subsystem for detecting AprilTags
     private final Swerve swerve = Swerve.getInstance(); // Swerve subsystem for robot movement
+    private final boolean rightReef; // true if shooting at the right reef, false if left reef
     private Pose2d robotPose; // Current pose of the robot
     private Pose2d tagPose; // Pose of the nearest detected AprilTag
     private Pose2d destinationPose; // Target pose the robot should aim for
-    private boolean rightReef; // true if shooting at the right reef, false if left reef
     private Transform2d transform; // Transformation from robot pose to destination pose
     private boolean isFinished = false; // Flag to indicate if the command is finished
 
     /**
      * Constructor for the ReefAimNearest command.
+     *
      * @param aprilTagVision AprilTagVision subsystem for detecting AprilTags.
-     * @param rightReef Boolean indicating if the target is the right reef.
+     * @param rightReef      Boolean indicating if the target is the right reef.
      */
     public ReefAimNearest(AprilTagVision aprilTagVision, boolean rightReef) {
         this.aprilTagVision = aprilTagVision;
@@ -58,10 +58,10 @@ public class ReefAimNearest extends Command {
     public void execute() {
         // Drive the robot towards the destination pose
         this.swerve.drive(
-            this.transform.getTranslation(), // Translation component of the transform
-            MathUtil.angleModulus(this.transform.getRotation().getRadians()), // Rotation component of the transform, normalized to [0, 2π]
-            false, // Whether to lock the orientation of the robot
-            false  // Whether to use open loop control
+                this.transform.getTranslation(), // Translation component of the transform
+                MathUtil.angleModulus(this.transform.getRotation().getRadians()), // Rotation component of the transform, normalized to [0, 2π]
+                false, // Whether to lock the orientation of the robot
+                false  // Whether to use open loop control
         );
         // Set the command as finished after executing once
         this.isFinished = true;
@@ -74,7 +74,7 @@ public class ReefAimNearest extends Command {
      * </p><p>
      * Returning false will result in the command never ending automatically. It may still be
      * cancelled manually or interrupted by another command. Hard coding this command to always
-     * return true will result in the command executing once and finishing immediately. It is 
+     * return true will result in the command executing once and finishing immediately. It is
      * recommended to use * {@link edu.wpi.first.wpilibj2.command.InstantCommand InstantCommand}
      * for such an operation.
      * </p>
@@ -88,11 +88,11 @@ public class ReefAimNearest extends Command {
     }
 
     /**
-     * The action to take when the command ends. Called when either the command 
-     * finishes normally -- that is it is called when {@link #isFinished()} returns 
-     * true -- or when it is interrupted/canceled. This is where you may want to 
+     * The action to take when the command ends. Called when either the command
+     * finishes normally -- that is it is called when {@link #isFinished()} returns
+     * true -- or when it is interrupted/canceled. This is where you may want to
      * wrap up loose ends, like shutting off a motor that was being used in the command.
-     * 
+     *
      * @param interrupted whether the command was interrupted/canceled
      */
     @Override

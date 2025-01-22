@@ -13,8 +13,8 @@ Bind to a key whileTrue, prints out the absolute starting position on press, pri
 
 public class ElevatorTuningCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
+    private final boolean isMovingUp;
     private double initialPosition;
-    private boolean isMovingUp;
 
     public ElevatorTuningCommand(ElevatorSubsystem elevatorSubsystem, boolean isMovingUp) {
         this.elevatorSubsystem = elevatorSubsystem;

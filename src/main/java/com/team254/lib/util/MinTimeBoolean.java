@@ -5,8 +5,8 @@ package com.team254.lib.util;
  * based on timestamp.
  */
 public class MinTimeBoolean {
-    private LatchedBoolean mLatchedBoolean;
-    private double mMinTime;
+    private final LatchedBoolean mLatchedBoolean;
+    private final double mMinTime;
     private double mRisingEdgeTime;
 
     public MinTimeBoolean(double minTime) {
@@ -21,7 +21,7 @@ public class MinTimeBoolean {
         }
 
         if (!value && !Double.isNaN(mRisingEdgeTime)
-            && (timestamp - mRisingEdgeTime < mMinTime)) {
+                && (timestamp - mRisingEdgeTime < mMinTime)) {
             return true;
         }
         return value;

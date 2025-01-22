@@ -1,26 +1,25 @@
 package frc.robot.commands;
- 
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
- 
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.swerve.Swerve;
- 
+
 // Command to aim the robot at a specific reef using AprilTag vision
 public class ReefAimCommand extends Command {
     private final AprilTagVision aprilTagVision;
     private final Swerve swerve = Swerve.getInstance();
+    private final int tagID;
+    private final boolean rightReef; // true if shooting right reef
     private Pose2d robotPose;
     private Pose2d tagPose;
     private Pose2d destinationPose;
-    private int tagID;
-    private boolean rightReef; // true if shooting right reef
     private Transform2d transform;
     private boolean isFinished = false;
- 
+
     // Constructor for ReefAimCommand
     public ReefAimCommand(AprilTagVision aprilTagVision, int tagID, boolean rightReef) {
         this.aprilTagVision = aprilTagVision;
@@ -30,7 +29,7 @@ public class ReefAimCommand extends Command {
         this.tagID = tagID;
         this.rightReef = rightReef;
     }
- 
+
     /**
      * The initial subroutine of a command.  Called once when the command is initially scheduled.
      */
@@ -45,7 +44,7 @@ public class ReefAimCommand extends Command {
         }
         this.transform = this.destinationPose.minus(this.robotPose);
     }
- 
+
     /**
      * The main body of a command.  Called repeatedly while the command is scheduled.
      * (That is, it is called repeatedly until {@link #isFinished()}) returns true.)
@@ -55,7 +54,7 @@ public class ReefAimCommand extends Command {
         this.swerve.drive(this.transform.getTranslation(), MathUtil.angleModulus(this.transform.getRotation().getRadians()), false, false);
         this.isFinished = true;
     }
- 
+
     /**
      * <p>
      * Returns whether this command has finished. Once a command finishes -- indicated by
@@ -75,7 +74,7 @@ public class ReefAimCommand extends Command {
         // TODO: Make this return true when this Command no longer needs to run execute()
         return this.isFinished;
     }
- 
+
     /**
      * The action to take when the command ends. Called when either the command
      * finishes normally -- that is it is called when {@link #isFinished()} returns

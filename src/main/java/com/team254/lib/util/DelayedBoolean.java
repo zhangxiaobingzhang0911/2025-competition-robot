@@ -4,9 +4,9 @@ package com.team254.lib.util;
  * An iterative boolean latch that delays the transition from false to true.
  */
 public class DelayedBoolean {
+    private final double mDelay;
     private boolean mLastValue;
     private double mTransitionTimestamp;
-    private double mDelay;
 
     public DelayedBoolean(double timestamp, double delay) {
         mTransitionTimestamp = timestamp;

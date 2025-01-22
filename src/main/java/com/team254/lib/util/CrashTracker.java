@@ -48,11 +48,11 @@ public class CrashTracker {
     private static void logMarker(String mark, Throwable nullableException) {
 
         try (PrintWriter writer = new PrintWriter(new FileWriter("/home/lvuser/crash_tracking.txt", true))) {
-            writer.print(RUN_INSTANCE_UUID.toString());
+            writer.print(RUN_INSTANCE_UUID);
             writer.print(", ");
             writer.print(mark);
             writer.print(", ");
-            writer.print(new Date().toString());
+            writer.print(new Date());
 
             if (nullableException != null) {
                 writer.print(", ");

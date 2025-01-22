@@ -1,49 +1,27 @@
 package frc.robot.subsystems.intaker;
 
-import java.util.function.BooleanSupplier;
-import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
+import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.*;
+import java.util.function.BooleanSupplier;
 
 public class IntakerSubsystem extends SubsystemBase {
     private static double COLLECTING_RPM = RobotConstants.IntakerConstants.COLLECTING_RPM.get();
     private static double OUTTAKING_RPM = RobotConstants.IntakerConstants.OUTTAKING_RPM.get();
     private static double REJECTING_RPM = RobotConstants.IntakerConstants.REJECTING_RPM.get();
     private static double IDLING_RPM = RobotConstants.IntakerConstants.IDLING_RPM.get();
-
-    public enum WantedState {
-        IDLE,
-        COLLECT,
-        REJECT,
-        EJECT,
-        OFF
-    }
-
-    public enum SystemState {
-        IDLING,
-        COLLECTING,
-        REJECTING,
-        EJECTING,
-        OFF
-    }
-
-    private IntakerIO io;
-    private IntakerIOInputsAutoLogged inputs = new IntakerIOInputsAutoLogged();
-
+    private final IntakerIO io;
+    private final IntakerIOInputsAutoLogged inputs = new IntakerIOInputsAutoLogged();
+    private final BooleanSupplier beamBreakTripped;
     private WantedState wantedState = WantedState.IDLE;
     private SystemState systemState = SystemState.IDLING;
-
-    private BooleanSupplier beamBreakTripped;
-
-
     public IntakerSubsystem(IntakerIO io, BooleanSupplier isBeamBreakTripped) {
         this.io = io;
         this.beamBreakTripped = isBeamBreakTripped;
     }
-    
+
     @Override
     public void periodic() {
         // read inputs
@@ -95,9 +73,9 @@ public class IntakerSubsystem extends SubsystemBase {
         }
 
         // write outputs
-        io.setVelocity(intakerMotorRPM/60);
+        io.setVelocity(intakerMotorRPM / 60);
 
-        
+
     }
 
     private SystemState handleStateTransition() {
@@ -122,9 +100,26 @@ public class IntakerSubsystem extends SubsystemBase {
 
     /**
      * Sets the target state for the intake subsystem.
+     *
      * @param wantedState the target state for the intake subsystem.
      */
     public void setWantedState(WantedState wantedState) {
         this.wantedState = wantedState;
+    }
+
+    public enum WantedState {
+        IDLE,
+        COLLECT,
+        REJECT,
+        EJECT,
+        OFF
+    }
+
+    public enum SystemState {
+        IDLING,
+        COLLECTING,
+        REJECTING,
+        EJECTING,
+        OFF
     }
 }

@@ -8,41 +8,13 @@ import static com.team254.lib.util.Util.epsilonEquals;
  * desired velocity bounds.
  */
 public class MotionProfileGoal {
-    /**
-     * A goal consists of a desired position and specified maximum velocity magnitude. But what should we do if we would
-     * reach the goal at a velocity greater than the maximum? This enum allows a user to specify a preference on
-     * behavior in this case.
-     * <p>
-     * Example use-cases of each:
-     * <p>
-     * OVERSHOOT - Generally used with a goal max_abs_vel of 0.0 to stop at the desired pos without violating any
-     * constraints.
-     * <p>
-     * VIOLATE_MAX_ACCEL - If we absolutely do not want to pass the goal and are unwilling to violate the max_abs_vel
-     * (for example, there is an obstacle in front of us - slam the brakes harder than we'd like in order to avoid
-     * hitting it).
-     * <p>
-     * VIOLATE_MAX_ABS_VEL - If the max velocity is just a general guideline and not a hard performance limit, it's
-     * better to slightly exceed it to avoid skidding wheels.
-     */
-    public enum CompletionBehavior {
-        // Overshoot the goal if necessary (at a velocity greater than max_abs_vel) and come back.
-        // Only valid if the goal velocity is 0.0 (otherwise VIOLATE_MAX_ACCEL will be used).
-        OVERSHOOT,
-        // If we cannot slow down to the goal velocity before crossing the goal, allow exceeding the max accel
-        // constraint.
-        VIOLATE_MAX_ACCEL,
-        // If we cannot slow down to the goal velocity before crossing the goal, allow exceeding the goal velocity.
-        VIOLATE_MAX_ABS_VEL
-    }
-
     protected double pos;
     protected double max_abs_vel;
     protected CompletionBehavior completion_behavior = CompletionBehavior.OVERSHOOT;
     protected double pos_tolerance = 1E-3;
     protected double vel_tolerance = 1E-2;
-
-    public MotionProfileGoal() {}
+    public MotionProfileGoal() {
+    }
 
     public MotionProfileGoal(double pos) {
         this.pos = pos;
@@ -130,12 +102,39 @@ public class MotionProfileGoal {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof MotionProfileGoal)) {
+        if (!(obj instanceof MotionProfileGoal other)) {
             return false;
         }
-        final MotionProfileGoal other = (MotionProfileGoal) obj;
         return (other.completion_behavior() == completion_behavior()) && (other.pos() == pos())
                 && (other.max_abs_vel() == max_abs_vel()) && (other.pos_tolerance() == pos_tolerance())
                 && (other.vel_tolerance() == vel_tolerance());
+    }
+
+    /**
+     * A goal consists of a desired position and specified maximum velocity magnitude. But what should we do if we would
+     * reach the goal at a velocity greater than the maximum? This enum allows a user to specify a preference on
+     * behavior in this case.
+     * <p>
+     * Example use-cases of each:
+     * <p>
+     * OVERSHOOT - Generally used with a goal max_abs_vel of 0.0 to stop at the desired pos without violating any
+     * constraints.
+     * <p>
+     * VIOLATE_MAX_ACCEL - If we absolutely do not want to pass the goal and are unwilling to violate the max_abs_vel
+     * (for example, there is an obstacle in front of us - slam the brakes harder than we'd like in order to avoid
+     * hitting it).
+     * <p>
+     * VIOLATE_MAX_ABS_VEL - If the max velocity is just a general guideline and not a hard performance limit, it's
+     * better to slightly exceed it to avoid skidding wheels.
+     */
+    public enum CompletionBehavior {
+        // Overshoot the goal if necessary (at a velocity greater than max_abs_vel) and come back.
+        // Only valid if the goal velocity is 0.0 (otherwise VIOLATE_MAX_ACCEL will be used).
+        OVERSHOOT,
+        // If we cannot slow down to the goal velocity before crossing the goal, allow exceeding the max accel
+        // constraint.
+        VIOLATE_MAX_ACCEL,
+        // If we cannot slow down to the goal velocity before crossing the goal, allow exceeding the goal velocity.
+        VIOLATE_MAX_ABS_VEL
     }
 }

@@ -1,18 +1,15 @@
 package frc.robot.commands;
 
-import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-
-import java.lang.annotation.Target;
 
 import static edu.wpi.first.units.Units.Volts;
 
 
 public class ElevatorCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
-    private int level; // level = 0 to restore to starting position
+    private final int level; // level = 0 to restore to starting position
     private double relativePosition;
     private double absolutePosition;
     private boolean isFinished;
@@ -31,14 +28,14 @@ public class ElevatorCommand extends Command {
      */
     @Override
     public void initialize() {
-       this.relativePosition = new double[]{
-               0,
-               RobotConstants.ElevatorConstants.l1Position,
-               RobotConstants.ElevatorConstants.l2Position,
-               RobotConstants.ElevatorConstants.l3Position,
-               RobotConstants.ElevatorConstants.l4Position
-       }[this.level];
-       this.absolutePosition = this.elevatorSubsystem.getStartingPosition() + this.relativePosition;
+        this.relativePosition = new double[]{
+                0,
+                RobotConstants.ElevatorConstants.l1Position,
+                RobotConstants.ElevatorConstants.l2Position,
+                RobotConstants.ElevatorConstants.l3Position,
+                RobotConstants.ElevatorConstants.l4Position
+        }[this.level];
+        this.absolutePosition = this.elevatorSubsystem.getStartingPosition() + this.relativePosition;
     }
 
     /**
@@ -47,8 +44,8 @@ public class ElevatorCommand extends Command {
      */
     @Override
     public void execute() {
-       this.elevatorSubsystem.getIo().setElevatorPosition(this.absolutePosition);
-       this.isFinished = true;
+        this.elevatorSubsystem.getIo().setElevatorPosition(this.absolutePosition);
+        this.isFinished = true;
     }
 
     /**

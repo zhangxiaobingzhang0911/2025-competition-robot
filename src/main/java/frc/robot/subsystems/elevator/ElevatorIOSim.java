@@ -1,21 +1,19 @@
 package frc.robot.subsystems.elevator;
 
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.RobotConstants;
 
 import static edu.wpi.first.units.Units.*;
 
 public class ElevatorIOSim implements ElevatorIO {
     private static final double LOOP_PERIOD_SECS = 0.02;
     private final DCMotorSim leftElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500(1),
-    0.025, 6.75), DCMotor.getFalcon500(1), null);
+            0.025, 6.75), DCMotor.getFalcon500(1), null);
     private final DCMotorSim rightElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500(1),
-    0.025, 6.75), DCMotor.getFalcon500(1) , null);
+            0.025, 6.75), DCMotor.getFalcon500(1), null);
 
     private Measure<VoltageUnit> leftElevatorAppliedVoltage = Volts.zero();
     private Measure<VoltageUnit> rightElevatorAppliedVoltage = Volts.zero();
@@ -67,13 +65,6 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
-    public void setElevatorPosition(double position) {
-        // Refine this method here for smoother simulation if needed
-        double positionDiffInTurns = position - leftElevatorTalonSim.getAngularPositionRotations();
-        leftElevatorTalonSim.setState(positionDiffInTurns * 2 * Math.PI, 0);
-    }
-
-    @Override
     public void runVolts(double volts) {
 
     }
@@ -85,5 +76,12 @@ public class ElevatorIOSim implements ElevatorIO {
 
     public double getElevatorPosition() {
         return leftElevatorTalonSim.getAngularPositionRotations();
-    };
+    }
+
+    @Override
+    public void setElevatorPosition(double position) {
+        // Refine this method here for smoother simulation if needed
+        double positionDiffInTurns = position - leftElevatorTalonSim.getAngularPositionRotations();
+        leftElevatorTalonSim.setState(positionDiffInTurns * 2 * Math.PI, 0);
+    }
 }

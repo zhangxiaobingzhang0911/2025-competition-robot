@@ -332,8 +332,8 @@ public final class RobotConstants {
      * Constants related to the elevator subsystem.
      */
     public static final class ElevatorConstants {
-        public static final int LEFT_ELEVATOR_MOTOR_ID = 41;
-        public static final int RIGHT_ELEVATOR_MOTOR_ID = 42;
+        public static final int LEFT_ELEVATOR_MOTOR_ID = 51;
+        public static final int RIGHT_ELEVATOR_MOTOR_ID = 50;
 
         public static final Measure<VoltageUnit> elevatorConstantVoltage = Volts.of(-4);
         public static final TunableNumber skewValue = new TunableNumber("Elevator skew", 0);

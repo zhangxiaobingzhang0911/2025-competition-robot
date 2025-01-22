@@ -19,6 +19,7 @@ import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.commands.TestingCommands.ElevatorGetPosition;
 import frc.robot.commands.TestingCommands.ElevatorTestCommand;
+import frc.robot.commands.TestingCommands.ElevatorTestSingleButton;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
@@ -67,11 +68,16 @@ public class RobotContainer {
 
 //        configureBindings();
 
-        // Move left joystick up and down to move elevator
-        // Press x to get elevator's current motor position
+        /*
+        Move left joystick up and down to move elevator
+        Press x to get elevator's current motor position
+        Press a/b to move elevator up/down, press again to stop
+         */
         elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-RobotConstants.driverController.getLeftY(), 0.1)));
         RobotConstants.driverController.x().onTrue(new ElevatorGetPosition(elevator));
         RobotConstants.driverController.y().onTrue(new ElevatorCommand(elevator, 2));
+        RobotConstants.driverController.a().toggleOnTrue(new ElevatorTestSingleButton(elevator, true));
+        RobotConstants.driverController.b().toggleOnTrue(new ElevatorTestSingleButton(elevator, false));
     }
 
     /**

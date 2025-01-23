@@ -23,6 +23,8 @@ public interface ElevatorIO {
 
     double getElevatorPosition();
 
+    void brake();
+
 
     @AutoLog
     class ElevatorIOInputs {

@@ -68,21 +68,6 @@ public class RobotContainer {
 
         configureBindings();
 
-        /*
-        Move left joystick up and down to move elevator
-        Press y to switch between joystick operating swerve and elevator
-        Press x to get elevator's current motor position
-        Press a/b to move elevator up/down, press again to stop
-         */
-        RobotConstants.driverController.y().onTrue(Commands.runOnce(
-                () -> {
-                    if (elevator.getDefaultCommand() != null) {
-                        elevator.removeDefaultCommand();
-                    } else {
-                        elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-RobotConstants.driverController.getLeftY(), 0.1)));
-                    }
-                }
-        ));
 
         RobotConstants.driverController.x().onTrue(new ElevatorGetPosition(elevator));
         RobotConstants.driverController.a().toggleOnTrue(new ElevatorTestSingleButton(elevator, true));
@@ -129,6 +114,27 @@ public class RobotContainer {
                     }
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
+
+        /*
+        Move left joystick up and down to move elevator
+        Press y to switch between joystick operating swerve and elevator
+        Press x to get elevator's current motor position
+        Press a/b to move elevator up/down, press again to stop
+         */
+        RobotConstants.driverController.y().onTrue(Commands.runOnce(
+                () -> {
+                    if (elevator.getDefaultCommand() != null) {
+                        elevator.removeDefaultCommand();
+                    } else {
+                        elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-RobotConstants.driverController.getLeftY(), 0.1)));
+                    }
+                }
+        ));
+
+        RobotConstants.operatorController.a().onTrue(new ElevatorCommand(elevator, 1));
+        RobotConstants.operatorController.b().onTrue(new ElevatorCommand(elevator, 2));
+        RobotConstants.operatorController.x().onTrue(new ElevatorCommand(elevator, 3));
+        RobotConstants.operatorController.y().onTrue(new ElevatorCommand(elevator, 4));
     }
 
     /**

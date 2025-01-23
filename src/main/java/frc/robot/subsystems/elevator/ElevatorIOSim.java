@@ -86,4 +86,7 @@ public class ElevatorIOSim implements ElevatorIO {
     public double getElevatorPosition() {
         return leftElevatorTalonSim.getAngularPositionRotations();
     };
+
+    public void brake() {
+    }
 }

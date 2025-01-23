@@ -138,6 +138,13 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         leftElevatorTalon.setControl(request.withPosition(position));
     }
 
+    public void brake() {
+        double leftPos = leftElevatorTalon.getPosition().getValueAsDouble();
+        double rightPos = rightElevatorTalon.getPosition().getValueAsDouble();
+        leftElevatorTalon.setPosition(leftPos);
+        rightElevatorTalon.setPosition(rightPos);
+    }
+
     @Override
     public double getVelocity() {
         return rightElevatorVelocity.getValueAsDouble() * 60;

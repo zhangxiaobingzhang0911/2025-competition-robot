@@ -190,11 +190,10 @@ public final class RobotConstants {
                 .withFeedbackSource(LegacySwerveModuleConstants.SteerFeedbackType.SyncCANcoder)
                 .withCouplingGearRatio(COUPLE_RATIO)
                 .withSteerMotorInverted(STEER_MOTOR_REVERSED);
-        //Front Left
-        private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
-        private static final int FRONT_LEFT_STEER_MOTOR_ID = 0;
-        private static final int FRONT_LEFT_ENCODER_ID = 2;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = -0.37451171875;// 0.052955;//0.127686//0.5329550781
+        private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 8;
+        private static final int FRONT_LEFT_STEER_MOTOR_ID = 7;
+        private static final int FRONT_LEFT_ENCODER_ID = 20;
+        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.4609375; //-0.37451171875;// 0.052955;//0.127686//0.5329550781
         private static final Measure<DistanceUnit> frontLeftXPos = Meters.of(0.127);
         private static final Measure<DistanceUnit> frontLeftYPos = Meters.of(0.247);
         public static final LegacySwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
@@ -206,10 +205,10 @@ public final class RobotConstants {
                 frontLeftYPos.magnitude(),
                 false);
         // Front Right
-        private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 4;
-        private static final int FRONT_RIGHT_STEER_MOTOR_ID = 3;
-        private static final int FRONT_RIGHT_ENCODER_ID = 5;
-        private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.119385;// 0.125685;//0.13623046875//0.117686//0.046875
+        private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
+        private static final int FRONT_RIGHT_STEER_MOTOR_ID = 1;
+        private static final int FRONT_RIGHT_ENCODER_ID = 0;
+        private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.3500976; //-0.119385;// 0.125685;//0.13623046875//0.117686//0.046875
         private static final Measure<DistanceUnit> frontRightXPos = Meters.of(0.127);
         private static final Measure<DistanceUnit> frontRightYPos = Meters.of(-0.247);
         public static final LegacySwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
@@ -221,10 +220,10 @@ public final class RobotConstants {
                 frontRightYPos.magnitude(),
                 true);
         // Back Left
-        private static final int BACK_LEFT_DRIVE_MOTOR_ID = 7;
-        private static final int BACK_LEFT_STEER_MOTOR_ID = 6;
-        private static final int BACK_LEFT_ENCODER_ID = 8;
-        private static final double BACK_LEFT_ENCODER_OFFSET = -0.310302734375;// 0.773925;//-0.223//0.401611//0.77392578125
+        private static final int BACK_LEFT_DRIVE_MOTOR_ID = 6;
+        private static final int BACK_LEFT_STEER_MOTOR_ID = 5;
+        private static final int BACK_LEFT_ENCODER_ID = 11;
+        private static final double BACK_LEFT_ENCODER_OFFSET = -0.420166; // -0.310302734375;// 0.773925;//-0.223//0.401611//0.77392578125
         private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.180);
         private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.247);
         public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
@@ -236,10 +235,10 @@ public final class RobotConstants {
                 backLeftYPos.magnitude(),
                 false);
         // Back Right
-        private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 10;
-        private static final int BACK_RIGHT_STEER_MOTOR_ID = 9;
-        private static final int BACK_RIGHT_ENCODER_ID = 11;
-        private static final double BACK_RIGHT_ENCODER_OFFSET = -0.151611;// 0.422119;//-0.5684550781//-0.064453//0.432279296875
+        private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 4;
+        private static final int BACK_RIGHT_STEER_MOTOR_ID = 3;
+        private static final int BACK_RIGHT_ENCODER_ID = 10;
+        private static final double BACK_RIGHT_ENCODER_OFFSET = -0.458007;//-0.151611;// 0.422119;//-0.5684550781//-0.064453//0.432279296875
         private static final Measure<DistanceUnit> backRightXPos = Meters.of(-0.180);
         private static final Measure<DistanceUnit> backRightYPos = Meters.of(-0.247);
         public static final LegacySwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
@@ -332,8 +331,8 @@ public final class RobotConstants {
      * Constants related to the elevator subsystem.
      */
     public static final class ElevatorConstants {
-        public static final int LEFT_ELEVATOR_MOTOR_ID = 51;
-        public static final int RIGHT_ELEVATOR_MOTOR_ID = 50;
+        public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
+        public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
 
         public static final Measure<VoltageUnit> elevatorConstantVoltage = Volts.of(-4);
         public static final TunableNumber skewValue = new TunableNumber("Elevator skew", 0);

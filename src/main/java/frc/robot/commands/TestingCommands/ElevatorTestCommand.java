@@ -11,7 +11,7 @@ import static edu.wpi.first.units.Units.Volts;
 public class ElevatorTestCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
     private DoubleSupplier speedRatio;
-    private double maxSpeedRPM = 500;
+    private double maxSpeedRPM = 1200;
 
     public ElevatorTestCommand(ElevatorSubsystem elevatorSubsystem, DoubleSupplier speedRatio) {
         this.elevatorSubsystem = elevatorSubsystem;

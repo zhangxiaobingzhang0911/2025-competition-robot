@@ -41,6 +41,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Getter @Setter
     private WantedState wantedState = WantedState.IDLE;
 
+    @Setter
     private int targetLevel;
 
     public ElevatorSubsystem(ElevatorIO io) {
@@ -74,6 +75,8 @@ public class ElevatorSubsystem extends SubsystemBase {
             case MOVE_TO_TARGET -> {
                 if (this.systemState == SystemState.ANCHORED) {
                     yield SystemState.ANCHORED;
+                } else if (this.getIo().getElevatorPosition() == this.targetPositions[this.targetLevel]) {
+                    yield SystemState.IDLING;
                 }
                 yield SystemState.MOVING_TO_TARGET;
             }

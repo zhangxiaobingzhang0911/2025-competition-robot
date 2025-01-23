@@ -31,6 +31,7 @@ subgraph elevator
         ewi[wanted: idle] --> esi[system: idling]
         ewm[wanted: moveToTarget] --"system: idle"-->esm[system: movingToTarget]
         ewm --"system: anchored"--> esa[system: anchored]
+        ewm --"system: not anchored **and** currentPos = targetPos"--> esi
         ewa[wanted: anchored] --> esa
     end
 

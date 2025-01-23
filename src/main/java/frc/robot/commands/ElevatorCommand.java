@@ -13,8 +13,6 @@ import static edu.wpi.first.units.Units.Volts;
 public class ElevatorCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
     private int level; // level = 0 to restore to starting position
-    private double relativePosition;
-    private double absolutePosition;
     private boolean isFinished;
 
     public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, int level) {
@@ -31,14 +29,6 @@ public class ElevatorCommand extends Command {
      */
     @Override
     public void initialize() {
-       this.relativePosition = new double[]{
-               0,
-               RobotConstants.ElevatorConstants.l1Position,
-               RobotConstants.ElevatorConstants.l2Position,
-               RobotConstants.ElevatorConstants.l3Position,
-               RobotConstants.ElevatorConstants.l4Position
-       }[this.level];
-       this.absolutePosition = this.elevatorSubsystem.getStartingPosition() + this.relativePosition;
     }
 
     /**
@@ -47,8 +37,8 @@ public class ElevatorCommand extends Command {
      */
     @Override
     public void execute() {
-       this.elevatorSubsystem.getIo().setElevatorPosition(this.absolutePosition);
-       this.isFinished = true;
+        this.elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.MOVE_TO_TARGET);
+        this.elevatorSubsystem.setTargetLevel(this.level);
     }
 
     /**

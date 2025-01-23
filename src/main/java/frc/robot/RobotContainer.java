@@ -66,16 +66,21 @@ public class RobotContainer {
                 display);
         updateManager.registerAll();
 
-//        configureBindings();
+        configureBindings();
 
         /*
         Move left joystick up and down to move elevator
         Press x to get elevator's current motor position
         Press a/b to move elevator up/down, press again to stop
          */
-        elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-RobotConstants.driverController.getLeftY(), 0.1)));
+//        RobotConstants.driverController.y().onTrue(Commands.runOnce(
+//                () -> {
+//                    if ()
+//                }
+//        ))
+//
+//        elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-RobotConstants.driverController.getLeftY(), 0.1)));
         RobotConstants.driverController.x().onTrue(new ElevatorGetPosition(elevator));
-        RobotConstants.driverController.y().onTrue(new ElevatorCommand(elevator, 2));
         RobotConstants.driverController.a().toggleOnTrue(new ElevatorTestSingleButton(elevator, true));
         RobotConstants.driverController.b().toggleOnTrue(new ElevatorTestSingleButton(elevator, false));
     }

@@ -7,10 +7,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -25,8 +22,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.RobotConstants;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.RobotConstants.ElevatorConstants.LEFT_ELEVATOR_MOTOR_ID;
-import static frc.robot.RobotConstants.ElevatorConstants.RIGHT_ELEVATOR_MOTOR_ID;
+import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
     private final TalonFX leftElevatorTalon = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, RobotConstants.CAN_BUS_NAME);
@@ -134,8 +130,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     }
 
     public void setElevatorPosition(double position) {
-        MotionMagicVoltage request = new MotionMagicVoltage(leftElevatorTalon.getPosition().getValueAsDouble());
-        leftElevatorTalon.setControl(request.withPosition(position));
+        PositionVoltage request = new PositionVoltage(0).withSlot(0);
+        leftElevatorTalon.setControl(request.withPosition(position).withVelocity(elevatorMotorRPS));
     }
 
     public void brake() {

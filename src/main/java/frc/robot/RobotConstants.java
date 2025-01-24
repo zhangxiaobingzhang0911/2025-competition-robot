@@ -22,6 +22,8 @@ import frc.robot.utils.TunableNumber;
 
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 
+import javax.swing.text.Position;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -356,7 +358,15 @@ public final class RobotConstants {
         }
         
         // Constants for elevator level positions relative to starting position. Todo: tune all constants below
-        public static final double l1Position = 100;
+        public static final double[] Position = new double[]{0,
+            20,//L1
+            200,//L2
+            300,//L3
+            400,//L4
+            500//Highest
+        };
+
+        public static final double l1Position = 20;
         public static final double l2Position = 200;
         public static final double l3Position = 300;
         public static final double l4Position = 400;

@@ -121,15 +121,15 @@ public class RobotContainer {
         Press x to get elevator's current motor position
         Press a/b to move elevator up/down, press again to stop
          */
-        RobotConstants.driverController.y().onTrue(Commands.runOnce(
-                () -> {
-                    if (elevator.getDefaultCommand() != null) {
-                        elevator.removeDefaultCommand();
-                    } else {
-                        elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-RobotConstants.driverController.getLeftY(), 0.1)));
-                    }
-                }
-        ));
+//        RobotConstants.driverController.y().onTrue(Commands.runOnce(
+//                () -> {
+//                    if (elevator.getDefaultCommand() != null) {
+//                        elevator.removeDefaultCommand();
+//                    } else {
+//                        elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-RobotConstants.driverController.getLeftY(), 0.1)));
+//                    }
+//                }
+//        ));
 
         RobotConstants.operatorController.a().onTrue(new ElevatorCommand(elevator, 1));
         RobotConstants.operatorController.b().onTrue(new ElevatorCommand(elevator, 2));

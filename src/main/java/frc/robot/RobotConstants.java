@@ -371,6 +371,24 @@ public final class RobotConstants {
         public static final double l3Position = 300;
         public static final double l4Position = 400;
         public static final double highestPosition = 500;
-    
-}
+    }
+
+    public static class ShooterConstants {
+        public static final int SHOOTER_MOTOR_ID = 21;
+
+        public static final Measure<VoltageUnit> shooterConstantVoltage = Volts.of(-4);
+        public static final TunableNumber skewValue = new TunableNumber("Shooter skew", 0);
+        public static double kToFFactor = 0.2;
+        public static boolean useSmartDashboardForSkew = false;
+        public static boolean useShootOnMove = false;
+
+        public static class shooterGainsClass {
+            public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.2);
+            public static final TunableNumber SHOOTER_KI = new TunableNumber("SHOOTER PID/ki", 0);
+            public static final TunableNumber SHOOTER_KD = new TunableNumber("SHOOTER PID/kd", 0.001);
+            public static final TunableNumber SHOOTER_KA = new TunableNumber("SHOOTER PID/ka", 0.0037512677);
+            public static final TunableNumber SHOOTER_KV = new TunableNumber("SHOOTER PID/kv", 0.113);// 0.107853495
+            public static final TunableNumber SHOOTER_KS = new TunableNumber("SHOOTER PID/ks", 0.28475008);
+        }
+    }
 }

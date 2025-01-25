@@ -14,10 +14,12 @@ import static frc.robot.RobotConstants.ShooterConstants.shooterConstantVoltage;
 public class ShooterSubsystem extends SubsystemBase {
     private final ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+    private final SysIdRoutine sysId;
 
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
         this.io.setFlyWheelDirectVoltage(shooterConstantVoltage);
+        
 
         // Configure SysId
         sysId =

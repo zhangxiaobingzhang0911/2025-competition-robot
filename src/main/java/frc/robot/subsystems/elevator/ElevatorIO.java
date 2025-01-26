@@ -9,13 +9,13 @@ import static edu.wpi.first.units.Units.*;
 public interface ElevatorIO {
     void updateInputs(ElevatorIOInputs inputs);
 
-    void setElevatorDirectVoltage(Measure<VoltageUnit> volts);
+    void setElevatorDirectVoltage(double volts);
 
     void setElevatorVelocity(double velocityRPM);
 
     void setElevatorPosition(double position);
 
-    void setElevatorTarget(double target);
+    void setElevatorTarget(double meters);
 
     void brake();
 

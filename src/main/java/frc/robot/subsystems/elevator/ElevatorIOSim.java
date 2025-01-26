@@ -48,11 +48,7 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
-    public void setElevatorDirectVoltage(Measure<VoltageUnit> volts) {
-        leftElevatorAppliedVoltage = volts;
-        rightElevatorAppliedVoltage = volts;
-        leftElevatorTalonSim.setInputVoltage(volts.magnitude());
-        rightElevatorTalonSim.setInputVoltage(volts.magnitude());
+    public void setElevatorDirectVoltage(double volts) {
     }
 
     public void setElevatorVelocity(double velocityRPM, double ffVoltage) {

@@ -105,8 +105,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     }
 
     @Override
-    public void setElevatorDirectVoltage(Measure<VoltageUnit> volts) {
-        leftElevatorTalon.setControl(new VoltageOut(volts.magnitude()));
+    public void setElevatorDirectVoltage(double volts) {
+        leftElevatorTalon.setControl(new VoltageOut(volts));
     }
 
     @Override

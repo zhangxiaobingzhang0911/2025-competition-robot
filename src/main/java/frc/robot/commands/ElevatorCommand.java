@@ -11,13 +11,11 @@ import static edu.wpi.first.units.Units.Volts;
 
 
 public class ElevatorCommand extends Command {
-    private final ElevatorSubsystem elevatorSubsystem;
     private int levels;
-
-    public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, int levels) {
+    private ElevatorSubsystem elevatorSubsystem;
+    public ElevatorCommand(ElevatorSubsystem elevatorSubsystem,int levels){
         this.elevatorSubsystem = elevatorSubsystem;
         this.levels = levels;
-        addRequirements(elevatorSubsystem);
     }
 
     @Override

@@ -68,11 +68,6 @@ public class RobotContainer {
         updateManager.registerAll();
 
         configureBindings();
-
-
-        RobotConstants.driverController.x().onTrue(new ElevatorGetPosition(elevator));
-        RobotConstants.driverController.a().toggleOnTrue(new ElevatorTestSingleButton(elevator, true));
-        RobotConstants.driverController.b().toggleOnTrue(new ElevatorTestSingleButton(elevator, false));
     }
 
     /**

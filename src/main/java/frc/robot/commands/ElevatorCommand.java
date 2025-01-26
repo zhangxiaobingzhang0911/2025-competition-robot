@@ -1,35 +1,22 @@
 package frc.robot.commands;
 
-import edu.wpi.first.units.VoltageUnit;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotConstants;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.*;
 
-import java.lang.annotation.Target;
-
-import static edu.wpi.first.units.Units.Volts;
-
-
-public class ElevatorCommand extends Command {
-    private int levels;
+public class ElevatorCommand extends Command{
+    private DoubleSupplier position;
     private ElevatorSubsystem elevatorSubsystem;
-    public ElevatorCommand(ElevatorSubsystem elevatorSubsystem,int levels){
+
+    public ElevatorCommand(DoubleSupplier position,ElevatorSubsystem elevatorSubsystem){
+        this.position = position;
         this.elevatorSubsystem = elevatorSubsystem;
-        this.levels = levels;
+        addRequirements(elevatorSubsystem);
     }
 
     @Override
-    public void execute() {
-        elevatorSubsystem.getIo().setElevatorTarget(RobotConstants.ElevatorConstants.Position[levels]);
-    }
-
-    /*@Override
-    public boolean isFinished() {
-       //undo: finish if the elevator is out of the maximum range
-    }*/
-
-    @Override
-    public void end(boolean interrupted) {
-        elevatorSubsystem.getIo().brake();
+    public void execute(){
+        elevatorSubsystem.getIo().setElevatorTarget(position.getAsDouble());
     }
 }

@@ -23,6 +23,7 @@ public interface ElevatorIO {
 
     double getElevatorPosition();
 
+    boolean isNearExtension(double expected);
 
 
 

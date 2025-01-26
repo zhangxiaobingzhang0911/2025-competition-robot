@@ -21,8 +21,10 @@ import frc.robot.commands.ElevatorDownCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
+import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.commands.*;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
 
@@ -51,7 +53,7 @@ public class RobotContainer {
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
-    ElevatorSubsystem elevatorSubsystem;
+    ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
     double lastResetTime = 0.0;
 
     // The robot's subsystems and commands are defined here...
@@ -124,11 +126,37 @@ public class RobotContainer {
 //                }
 //        ));
 
-        RobotConstants.operatorController.a().onTrue(new ElevatorCommand(elevatorSubsystem, 1));
-        RobotConstants.operatorController.b().onTrue(new ElevatorCommand(elevatorSubsystem, 2));
-        RobotConstants.operatorController.x().onTrue(new ElevatorCommand(elevatorSubsystem, 3));
-        RobotConstants.operatorController.y().onTrue(new ElevatorCommand(elevatorSubsystem, 4));
+        RobotConstants.operatorController.y().onTrue( //L1
+                        Commands.parallel(
+                                new ElevatorCommand(() -> RobotConstants.ElevatorConstants.Position[1], elevatorSubsystem),
+                                Commands.waitUntil(() -> elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.Position[1])))
+                );
+
+        RobotConstants.operatorController.b().onTrue( //L2
+                        Commands.parallel(
+                                new ElevatorCommand(() -> RobotConstants.ElevatorConstants.Position[2], elevatorSubsystem),
+                                Commands.waitUntil(() -> elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.Position[2])))
+                );
+
+        RobotConstants.operatorController.a().onTrue( //L3
+                        Commands.parallel(
+                                new ElevatorCommand(() -> RobotConstants.ElevatorConstants.Position[3], elevatorSubsystem),
+                                Commands.waitUntil(() -> elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.Position[3]))
+                        )
+                );
+
+        RobotConstants.operatorController.x().onTrue( //L4
+                        Commands.parallel(
+                                new ElevatorCommand(() -> RobotConstants.ElevatorConstants.Position[4], elevatorSubsystem),
+                                Commands.waitUntil(() -> elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.Position[4])))
+                );
+
+        RobotConstants.operatorController.rightBumper().onTrue(
+                new ElevatorCommand(()->0,elevatorSubsystem).until(() -> elevatorSubsystem.getIo().isNearExtension(0.0))
+        );
+
         RobotConstants.operatorController.rightTrigger().whileTrue(new ElevatorDownCommand(elevatorSubsystem));
+        RobotConstants.operatorController.leftTrigger().whileTrue(new ElevatorUpCommand(elevatorSubsystem));
     }
 
     /**

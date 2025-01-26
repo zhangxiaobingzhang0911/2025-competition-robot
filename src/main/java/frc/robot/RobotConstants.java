@@ -42,6 +42,7 @@ public final class RobotConstants {
     public static final CommandXboxController operatorController = new CommandXboxController(1);
     //canbus name
     public static String CAN_BUS_NAME = "rio";
+    public static String CANIVORE_CAN_BUS_NAME = "10541Canivore0";
 
     /**
      * Constants related to the robot's indicators, such as LEDs.
@@ -360,10 +361,10 @@ public final class RobotConstants {
         // Constants for elevator level positions relative to starting position. Todo: tune all constants below
         public static final double[] Position = new double[]{0,
                 0.0,//L1
-                0.0254*(8.7),//L2
-                0.0254*(26.0),//L3
-                0.0254*(50.3),//L4
-                0.0254*(51.8)//Highest
+                8.7,//L2
+                26.0,//L3
+                50.3,//L4
+                51.8//Highest
         };
     }
 }

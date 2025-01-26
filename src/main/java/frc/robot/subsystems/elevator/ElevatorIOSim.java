@@ -1,6 +1,7 @@
 package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
@@ -53,6 +54,11 @@ public class ElevatorIOSim implements ElevatorIO {
 
     public void setElevatorVelocity(double velocityRPM, double ffVoltage) {
         setElevatorVelocity(velocityRPM);
+    }
+
+    @Override
+    public boolean isNearExtension(double expected) {
+        return true;
     }
 
     @Override

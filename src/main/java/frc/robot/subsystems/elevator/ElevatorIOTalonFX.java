@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.StateSpaceUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
@@ -28,9 +29,9 @@ import static frc.robot.RobotConstants.ElevatorConstants.*;
 public class ElevatorIOTalonFX implements ElevatorIO {
     private final MotionMagicVoltage positionVoltage =
             new MotionMagicVoltage(0.0).withEnableFOC(true);
-    private final TalonFX leftElevatorTalon = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, RobotConstants.CAN_BUS_NAME);
+    private final TalonFX leftElevatorTalon = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
     private final TalonFX rightElevatorTalon = new TalonFX(RIGHT_ELEVATOR_MOTOR_ID,
-            RobotConstants.CAN_BUS_NAME);
+            RobotConstants.CANIVORE_CAN_BUS_NAME);
     private final StatusSignal<AngularVelocity> leftElevatorVelocity = leftElevatorTalon.getVelocity();
     private final StatusSignal<Angle> leftElevatorPosition = leftElevatorTalon.getPosition();
     private final StatusSignal<Voltage> leftElevatorAppliedVoltage = leftElevatorTalon.getMotorVoltage();
@@ -54,7 +55,10 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         MotionMagicConfigs mmConfigs = elevatorMotorConfig.MotionMagic;
         mmConfigs.MotionMagicCruiseVelocity = RobotConstants.ElevatorConstants.elevatorMotorRPS;
         mmConfigs.MotionMagicAcceleration = RobotConstants.ElevatorConstants.elevatorMotorAccel;
+        leftElevatorTalon.setPosition(0.0);
+        rightElevatorTalon.setPosition(0.0);
         leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
+        rightElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
 
         StatusCode response = leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
         if (response.isError())
@@ -143,6 +147,11 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         double rightPos = rightElevatorTalon.getPosition().getValueAsDouble();
         leftElevatorTalon.setPosition(leftPos);
         rightElevatorTalon.setPosition(rightPos);
+    }
+
+    @Override
+    public boolean isNearExtension(double expected) {
+        return MathUtil.isNear(expected, leftElevatorTalon.getPosition().getValueAsDouble(), 0.02);
     }
 
     @Override

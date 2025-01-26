@@ -336,7 +336,7 @@ public final class RobotConstants {
         public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
         public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
 
-        public static final Measure<VoltageUnit> elevatorConstantVoltage = Volts.of(-4);
+        public static final Measure<VoltageUnit> elevatorDownVoltage = Volts.of(1);
         public static final TunableNumber skewValue = new TunableNumber("Elevator skew", 0);
         public static double kToFFactor = 0.2;
         public static boolean useSmartDashboardForSkew = false;
@@ -359,18 +359,11 @@ public final class RobotConstants {
         
         // Constants for elevator level positions relative to starting position. Todo: tune all constants below
         public static final double[] Position = new double[]{0,
-            20,//L1
-            200,//L2
-            300,//L3
-            400,//L4
-            500//Highest
+                0.0,//L1
+                0.0254*(8.7),//L2
+                0.0254*(26.0),//L3
+                0.0254*(50.3),//L4
+                0.0254*(51.8)//Highest
         };
-
-        public static final double l1Position = 20;
-        public static final double l2Position = 200;
-        public static final double l3Position = 300;
-        public static final double l4Position = 400;
-        public static final double highestPosition = 500;
-    
-}
+    }
 }

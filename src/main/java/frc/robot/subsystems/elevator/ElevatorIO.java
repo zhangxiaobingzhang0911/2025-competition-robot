@@ -11,19 +11,19 @@ public interface ElevatorIO {
 
     void setElevatorDirectVoltage(Measure<VoltageUnit> volts);
 
-    void setElevatorVelocity(double velocityRPM, double ffVoltage);
-
     void setElevatorVelocity(double velocityRPM);
 
     void setElevatorPosition(double position);
 
-    void runVolts(double volts);
+    void setElevatorTarget(double target);
+
+    void brake();
 
     double getVelocity();
 
     double getElevatorPosition();
 
-    void brake();
+
 
 
     @AutoLog

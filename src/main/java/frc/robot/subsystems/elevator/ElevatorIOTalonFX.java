@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.StateSpaceUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
@@ -25,6 +26,8 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
+    private final MotionMagicVoltage positionVoltage =
+            new MotionMagicVoltage(0.0).withEnableFOC(true);
     private final TalonFX leftElevatorTalon = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, RobotConstants.CAN_BUS_NAME);
     private final TalonFX rightElevatorTalon = new TalonFX(RIGHT_ELEVATOR_MOTOR_ID,
             RobotConstants.CAN_BUS_NAME);
@@ -40,16 +43,19 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     public ElevatorIOTalonFX() {
         TalonFXConfiguration elevatorMotorConfig = new TalonFXConfiguration();
+
         elevatorMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
         elevatorMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         elevatorMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         elevatorMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         elevatorMotorConfig.Feedback.SensorToMechanismRatio = 1;
         elevatorMotorConfig.MotorOutput.Inverted = RobotConstants.ElevatorConstants.leftMotorClockwise ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+
         MotionMagicConfigs mmConfigs = elevatorMotorConfig.MotionMagic;
         mmConfigs.MotionMagicCruiseVelocity = RobotConstants.ElevatorConstants.elevatorMotorRPS;
         mmConfigs.MotionMagicAcceleration = RobotConstants.ElevatorConstants.elevatorMotorAccel;
         leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
+
         StatusCode response = leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
         if (response.isError())
             System.out.println("Left Elevator TalonFX failed config with error" + response);
@@ -57,14 +63,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         if (response.isError())
             System.out.println("Left Elevator TalonFX failed sticky fault clearing with error" + response);
         rightElevatorTalon.setControl(new Follower(leftElevatorTalon.getDeviceID(), true));
-//        response = rightElevatorTalon.getConfigurator().apply(ElevatorMotorConfig);
-//        if (response.isError())
-//            System.out.println("Right Elevator TalonFX failed config with error" + response);
-//        response = rightElevatorTalon.clearStickyFaults();
-//        if (response.isError())
-//            System.out.println("Right Elevator TalonFX failed sticky fault clearing with error" + response);
-//        rightElevatorTalon.setControl(new Follower(leftElevatorTalon.getDeviceID(),
-//                true));
     }
 
     public void runVolts(double volts) {
@@ -120,7 +118,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         targetElevatorVelocity = velocityRadPerSec;
     }
 
-    @Override
     public void setElevatorVelocity(double velocityRPM, double ffVoltage) {
         double velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(velocityRPM);
         leftElevatorTalon.setControl(new VelocityVoltage(
@@ -129,11 +126,18 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         targetElevatorVelocity = velocityRadPerSec;
     }
 
+    @Override
     public void setElevatorPosition(double position) {
         PositionVoltage request = new PositionVoltage(0).withSlot(0);
         leftElevatorTalon.setControl(request.withPosition(position).withVelocity(elevatorMotorRPS));
     }
 
+    @Override
+    public void setElevatorTarget(double meters) {
+        leftElevatorTalon.setControl(positionVoltage.withPosition(meters));
+    }
+
+    @Override
     public void brake() {
         double leftPos = leftElevatorTalon.getPosition().getValueAsDouble();
         double rightPos = rightElevatorTalon.getPosition().getValueAsDouble();
@@ -149,5 +153,4 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     public double getElevatorPosition() {
         return leftElevatorTalon.getPosition().getValueAsDouble();
     }
-
 }

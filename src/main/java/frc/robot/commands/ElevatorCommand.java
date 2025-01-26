@@ -12,42 +12,26 @@ import static edu.wpi.first.units.Units.Volts;
 
 public class ElevatorCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
-    private int level; // level = 0 to restore to starting position
-    private boolean isFinished;
+    private int levels;
 
-    public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, int level) {
+    public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, int levels) {
         this.elevatorSubsystem = elevatorSubsystem;
-        // each subsystem used by the command must be passed into the
-        // addRequirements() method (which takes a vararg of Subsystem)
-        addRequirements(this.elevatorSubsystem);
-        this.level = level;
-        this.isFinished = false;
+        this.levels = levels;
+        addRequirements(elevatorSubsystem);
     }
 
-    /**
-     * The initial subroutine of a command.  Called once when the command is initially scheduled.
-     */
-    @Override
-    public void initialize() {
-    }
-
-    /**
-     * The main body of a command.  Called repeatedly while the command is scheduled.
-     * (That is, it is called repeatedly until {@link #isFinished()}) returns true.)
-     */
     @Override
     public void execute() {
-        elevatorSubsystem.setWantedState(ElevatorSubsystem.WantedState.MOVE_TO_TARGET);
-        elevatorSubsystem.getIo().setElevatorPosition(RobotConstants.ElevatorConstants.Position[level]);
+        elevatorSubsystem.getIo().setElevatorTarget(RobotConstants.ElevatorConstants.Position[levels]);
     }
 
-    @Override
+    /*@Override
     public boolean isFinished() {
-        return (elevatorSubsystem.getIo().getElevatorPosition() >= RobotConstants.ElevatorConstants.highestPosition + elevatorSubsystem.getStartingPosition()) || isFinished;
-    }
+       //undo: finish if the elevator is out of the maximum range
+    }*/
 
     @Override
     public void end(boolean interrupted) {
-        elevatorSubsystem.getIo().setElevatorDirectVoltage(Volts.of(0));
+        elevatorSubsystem.getIo().brake();
     }
 }

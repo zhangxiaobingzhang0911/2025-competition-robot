@@ -1,19 +1,18 @@
-package frc.robot.commands;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-public class ElevatorDownCommand extends Command{
+public class ElevatorUpCommand extends Command{
     private ElevatorSubsystem elevatorSubsystem;
-    public ElevatorDownCommand(ElevatorSubsystem elevatorSubsystem){
+    public ElevatorUpCommand(ElevatorSubsystem elevatorSubsystem){
         this.elevatorSubsystem = elevatorSubsystem;
 
     }
 
     @Override
     public void execute(){
-        elevatorSubsystem.getIo().setElevatorDirectVoltage(-1);
+        elevatorSubsystem.getIo().setElevatorDirectVoltage(1);
     }
 
     @Override

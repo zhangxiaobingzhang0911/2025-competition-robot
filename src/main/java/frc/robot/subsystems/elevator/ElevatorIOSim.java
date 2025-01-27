@@ -52,45 +52,22 @@ public class ElevatorIOSim implements ElevatorIO {
     public void setElevatorDirectVoltage(double volts) {
     }
 
-    public void setElevatorVelocity(double velocityRPM, double ffVoltage) {
-        setElevatorVelocity(velocityRPM);
-    }
-
     @Override
     public boolean isNearExtension(double expected) {
         return true;
     }
 
     @Override
-    public void setElevatorVelocity(double velocityRPM) {
-        leftElevatorTalonSim.setState(0, velocityRPM);
-        targetElevatorVelocity = RadiansPerSecond.of(velocityRPM / 60);
-    }
-
-    @Override
     public void setElevatorTarget(double meters) {
-
     }
 
     @Override
-    public void setElevatorPosition(double position) {
-        // Refine this method here for smoother simulation if needed
-        double positionDiffInTurns = position - leftElevatorTalonSim.getAngularPositionRotations();
-        leftElevatorTalonSim.setState(positionDiffInTurns * 2 * Math.PI, 0);
+    public double getElevatorPosition() {
+        return leftElevatorTalonSim.getAngularPositionRad();
     }
 
     @Override
     public double getVelocity() {
         return rightElevatorTalonSim.getAngularVelocityRadPerSec() / 6.28 * 60;
-    }
-
-    @Override
-    public double getElevatorPosition() {
-        return leftElevatorTalonSim.getAngularPositionRotations();
-    };
-
-    @Override
-    public void brake(){
-
     }
 }

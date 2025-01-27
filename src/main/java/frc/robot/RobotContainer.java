@@ -15,16 +15,16 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.elevator.ElevatorCommand;
 import frc.robot.commands.RumbleCommand;
-import frc.robot.commands.ElevatorDownCommand;
+import frc.robot.commands.elevator.ElevatorDownCommand;
+import frc.robot.commands.elevator.ElevatorUpCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.commands.*;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
 
@@ -152,7 +152,10 @@ public class RobotContainer {
                 );
 
         RobotConstants.operatorController.rightBumper().onTrue(
-                new ElevatorCommand(()->0,elevatorSubsystem).until(() -> elevatorSubsystem.getIo().isNearExtension(0.0))
+                Commands.sequence(
+                        new ElevatorCommand(()->0,elevatorSubsystem).until(() -> elevatorSubsystem.getIo().isNearExtension(0.0)),
+                        new RumbleCommand(Seconds.of(2),RobotConstants.operatorController.getHID())
+                )
         );
 
         RobotConstants.operatorController.rightTrigger().whileTrue(new ElevatorDownCommand(elevatorSubsystem));
@@ -174,10 +177,6 @@ public class RobotContainer {
                 AutoActions.followTrajectory(AutoActions.getTrajectory("T_4"), true, true)
         );
     }
-    private Command rumbleDriver(double seconds) {
-        return new RumbleCommand(Seconds.of(seconds), RobotConstants.driverController.getHID());
-    }
-
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
 //        if (aprilTagsSpeakerOnly.getAsBoolean()) {
@@ -189,12 +188,4 @@ public class RobotContainer {
 //        }
     }
 
-    // Deadband command to eliminate drifting
-    public static double deadBand(double value, double tolerance) {
-        if(value < tolerance && value > -tolerance) {
-            return 0;
-        } else {
-            return value;
-        }
-    }
 }

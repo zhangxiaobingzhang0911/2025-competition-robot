@@ -4,34 +4,32 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.*;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.StateSpaceUtil;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.VoltageUnit;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.measure.*;
+
 import frc.robot.RobotConstants;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.RobotConstants.ElevatorConstants.*;
 
+
 public class ElevatorIOTalonFX implements ElevatorIO {
-    private final MotionMagicVoltage positionVoltage =
-            new MotionMagicVoltage(0.0).withEnableFOC(true);
+    private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(0.0).withEnableFOC(true);
+
     private final TalonFX leftElevatorTalon = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
-    private final TalonFX rightElevatorTalon = new TalonFX(RIGHT_ELEVATOR_MOTOR_ID,
-            RobotConstants.CANIVORE_CAN_BUS_NAME);
+    private final TalonFX rightElevatorTalon = new TalonFX(RIGHT_ELEVATOR_MOTOR_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
+
     private final StatusSignal<AngularVelocity> leftElevatorVelocity = leftElevatorTalon.getVelocity();
     private final StatusSignal<Angle> leftElevatorPosition = leftElevatorTalon.getPosition();
     private final StatusSignal<Voltage> leftElevatorAppliedVoltage = leftElevatorTalon.getMotorVoltage();
@@ -44,7 +42,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     public ElevatorIOTalonFX() {
         TalonFXConfiguration elevatorMotorConfig = new TalonFXConfiguration();
-
         elevatorMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
         elevatorMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         elevatorMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
@@ -66,6 +63,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         response = leftElevatorTalon.clearStickyFaults();
         if (response.isError())
             System.out.println("Left Elevator TalonFX failed sticky fault clearing with error" + response);
+
         rightElevatorTalon.setControl(new Follower(leftElevatorTalon.getDeviceID(), true));
     }
 
@@ -85,14 +83,12 @@ public class ElevatorIOTalonFX implements ElevatorIO {
                 rightElevatorAppliedVoltage,
                 rightElevatorSupplyCurrent);
 
-        inputs.leftElevatorVelocity = RadiansPerSecond
-                .of(Units.rotationsToRadians(leftElevatorVelocity.getValueAsDouble()));
+        inputs.leftElevatorVelocity = RadiansPerSecond.of(Units.rotationsToRadians(leftElevatorVelocity.getValueAsDouble()));
         inputs.leftElevatorPosition = Radians.of(Units.rotationsToRadians(leftElevatorPosition.getValueAsDouble()));
         inputs.leftElevatorAppliedVoltage = Volts.of(leftElevatorAppliedVoltage.getValueAsDouble());
         inputs.leftElevatorSupplyCurrent = Amps.of(leftElevatorSupplyCurrent.getValueAsDouble());
 
-        inputs.rightElevatorVelocity = RadiansPerSecond
-                .of(Units.rotationsToRadians(rightElevatorVelocity.getValueAsDouble()));
+        inputs.rightElevatorVelocity = RadiansPerSecond.of(Units.rotationsToRadians(rightElevatorVelocity.getValueAsDouble()));
         inputs.rightElevatorPosition = Radians.of(Units.rotationsToRadians(rightElevatorPosition.getValueAsDouble()));
         inputs.rightElevatorAppliedVoltage = Volts.of(rightElevatorAppliedVoltage.getValueAsDouble());
         inputs.rightElevatorSupplyCurrent = Amps.of(rightElevatorSupplyCurrent.getValueAsDouble());
@@ -114,39 +110,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     }
 
     @Override
-    public void setElevatorVelocity(double velocityRPM) {
-        double velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(velocityRPM);
-        leftElevatorTalon.setControl(new VelocityVoltage(
-                Units.radiansToRotations(velocityRadPerSec)
-        ));
-        targetElevatorVelocity = velocityRadPerSec;
-    }
-
-    public void setElevatorVelocity(double velocityRPM, double ffVoltage) {
-        double velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(velocityRPM);
-        leftElevatorTalon.setControl(new VelocityVoltage(
-                Units.radiansToRotations(velocityRadPerSec)
-        ));
-        targetElevatorVelocity = velocityRadPerSec;
-    }
-
-    @Override
-    public void setElevatorPosition(double position) {
-        PositionVoltage request = new PositionVoltage(0).withSlot(0);
-        leftElevatorTalon.setControl(request.withPosition(position).withVelocity(elevatorMotorRPS));
-    }
-
-    @Override
     public void setElevatorTarget(double meters) {
         leftElevatorTalon.setControl(positionVoltage.withPosition(meters));
-    }
-
-    @Override
-    public void brake() {
-        double leftPos = leftElevatorTalon.getPosition().getValueAsDouble();
-        double rightPos = rightElevatorTalon.getPosition().getValueAsDouble();
-        leftElevatorTalon.setPosition(leftPos);
-        rightElevatorTalon.setPosition(rightPos);
     }
 
     @Override
@@ -155,11 +120,13 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     }
 
     @Override
-    public double getVelocity() {
-        return rightElevatorVelocity.getValueAsDouble() * 60;
-    }
-
     public double getElevatorPosition() {
         return leftElevatorTalon.getPosition().getValueAsDouble();
     }
+
+    @Override
+    public double getVelocity() {
+        return leftElevatorVelocity.getValueAsDouble() * 60;
+    }
+
 }

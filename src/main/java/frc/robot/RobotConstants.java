@@ -359,12 +359,13 @@ public final class RobotConstants {
         }
         
         // Constants for elevator level positions relative to starting position. Todo: tune all constants below
-        public static final double[] Position = new double[]{0,
-                0.0,//L1
-                8.7,//L2
-                26.0,//L3
-                50.3,//L4
-                51.8//Highest
+        public static final double[] Position = new double[]{
+                0.0,   //lowest
+                0.0,   //L1
+                8.7,   //L2
+                26.0,  //L3
+                50.3,  //L4
+                51.8   //highest
         };
     }
 }

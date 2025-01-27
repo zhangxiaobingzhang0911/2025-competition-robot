@@ -58,7 +58,7 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
-    public void setElevatorTarget(double meters) {
+    public void setElevatorTarget(double radians) {
     }
 
     @Override

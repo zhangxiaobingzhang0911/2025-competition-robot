@@ -67,10 +67,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         rightElevatorTalon.setControl(new Follower(leftElevatorTalon.getDeviceID(), true));
     }
 
-    public void runVolts(double volts) {
-        leftElevatorTalon.setControl(new VoltageOut(volts));
-    }
-
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
         BaseStatusSignal.refreshAll(
@@ -110,8 +106,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     }
 
     @Override
-    public void setElevatorTarget(double meters) {
-        leftElevatorTalon.setControl(positionVoltage.withPosition(meters));
+    public void setElevatorTarget(double radians) {
+        leftElevatorTalon.setControl(positionVoltage.withPosition(radians));
     }
 
     @Override

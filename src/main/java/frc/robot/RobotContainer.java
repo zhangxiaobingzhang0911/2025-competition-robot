@@ -135,7 +135,7 @@ public class RobotContainer {
                                 Commands.waitUntil(() -> elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.Position[4])))
                 );
 
-        RobotConstants.operatorController.rightBumper().onTrue(
+        RobotConstants.operatorController.rightBumper().onTrue( //REPOSITION
                 Commands.sequence(
                         new ElevatorCommand(()->0,elevatorSubsystem).until(() -> elevatorSubsystem.getIo().isNearExtension(0.0)),
                         new RumbleCommand(Seconds.of(2),RobotConstants.operatorController.getHID())

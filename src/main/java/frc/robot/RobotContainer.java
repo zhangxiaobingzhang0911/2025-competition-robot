@@ -15,15 +15,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.RumbleCommand;
-import frc.robot.commands.TestingCommands.ElevatorGetPosition;
-import frc.robot.commands.TestingCommands.ElevatorTestCommand;
-import frc.robot.commands.TestingCommands.ElevatorTestSingleButton;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
@@ -53,7 +48,6 @@ public class RobotContainer {
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
-    ElevatorSubsystem elevator;
     double lastResetTime = 0.0;
 
     // The robot's subsystems and commands are defined here...
@@ -67,11 +61,6 @@ public class RobotContainer {
         updateManager.registerAll();
 
         configureBindings();
-
-
-        RobotConstants.driverController.x().onTrue(new ElevatorGetPosition(elevator));
-        RobotConstants.driverController.a().toggleOnTrue(new ElevatorTestSingleButton(elevator, true));
-        RobotConstants.driverController.b().toggleOnTrue(new ElevatorTestSingleButton(elevator, false));
     }
 
     /**
@@ -130,11 +119,6 @@ public class RobotContainer {
 //                    }
 //                }
 //        ));
-
-        RobotConstants.operatorController.a().onTrue(new ElevatorCommand(elevator, 1));
-        RobotConstants.operatorController.b().onTrue(new ElevatorCommand(elevator, 2));
-        RobotConstants.operatorController.x().onTrue(new ElevatorCommand(elevator, 3));
-        RobotConstants.operatorController.y().onTrue(new ElevatorCommand(elevator, 4));
     }
 
     /**

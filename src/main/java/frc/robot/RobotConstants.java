@@ -311,7 +311,9 @@ public final class RobotConstants {
         public static final Transform2d tagRightToRobot = new Transform2d();
     }
     public static class BeamBreakConstants {
-        public static final int SHOOTER_BEAMBREAK_ID = 3;
+        //TODO: change beambreak ID
+        public static final int ENDEFFECTOR_HIGHERBEAMBREAK_ID = 3;
+        public static final int ENDEFFECTOR_LOWERBEAMBREAK_ID = 4;
         public static final int INTAKER_BEAMBREAK_ID = 2;
     }
 
@@ -348,6 +350,7 @@ public final class RobotConstants {
         /**
          * Constants for the elevator motor gains.
          */
+        //TODO test PID control
         public static class ElevatorGainsClass {
             public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 0.2);
             public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
@@ -373,22 +376,31 @@ public final class RobotConstants {
         public static final double highestPosition = 500;
     }
 
-    public static class ShooterConstants {
-        public static final int SHOOTER_MOTOR_ID = 21;
+    /**
+     * Constants related to the endeffector subsystem.
+     */
+    public static class EndEffectorConstants {
+        public static final int ENDEFFECTOR_MOTOR_ID = 31;
+        
+        // TODO test and change
+        public static final TunableNumber idlingRPS = new TunableNumber("EndEffector/idlingRPS", 0.0);
+        public static final TunableNumber intakingVoltage = new TunableNumber("EndEffector/intakingVoltage", 6);
+        public static final TunableNumber outtakingVoltage = new TunableNumber("EndEffector/outtakingVoltage", -6);
+        public static final TunableNumber indexingRPS = new TunableNumber("EndEffector/indexingRPS", 10.0);
+        public static final TunableNumber preShootingRPS = new TunableNumber("EndEffector/preShootingRPS", 0.0);
+        public static final TunableNumber ShootingVoltage = new TunableNumber("EndEffector/ShootingVoltage", 4.0);
 
-        public static final Measure<VoltageUnit> shooterConstantVoltage = Volts.of(-4);
-        public static final TunableNumber skewValue = new TunableNumber("Shooter skew", 0);
-        public static double kToFFactor = 0.2;
-        public static boolean useSmartDashboardForSkew = false;
-        public static boolean useShootOnMove = false;
-
-        public static class shooterGainsClass {
-            public static final TunableNumber SHOOTER_KP = new TunableNumber("SHOOTER PID/kp", 0.2);
-            public static final TunableNumber SHOOTER_KI = new TunableNumber("SHOOTER PID/ki", 0);
-            public static final TunableNumber SHOOTER_KD = new TunableNumber("SHOOTER PID/kd", 0.001);
-            public static final TunableNumber SHOOTER_KA = new TunableNumber("SHOOTER PID/ka", 0.0037512677);
-            public static final TunableNumber SHOOTER_KV = new TunableNumber("SHOOTER PID/kv", 0.113);// 0.107853495
-            public static final TunableNumber SHOOTER_KS = new TunableNumber("SHOOTER PID/ks", 0.28475008);
-        }
+        /**
+         * Constants for the endeffector motor gains.
+         */
+        //TODO test PID control
+        public static class EndEffectorGainsClass {
+                public static final TunableNumber ENDEFFECTOR_KP = new TunableNumber("ENDEFFECTOR PID/kp", 0.2);
+                public static final TunableNumber ENDEFFECTOR_KI = new TunableNumber("ENDEFFECTOR PID/ki", 0);
+                public static final TunableNumber ENDEFFECTOR_KD = new TunableNumber("ENDEFFECTOR PID/kd", 0.001);
+                public static final TunableNumber ENDEFFECTOR_KA = new TunableNumber("ENDEFFECTOR PID/ka", 0.0037512677);
+                public static final TunableNumber ENDEFFECTOR_KV = new TunableNumber("ENDEFFECTOR PID/kv", 0.113);// 0.107853495
+                public static final TunableNumber ENDEFFECTOR_KS = new TunableNumber("ENDEFFECTOR PID/ks", 0.28475008);
+            }
     }
 }

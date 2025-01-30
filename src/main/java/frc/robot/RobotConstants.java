@@ -203,11 +203,11 @@ public final class RobotConstants {
                                 .withFeedbackSource(LegacySwerveModuleConstants.SteerFeedbackType.SyncCANcoder)
                                 .withCouplingGearRatio(COUPLE_RATIO)
                                 .withSteerMotorInverted(STEER_MOTOR_REVERSED);
-                // Front Left
-                private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
-                private static final int FRONT_LEFT_STEER_MOTOR_ID = 0;
-                private static final int FRONT_LEFT_ENCODER_ID = 2;
-                private static final double FRONT_LEFT_ENCODER_OFFSET = -0.37451171875;// 0.052955;//0.127686//0.5329550781
+                private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 8;
+                private static final int FRONT_LEFT_STEER_MOTOR_ID = 7;
+                private static final int FRONT_LEFT_ENCODER_ID = 20;
+                private static final double FRONT_LEFT_ENCODER_OFFSET = 0.4609375; // -0.37451171875;//
+                                                                                   // 0.052955;//0.127686//0.5329550781
                 private static final Measure<DistanceUnit> frontLeftXPos = Meters.of(0.127);
                 private static final Measure<DistanceUnit> frontLeftYPos = Meters.of(0.247);
                 public static final LegacySwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
@@ -219,10 +219,11 @@ public final class RobotConstants {
                                 frontLeftYPos.magnitude(),
                                 false);
                 // Front Right
-                private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 4;
-                private static final int FRONT_RIGHT_STEER_MOTOR_ID = 3;
-                private static final int FRONT_RIGHT_ENCODER_ID = 5;
-                private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.119385;// 0.125685;//0.13623046875//0.117686//0.046875
+                private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
+                private static final int FRONT_RIGHT_STEER_MOTOR_ID = 1;
+                private static final int FRONT_RIGHT_ENCODER_ID = 0;
+                private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.3500976; // -0.119385;//
+                                                                                     // 0.125685;//0.13623046875//0.117686//0.046875
                 private static final Measure<DistanceUnit> frontRightXPos = Meters.of(0.127);
                 private static final Measure<DistanceUnit> frontRightYPos = Meters.of(-0.247);
                 public static final LegacySwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
@@ -234,10 +235,11 @@ public final class RobotConstants {
                                 frontRightYPos.magnitude(),
                                 true);
                 // Back Left
-                private static final int BACK_LEFT_DRIVE_MOTOR_ID = 7;
-                private static final int BACK_LEFT_STEER_MOTOR_ID = 6;
-                private static final int BACK_LEFT_ENCODER_ID = 8;
-                private static final double BACK_LEFT_ENCODER_OFFSET = -0.310302734375;// 0.773925;//-0.223//0.401611//0.77392578125
+                private static final int BACK_LEFT_DRIVE_MOTOR_ID = 6;
+                private static final int BACK_LEFT_STEER_MOTOR_ID = 5;
+                private static final int BACK_LEFT_ENCODER_ID = 11;
+                private static final double BACK_LEFT_ENCODER_OFFSET = -0.420166; // -0.310302734375;//
+                                                                                  // 0.773925;//-0.223//0.401611//0.77392578125
                 private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.180);
                 private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.247);
                 public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
@@ -249,10 +251,11 @@ public final class RobotConstants {
                                 backLeftYPos.magnitude(),
                                 false);
                 // Back Right
-                private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 10;
-                private static final int BACK_RIGHT_STEER_MOTOR_ID = 9;
-                private static final int BACK_RIGHT_ENCODER_ID = 11;
-                private static final double BACK_RIGHT_ENCODER_OFFSET = -0.151611;// 0.422119;//-0.5684550781//-0.064453//0.432279296875
+                private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 4;
+                private static final int BACK_RIGHT_STEER_MOTOR_ID = 3;
+                private static final int BACK_RIGHT_ENCODER_ID = 10;
+                private static final double BACK_RIGHT_ENCODER_OFFSET = -0.458007;// -0.151611;//
+                                                                                  // 0.422119;//-0.5684550781//-0.064453//0.432279296875
                 private static final Measure<DistanceUnit> backRightXPos = Meters.of(-0.180);
                 private static final Measure<DistanceUnit> backRightYPos = Meters.of(-0.247);
                 public static final LegacySwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
@@ -324,13 +327,58 @@ public final class RobotConstants {
                 public static final Transform2d tagRightToRobot = new Transform2d();
         }
 
+        public static class BeamBreakConstants {
+                // TODO: change beambreak ID
+                public static final int ENDEFFECTOR_HIGHERBEAMBREAK_ID = 3;
+                public static final int ENDEFFECTOR_LOWERBEAMBREAK_ID = 4;
+                public static final int INTAKER_BEAMBREAK_ID = 2;
+        }
+
+        /**
+         * Constants related to the endeffector subsystem.
+         */
+        public static class EndEffectorConstants {
+                public static final int ENDEFFECTOR_MOTOR_ID = 31;
+
+                // TODO test and change
+                public static final TunableNumber idlingRPS = new TunableNumber("EndEffector/idlingRPS", 0.0);
+                public static final TunableNumber intakingVoltage = new TunableNumber(
+                                "EndEffector/intakingVoltage", 6);
+                public static final TunableNumber outtakingVoltage = new TunableNumber(
+                                "EndEffector/outtakingVoltage", -6);
+                public static final TunableNumber indexingRPS = new TunableNumber("EndEffector/indexingRPS",
+                                10.0);
+                public static final TunableNumber preShootingRPS = new TunableNumber(
+                                "EndEffector/preShootingRPS", 0.0);
+                public static final TunableNumber ShootingVoltage = new TunableNumber(
+                                "EndEffector/ShootingVoltage", 4.0);
+
+                /**
+                 * Constants for the endeffector motor gains.
+                 */
+                // TODO test PID control
+                public static class EndEffectorGainsClass {
+                        public static final TunableNumber ENDEFFECTOR_KP = new TunableNumber(
+                                        "ENDEFFECTOR PID/kp", 0.2);
+                        public static final TunableNumber ENDEFFECTOR_KI = new TunableNumber(
+                                        "ENDEFFECTOR PID/ki", 0);
+                        public static final TunableNumber ENDEFFECTOR_KD = new TunableNumber(
+                                        "ENDEFFECTOR PID/kd", 0.001);
+                        public static final TunableNumber ENDEFFECTOR_KA = new TunableNumber(
+                                        "ENDEFFECTOR PID/ka", 0.0037512677);
+                        public static final TunableNumber ENDEFFECTOR_KV = new TunableNumber(
+                                        "ENDEFFECTOR PID/kv", 0.113);// 0.107853495
+                        public static final TunableNumber ENDEFFECTOR_KS = new TunableNumber(
+                                        "ENDEFFECTOR PID/ks", 0.28475008);
+                }
+        }
+
         /**
          * Constants related to the robot's intake subsystem.
          */
         public static class intakeConstants {
                 public static final int INTAKER_MOTOR_ID = 15; // TODO check motor id
                 public static final int INTAKER_PIVOT_MOTOR_ID = 16;
-
                 public static double PIVOT_RATIO = 1; // TODO check ratio
                 public static Rotation2d RETRACTED_ANGLE = Rotation2d.fromDegrees(90);
                 public static Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(120);

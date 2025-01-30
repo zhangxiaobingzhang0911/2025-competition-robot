@@ -47,8 +47,6 @@ public class RobotContainer {
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
-    CommandXboxController driverController = new CommandXboxController(0);
-    CommandXboxController operatorController = new CommandXboxController(1);
     Display display = Display.getInstance();
     double lastResetTime = 0.0;
 
@@ -62,9 +60,6 @@ public class RobotContainer {
                 display);
         updateManager.registerAll();
 
-        configureBindings();
-
-        // Configure the trigger bindings
         configureBindings();
     }
 
@@ -108,6 +103,22 @@ public class RobotContainer {
                     }
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
+
+        /*
+        Move left joystick up and down to move elevator
+        Press y to switch between joystick operating swerve and elevator
+        Press x to get elevator's current motor position
+        Press a/b to move elevator up/down, press again to stop
+         */
+//        RobotConstants.driverController.y().onTrue(Commands.runOnce(
+//                () -> {
+//                    if (elevator.getDefaultCommand() != null) {
+//                        elevator.removeDefaultCommand();
+//                    } else {
+//                        elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-RobotConstants.driverController.getLeftY(), 0.1)));
+//                    }
+//                }
+//        ));
     }
 
     /**
@@ -126,7 +137,7 @@ public class RobotContainer {
         );
     }
     private Command rumbleDriver(double seconds) {
-        return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
+        return new RumbleCommand(Seconds.of(seconds), RobotConstants.driverController.getHID());
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
@@ -137,5 +148,14 @@ public class RobotContainer {
 //        } else {
         return FieldConstants.defaultAprilTagType;
 //        }
+    }
+
+    // Deadband command to eliminate drifting
+    public static double deadBand(double value, double tolerance) {
+        if(value < tolerance && value > -tolerance) {
+            return 0;
+        } else {
+            return value;
+        }
     }
 }

@@ -188,3 +188,6 @@ compile_commands.json
 
 # SysId
 .SysId
+
+# Simulation
+simgui-ds.json

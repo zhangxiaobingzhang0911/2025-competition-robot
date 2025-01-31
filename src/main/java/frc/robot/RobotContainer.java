@@ -15,14 +15,14 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.elevator.ElevatorCommand;
 import frc.robot.commands.RumbleCommand;
-import frc.robot.commands.TestingCommands.ElevatorGetPosition;
-import frc.robot.commands.TestingCommands.ElevatorTestCommand;
-import frc.robot.commands.TestingCommands.ElevatorTestSingleButton;
+import frc.robot.commands.elevator.ElevatorDownCommand;
+import frc.robot.commands.elevator.ElevatorUpCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
+import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
@@ -53,7 +53,7 @@ public class RobotContainer {
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
-    ElevatorSubsystem elevator;
+    ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
     double lastResetTime = 0.0;
 
     // The robot's subsystems and commands are defined here...
@@ -67,11 +67,6 @@ public class RobotContainer {
         updateManager.registerAll();
 
         configureBindings();
-
-
-        RobotConstants.driverController.x().onTrue(new ElevatorGetPosition(elevator));
-        RobotConstants.driverController.a().toggleOnTrue(new ElevatorTestSingleButton(elevator, true));
-        RobotConstants.driverController.b().toggleOnTrue(new ElevatorTestSingleButton(elevator, false));
     }
 
     /**
@@ -115,26 +110,40 @@ public class RobotContainer {
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
 
-        /*
-        Move left joystick up and down to move elevator
-        Press y to switch between joystick operating swerve and elevator
-        Press x to get elevator's current motor position
-        Press a/b to move elevator up/down, press again to stop
-         */
-//        RobotConstants.driverController.y().onTrue(Commands.runOnce(
-//                () -> {
-//                    if (elevator.getDefaultCommand() != null) {
-//                        elevator.removeDefaultCommand();
-//                    } else {
-//                        elevator.setDefaultCommand(new ElevatorTestCommand(elevator, () -> deadBand(-RobotConstants.driverController.getLeftY(), 0.1)));
-//                    }
-//                }
-//        ));
+        RobotConstants.operatorController.y().onTrue( //L1
+                        Commands.parallel(
+                                new ElevatorCommand(() -> RobotConstants.ElevatorConstants.Position[1], elevatorSubsystem),
+                                Commands.waitUntil(() -> elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.Position[1])))
+                );
 
-        RobotConstants.operatorController.a().onTrue(new ElevatorCommand(elevator, 1));
-        RobotConstants.operatorController.b().onTrue(new ElevatorCommand(elevator, 2));
-        RobotConstants.operatorController.x().onTrue(new ElevatorCommand(elevator, 3));
-        RobotConstants.operatorController.y().onTrue(new ElevatorCommand(elevator, 4));
+        RobotConstants.operatorController.b().onTrue( //L2
+                        Commands.parallel(
+                                new ElevatorCommand(() -> RobotConstants.ElevatorConstants.Position[2], elevatorSubsystem),
+                                Commands.waitUntil(() -> elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.Position[2])))
+                );
+
+        RobotConstants.operatorController.a().onTrue( //L3
+                        Commands.parallel(
+                                new ElevatorCommand(() -> RobotConstants.ElevatorConstants.Position[3], elevatorSubsystem),
+                                Commands.waitUntil(() -> elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.Position[3]))
+                        )
+                );
+
+        RobotConstants.operatorController.x().onTrue( //L4
+                        Commands.parallel(
+                                new ElevatorCommand(() -> RobotConstants.ElevatorConstants.Position[4], elevatorSubsystem),
+                                Commands.waitUntil(() -> elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.Position[4])))
+                );
+
+        RobotConstants.operatorController.rightBumper().onTrue( //REPOSITION
+                Commands.sequence(
+                        new ElevatorCommand(()->0,elevatorSubsystem).until(() -> elevatorSubsystem.getIo().isNearExtension(0.0)),
+                        new RumbleCommand(Seconds.of(2),RobotConstants.operatorController.getHID())
+                )
+        );
+
+        RobotConstants.operatorController.rightTrigger().whileTrue(new ElevatorDownCommand(elevatorSubsystem));
+        RobotConstants.operatorController.leftTrigger().whileTrue(new ElevatorUpCommand(elevatorSubsystem));
     }
 
     /**
@@ -152,10 +161,6 @@ public class RobotContainer {
                 AutoActions.followTrajectory(AutoActions.getTrajectory("T_4"), true, true)
         );
     }
-    private Command rumbleDriver(double seconds) {
-        return new RumbleCommand(Seconds.of(seconds), RobotConstants.driverController.getHID());
-    }
-
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
 //        if (aprilTagsSpeakerOnly.getAsBoolean()) {
@@ -167,12 +172,4 @@ public class RobotContainer {
 //        }
     }
 
-    // Deadband command to eliminate drifting
-    public static double deadBand(double value, double tolerance) {
-        if(value < tolerance && value > -tolerance) {
-            return 0;
-        } else {
-            return value;
-        }
-    }
 }

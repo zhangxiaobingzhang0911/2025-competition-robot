@@ -44,6 +44,7 @@ public final class RobotConstants {
         public static final CommandXboxController operatorController = new CommandXboxController(1);
         // canbus name
         public static String CAN_BUS_NAME = "rio";
+        public static String CANIVORE_CAN_BUS_NAME = "10541Canivore0";
         // serial baud rate
         public static int baudRate = 115200;
 
@@ -418,5 +419,48 @@ public final class RobotConstants {
                         public static final TunableNumber INTAKE_KS = new TunableNumber("INTAKE PID/ks",
                                         0.045);
                 }
+        }
+
+        /**
+         * Constants related to the elevator subsystem.
+         */
+        public static final class ElevatorConstants {
+                public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
+                public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
+
+                public static final Measure<VoltageUnit> elevatorDownVoltage = Volts.of(1);
+                public static final TunableNumber skewValue = new TunableNumber("Elevator skew", 0);
+                public static double kToFFactor = 0.2;
+                public static boolean useSmartDashboardForSkew = false;
+                public static boolean useShootOnMove = false;
+                public static final boolean leftMotorClockwise = true;
+                public static final double elevatorMotorRPS = 10; // Todo: change the value for this constant and the
+                                                                  // one below
+                public static final double elevatorMotorAccel = 60; // In rotation * s^{-2}
+
+                /**
+                 * Constants for the elevator motor gains.
+                 */
+                public static class ElevatorGainsClass {
+                        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 0.2);
+                        public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
+                        public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0.001);
+                        public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka",
+                                        0.0037512677);
+                        public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.113);// 0.107853495
+                        public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
+                                        0.28475008);
+                }
+
+                // Constants for elevator level positions relative to starting position. Todo:
+                // tune all constants below
+                public static final double[] Position = new double[] {
+                                0.0, // lowest
+                                0.0, // L1
+                                8.7, // L2
+                                26.0, // L3
+                                50.3, // L4
+                                51.8 // highest
+                };
         }
 }

@@ -46,14 +46,14 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         elevatorMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         elevatorMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         elevatorMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-        elevatorMotorConfig.Feedback.SensorToMechanismRatio = 1;
-        elevatorMotorConfig.MotorOutput.Inverted = RobotConstants.ElevatorConstants.leftMotorClockwise
+        elevatorMotorConfig.Feedback.SensorToMechanismRatio = ELEVATOR_GEAR_RATIO;
+        elevatorMotorConfig.MotorOutput.Inverted = leftMotorClockwise
                 ? InvertedValue.Clockwise_Positive
                 : InvertedValue.CounterClockwise_Positive;
 
         MotionMagicConfigs mmConfigs = elevatorMotorConfig.MotionMagic;
-        mmConfigs.MotionMagicCruiseVelocity = RobotConstants.ElevatorConstants.elevatorMotorRPS;
-        mmConfigs.MotionMagicAcceleration = RobotConstants.ElevatorConstants.elevatorMotorAccel;
+        mmConfigs.MotionMagicCruiseVelocity = elevatorMotorRPS;
+        mmConfigs.MotionMagicAcceleration = elevatorMotorAccel;
         leftElevatorTalon.setPosition(0.0);
         rightElevatorTalon.setPosition(0.0);
         leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);

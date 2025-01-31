@@ -428,6 +428,7 @@ public final class RobotConstants {
                 public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
                 public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
 
+                public static final double ELEVATOR_GEAR_RATIO = 1.0; //TODO change ratio to actual value
                 public static final Measure<VoltageUnit> elevatorDownVoltage = Volts.of(1);
                 public static final TunableNumber skewValue = new TunableNumber("Elevator skew", 0);
                 public static double kToFFactor = 0.2;

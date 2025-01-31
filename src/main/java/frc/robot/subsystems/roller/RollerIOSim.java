@@ -7,6 +7,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
+//TODO incomplete sim
 public class RollerIOSim implements RollerIO {
     private final DCMotorSim motorSim;
 

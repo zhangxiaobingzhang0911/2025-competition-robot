@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.RobotConstants;
 
+//TODO incomplete sim
 public class IntakePivotIOSim implements IntakePivotIO {
     // TODO: SET TO ACTUAL VALUES WHEN CAD IS FINISHED
     private final SingleJointedArmSim intakePivotSim = new SingleJointedArmSim(

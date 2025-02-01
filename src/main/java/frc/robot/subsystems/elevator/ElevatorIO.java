@@ -1,45 +1,35 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.units.*;
-
 import org.littletonrobotics.junction.AutoLog;
 
-import static edu.wpi.first.units.Units.*;
-
 public interface ElevatorIO {
-    void updateInputs(ElevatorIOInputs inputs);
-
-    void setElevatorDirectVoltage(double volts);
-
-    void setElevatorTarget(double radians);
-
-    double getVelocity();
-
-    double getElevatorPosition();
-
-    boolean isNearExtension(double expected);
-
-
-
     @AutoLog
     class ElevatorIOInputs {
-        public Measure<AngularVelocityUnit> leftElevatorVelocity = RadiansPerSecond.zero();
-        public Measure<AngleUnit> leftElevatorPosition = Radians.zero();
-        public Measure<VoltageUnit> leftElevatorAppliedVoltage = Volts.zero();
-        public Measure<CurrentUnit> leftElevatorSupplyCurrent = Amps.zero();
+        public double positionMeters = 0.0;
+        public double velocityMetersPerSec = 0.0;
+        public double motionMagicVelocityTarget = 0.0;
+        public double motionMagicPositionTarget = 0.0;
+        public double setpointMeters = 0.0;
+        public double[] appliedVolts = new double[] {}; // {leader, follower}
+        public double[] statorCurrentAmps = new double[] {}; // {leader, follower}
+        public double[] supplyCurrentAmps = new double[] {}; // {leader, follower}
+        public double[] tempCelcius = new double[] {}; // {leader, follower}
+        // public double acceleration = 0.0;
+    }
 
-        public Measure<AngularVelocityUnit> rightElevatorVelocity = RadiansPerSecond.zero();
-        public Measure<AngleUnit> rightElevatorPosition = Radians.zero();
-        public Measure<VoltageUnit> rightElevatorAppliedVoltage = Volts.zero();
-        public Measure<CurrentUnit> rightElevatorSupplyCurrent = Amps.zero();
+    public default void updateInputs(ElevatorIOInputs inputs) {}
 
-        public Measure<AngularVelocityUnit> targetElevatorVelocity = RadiansPerSecond.zero();
+    public default void setVoltage(double voltage) {}
 
-        public double ElevatorKP = frc.robot.RobotConstants.ElevatorConstants.ElevatorGainsClass.ELEVATOR_KP.get();
-        public double ElevatorKI = frc.robot.RobotConstants.ElevatorConstants.ElevatorGainsClass.ELEVATOR_KI.get();
-        public double ElevatorKD = frc.robot.RobotConstants.ElevatorConstants.ElevatorGainsClass.ELEVATOR_KD.get();
-        public double ElevatorKA = frc.robot.RobotConstants.ElevatorConstants.ElevatorGainsClass.ELEVATOR_KA.get();
-        public double ElevatorKV = frc.robot.RobotConstants.ElevatorConstants.ElevatorGainsClass.ELEVATOR_KV.get();
-        public double ElevatorKS = frc.robot.RobotConstants.ElevatorConstants.ElevatorGainsClass.ELEVATOR_KS.get();
+    public default void setTarget(double meters) {}
+
+    public default void stop() {
+        setVoltage(0.0);
+    }
+
+    public default void resetEncoder(double position) {}
+
+    public default void resetEncoder() {
+        resetEncoder(0.0);
     }
 }

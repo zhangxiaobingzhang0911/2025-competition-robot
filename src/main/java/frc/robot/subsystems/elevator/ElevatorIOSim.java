@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.RobotConstants;
 
 import static edu.wpi.first.units.Units.*;
-
+/*
 //TODO incomplete sim
 public class ElevatorIOSim implements ElevatorIO {
     private static final double LOOP_PERIOD_SECS = 0.02;
@@ -72,3 +72,4 @@ public class ElevatorIOSim implements ElevatorIO {
         return rightElevatorTalonSim.getAngularVelocityRadPerSec() / 6.28 * 60;
     }
 }
+*/

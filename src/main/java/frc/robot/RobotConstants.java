@@ -17,22 +17,22 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.utils.TunableNumber;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
+import org.littletonrobotics.LoggedTunableNumber;
 
 import static edu.wpi.first.units.Units.*;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean
- * constants. This class should not be used for any other purpose. All constants
- * should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
+ * numerical or boolean constants. This class should not be used for any other
+ * purpose. All constants should be declared globally (i.e. public static). Do
+ * not put anything functional in this class.
  *
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
- * wherever the
- * constants are needed, to reduce verbosity.
+ * wherever the constants are needed, to reduce verbosity.
  */
 public final class RobotConstants {
         // basic constants
@@ -99,22 +99,11 @@ public final class RobotConstants {
                 public static final Measure<AngularVelocityUnit> maxAngularRate = RotationsPerSecond.of(1.5 * Math.PI);
 
                 // Kinematic limits for different driving modes
-                public static final KinematicLimits DRIVETRAIN_UNCAPPED = new KinematicLimits(
-                                maxSpeed.magnitude(),
-                                11.0,
-                                1000.0);
-                public static final KinematicLimits DRIVETRAIN_SMOOTHED = new KinematicLimits(
-                                4.5,
-                                30.0,
-                                200.0);
-                public static final KinematicLimits DRIVETRAIN_LIMITED = new KinematicLimits(
-                                2.0,
-                                10.0,
-                                1200.0);
-                public static final KinematicLimits DRIVETRAIN_ROBOT_ORIENTED = new KinematicLimits(
-                                2.0,
-                                5.0,
-                                1500.0);
+                public static final KinematicLimits DRIVETRAIN_UNCAPPED = new KinematicLimits(maxSpeed.magnitude(),
+                                11.0, 1000.0);
+                public static final KinematicLimits DRIVETRAIN_SMOOTHED = new KinematicLimits(4.5, 30.0, 200.0);
+                public static final KinematicLimits DRIVETRAIN_LIMITED = new KinematicLimits(2.0, 10.0, 1200.0);
+                public static final KinematicLimits DRIVETRAIN_ROBOT_ORIENTED = new KinematicLimits(2.0, 5.0, 1500.0);
 
                 public static final Measure<LinearVelocityUnit> speedAt12Volts = maxSpeed;
                 /**
@@ -128,8 +117,8 @@ public final class RobotConstants {
                 // ffw & wheel c
                 public static final Measure<DistanceUnit> wheelCircumferenceMeters = Meters
                                 .of(wheelRadius.magnitude() * 2 * Math.PI);
-                public static final SimpleMotorFeedforward DRIVETRAIN_FEEDFORWARD = new SimpleMotorFeedforward(
-                                0.69522, 2.3623, 0.19367);
+                public static final SimpleMotorFeedforward DRIVETRAIN_FEEDFORWARD = new SimpleMotorFeedforward(0.69522,
+                                2.3623, 0.19367);
 
                 public static final double statorCurrent = 110;
                 public static final double supplyCurrent = 50;
@@ -140,33 +129,25 @@ public final class RobotConstants {
                 /**
                  * Swerve steering gains
                  */
-                private static final Slot0Configs steerGains = new Slot0Configs()
-                                .withKP(120)// 120
+                private static final Slot0Configs steerGains = new Slot0Configs().withKP(120)// 120
                                 .withKI(0.2)// 0.2
                                 .withKD(0.005)// 0.005
-                                .withKS(0)
-                                .withKV(0)
-                                .withKA(0);
+                                .withKS(0).withKV(0).withKA(0);
 
                 /**
                  * Swerve driving gains
                  */
-                private static final Slot0Configs driveGains = new Slot0Configs()
-                                .withKP(1)
-                                .withKI(0)
-                                .withKD(0)
-                                .withKS(0)
-                                .withKV(0.12)
-                                .withKA(0);
+                private static final Slot0Configs driveGains = new Slot0Configs().withKP(1).withKI(0).withKD(0)
+                                .withKS(0).withKV(0.12).withKA(0);
                 private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
                 /**
-                 * The closed-loop output type to use for the drive motors;
-                 * This affects the PID/FF gains for the drive motors
+                 * The closed-loop output type to use for the drive motors; This affects the
+                 * PID/FF gains for the drive motors
                  */
                 private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
                 /**
-                 * The closed-loop output type to use for the steer motors;
-                 * This affects the PID/FF gains for the steer motors
+                 * The closed-loop output type to use for the steer motors; This affects the
+                 * PID/FF gains for the steer motors
                  */
 
                 private static final double STEER_INERTIA = 0.00001;
@@ -188,22 +169,17 @@ public final class RobotConstants {
                 private static final double COUPLE_RATIO = 3.5;
                 private static final boolean STEER_MOTOR_REVERSED = true;
                 public static final LegacySwerveModuleConstantsFactory ConstantCreator = new LegacySwerveModuleConstantsFactory()
-                                .withDriveMotorGearRatio(DRIVE_GEAR_RATIO)
-                                .withSteerMotorGearRatio(STEER_GEAR_RATIO)
-                                .withWheelRadius(wheelRadius.in(Inches))
-                                .withSlipCurrent(slipCurrent.magnitude())
-                                .withSteerMotorGains(steerGains)
-                                .withDriveMotorGains(driveGains)
+                                .withDriveMotorGearRatio(DRIVE_GEAR_RATIO).withSteerMotorGearRatio(STEER_GEAR_RATIO)
+                                .withWheelRadius(wheelRadius.in(Inches)).withSlipCurrent(slipCurrent.magnitude())
+                                .withSteerMotorGains(steerGains).withDriveMotorGains(driveGains)
                                 .withSteerMotorClosedLoopOutput(steerClosedLoopOutput)
                                 .withDriveMotorClosedLoopOutput(driveClosedLoopOutput)
-                                .withSpeedAt12VoltsMps(speedAt12Volts.magnitude())
-                                .withSteerInertia(STEER_INERTIA)
+                                .withSpeedAt12VoltsMps(speedAt12Volts.magnitude()).withSteerInertia(STEER_INERTIA)
                                 .withDriveInertia(DRIVE_INERTIA)
                                 .withSteerFrictionVoltage(steerFrictionVoltage.magnitude())
                                 .withDriveFrictionVoltage(driveFrictionVoltage.magnitude())
                                 .withFeedbackSource(LegacySwerveModuleConstants.SteerFeedbackType.SyncCANcoder)
-                                .withCouplingGearRatio(COUPLE_RATIO)
-                                .withSteerMotorInverted(STEER_MOTOR_REVERSED);
+                                .withCouplingGearRatio(COUPLE_RATIO).withSteerMotorInverted(STEER_MOTOR_REVERSED);
                 private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 8;
                 private static final int FRONT_LEFT_STEER_MOTOR_ID = 7;
                 private static final int FRONT_LEFT_ENCODER_ID = 20;
@@ -212,13 +188,8 @@ public final class RobotConstants {
                 private static final Measure<DistanceUnit> frontLeftXPos = Meters.of(0.127);
                 private static final Measure<DistanceUnit> frontLeftYPos = Meters.of(0.247);
                 public static final LegacySwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
-                                FRONT_LEFT_STEER_MOTOR_ID,
-                                FRONT_LEFT_DRIVE_MOTOR_ID,
-                                FRONT_LEFT_ENCODER_ID,
-                                FRONT_LEFT_ENCODER_OFFSET,
-                                frontLeftXPos.magnitude(),
-                                frontLeftYPos.magnitude(),
-                                false);
+                                FRONT_LEFT_STEER_MOTOR_ID, FRONT_LEFT_DRIVE_MOTOR_ID, FRONT_LEFT_ENCODER_ID,
+                                FRONT_LEFT_ENCODER_OFFSET, frontLeftXPos.magnitude(), frontLeftYPos.magnitude(), false);
                 // Front Right
                 private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
                 private static final int FRONT_RIGHT_STEER_MOTOR_ID = 1;
@@ -228,12 +199,8 @@ public final class RobotConstants {
                 private static final Measure<DistanceUnit> frontRightXPos = Meters.of(0.127);
                 private static final Measure<DistanceUnit> frontRightYPos = Meters.of(-0.247);
                 public static final LegacySwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
-                                FRONT_RIGHT_STEER_MOTOR_ID,
-                                FRONT_RIGHT_DRIVE_MOTOR_ID,
-                                FRONT_RIGHT_ENCODER_ID,
-                                FRONT_RIGHT_ENCODER_OFFSET,
-                                frontRightXPos.magnitude(),
-                                frontRightYPos.magnitude(),
+                                FRONT_RIGHT_STEER_MOTOR_ID, FRONT_RIGHT_DRIVE_MOTOR_ID, FRONT_RIGHT_ENCODER_ID,
+                                FRONT_RIGHT_ENCODER_OFFSET, frontRightXPos.magnitude(), frontRightYPos.magnitude(),
                                 true);
                 // Back Left
                 private static final int BACK_LEFT_DRIVE_MOTOR_ID = 6;
@@ -244,13 +211,8 @@ public final class RobotConstants {
                 private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.180);
                 private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.247);
                 public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
-                                BACK_LEFT_STEER_MOTOR_ID,
-                                BACK_LEFT_DRIVE_MOTOR_ID,
-                                BACK_LEFT_ENCODER_ID,
-                                BACK_LEFT_ENCODER_OFFSET,
-                                backLeftXPos.magnitude(),
-                                backLeftYPos.magnitude(),
-                                false);
+                                BACK_LEFT_STEER_MOTOR_ID, BACK_LEFT_DRIVE_MOTOR_ID, BACK_LEFT_ENCODER_ID,
+                                BACK_LEFT_ENCODER_OFFSET, backLeftXPos.magnitude(), backLeftYPos.magnitude(), false);
                 // Back Right
                 private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 4;
                 private static final int BACK_RIGHT_STEER_MOTOR_ID = 3;
@@ -260,13 +222,8 @@ public final class RobotConstants {
                 private static final Measure<DistanceUnit> backRightXPos = Meters.of(-0.180);
                 private static final Measure<DistanceUnit> backRightYPos = Meters.of(-0.247);
                 public static final LegacySwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
-                                BACK_RIGHT_STEER_MOTOR_ID,
-                                BACK_RIGHT_DRIVE_MOTOR_ID,
-                                BACK_RIGHT_ENCODER_ID,
-                                BACK_RIGHT_ENCODER_OFFSET,
-                                backRightXPos.magnitude(),
-                                backRightYPos.magnitude(),
-                                true);
+                                BACK_RIGHT_STEER_MOTOR_ID, BACK_RIGHT_DRIVE_MOTOR_ID, BACK_RIGHT_ENCODER_ID,
+                                BACK_RIGHT_ENCODER_OFFSET, backRightXPos.magnitude(), backRightYPos.magnitude(), true);
                 // swervemodule
                 public static LegacySwerveModuleConstants[] modules = { FrontLeft, FrontRight, BackLeft, BackRight };
                 public static final Translation2d[] modulePlacements = new Translation2d[] {
@@ -330,9 +287,10 @@ public final class RobotConstants {
 
         public static class BeamBreakConstants {
                 // TODO: change beambreak ID
-                public static final int ENDEFFECTOR_HIGHERBEAMBREAK_ID = 3;
-                public static final int ENDEFFECTOR_LOWERBEAMBREAK_ID = 4;
-                public static final int INTAKER_BEAMBREAK_ID = 2;
+                public static final int ENDEFFECTOR_SECOND_BEAMBREAK_ID = 3;
+                public static final int ENDEFFECTOR_FIRST_BEAMBREAK_ID = 2;
+                public static final int ENDEFFECTOR_THIRD_BEAMBREAK_ID = 4;
+                public static final int INTAKER_BEAMBREAK_ID = 1;
         }
 
         /**
@@ -341,36 +299,26 @@ public final class RobotConstants {
         public static class EndEffectorConstants {
                 public static final int ENDEFFECTOR_MOTOR_ID = 31;
 
-                // TODO test and change
-                public static final TunableNumber idlingRPS = new TunableNumber("EndEffector/idlingRPS", 0.0);
-                public static final TunableNumber intakingVoltage = new TunableNumber(
-                                "EndEffector/intakingVoltage", 6);
-                public static final TunableNumber outtakingVoltage = new TunableNumber(
-                                "EndEffector/outtakingVoltage", -6);
-                public static final TunableNumber indexingRPS = new TunableNumber("EndEffector/indexingRPS",
-                                10.0);
-                public static final TunableNumber preShootingRPS = new TunableNumber(
-                                "EndEffector/preShootingRPS", 0.0);
-                public static final TunableNumber ShootingVoltage = new TunableNumber(
-                                "EndEffector/ShootingVoltage", 4.0);
+                public static final TunableNumber INTAKE_RPS = new TunableNumber("EndEffector/intakeRPS", 10.0);
+                public static final TunableNumber INDEX_RPS = new TunableNumber("EndEffector/indexRPS", 3.0);
+                public static final TunableNumber HOLD_RPS = new TunableNumber("EndEffector/holdRPS", 0.0);
+                public static final TunableNumber SHOOT_RPS = new TunableNumber("EndEffector/shootRPS", 3.0);
+                public static final TunableNumber SPIT_RPS = new TunableNumber("EndEffector/spitRPS", 5.0);
 
                 /**
                  * Constants for the endeffector motor gains.
                  */
-                // TODO test PID control
                 public static class EndEffectorGainsClass {
-                        public static final TunableNumber ENDEFFECTOR_KP = new TunableNumber(
-                                        "ENDEFFECTOR PID/kp", 0.2);
-                        public static final TunableNumber ENDEFFECTOR_KI = new TunableNumber(
-                                        "ENDEFFECTOR PID/ki", 0);
-                        public static final TunableNumber ENDEFFECTOR_KD = new TunableNumber(
-                                        "ENDEFFECTOR PID/kd", 0.001);
-                        public static final TunableNumber ENDEFFECTOR_KA = new TunableNumber(
-                                        "ENDEFFECTOR PID/ka", 0.0037512677);
-                        public static final TunableNumber ENDEFFECTOR_KV = new TunableNumber(
-                                        "ENDEFFECTOR PID/kv", 0.113);// 0.107853495
-                        public static final TunableNumber ENDEFFECTOR_KS = new TunableNumber(
-                                        "ENDEFFECTOR PID/ks", 0.28475008);
+                        public static final TunableNumber ENDEFFECTOR_KP = new TunableNumber("ENDEFFECTOR PID/kp", 0.2);
+                        public static final TunableNumber ENDEFFECTOR_KI = new TunableNumber("ENDEFFECTOR PID/ki", 0);
+                        public static final TunableNumber ENDEFFECTOR_KD = new TunableNumber("ENDEFFECTOR PID/kd",
+                                        0.001);
+                        public static final TunableNumber ENDEFFECTOR_KA = new TunableNumber("ENDEFFECTOR PID/ka",
+                                        0.0037512677);
+                        public static final TunableNumber ENDEFFECTOR_KV = new TunableNumber("ENDEFFECTOR PID/kv",
+                                        0.113);// 0.107853495
+                        public static final TunableNumber ENDEFFECTOR_KS = new TunableNumber("ENDEFFECTOR PID/ks",
+                                        0.28475008);
                 }
         }
 
@@ -408,36 +356,49 @@ public final class RobotConstants {
                  * Constants for the intake motor gains in the intake subsystem.
                  */
                 public static class intakeGainsClass {
-                        public static final TunableNumber INTAKE_KP = new TunableNumber("INTAKE PID/kp",
-                                        0.03);
+                        public static final TunableNumber INTAKE_KP = new TunableNumber("INTAKE PID/kp", 0.03);
                         public static final TunableNumber INTAKE_KI = new TunableNumber("INTAKE PID/ki", 0);
-                        public static final TunableNumber INTAKE_KD = new TunableNumber("INTAKE PID/kd",
-                                        0.0001);
+                        public static final TunableNumber INTAKE_KD = new TunableNumber("INTAKE PID/kd", 0.0001);
                         public static final TunableNumber INTAKE_KA = new TunableNumber("INTAKE PID/ka", 0);
-                        public static final TunableNumber INTAKE_KV = new TunableNumber("INTAKE PID/kv",
-                                        0.12);
-                        public static final TunableNumber INTAKE_KS = new TunableNumber("INTAKE PID/ks",
-                                        0.045);
+                        public static final TunableNumber INTAKE_KV = new TunableNumber("INTAKE PID/kv", 0.12);
+                        public static final TunableNumber INTAKE_KS = new TunableNumber("INTAKE PID/ks", 0.045);
                 }
         }
 
         /**
          * Constants related to the elevator subsystem.
          */
-        public static final class ElevatorConstants {
+        public static class ElevatorConstants {
                 public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
                 public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
 
-                public static final double ELEVATOR_GEAR_RATIO = 1.0; //TODO change ratio to actual value
-                public static final Measure<VoltageUnit> elevatorDownVoltage = Volts.of(1);
-                public static final TunableNumber skewValue = new TunableNumber("Elevator skew", 0);
-                public static double kToFFactor = 0.2;
-                public static boolean useSmartDashboardForSkew = false;
-                public static boolean useShootOnMove = false;
+                public static final double ELEVATOR_SPOOL_DIAMETER = 1.0;
+                public static final double ELEVATOR_GEAR_RATIO = 1.0;
                 public static final boolean leftMotorClockwise = true;
-                public static final double elevatorMotorRPS = 10; // Todo: change the value for this constant and the
-                                                                  // one below
-                public static final double elevatorMotorAccel = 60; // In rotation * s^{-2}
+
+                public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
+                                20.0);
+                public static final TunableNumber motionCruiseVelocity = new TunableNumber(
+                                "Elevator/MotionCruiseVelocity", 20.0);
+                public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk", 0.0);
+
+                /**
+                 * Constants for the elevator goals.
+                 */
+                public static class ElevatorGoalsClass {
+                        public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR GOALS/max",
+                                        100.0);
+                        public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber(
+                                        "ELEVATOR GOALS/idle", 30.0);
+                        public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR GOALS/L1",
+                                        50.0);
+                        public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR GOALS/L2",
+                                        60.0);
+                        public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR GOALS/L3",
+                                        70.0);// 0.107853495
+                        public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR GOALS/L4",
+                                        80.0);
+                }
 
                 /**
                  * Constants for the elevator motor gains.
@@ -452,16 +413,5 @@ public final class RobotConstants {
                         public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
                                         0.28475008);
                 }
-
-                // Constants for elevator level positions relative to starting position. Todo:
-                // tune all constants below
-                public static final double[] Position = new double[] {
-                                0.0, // lowest
-                                0.0, // L1
-                                8.7, // L2
-                                26.0, // L3
-                                50.3, // L4
-                                51.8 // highest
-                };
         }
 }

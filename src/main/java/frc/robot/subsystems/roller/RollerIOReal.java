@@ -51,9 +51,7 @@ public class RollerIOReal implements RollerIO {
     public static TalonFXConfiguration getDefaultConfig() {
         return new TalonFXConfiguration()
                 .withCurrentLimits(
-                        new CurrentLimitsConfigs()
-                                .withStatorCurrentLimit(20.0)
-                                .withStatorCurrentLimitEnable(true))
+                        new CurrentLimitsConfigs().withStatorCurrentLimit(20.0).withStatorCurrentLimitEnable(true))
                 .withSlot0(new Slot0Configs().withKV(0.113).withKP(0.2))
                 .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
     }
@@ -61,7 +59,7 @@ public class RollerIOReal implements RollerIO {
     @Override
     public void updateInputs(RollerIOInputs inputs) {
         BaseStatusSignal.refreshAll(velocityRotPerSec, appliedVolts, statorCurrentAmps, supplyCurrentAmps, tempCelsius);
-        inputs.velocityRotationsPerSec = velocityRotPerSec.getValueAsDouble();
+        inputs.velocityRotPerSec = velocityRotPerSec.getValueAsDouble();
         inputs.appliedVolts = appliedVolts.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();

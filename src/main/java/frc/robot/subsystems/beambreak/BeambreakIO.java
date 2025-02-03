@@ -6,6 +6,7 @@ public interface BeambreakIO {
   @AutoLog
   class BeambreakIOInputs {
     public boolean isBeambreakOn = false;
+    public double voltage = 0.0;
   }
 
   public void updateInputs(BeambreakIOInputs inputs);

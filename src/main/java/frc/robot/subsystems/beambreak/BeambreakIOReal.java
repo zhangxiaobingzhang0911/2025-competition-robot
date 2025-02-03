@@ -11,5 +11,6 @@ public class BeambreakIOReal implements BeambreakIO {
 
   public void updateInputs(BeambreakIOInputs inputs) {
     inputs.isBeambreakOn = beambreak.get();
+    inputs.voltage = beambreak.getVoltage();
   }
 }

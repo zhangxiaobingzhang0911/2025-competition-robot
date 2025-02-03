@@ -17,8 +17,8 @@ public class EndEffectorSubsystem extends RollerSubsystem {
 
     private final EndEffectorIO endEffectorIO;
     private final BeambreakIO intakeBBIO, shootBBIO;
-    private final BeambreakIOInputsAutoLogged intakeBBInputs = new BeambreakIOInputsAutoLogged();
-    private final BeambreakIOInputsAutoLogged shootBBInputs = new BeambreakIOInputsAutoLogged();
+    private BeambreakIOInputsAutoLogged intakeBBInputs = new BeambreakIOInputsAutoLogged();
+    private BeambreakIOInputsAutoLogged shootBBInputs = new BeambreakIOInputsAutoLogged();
 
     public double kp = ENDEFFECTOR_KP.get();
     public double ki = ENDEFFECTOR_KI.get();
@@ -45,7 +45,9 @@ public class EndEffectorSubsystem extends RollerSubsystem {
 
         endEffectorIO.updateConfigs(kp, ki, kd, ka, kv, ks);
         intakeBBIO.updateInputs(intakeBBInputs);
+        System.out.println("intakeBBin: " + intakeBBInputs.isBeambreakOn);
         shootBBIO.updateInputs(shootBBInputs);
+        System.out.println("shootBBin: " + shootBBInputs.isBeambreakOn);
 
         Logger.processInputs(NAME + "/Intake Beambreak", intakeBBInputs);
         Logger.processInputs(NAME + "/Shoot Beambreak", shootBBInputs);

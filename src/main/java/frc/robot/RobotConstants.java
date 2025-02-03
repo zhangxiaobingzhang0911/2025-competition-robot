@@ -286,9 +286,9 @@ public final class RobotConstants {
          * Constants related to the beambreak subsystem.
          */
         public static class BeamBreakConstants {
-                public static final int ENDEFFECTOR_INTAKE_BEAMBREAK_ID = 0;
-                public static final int ENDEFFECTOR_SHOOT_BEAMBREAK_ID = 1;
-                public static final int INTAKER_BEAMBREAK_ID = 3;
+                public static final int ENDEFFECTOR_INTAKE_BEAMBREAK_ID = 1;
+                public static final int ENDEFFECTOR_SHOOT_BEAMBREAK_ID = 3;
+                public static final int INTAKER_BEAMBREAK_ID = 0;
         }
 
         /**
@@ -329,9 +329,9 @@ public final class RobotConstants {
          * Constants related to the robot's intake subsystem.
          */
         public static class intakeConstants {
-                public static final int INTAKER_MOTOR_ID = 15; // TODO check motor id
+                public static final int INTAKER_MOTOR_ID = 15;
                 public static final int INTAKER_PIVOT_MOTOR_ID = 16;
-                public static double PIVOT_RATIO = 1; // TODO check ratio
+                public static double PIVOT_RATIO = 1;
                 public static Rotation2d RETRACTED_ANGLE = Rotation2d.fromDegrees(90);
                 public static Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(120);
                 public static Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);

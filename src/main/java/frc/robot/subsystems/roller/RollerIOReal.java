@@ -2,13 +2,12 @@ package frc.robot.subsystems.roller;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
@@ -16,11 +15,11 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.RobotConstants;
 
 public class RollerIOReal implements RollerIO {
     private final TalonFX motor;
-    private final String CANBUS_NAME = RobotConstants.CAN_BUS_NAME;
+    private final double reduction;
+    private final Slot0Configs slot0Configs = new Slot0Configs();
 
     private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(true);
     private final VelocityVoltage velocityVoltage = new VelocityVoltage(0.0).withEnableFOC(true).withSlot(0);
@@ -31,9 +30,17 @@ public class RollerIOReal implements RollerIO {
     private final StatusSignal<Current> supplyCurrentAmps;
     private final StatusSignal<Temperature> tempCelsius;
 
-    public RollerIOReal(final int motorID, final TalonFXConfiguration config) {
-        this.motor = new TalonFX(motorID, CANBUS_NAME);
-
+    public RollerIOReal(int id, String canbus, int statorCurrentLimitAmps, int supplyCurrentLimitAmps, boolean invert, boolean brake, double reduction) {
+        this.motor = new TalonFX(id, canbus);
+        this.reduction = reduction;
+        
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        config.MotorOutput.Inverted = invert ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+        config.MotorOutput.NeutralMode = brake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+        config.CurrentLimits.SupplyCurrentLimit = supplyCurrentLimitAmps;
+        config.CurrentLimits.SupplyCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimit = statorCurrentLimitAmps;
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
         motor.getConfigurator().apply(config);
 
         velocityRotPerSec = motor.getVelocity();
@@ -48,14 +55,6 @@ public class RollerIOReal implements RollerIO {
         motor.optimizeBusUtilization();
     }
 
-    public static TalonFXConfiguration getDefaultConfig() {
-        return new TalonFXConfiguration()
-                .withCurrentLimits(
-                        new CurrentLimitsConfigs().withStatorCurrentLimit(20.0).withStatorCurrentLimitEnable(true))
-                .withSlot0(new Slot0Configs().withKV(0.113).withKP(0.2))
-                .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
-    }
-
     @Override
     public void updateInputs(RollerIOInputs inputs) {
         BaseStatusSignal.refreshAll(velocityRotPerSec, appliedVolts, statorCurrentAmps, supplyCurrentAmps, tempCelsius);
@@ -64,6 +63,17 @@ public class RollerIOReal implements RollerIO {
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.tempCelsius = tempCelsius.getValueAsDouble();
+    }
+
+    @Override
+    public void updateConfigs(double kp, double ki, double kd, double ka, double kv, double ks) {
+        slot0Configs.withKP(kp);
+        slot0Configs.withKI(ki);
+        slot0Configs.withKD(kd);
+        slot0Configs.withKA(ka);
+        slot0Configs.withKV(kv);
+        slot0Configs.withKS(ks);
+        motor.getConfigurator().apply(slot0Configs);
     }
 
     @Override

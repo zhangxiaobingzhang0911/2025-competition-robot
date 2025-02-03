@@ -16,10 +16,9 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     public static final String NAME = "EndEffector";
 
     private final EndEffectorIO endEffectorIO;
-    private final BeambreakIO firstBBIO, secondBBIO, thirdBBIO;
-    private final BeambreakIOInputsAutoLogged firstBBInputs = new BeambreakIOInputsAutoLogged();
-    private final BeambreakIOInputsAutoLogged secondBBInputs = new BeambreakIOInputsAutoLogged();
-    private final BeambreakIOInputsAutoLogged thirdBBInputs = new BeambreakIOInputsAutoLogged();
+    private final BeambreakIO intakeBBIO, shootBBIO;
+    private final BeambreakIOInputsAutoLogged intakeBBInputs = new BeambreakIOInputsAutoLogged();
+    private final BeambreakIOInputsAutoLogged shootBBInputs = new BeambreakIOInputsAutoLogged();
 
     public double kp = ENDEFFECTOR_KP.get();
     public double ki = ENDEFFECTOR_KI.get();
@@ -28,37 +27,30 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     public double kv = ENDEFFECTOR_KV.get();
     public double ks = ENDEFFECTOR_KS.get();
 
-    private double intakeRPS = INTAKE_RPS.get();
     private double indexRPS = INDEX_RPS.get();
     private double holdRPS = HOLD_RPS.get();
     private double ShootRPS = SHOOT_RPS.get();
     private double SpitRPS = SPIT_RPS.get();
 
-    public EndEffectorSubsystem(EndEffectorIO endEffectorIO , BeambreakIO firstBBIO, BeambreakIO secondBBIO,
-            BeambreakIO thirdBBIO) {
+    public EndEffectorSubsystem(EndEffectorIO endEffectorIO , BeambreakIO intakeBBIO, BeambreakIO shootBBIO) {
         super(endEffectorIO, NAME);
         this.endEffectorIO = endEffectorIO;
-        this.firstBBIO = firstBBIO;
-        this.secondBBIO = secondBBIO;
-        this.thirdBBIO = thirdBBIO;
+        this.intakeBBIO = intakeBBIO;
+        this.shootBBIO = shootBBIO;
     }
 
     @Override
     public void periodic() {
         super.periodic();
-        
+
         endEffectorIO.updateConfigs(kp, ki, kd, ka, kv, ks);
-        firstBBIO.updateInputs(firstBBInputs);
-        secondBBIO.updateInputs(secondBBInputs);
-        thirdBBIO.updateInputs(thirdBBInputs);
+        intakeBBIO.updateInputs(intakeBBInputs);
+        shootBBIO.updateInputs(shootBBInputs);
 
-        Logger.processInputs(NAME + "/First Beambreak", firstBBInputs);
-        Logger.processInputs(NAME + "/Second Beambreak", secondBBInputs);
-        Logger.processInputs(NAME + "/Third Beambreak", thirdBBInputs);
+        Logger.processInputs(NAME + "/Intake Beambreak", intakeBBInputs);
+        Logger.processInputs(NAME + "/Shoot Beambreak", shootBBInputs);
 
-        
         if (RobotConstants.TUNING) {
-            intakeRPS = INTAKE_RPS.get();
             indexRPS = INDEX_RPS.get();
             holdRPS = HOLD_RPS.get();
             ShootRPS = SHOOT_RPS.get();
@@ -73,9 +65,13 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         }
     }
 
+    public Command directRun() {
+        return this.run(() -> setVoltage(8));
+    }
+
     public Command index() {
-        return Commands.sequence(setVelocity(intakeRPS).until(() -> firstBBInputs.get),
-                setVelocity(indexRPS).until(() -> !secondBBInputs.get && thirdBBInputs.get), setVelocity(holdRPS));
+        return Commands.sequence(setVelocity(indexRPS).until(() -> shootBBInputs.isBeambreakOn),
+                setVelocity(holdRPS));
     }
 
     public Command hold() {
@@ -83,22 +79,18 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     }
 
     public Command shoot() {
-        return this.run(() -> setVelocity(ShootRPS).until(() -> !thirdBBInputs.get));
+        return this.run(() -> setVelocity(ShootRPS).until(() -> !shootBBInputs.isBeambreakOn));
     }
 
     public Command spit() {
-        return this.run(() -> setVelocity(SpitRPS).until(() -> !thirdBBInputs.get));
+        return this.run(() -> setVelocity(SpitRPS).until(() -> !shootBBInputs.isBeambreakOn));
     }
 
-    public boolean getFirstBeambreak() {
-        return firstBBInputs.get;
+    public boolean getIntakeBeambreak() {
+        return intakeBBInputs.isBeambreakOn;
     }
 
-    public boolean getSecondBeambreak() {
-        return secondBBInputs.get;
-    }
-
-    public boolean getThirdBeambreak() {
-        return thirdBBInputs.get;
+    public boolean getShootBeambreak() {
+        return shootBBInputs.isBeambreakOn;
     }
 }

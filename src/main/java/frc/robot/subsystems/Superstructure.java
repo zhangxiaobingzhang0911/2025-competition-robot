@@ -12,6 +12,7 @@ import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 
 import static frc.robot.RobotConstants.ElevatorConstants.ElevatorGoalsClass.*;
 
+/*
 public class Superstructure {
         public static enum SuperState {
                 IDLE, READY_CORAL, PRE_L1, PRE_L2, PRE_L3, PRE_L4, SCORE_CORAL, SPIT_CORAL
@@ -159,3 +160,4 @@ public class Superstructure {
                 });
         }
 }
+*/

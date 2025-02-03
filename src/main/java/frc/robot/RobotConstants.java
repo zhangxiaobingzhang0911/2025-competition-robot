@@ -39,9 +39,6 @@ public final class RobotConstants {
         public static final boolean disableHAL = false;
         public static final double LOOPER_DT = 1 / 50.0;
         public static final boolean TUNING = true;
-        // controller
-        public static final CommandXboxController driverController = new CommandXboxController(0);
-        public static final CommandXboxController operatorController = new CommandXboxController(1);
         // canbus name
         public static String CAN_BUS_NAME = "rio";
         public static String CANIVORE_CAN_BUS_NAME = "10541Canivore0";
@@ -289,11 +286,9 @@ public final class RobotConstants {
          * Constants related to the beambreak subsystem.
          */
         public static class BeamBreakConstants {
-                // TODO: change beambreak ID
-                public static final int ENDEFFECTOR_SECOND_BEAMBREAK_ID = 3;
-                public static final int ENDEFFECTOR_FIRST_BEAMBREAK_ID = 2;
-                public static final int ENDEFFECTOR_THIRD_BEAMBREAK_ID = 4;
-                public static final int INTAKER_BEAMBREAK_ID = 1;
+                public static final int ENDEFFECTOR_INTAKE_BEAMBREAK_ID = 0;
+                public static final int ENDEFFECTOR_SHOOT_BEAMBREAK_ID = 1;
+                public static final int INTAKER_BEAMBREAK_ID = 3;
         }
 
         /**
@@ -303,12 +298,11 @@ public final class RobotConstants {
                 public static final int ENDEFFECTOR_MOTOR_ID = 31;
 
                 public static final int STATOR_CURRENT_LIMIT_AMPS = 60;
-                public static final int SUPPLY_CURRENT_LIMIT_AMPS = 60;
+                public static final int SUPPLY_CURRENT_LIMIT_AMPS = 20;
                 public static final boolean IS_BRAKE = true;
-                public static final boolean IS_INVERT = true;
+                public static final boolean IS_INVERT = false;
                 public static final double REDUCTION = 1;
 
-                public static final TunableNumber INTAKE_RPS = new TunableNumber("EndEffector/intakeRPS", 10.0);
                 public static final TunableNumber INDEX_RPS = new TunableNumber("EndEffector/indexRPS", 3.0);
                 public static final TunableNumber HOLD_RPS = new TunableNumber("EndEffector/holdRPS", 0.0);
                 public static final TunableNumber SHOOT_RPS = new TunableNumber("EndEffector/shootRPS", 3.0);

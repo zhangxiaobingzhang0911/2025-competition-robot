@@ -15,10 +15,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
+import frc.robot.commands.IndexCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
+import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -46,20 +48,17 @@ import java.util.function.*;
 public class RobotContainer {
     @Getter
     private final UpdateManager updateManager;
-
-    @Getter
     AprilTagVision aprilTagVision = new AprilTagVision(
             this::getAprilTagLayoutType,
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
-    ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
-    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(),
-                    new BeambreakIOReal(ENDEFFECTOR_FIRST_BEAMBREAK_ID),
-                    new BeambreakIOReal(ENDEFFECTOR_SECOND_BEAMBREAK_ID),
-                    new BeambreakIOReal(ENDEFFECTOR_THIRD_BEAMBREAK_ID));
+    //ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
+    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_INTAKE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_SHOOT_BEAMBREAK_ID));
     double lastResetTime = 0.0;
+    CommandXboxController driverController = new CommandXboxController(0);
+    CommandXboxController operatorController = new CommandXboxController(1);
 
     // The robot's subsystems and commands are defined here...
 
@@ -87,17 +86,17 @@ public class RobotContainer {
         swerve.setDefaultCommand(Commands
                 .runOnce(() -> swerve.drive(
                                 new Translation2d(
-                                        -RobotConstants.driverController.getLeftY()
+                                        -driverController.getLeftY()
                                                 * RobotConstants.SwerveConstants.maxSpeed.magnitude(),
-                                        -RobotConstants.driverController.getLeftX()
+                                        -driverController.getLeftX()
                                                 * RobotConstants.SwerveConstants.maxSpeed.magnitude()),
-                                -RobotConstants.driverController.getRightX()
+                                -driverController.getRightX()
                                         * RobotConstants.SwerveConstants.maxAngularRate.magnitude(),
                                 true,
                                 false),
                         swerve));
 
-        RobotConstants.driverController.start().onTrue(
+        driverController.start().onTrue(
                 Commands.runOnce(() -> {
                     /*
                         TODO: the reset command will be activated twice when the start button is pressed only once,
@@ -114,7 +113,8 @@ public class RobotContainer {
                     }
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
-        RobotConstants.driverController.a().onTrue(index());             
+        
+        operatorController.a().onTrue(indexCommand());        
     }
 
     /**
@@ -134,11 +134,11 @@ public class RobotContainer {
     }
 
     private Command rumbleDriver(double seconds) {
-            return new RumbleCommand(Seconds.of(seconds), RobotConstants.driverController.getHID());
+            return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
     }
 
-    private Command index() {
-        return endEffectorSubsystem.index();
+    private Command indexCommand() {
+            return new IndexCommand(endEffectorSubsystem);
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

@@ -285,6 +285,9 @@ public final class RobotConstants {
                 public static final Transform2d tagRightToRobot = new Transform2d();
         }
 
+        /**
+         * Constants related to the beambreak subsystem.
+         */
         public static class BeamBreakConstants {
                 // TODO: change beambreak ID
                 public static final int ENDEFFECTOR_SECOND_BEAMBREAK_ID = 3;
@@ -298,6 +301,12 @@ public final class RobotConstants {
          */
         public static class EndEffectorConstants {
                 public static final int ENDEFFECTOR_MOTOR_ID = 31;
+
+                public static final int STATOR_CURRENT_LIMIT_AMPS = 60;
+                public static final int SUPPLY_CURRENT_LIMIT_AMPS = 60;
+                public static final boolean IS_BRAKE = true;
+                public static final boolean IS_INVERT = true;
+                public static final double REDUCTION = 1;
 
                 public static final TunableNumber INTAKE_RPS = new TunableNumber("EndEffector/intakeRPS", 10.0);
                 public static final TunableNumber INDEX_RPS = new TunableNumber("EndEffector/indexRPS", 3.0);

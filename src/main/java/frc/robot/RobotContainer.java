@@ -19,8 +19,11 @@ import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
+import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.endeffector.EndEffectorIOReal;
+import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
@@ -29,6 +32,7 @@ import org.frcteam6941.looper.UpdateManager;
 import org.json.simple.parser.ParseException;
 
 import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.RobotConstants.BeamBreakConstants.*;
 
 import java.io.IOException;
 import java.util.function.*;
@@ -51,6 +55,10 @@ public class RobotContainer {
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
+    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(),
+                    new BeambreakIOReal(ENDEFFECTOR_FIRST_BEAMBREAK_ID),
+                    new BeambreakIOReal(ENDEFFECTOR_SECOND_BEAMBREAK_ID),
+                    new BeambreakIOReal(ENDEFFECTOR_THIRD_BEAMBREAK_ID));
     double lastResetTime = 0.0;
 
     // The robot's subsystems and commands are defined here...
@@ -106,6 +114,7 @@ public class RobotContainer {
                     }
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
+        RobotConstants.driverController.a().onTrue(index());             
     }
 
     /**
@@ -123,8 +132,13 @@ public class RobotContainer {
                 AutoActions.followTrajectory(AutoActions.getTrajectory("T_4"), true, true)
         );
     }
+
     private Command rumbleDriver(double seconds) {
-        return new RumbleCommand(Seconds.of(seconds), RobotConstants.driverController.getHID());
+            return new RumbleCommand(Seconds.of(seconds), RobotConstants.driverController.getHID());
+    }
+
+    private Command index() {
+        return endEffectorSubsystem.index();
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

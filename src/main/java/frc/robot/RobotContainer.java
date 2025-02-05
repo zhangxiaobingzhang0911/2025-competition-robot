@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
-import frc.robot.subsystems.apriltagvision.AprilTagVision;
-import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
@@ -48,7 +46,6 @@ public class RobotContainer {
 
     @Getter
     private final UpdateManager updateManager;
-    double L1, L2, L3, L4;
     double lastResetTime = 0.0;
 
     // The robot's subsystems and commands are defined here...

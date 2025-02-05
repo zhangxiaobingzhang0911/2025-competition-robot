@@ -366,37 +366,16 @@ public final class RobotConstants {
         /**
          * Constants related to the elevator subsystem.
          */
-        public static class ElevatorConstants {
+        public static final class ElevatorConstants {
                 public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
                 public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
 
                 public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
                 public static final double ELEVATOR_GEAR_RATIO = 3.0;
-                public static final double DEADZONE_DISTANCE = 0.02;
-
-                public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
-                                20.0);
-                public static final TunableNumber motionCruiseVelocity = new TunableNumber(
-                                "Elevator/MotionCruiseVelocity", 20.0);
-                public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk", 0.0);
-
-                public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
-                                2);
-                public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber(
-                                "ELEVATOR GOALS/idle", 0);
-                public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
-                                0.1);
-                public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
-                                0.2);
-                public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
-                                0.3);// 0.107853495
-                public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
-                                0.4);
-                public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
-                        30);
-
-        }
-
+                public static final boolean leftMotorClockwise = true;
+                public static final double elevatorMotorRPS = 70; // In rotation * s^{-1}
+                public static final double elevatorMotorAccel = 160;// In rotation * s^{-2}
+                public static final double ELEVATOR_ZEROING_CURRENT = 15; //in amps
 
                 /**
                  * Constants for the elevator motor gains.
@@ -405,10 +384,19 @@ public final class RobotConstants {
                         public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 0.2);
                         public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
                         public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0.001);
-                        public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka",
-                                        0.0037512677);
+                        public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka", 0.0037512677);
                         public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.113);// 0.107853495
-                        public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
-                                        0.28475008);
+                        public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.28475008);
                 }
+
+                // Constants for elevator level positions relative to starting position. Todo: tune all constants below
+                public static final double[] Position = new double[]{
+                        0.0,   //lowest
+                        0.0,   //L1
+                        0.8-0.105,   //L2
+                        1.22-0.105,  //L3
+                        1.80-0.105,  //L4
+                        1.80   //highest
+                };
         }
+}

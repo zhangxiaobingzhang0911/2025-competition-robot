@@ -171,6 +171,8 @@ out/
 # Simulation GUI and other tools window save file
 networktables.json
 simgui.json
+.SysId
+simgui-ds.json
 *-window.json
 
 # Simulation data log directory
@@ -186,5 +188,5 @@ compile_commands.json
 # Eclipse generated file for annotation processors
 .factorypath
 
-# SysId
-.SysId
+# BuildConstants generated for Git data
+src/main/java/frc/robot/BuildConstants.java

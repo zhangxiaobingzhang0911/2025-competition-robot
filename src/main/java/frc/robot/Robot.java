@@ -20,7 +20,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         Logger.addDataReceiver(new NT4Publisher());
-        //Logger.addDataReceiver(new WPILOGWriter());
+        // Logger.addDataReceiver(new WPILOGWriter());
+        Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.start();
         robotContainer = new RobotContainer();
         DriverStation.silenceJoystickConnectionWarning(true);
@@ -68,7 +69,7 @@ public class Robot extends LoggedRobot {
             m_autonomousCommand.schedule();
         }
         robotContainer.getUpdateManager().invokeStart();
-//        swerve.auto();
+        // swerve.auto();
     }
 
     // Runs periodically during autonomous mode
@@ -80,8 +81,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousExit() {
         robotContainer.getUpdateManager().invokeStop();
-//        swerve.normal();
-//        swerve.cancelFollow();
+        // swerve.normal();
+        // swerve.cancelFollow();
     }
 
     // Initializes the robot in teleoperated mode
@@ -90,7 +91,7 @@ public class Robot extends LoggedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-//        swerve.normal();
+        // swerve.normal();
         robotContainer.getUpdateManager().invokeStart();
 
     }

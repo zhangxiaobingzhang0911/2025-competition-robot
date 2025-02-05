@@ -16,6 +16,10 @@ public class BeamBreak {
     public BeamBreak(int channel) {
         analogInput = new AnalogInput(channel);
     }
+
+    public double getVoltage() {
+        return analogInput.getVoltage();
+    }
  
     // Updates the status of the beam break sensor and sets tripped or cleared flags accordingly
     public void update() {

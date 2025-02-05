@@ -19,6 +19,11 @@ import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
+import frc.robot.subsystems.beambreak.BeambreakIOReal;
+import frc.robot.subsystems.elevator.ElevatorIOReal;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.endeffector.EndEffectorIOReal;
+import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
@@ -27,6 +32,7 @@ import org.frcteam6941.looper.UpdateManager;
 import org.json.simple.parser.ParseException;
 
 import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.RobotConstants.BeamBreakConstants.*;
 
 import java.io.IOException;
 import java.util.function.*;
@@ -38,21 +44,24 @@ import java.util.function.*;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    @Getter
-    private final UpdateManager updateManager;
+    CommandXboxController driverController = new CommandXboxController(0);
+    CommandXboxController operatorController = new CommandXboxController(1);
+    CommandXboxController testerController = new CommandXboxController(2);
 
     @Getter
+    private final UpdateManager updateManager;
+    double L1, L2, L3, L4;
+    double lastResetTime = 0.0;
+
+    // The robot's subsystems and commands are defined here...
     AprilTagVision aprilTagVision = new AprilTagVision(
             this::getAprilTagLayoutType,
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
-    CommandXboxController driverController = new CommandXboxController(0);
-    CommandXboxController operatorController = new CommandXboxController(1);
     Display display = Display.getInstance();
-    double lastResetTime = 0.0;
-
-    // The robot's subsystems and commands are defined here...
+    ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
+    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_INTAKE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_SHOOT_BEAMBREAK_ID));
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -62,10 +71,9 @@ public class RobotContainer {
                 display);
         updateManager.registerAll();
 
-        configureBindings();
-
-        // Configure the trigger bindings
-        configureBindings();
+        configureDriverBindings(driverController);
+        configureOperatorBindings(operatorController);
+        configureTesterBindings(testerController);
     }
 
     /**
@@ -77,21 +85,23 @@ public class RobotContainer {
      * PS4} controllers or {@link CommandJoystick Flight
      * joysticks}.
      */
-    private void configureBindings() {
+
+    //Configure all commands for driver
+    private void configureDriverBindings(CommandXboxController driverController) {
         swerve.setDefaultCommand(Commands
                 .runOnce(() -> swerve.drive(
                                 new Translation2d(
-                                        -RobotConstants.driverController.getLeftY()
+                                        -driverController.getLeftY()
                                                 * RobotConstants.SwerveConstants.maxSpeed.magnitude(),
-                                        -RobotConstants.driverController.getLeftX()
+                                        -driverController.getLeftX()
                                                 * RobotConstants.SwerveConstants.maxSpeed.magnitude()),
-                                -RobotConstants.driverController.getRightX()
+                                -driverController.getRightX()
                                         * RobotConstants.SwerveConstants.maxAngularRate.magnitude(),
                                 true,
                                 false),
                         swerve));
 
-        RobotConstants.driverController.start().onTrue(
+        driverController.start().onTrue(
                 Commands.runOnce(() -> {
                     /*
                         TODO: the reset command will be activated twice when the start button is pressed only once,
@@ -110,6 +120,18 @@ public class RobotContainer {
                 }).ignoringDisable(true));
     }
 
+    //Configure all commands for operator
+    private void configureOperatorBindings(CommandXboxController operatorController) {
+
+    }
+
+    //Configure all commands for testing
+    private void configureTesterBindings(CommandXboxController controller) {
+    controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.5),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.5)));
+    controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.8),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.8)));
+    controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(1.1),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(1.1)));
+    controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(1.4),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(1.4)));
+    }
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
@@ -125,8 +147,9 @@ public class RobotContainer {
                 AutoActions.followTrajectory(AutoActions.getTrajectory("T_4"), true, true)
         );
     }
+
     private Command rumbleDriver(double seconds) {
-        return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
+            return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

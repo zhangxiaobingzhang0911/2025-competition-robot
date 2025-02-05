@@ -9,19 +9,14 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstantsFactory;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.utils.TunableNumber;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
-import org.littletonrobotics.LoggedTunableNumber;
-
 import static edu.wpi.first.units.Units.*;
 
 /**

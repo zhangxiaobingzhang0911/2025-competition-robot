@@ -13,7 +13,7 @@ public interface ElevatorIO {
         public double[] appliedVolts = new double[] {}; // {leader, follower}
         public double[] statorCurrentAmps = new double[] {}; // {leader, follower}
         public double[] supplyCurrentAmps = new double[] {}; // {leader, follower}
-        public double[] tempCelcius = new double[] {}; // {leader, follower}
+        public double[] tempCelsius = new double[] {}; // {leader, follower}
         // public double acceleration = 0.0; may add later
     }
 

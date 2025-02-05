@@ -117,7 +117,7 @@ public class ElevatorIOReal implements ElevatorIO {
         inputs.appliedVolts = new double[] { voltageLeft.getValueAsDouble(), voltageRight.getValueAsDouble() };
         inputs.statorCurrentAmps = new double[] { statorLeft.getValueAsDouble(), statorRight.getValueAsDouble() };
         inputs.supplyCurrentAmps = new double[] { supplyLeft.getValueAsDouble(), supplyRight.getValueAsDouble() };
-        inputs.tempCelcius = new double[] { tempLeft.getValueAsDouble(), tempRight.getValueAsDouble() };
+        inputs.tempCelsius = new double[] { tempLeft.getValueAsDouble(), tempRight.getValueAsDouble() };
 
         if (RobotConstants.TUNING) {
             slot0Configs.kA = ELEVATOR_KA.get();

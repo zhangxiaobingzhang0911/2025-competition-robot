@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
+import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
@@ -50,7 +51,6 @@ public class RobotContainer {
 
     @Getter
     private final UpdateManager updateManager;
-    double L1, L2, L3, L4;
     double lastResetTime = 0.0;
 
     // The robot's subsystems and commands are defined here...
@@ -62,6 +62,8 @@ public class RobotContainer {
     Display display = Display.getInstance();
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_INTAKE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_SHOOT_BEAMBREAK_ID));
+
+    Superstructure superstructure =  new Superstructure(endEffectorSubsystem);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -129,12 +131,12 @@ public class RobotContainer {
 
     //Configure all commands for testing
     private void configureTesterBindings(CommandXboxController controller) {
-    controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.5),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.5)));
-    controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.8),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.8)));
-    controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(1.1),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(1.1)));
-    controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(1.4),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(1.4)));
-    controller.povDown().onTrue(new ElevatorZeroingCommand(elevatorSubsystem));
+        new Trigger(controller.leftBumper())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.INTAKE_CORAL_FUNNEL));
+        new Trigger(controller.rightBumper())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.SHOOT_CORAL));
     }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *

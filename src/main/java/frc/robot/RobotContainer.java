@@ -21,8 +21,6 @@ import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
-import frc.robot.subsystems.elevator.ElevatorIOReal;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
@@ -54,13 +52,8 @@ public class RobotContainer {
     double lastResetTime = 0.0;
 
     // The robot's subsystems and commands are defined here...
-    AprilTagVision aprilTagVision = new AprilTagVision(
-            this::getAprilTagLayoutType,
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
-    ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_INTAKE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_SHOOT_BEAMBREAK_ID));
 
     private final Superstructure superstructure;
@@ -157,15 +150,5 @@ public class RobotContainer {
 
     private Command rumbleDriver(double seconds) {
             return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
-    }
-
-    public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
-//        if (aprilTagsSpeakerOnly.getAsBoolean()) {
-//            return FieldConstants.AprilTagLayoutType.SPEAKERS_ONLY;
-//        } else if (aprilTagsAmpOnly.getAsBoolean()) {
-//            return FieldConstants.AprilTagLayoutType.AMPS_ONLY;
-//        } else {
-        return FieldConstants.defaultAprilTagType;
-//        }
     }
 }

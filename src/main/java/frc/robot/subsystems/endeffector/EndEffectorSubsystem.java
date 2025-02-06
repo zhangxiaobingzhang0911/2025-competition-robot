@@ -24,6 +24,8 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     private WantedState wantedState = WantedState.IDLE;
     private SystemState systemState = SystemState.IDLING;
 
+    private boolean hasTransitionedToTransfer = false;
+
     public double kp = ENDEFFECTOR_KP.get();
     public double ki = ENDEFFECTOR_KI.get();
     public double kd = ENDEFFECTOR_KD.get();
@@ -88,10 +90,10 @@ public class EndEffectorSubsystem extends RollerSubsystem {
                 io.setVelocity(idleRPS);
                 break;
             case FUNNEL_INDEXING:
-                io.setVelocity(indexRPS);
+                io.setVelocity(-indexRPS);
                 break;
             case FUNNEL_TRANSFERRING:
-                io.setVelocity(transferRPS);
+                io.setVelocity(-transferRPS);
                 break;
             case HOLDING:
                 io.setVelocity(holdRPS);
@@ -125,6 +127,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             case IDLE -> SystemState.IDLING;
             case FUNNEL_INDEX -> {
                 if (middleBBInputs.isBeambreakOn) {
+                    hasTransitionedToTransfer = true;
                     yield SystemState.FUNNEL_TRANSFERRING;
                 }
                 yield SystemState.FUNNEL_INDEXING;
@@ -136,11 +139,18 @@ public class EndEffectorSubsystem extends RollerSubsystem {
                 yield SystemState.FUNNEL_TRANSFERRING;
             }
             case HOLD -> SystemState.HOLDING;
-            case SHOOT -> SystemState.SHOOTING;
+            case SHOOT -> {
+                hasTransitionedToTransfer = false;
+                yield SystemState.SHOOTING;
+            }
             case OFF -> SystemState.OFF;
             default -> SystemState.IDLING;
         };
     }
 
-    public void setWantedStat(WantedState wantedState) {this.wantedState = wantedState;}
+    public boolean isFunnelIndexFinished () {
+        return hasTransitionedToTransfer;
+    }
+
+    public void setWantedState(WantedState wantedState) {this.wantedState = wantedState;}
 }

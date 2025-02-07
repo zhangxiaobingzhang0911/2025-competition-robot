@@ -158,7 +158,8 @@ public class ElevatorIOReal implements ElevatorIO {
         return leader.getStatorCurrent().getValueAsDouble();
     }
 
-    public void resetPosistion(){
+    @Override
+    public void resetPosition(){
         leader.setPosition(0.0);
         follower.setPosition(0.0);
     }

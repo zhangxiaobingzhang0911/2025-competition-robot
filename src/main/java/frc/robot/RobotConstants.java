@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.utils.TunableNumber;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
-import org.littletonrobotics.LoggedTunableNumber;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -286,8 +285,8 @@ public final class RobotConstants {
          * Constants related to the beambreak subsystem.
          */
         public static class BeamBreakConstants {
-                public static final int ENDEFFECTOR_INTAKE_BEAMBREAK_ID = 1;
-                public static final int ENDEFFECTOR_SHOOT_BEAMBREAK_ID = 3;
+                public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 1;
+                public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 3;
                 public static final int INTAKER_BEAMBREAK_ID = 0;
         }
 
@@ -303,10 +302,11 @@ public final class RobotConstants {
                 public static final boolean IS_INVERT = false;
                 public static final double REDUCTION = 1;
 
-                public static final TunableNumber INDEX_RPS = new TunableNumber("EndEffector/indexRPS", 3.0);
+                public static final TunableNumber INTAKE_RPS = new TunableNumber("EndEffector/indexRPS", -40);
+                public static final TunableNumber TRANSFER_RPS = new TunableNumber("EndEffector/transferRPS", -25);
                 public static final TunableNumber HOLD_RPS = new TunableNumber("EndEffector/holdRPS", 0.0);
-                public static final TunableNumber SHOOT_RPS = new TunableNumber("EndEffector/shootRPS", 3.0);
-                public static final TunableNumber SPIT_RPS = new TunableNumber("EndEffector/spitRPS", 5.0);
+                public static final TunableNumber SHOOT_RPS = new TunableNumber("EndEffector/shootRPS", -80);
+                public static final TunableNumber IDLE_RPS = new TunableNumber("EndEffector/idleRPS", -0);
 
                 /**
                  * Constants for the endeffector motor gains.
@@ -398,7 +398,7 @@ public final class RobotConstants {
                 public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
                                 0.4);
                 public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
-                        30);
+                        15);
 
         }
 

@@ -1,6 +1,8 @@
 package frc.robot.subsystems.endeffector;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.Superstructure;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -181,5 +183,17 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         return hasTransitionedToTransfer;
     }
 
+    public boolean isEndEffectorIntaking () {
+        return systemState == SystemState.FUNNEL_INTAKING || systemState==SystemState.GROUND_INTAKING || systemState==SystemState.TRANSFERRING;
+    }
+
+    public boolean isEndEffectorHolding () {
+        return systemState == SystemState.HOLDING;
+    }
+
     public void setWantedState(WantedState wantedState) {this.wantedState = wantedState;}
+
+    public Command setWantedSuperStateCommand(WantedState wantedState) {
+        return new InstantCommand(() -> setWantedState(wantedState));
+    }
 }

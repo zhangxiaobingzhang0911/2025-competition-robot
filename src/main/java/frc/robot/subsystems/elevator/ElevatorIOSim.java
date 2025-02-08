@@ -1,27 +1,23 @@
 package frc.robot.subsystems.elevator;
 
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.RobotConstants;
 
 import static edu.wpi.first.units.Units.*;
 
-/*
 public class ElevatorIOSim implements ElevatorIO {
     private static final double LOOP_PERIOD_SECS = 0.02;
     private final DCMotorSim leftElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500(1),
-    0.025, 6.75), DCMotor.getFalcon500(1), null);
+            0.025, 6.75), DCMotor.getFalcon500(1), null);
     private final DCMotorSim rightElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500(1),
-    0.025, 6.75), DCMotor.getFalcon500(1) , null);
+            0.025, 6.75), DCMotor.getFalcon500(1), null);
 
-    private Measure<VoltageUnit> leftElevatorAppliedVoltage = Volts.zero();
-    private Measure<VoltageUnit> rightElevatorAppliedVoltage = Volts.zero();
-    private Measure<AngularVelocityUnit> targetElevatorVelocity = RadiansPerSecond.zero();
+    private final Measure<VoltageUnit> leftElevatorAppliedVoltage = Volts.zero();
+    private final Measure<VoltageUnit> rightElevatorAppliedVoltage = Volts.zero();
+    private final Measure<AngularVelocityUnit> targetElevatorVelocity = RadiansPerSecond.zero();
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
@@ -54,6 +50,10 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
+    public void resetElevatorPosition() {
+    }
+
+    @Override
     public boolean isNearExtension(double expected) {
         return true;
     }
@@ -68,8 +68,13 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
-    public double getVelocity() {
+    public double getElevatorVelocity() {
         return rightElevatorTalonSim.getAngularVelocityRadPerSec() / 6.28 * 60;
     }
+
+    @Override
+    public boolean isCurrentMax(double max) {
+        //TODO:fix me
+        return false;
+    }
 }
-*/

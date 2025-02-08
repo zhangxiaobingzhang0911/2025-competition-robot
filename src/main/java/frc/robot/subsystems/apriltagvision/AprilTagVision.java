@@ -90,7 +90,6 @@ public class AprilTagVision extends SubsystemBase {
 
         serial.writeString("OK");
         serial.flush();
-        System.out.println("Test");
 
         // Loop over instances to process all frames and poses
         List<Pose2d> allRobotPoses = new ArrayList<>();

@@ -11,13 +11,13 @@ import static edu.wpi.first.units.Units.*;
 public class ElevatorIOSim implements ElevatorIO {
     private static final double LOOP_PERIOD_SECS = 0.02;
     private final DCMotorSim leftElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500(1),
-    0.025, 6.75), DCMotor.getFalcon500(1), null);
+            0.025, 6.75), DCMotor.getFalcon500(1), null);
     private final DCMotorSim rightElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500(1),
-    0.025, 6.75), DCMotor.getFalcon500(1) , null);
+            0.025, 6.75), DCMotor.getFalcon500(1), null);
 
-    private Measure<VoltageUnit> leftElevatorAppliedVoltage = Volts.zero();
-    private Measure<VoltageUnit> rightElevatorAppliedVoltage = Volts.zero();
-    private Measure<AngularVelocityUnit> targetElevatorVelocity = RadiansPerSecond.zero();
+    private final Measure<VoltageUnit> leftElevatorAppliedVoltage = Volts.zero();
+    private final Measure<VoltageUnit> rightElevatorAppliedVoltage = Volts.zero();
+    private final Measure<AngularVelocityUnit> targetElevatorVelocity = RadiansPerSecond.zero();
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
@@ -50,7 +50,7 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
-    public void resetElevatorPosition(){
+    public void resetElevatorPosition() {
     }
 
     @Override
@@ -73,7 +73,8 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
-    public boolean isCurrentMax(double max){
+    public boolean isCurrentMax(double max) {
+        //TODO:fix me
         return false;
     }
 }

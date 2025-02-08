@@ -280,9 +280,12 @@ public final class RobotConstants {
         /**
          * Constants related to the beambreak subsystem.
          */
+        /**
+         * Constants related to the beambreak subsystem.
+         */
         public static class BeamBreakConstants {
-                public static final int ENDEFFECTOR_INTAKE_BEAMBREAK_ID = 1;
-                public static final int ENDEFFECTOR_SHOOT_BEAMBREAK_ID = 3;
+                public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 1;
+                public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 3;
                 public static final int INTAKER_BEAMBREAK_ID = 0;
         }
 
@@ -298,11 +301,11 @@ public final class RobotConstants {
                 public static final boolean IS_INVERT = false;
                 public static final double REDUCTION = 1;
 
-                public static final LoggedTunableNumber INDEX_RPS = new LoggedTunableNumber("EndEffector/indexRPS", 300);
-                public static final LoggedTunableNumber TRANSFER_RPS = new LoggedTunableNumber("EndEffector/transferRPS", 200);
-                public static final LoggedTunableNumber HOLD_RPS = new LoggedTunableNumber("EndEffector/holdRPS", 0.0);
-                public static final LoggedTunableNumber SHOOT_RPS = new LoggedTunableNumber("EndEffector/shootRPS", -400);
-                public static final LoggedTunableNumber IDLE_RPS = new LoggedTunableNumber("EndEffector/spitRPS", 50);
+                public static final TunableNumber INTAKE_RPS = new TunableNumber("EndEffector/indexRPS", -40);
+                public static final TunableNumber TRANSFER_RPS = new TunableNumber("EndEffector/transferRPS", -25);
+                public static final TunableNumber HOLD_RPS = new TunableNumber("EndEffector/holdRPS", 0.0);
+                public static final TunableNumber SHOOT_RPS = new TunableNumber("EndEffector/shootRPS", -80);
+                public static final TunableNumber IDLE_RPS = new TunableNumber("EndEffector/idleRPS", -0);
 
                 /**
                  * Constants for the endeffector motor gains.
@@ -311,15 +314,16 @@ public final class RobotConstants {
                         public static final TunableNumber ENDEFFECTOR_KP = new TunableNumber("ENDEFFECTOR PID/kp", 0.2);
                         public static final TunableNumber ENDEFFECTOR_KI = new TunableNumber("ENDEFFECTOR PID/ki", 0);
                         public static final TunableNumber ENDEFFECTOR_KD = new TunableNumber("ENDEFFECTOR PID/kd",
-                                        0.001);
+                                0.001);
                         public static final TunableNumber ENDEFFECTOR_KA = new TunableNumber("ENDEFFECTOR PID/ka",
-                                        0.0037512677);
+                                0.0037512677);
                         public static final TunableNumber ENDEFFECTOR_KV = new TunableNumber("ENDEFFECTOR PID/kv",
-                                        0.113);// 0.107853495
+                                0.113);// 0.107853495
                         public static final TunableNumber ENDEFFECTOR_KS = new TunableNumber("ENDEFFECTOR PID/ks",
-                                        0.28475008);
+                                0.28475008);
                 }
         }
+
 
         /**
          * Constants related to the robot's intake subsystem.

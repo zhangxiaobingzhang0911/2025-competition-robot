@@ -1,6 +1,8 @@
 package frc.robot.subsystems.endeffector;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.Superstructure;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -25,6 +27,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     private SystemState systemState = SystemState.IDLING;
 
     private boolean hasTransitionedToTransfer = false;
+    private boolean hasTransitionedToHold = false;
 
     public double kp = ENDEFFECTOR_KP.get();
     public double ki = ENDEFFECTOR_KI.get();
@@ -34,15 +37,16 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     public double ks = ENDEFFECTOR_KS.get();
 
     private static double idleRPS = IDLE_RPS.get();
-    private static double indexRPS = INDEX_RPS.get();
+    private static double intakeRPS = INTAKE_RPS.get();
     private static double transferRPS = TRANSFER_RPS.get();
     private static double holdRPS = HOLD_RPS.get();
     private static double shootRPS = SHOOT_RPS.get();
 
     public enum WantedState {
         IDLE,
-        FUNNEL_INDEX,
-        FUNNEL_TRANSFER,
+        FUNNEL_INTAKE,
+        GROUND_INTAKE,
+        TRANSFER,
         HOLD,
         SHOOT,
         OFF
@@ -50,8 +54,9 @@ public class EndEffectorSubsystem extends RollerSubsystem {
 
     public enum SystemState {
         IDLING,
-        FUNNEL_INDEXING,
-        FUNNEL_TRANSFERRING,
+        FUNNEL_INTAKING,
+        GROUND_INTAKING,
+        TRANSFERRING,
         HOLDING,
         SHOOTING,
         OFF
@@ -72,12 +77,13 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         middleBBIO.updateInputs(middleBBInputs);
         edgeBBIO.updateInputs(edgeBBInputs);
 
+        SystemState newState = handleStateTransition();
+
         Logger.processInputs(NAME + "/Middle Beambreak", middleBBInputs);
         Logger.processInputs(NAME + "/Edge Beambreak", edgeBBInputs);
+        Logger.recordOutput("EndEffector/SystemState", newState.toString());
 
-        SystemState newState = handleStateTransition();
         if (newState != systemState) {
-            Logger.recordOutput("Intaker/SystemState", newState.toString());
             systemState = newState;
         }
 
@@ -89,11 +95,14 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             case IDLING:
                 io.setVelocity(idleRPS);
                 break;
-            case FUNNEL_INDEXING:
-                io.setVelocity(-indexRPS);
+            case FUNNEL_INTAKING:
+                io.setVelocity(intakeRPS);
                 break;
-            case FUNNEL_TRANSFERRING:
-                io.setVelocity(-transferRPS);
+            case GROUND_INTAKING:
+                io.setVelocity(-intakeRPS);
+                break;
+            case TRANSFERRING:
+                io.setVelocity(transferRPS);
                 break;
             case HOLDING:
                 io.setVelocity(holdRPS);
@@ -108,7 +117,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         }
 
         if (RobotConstants.TUNING) {
-            indexRPS = INDEX_RPS.get();
+            intakeRPS = INTAKE_RPS.get();
             holdRPS = HOLD_RPS.get();
             transferRPS = TRANSFER_RPS.get();
             shootRPS = SHOOT_RPS.get();
@@ -125,22 +134,36 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     private SystemState handleStateTransition() {
         return switch (wantedState) {
             case IDLE -> SystemState.IDLING;
-            case FUNNEL_INDEX -> {
+            case FUNNEL_INTAKE -> {
                 if (middleBBInputs.isBeambreakOn) {
                     hasTransitionedToTransfer = true;
-                    yield SystemState.FUNNEL_TRANSFERRING;
+                    yield SystemState.TRANSFERRING;
                 }
-                yield SystemState.FUNNEL_INDEXING;
+                yield SystemState.FUNNEL_INTAKING;
             }
-            case FUNNEL_TRANSFER -> {
+            case GROUND_INTAKE -> {
+                if (middleBBInputs.isBeambreakOn) {
+                    hasTransitionedToTransfer = true;
+                    yield SystemState.TRANSFERRING;
+                }
+                yield SystemState.GROUND_INTAKING;
+            }
+            case TRANSFER -> {
                 if (edgeBBInputs.isBeambreakOn && !middleBBInputs.isBeambreakOn) {
                     yield SystemState.HOLDING;
                 }
-                yield SystemState.FUNNEL_TRANSFERRING;
+                yield SystemState.TRANSFERRING;
             }
-            case HOLD -> SystemState.HOLDING;
+            case HOLD -> {
+                hasTransitionedToHold = true;
+                yield SystemState.HOLDING;
+            }
             case SHOOT -> {
-                hasTransitionedToTransfer = false;
+                if (isShootFinished()) {
+                    hasTransitionedToTransfer = false;
+                    hasTransitionedToHold = false;
+                    yield SystemState.IDLING;
+                }
                 yield SystemState.SHOOTING;
             }
             case OFF -> SystemState.OFF;
@@ -148,9 +171,29 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         };
     }
 
-    public boolean isFunnelIndexFinished () {
+    public boolean isCoralReady () {
+        return hasTransitionedToHold;
+    }
+
+    public boolean isShootFinished () {
+        return hasTransitionedToHold && !edgeBBInputs.isBeambreakOn;
+    }
+
+    public boolean isIntakeFinished () {
         return hasTransitionedToTransfer;
     }
 
+    public boolean isEndEffectorIntaking () {
+        return systemState == SystemState.FUNNEL_INTAKING || systemState==SystemState.GROUND_INTAKING || systemState==SystemState.TRANSFERRING;
+    }
+
+    public boolean isEndEffectorHolding () {
+        return systemState == SystemState.HOLDING;
+    }
+
     public void setWantedState(WantedState wantedState) {this.wantedState = wantedState;}
+
+    public Command setWantedSuperStateCommand(WantedState wantedState) {
+        return new InstantCommand(() -> setWantedState(wantedState));
+    }
 }

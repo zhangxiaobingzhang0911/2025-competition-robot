@@ -27,10 +27,6 @@ public interface ElevatorIO {
         setVoltage(0.0);
     }
 
-    public default double getLeaderCurrent(){
-        return getLeaderCurrent();
-    }
-
     public default void resetEncoder(double position) {}
 
     public default void resetEncoder() {

@@ -34,6 +34,7 @@ import org.json.simple.parser.ParseException;
 
 import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.RobotConstants.BeamBreakConstants.*;
+import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 import java.io.IOException;
 import java.util.function.*;
@@ -137,10 +138,10 @@ public class RobotContainer {
         new Trigger(controller.start())
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.STOPPED));
         //test of elevator heights
-        controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.5),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.5)));
-        controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.6),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.6)));
-        controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.7),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.7)));
-        controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(0.47),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(0.47)));
+        controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L1_EXTENSION_METERS.get()),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(L1_EXTENSION_METERS.get())));
+        controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L2_EXTENSION_METERS.get()),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(L2_EXTENSION_METERS.get())));
+        controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L3_EXTENSION_METERS.get()),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(L3_EXTENSION_METERS.get())));
+        controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L4_EXTENSION_METERS.get()),elevatorSubsystem).until(() ->elevatorSubsystem.isAtSetpoint(L4_EXTENSION_METERS.get())));
         controller.povDown().onTrue(new ElevatorZeroingCommand(elevatorSubsystem));
     }
 

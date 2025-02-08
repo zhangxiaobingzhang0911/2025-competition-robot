@@ -21,17 +21,16 @@ public class ElevatorZeroingCommand extends Command {
 
     @Override
     public void execute(){
-        elevator.setVoltage(-0.5);
+        elevator.setVoltage(-1);
     }
 
     @Override
     public boolean isFinished() {
-        return elevator.getLeaderCurrent() > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get();
+        return Math.abs(elevator.getLeaderCurrent()) > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get();
     }
 
     @Override
     public void end(boolean interrupted) {
-
         elevator.resetPosition();
         elevator.setVoltage(0);
     }

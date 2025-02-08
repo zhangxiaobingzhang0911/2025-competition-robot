@@ -1,6 +1,7 @@
 package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -10,6 +11,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final ElevatorIO io;
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
+    private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
+    public double currentFilterValue = 0.0;
+
     public ElevatorSubsystem(ElevatorIO io) {
         this.io = io;
     }
@@ -18,6 +22,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
+
+        currentFilterValue = currentFilter.calculate(inputs.statorCurrentAmps[0]);
+        Logger.recordOutput("Elevator/CurrentFilter", currentFilterValue);
     }
 
     public void setPosition(double heightMeters) {
@@ -38,7 +45,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public double getLeaderCurrent(){
-        return io.getLeaderCurrent();
+        return currentFilterValue;
     }
 
     public void resetPosition(){

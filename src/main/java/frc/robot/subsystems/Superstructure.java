@@ -12,12 +12,14 @@ public class Superstructure extends SubsystemBase {
     public enum WantedSuperState {
         STOPPED,
         INTAKE_CORAL_FUNNEL,
+        INTAKE_CORAL_GROUND,
         SHOOT_CORAL
     }
 
     public enum CurrentSuperState {
         STOPPED,
         INTAKE_CORAL_FUNNEL,
+        INTAKE_CORAL_GROUND,
         SHOOT_CORAL
     }
 
@@ -45,6 +47,9 @@ public class Superstructure extends SubsystemBase {
             case INTAKE_CORAL_FUNNEL:
                 currentSuperState = CurrentSuperState.INTAKE_CORAL_FUNNEL;
                 break;
+            case INTAKE_CORAL_GROUND:
+                currentSuperState = CurrentSuperState.INTAKE_CORAL_GROUND;
+                break;
             case SHOOT_CORAL:
                 currentSuperState = CurrentSuperState.SHOOT_CORAL;
                 break;
@@ -60,6 +65,9 @@ public class Superstructure extends SubsystemBase {
         switch (currentSuperState) {
             case INTAKE_CORAL_FUNNEL:
                 intakeCoralFunnel();
+                break;
+            case INTAKE_CORAL_GROUND:
+                intakeCoralGround();
                 break;
             case SHOOT_CORAL:
                 shootCoral();
@@ -80,15 +88,23 @@ public class Superstructure extends SubsystemBase {
     }
 
     private void intakeCoralFunnel() {
-        if (endEffector.isFunnelIntakeFinished()) {
-            endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_TRANSFER);
+        if (endEffector.isIntakeFinished()) {
+            endEffector.setWantedState(EndEffectorSubsystem.WantedState.TRANSFER);
         } else {
             endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE);
         }
     }
 
+    private void intakeCoralGround() {
+        if (endEffector.isIntakeFinished()) {
+            endEffector.setWantedState(EndEffectorSubsystem.WantedState.TRANSFER);
+        } else {
+            endEffector.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
+        }
+    }
+
     private void shootCoral() {
-        endEffector.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);
+        if (endEffector.isCoralReady()) {endEffector.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);}
     }
 
     private void handleStopped() {

@@ -47,7 +47,6 @@ public class ElevatorIOReal implements ElevatorIO {
     private final StatusSignal<Current> supplyRight;
     private final StatusSignal<Temperature> tempLeft;
     private final StatusSignal<Temperature> tempRight;
-    private final StatusSignal<Double> closedLoopReferenceSlope;
 
     public ElevatorIOReal() {
         this.leader = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, CANIVORE_CAN_BUS_NAME);
@@ -98,17 +97,21 @@ public class ElevatorIOReal implements ElevatorIO {
         statorLeft = leader.getStatorCurrent();
         statorRight = follower.getStatorCurrent();
         supplyLeft = leader.getSupplyCurrent();
-        supplyRight = leader.getSupplyCurrent();
+        supplyRight = follower.getSupplyCurrent();
         tempLeft = leader.getDeviceTemp();
         tempRight = follower.getDeviceTemp();
-        closedLoopReferenceSlope = leader.getClosedLoopReferenceSlope();
 
         follower.setControl(new Follower(leader.getDeviceID(), true));
     }
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
-        BaseStatusSignal.refreshAll();
+        BaseStatusSignal.refreshAll(
+                voltageLeft, voltageRight,
+                statorLeft, statorRight,
+                supplyLeft, supplyRight,
+                tempLeft, tempRight
+        );
 
         inputs.positionMeters = getHeight();
         inputs.velocityMetersPerSec = getVelocity();
@@ -126,6 +129,7 @@ public class ElevatorIOReal implements ElevatorIO {
             slot0Configs.kP = ELEVATOR_KP.get();
             slot0Configs.kI = ELEVATOR_KI.get();
             slot0Configs.kD = ELEVATOR_KD.get();
+            slot0Configs.kG = ELEVATOR_KG.get();
 
             motionMagicConfigs.MotionMagicAcceleration = motionAcceleration.get();
             motionMagicConfigs.MotionMagicCruiseVelocity = motionCruiseVelocity.get();
@@ -154,9 +158,7 @@ public class ElevatorIOReal implements ElevatorIO {
         follower.setPosition(position);
     }
 
-    public double getLeaderCurrent(){
-        return leader.getStatorCurrent().getValueAsDouble();
-    }
+
 
     @Override
     public void resetPosition(){

@@ -79,7 +79,7 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
-    public boolean isCurrentMax(double max){
+    public boolean isCurrentMax(){
         return false;
     }
 }

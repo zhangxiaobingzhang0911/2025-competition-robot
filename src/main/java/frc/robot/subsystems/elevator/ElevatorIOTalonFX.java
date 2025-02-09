@@ -26,7 +26,6 @@ import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 
 public class ElevatorIOTalonFX implements ElevatorIO {
-    private ElevatorSubsystem elevator;
     private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(0.0).withEnableFOC(true);
 
     private final TalonFX leftElevatorTalon = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
@@ -42,6 +41,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final StatusSignal<Voltage> rightElevatorAppliedVoltage = rightElevatorTalon.getMotorVoltage();
     private final StatusSignal<Current> rightElevatorSupplyCurrent = rightElevatorTalon.getSupplyCurrent();
     private double targetElevatorVelocity = 0;
+
+    private final StatusSignal<Current> statorLeft = leftElevatorTalon.getStatorCurrent();
+    private final StatusSignal<Current> statorRight = rightElevatorTalon.getStatorCurrent();
 
     public ElevatorIOTalonFX() {
         TalonFXConfiguration elevatorMotorConfig = new TalonFXConfiguration();
@@ -60,7 +62,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         rightElevatorTalon.setPosition(0.0);
         leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
         rightElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
-
         StatusCode response = leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
         if (response.isError())
             System.out.println("Left Elevator TalonFX failed config with error" + response);
@@ -81,7 +82,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
                 rightElevatorVelocity,
                 rightElevatorPosition,
                 rightElevatorAppliedVoltage,
-                rightElevatorSupplyCurrent);
+                rightElevatorSupplyCurrent,
+                statorLeft, statorRight);
 
         inputs.leftElevatorVelocity = RadiansPerSecond.of(Units.rotationsToRadians(leftElevatorVelocity.getValueAsDouble()));
         inputs.leftElevatorPosition = Radians.of(Units.rotationsToRadians(leftElevatorPosition.getValueAsDouble()));
@@ -92,6 +94,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         inputs.rightElevatorPosition = Radians.of(Units.rotationsToRadians(rightElevatorPosition.getValueAsDouble()));
         inputs.rightElevatorAppliedVoltage = Volts.of(rightElevatorAppliedVoltage.getValueAsDouble());
         inputs.rightElevatorSupplyCurrent = Amps.of(rightElevatorSupplyCurrent.getValueAsDouble());
+
+        inputs.statorCurrentAmps = new double[] { statorLeft.getValueAsDouble(), statorRight.getValueAsDouble() };
 
         inputs.targetElevatorVelocity = RadiansPerSecond.of(targetElevatorVelocity);
 
@@ -124,13 +128,12 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     @Override
     public void zeroingElevator(){
-        while(!isCurrentMax(ELEVATOR_ZEROING_CURRENT.get())) {
+        if(!isCurrentMax()) {
             leftElevatorTalon.setControl(new VoltageOut(-5));
         }
         leftElevatorTalon.setControl(new VoltageOut(0));
         leftElevatorTalon.setPosition(0.0);
-        rightElevatorTalon.setPosition(0.0);
-        elevator.setELevatorState(ElevatorSubsystem.WantedState.IDLE);
+
     }
 
     @Override
@@ -139,8 +142,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     }
 
     @Override
-    public boolean isCurrentMax(double max){
-        return Math.abs(leftElevatorTalon.getStatorCurrent().getValueAsDouble()) > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get();
+    public boolean isCurrentMax(){
+        return false;
     }
 
     @Override

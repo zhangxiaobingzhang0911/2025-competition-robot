@@ -16,7 +16,7 @@ public interface ElevatorIO {
     double getElevatorVelocity();
     double getElevatorPosition();
     boolean isNearExtension(double expected);
-    boolean isCurrentMax(double expected);
+    boolean isCurrentMax();
 
     @AutoLog
     class ElevatorIOInputs {
@@ -31,6 +31,8 @@ public interface ElevatorIO {
         public Measure<CurrentUnit> rightElevatorSupplyCurrent = Amps.zero();
 
         public Measure<AngularVelocityUnit> targetElevatorVelocity = RadiansPerSecond.zero();
+
+        public double[] statorCurrentAmps = new double[] {};
 
         public double ElevatorKP = frc.robot.RobotConstants.ElevatorGainsClass.ELEVATOR_KP.get();
         public double ElevatorKI = frc.robot.RobotConstants.ElevatorGainsClass.ELEVATOR_KI.get();

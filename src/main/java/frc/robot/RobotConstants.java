@@ -396,9 +396,9 @@ public final class RobotConstants {
                 0.95);// 0.107853495
         public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
                 1.55);
-        public static final TunableNumber INTAKER_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/INTAKER_INTAKE");
-        public static final TunableNumber FUNNEL_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/FUNNEL_INTAKE");
-        public static final TunableNumber INTAKER_AVOID_METERS = new TunableNumber("ELEVATOR SETPOINTS/INTAKER_AVOID");
+        public static final TunableNumber INTAKER_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/INTAKER_INTAKE",0);
+        public static final TunableNumber FUNNEL_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/FUNNEL_INTAKE",0.37);
+        public static final TunableNumber INTAKER_AVOID_METERS = new TunableNumber("ELEVATOR SETPOINTS/INTAKER_AVOID",0);
 
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 20);

@@ -56,10 +56,6 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
-    public void zeroingElevator(){
-    }
-
-    @Override
     public boolean isNearExtension(double expected) {
         return true;
     }
@@ -76,10 +72,5 @@ public class ElevatorIOSim implements ElevatorIO {
     @Override
     public double getElevatorVelocity() {
         return rightElevatorTalonSim.getAngularVelocityRadPerSec() / 6.28 * 60;
-    }
-
-    @Override
-    public boolean isCurrentMax(double max){
-        return false;
     }
 }

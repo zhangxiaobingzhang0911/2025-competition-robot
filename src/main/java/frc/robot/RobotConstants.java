@@ -243,6 +243,7 @@ public final class RobotConstants {
 
         /**
          * Constants for the steer motor gains in the swerve drivetrain.
+         * IF YOU WANT TO ADJUST SWERVE PID, GO TO src/main/java/org/frcteam6941/swerve/CTRESwerveModule.java AND FOLLOW THE INSTRUCTION
          */
         public static class steerGainsClass {
             public static final TunableNumber STEER_KP = new TunableNumber("STEER PID/kp", 120);
@@ -255,6 +256,7 @@ public final class RobotConstants {
 
         /**
          * Constants for the drive motor gains in the swerve drivetrain.
+         * IF YOU WANT TO ADJUST SWERVE PID, GO TO src/main/java/org/frcteam6941/swerve/CTRESwerveModule.java AND FOLLOW THE INSTRUCTION
          */
         public static class driveGainsClass {
             public static final TunableNumber DRIVE_KP = new TunableNumber("DRIVE PID/kp", 0.03);

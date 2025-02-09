@@ -34,7 +34,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private String shootPositionName = "Null";
     private double shootPosition = 0.0;
 
-     private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
+    private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
     public double currentFilterValue = 0.0;
 
     private String wantedPositionType = "Null";
@@ -61,7 +61,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
 
         if (DriverStation.isDisabled()) {
-            wantedState = wantedState.ZERO;
+            wantedState = wantedState.IDLE;
         }
 
         // set movements based on state
@@ -84,7 +84,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     private SystemState handleStateTransition() {
         return switch (wantedState) {
             case ZERO -> {
-
                 yield SystemState.ZEROING;
             }
             case POSITION -> {

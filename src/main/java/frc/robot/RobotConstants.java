@@ -115,8 +115,8 @@ public final class RobotConstants {
         public static final double statorCurrent = 110;
         public static final double supplyCurrent = 50;
         public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
-        public static final double deadband = maxSpeed.magnitude() * 0.05;
-        public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.05;
+        public static final double deadband = 0.05;
+        public static final double rotationalDeadband = 0.05;
 
         /**
          * Swerve steering gains
@@ -263,6 +263,18 @@ public final class RobotConstants {
             public static final TunableNumber DRIVE_KA = new TunableNumber("DRIVE PID/ka", 0);
             public static final TunableNumber DRIVE_KV = new TunableNumber("DRIVE PID/kv", 0.12);
             public static final TunableNumber DRIVE_KS = new TunableNumber("DRIVE PID/ks", 0.045);
+        }
+
+        /**
+         * Constants for the gains in the ReefAimCommand.
+         */
+        public static class AimGainsClass {
+            public static final TunableNumber DRIVE_KP = new TunableNumber("AIM PID/drive_kp", 100);
+            public static final TunableNumber DRIVE_KI = new TunableNumber("AIM PID/drive_ki", 0);
+            public static final TunableNumber DRIVE_KD = new TunableNumber("AIM PID/drive_kd", 0);
+            public static final TunableNumber TURN_KP = new TunableNumber("AIM PID/turn_kp", 100);
+            public static final TunableNumber TURN_KI = new TunableNumber("AIM PID/turn_ki", 0);
+            public static final TunableNumber TURN_KD = new TunableNumber("AIM PID/turn_kd", 0);
         }
 
     }

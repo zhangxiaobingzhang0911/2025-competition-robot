@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.ElevatorZeroingCommand;
+import frc.robot.commands.ReefAimCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.Superstructure;
@@ -91,18 +92,16 @@ public class RobotContainer {
 
     //Configure all commands for driver
     private void configureDriverBindings(CommandXboxController driverController) {
-        swerve.setDefaultCommand(Commands
-                .runOnce(() -> swerve.drive(
-                                new Translation2d(
-                                        -driverController.getLeftY()
-                                                * RobotConstants.SwerveConstants.maxSpeed.magnitude(),
-                                        -driverController.getLeftX()
-                                                * RobotConstants.SwerveConstants.maxSpeed.magnitude()),
-                                -driverController.getRightX()
-                                        * RobotConstants.SwerveConstants.maxAngularRate.magnitude(),
-                                true,
-                                false),
-                        swerve));
+        swerve.setDefaultCommand(Commands.runOnce(() -> swerve.drive(
+                new Translation2d(
+                        Math.abs(driverController.getLeftY()) < RobotConstants.SwerveConstants.deadband ?
+                                0 : -driverController.getLeftY() * RobotConstants.SwerveConstants.maxSpeed.magnitude(),
+                        Math.abs(driverController.getLeftX()) < RobotConstants.SwerveConstants.deadband ?
+                                0 : -driverController.getLeftX() * RobotConstants.SwerveConstants.maxSpeed.magnitude()),
+                Math.abs(-driverController.getRightX()) < RobotConstants.SwerveConstants.rotationalDeadband ?
+                        0 : -driverController.getRightX() * RobotConstants.SwerveConstants.maxAngularRate.magnitude(),
+                true,
+                false), swerve));
 
         driverController.start().onTrue(
                 Commands.runOnce(() -> {
@@ -147,7 +146,7 @@ public class RobotContainer {
 
     //Configure all commands for Stream Deck
     private void configureStreamDeckBindings(CommandGenericHID controller) {
-        controller.button(1).onTrue(Commands.runOnce(() -> System.out.println("Stream Deck Controller Test Successful!")));
+        controller.button(1).onTrue(new ReefAimCommand(7, false));
     }
 
     /**

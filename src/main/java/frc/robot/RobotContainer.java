@@ -16,6 +16,9 @@ import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.ElevatorZeroingCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
+import frc.robot.subsystems.intake.IntakerRollerIOReal;
+import frc.robot.subsystems.intake.IntakePivotIOReal;
+import frc.robot.subsystems.intake.IntakerSubsystem;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
@@ -36,6 +39,7 @@ import java.util.function.BooleanSupplier;
 import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID;
 import static frc.robot.RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID;
+import static frc.robot.RobotConstants.BeamBreakConstants.INTAKER_BEAMBREAK_ID;
 import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 /**
@@ -61,9 +65,9 @@ public class RobotContainer {
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
-    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
-
-    Superstructure superstructure = new Superstructure(endEffectorSubsystem);
+//     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+    IntakerSubsystem intakerSubsystem = new IntakerSubsystem(new IntakePivotIOReal(),new IntakerRollerIOReal(), new BeambreakIOReal(INTAKER_BEAMBREAK_ID));
+    Superstructure superstructure = new Superstructure(intakerSubsystem);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -131,12 +135,16 @@ public class RobotContainer {
     //Configure all commands for testing
     private void configureTesterBindings(CommandXboxController controller) {
         //test of endeffector state machine
-        new Trigger(controller.leftBumper())
-                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.INTAKE_CORAL_FUNNEL));
-        new Trigger(controller.rightBumper())
-                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.SHOOT_CORAL));
+        // new Trigger(controller.leftBumper())
+        //         .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.INTAKE_CORAL_FUNNEL));
+        // new Trigger(controller.rightBumper())
+        //         .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.SHOOT_CORAL));
         new Trigger(controller.start())
                 .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.STOPPED));
+        new Trigger(controller.leftTrigger())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.INTAKE_CORAL_FUNNEL));
+        new Trigger(controller.rightTrigger())
+                .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.OUTTAKE));
         //test of elevator heights
         controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L1_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L1_EXTENSION_METERS.get())));
         controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L2_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L2_EXTENSION_METERS.get())));

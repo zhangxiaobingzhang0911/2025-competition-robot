@@ -287,7 +287,7 @@ public final class RobotConstants {
         public static class BeamBreakConstants {
                 public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 1;
                 public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 3;
-                public static final int INTAKER_BEAMBREAK_ID = 0;
+                public static final int INTAKER_BEAMBREAK_ID = 40;
         }
 
         /**
@@ -332,13 +332,19 @@ public final class RobotConstants {
                 public static final int INTAKER_MOTOR_ID = 15;
                 public static final int INTAKER_PIVOT_MOTOR_ID = 16;
                 public static double PIVOT_RATIO = 1;
+                public static final int STATOR_CURRENT_LIMIT_AMPS = 60;
+                public static final int SUPPLY_CURRENT_LIMIT_AMPS = 20;
+                public static final boolean IS_BRAKE = true;
+                public static final boolean IS_INVERT = false;
+                public static final double REDUCTION = 1;
                 public static Rotation2d RETRACTED_ANGLE = Rotation2d.fromDegrees(90);
                 public static Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(120);
                 public static Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
 
                 public static final TunableNumber INTAKE_VELOCITY = new TunableNumber("Intake/intakeVelocity", 600);
+                public static final TunableNumber OUTTAKE_VELOCITY = new TunableNumber("Intake/outtakeVelocity", -600);
                 public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("Intake/intakeVoltage", 3.0);
-
+                public static final TunableNumber INTAKE_IDLE_RPS = new TunableNumber("Intake/intakeIdleRPS", 0);
                 /**
                  * Constants for the intake pivot motor gains in the intake subsystem.
                  */

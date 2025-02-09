@@ -287,7 +287,7 @@ public final class RobotConstants {
         public static class BeamBreakConstants {
                 public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 1;
                 public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 3;
-                public static final int INTAKER_BEAMBREAK_ID = 40;
+                public static final int INTAKER_BEAMBREAK_ID = 0;
         }
 
         /**

@@ -4,32 +4,38 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.intake.IntakerSubsystem;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Superstructure extends SubsystemBase {
-    private EndEffectorSubsystem endEffector;
+    // private EndEffectorSubsystem endEffector;
+    private IntakerSubsystem intakerSubsystem;
 
     public enum WantedSuperState {
         STOPPED,
         INTAKE_CORAL_FUNNEL,
         INTAKE_CORAL_GROUND,
-        SHOOT_CORAL
+        SHOOT_CORAL,
+        OUTTAKE,
     }
 
     public enum CurrentSuperState {
         STOPPED,
         INTAKE_CORAL_FUNNEL,
         INTAKE_CORAL_GROUND,
-        SHOOT_CORAL
+        SHOOT_CORAL,
+        OUTTAKE,
     }
 
     WantedSuperState wantedSuperState = WantedSuperState.STOPPED;
     CurrentSuperState currentSuperState = CurrentSuperState.STOPPED;
     CurrentSuperState previousSuperState;
 
-    public Superstructure(
-            EndEffectorSubsystem endEffector) {
-        this.endEffector = endEffector;
+    public Superstructure(IntakerSubsystem intakerSubsystem){
+            // EndEffectorSubsystem endEffector) {
+        // this.endEffector = endEffector;
+        this.intakerSubsystem = intakerSubsystem;
     }
 
     @Override
@@ -44,14 +50,17 @@ public class Superstructure extends SubsystemBase {
     private CurrentSuperState handleStateTransition() {
         previousSuperState = currentSuperState;
         switch(wantedSuperState) {
-            case INTAKE_CORAL_FUNNEL:
-                currentSuperState = CurrentSuperState.INTAKE_CORAL_FUNNEL;
-                break;
-            case INTAKE_CORAL_GROUND:
-                currentSuperState = CurrentSuperState.INTAKE_CORAL_GROUND;
-                break;
-            case SHOOT_CORAL:
-                currentSuperState = CurrentSuperState.SHOOT_CORAL;
+            // case INTAKE_CORAL_FUNNEL:
+            //     currentSuperState = CurrentSuperState.INTAKE_CORAL_FUNNEL;
+            //     break;
+            // case INTAKE_CORAL_GROUND:
+            //     currentSuperState = CurrentSuperState.INTAKE_CORAL_GROUND;
+            //     break;
+            // case SHOOT_CORAL:
+            //     currentSuperState = CurrentSuperState.SHOOT_CORAL;
+            //     break;
+            case OUTTAKE:
+                currentSuperState = CurrentSuperState.OUTTAKE;
                 break;
             case STOPPED:
             default:
@@ -63,14 +72,17 @@ public class Superstructure extends SubsystemBase {
 
     private void applyStates() {
         switch (currentSuperState) {
-            case INTAKE_CORAL_FUNNEL:
-                intakeCoralFunnel();
-                break;
-            case INTAKE_CORAL_GROUND:
-                intakeCoralGround();
-                break;
-            case SHOOT_CORAL:
-                shootCoral();
+            // case INTAKE_CORAL_FUNNEL:
+            //     intakeCoralFunnel();
+            //     break;
+            // case INTAKE_CORAL_GROUND:
+            //     intakeCoralGround();
+            //     break;
+            // case SHOOT_CORAL:
+            //     shootCoral();
+            //     break;
+            case OUTTAKE:
+                outtake();
                 break;
             case STOPPED:
             default:
@@ -88,27 +100,36 @@ public class Superstructure extends SubsystemBase {
     }
 
     private void intakeCoralFunnel() {
-        if (endEffector.isIntakeFinished()) {
-            endEffector.setWantedState(EndEffectorSubsystem.WantedState.TRANSFER);
-        } else {
-            endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE);
-        }
+        intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.INTAKE);
+        // if (endEffector.isIntakeFinished()) {
+        //     endEffector.setWantedState(EndEffectorSubsystem.WantedState.TRANSFER);
+        // } else {
+        //     endEffector.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE);
+        // }
     }
 
     private void intakeCoralGround() {
-        if (endEffector.isIntakeFinished()) {
-            endEffector.setWantedState(EndEffectorSubsystem.WantedState.TRANSFER);
-        } else {
-            endEffector.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
-        }
+        intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.INTAKE);
+        // if (endEffector.isIntakeFinished()) {
+        //     intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.INTAKE);
+        //     endEffector.setWantedState(EndEffectorSubsystem.WantedState.TRANSFER);
+        // } else {
+        //     endEffector.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
+        // }
     }
 
-    private void shootCoral() {
-        if (endEffector.isCoralReady()) {endEffector.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);}
+    // private void shootCoral() {
+    //     if (endEffector.isCoralReady()) {endEffector.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);}
+    // }
+
+    private void outtake() {
+        intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.OUTTAKE);
     }
+
 
     private void handleStopped() {
-        endEffector.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
+        // endEffector.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
+        intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.IDLE);
     }
 
 }

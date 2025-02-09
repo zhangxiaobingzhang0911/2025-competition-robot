@@ -1,19 +1,22 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstantsFactory;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.utils.TunableNumber;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 
@@ -217,8 +220,8 @@ public final class RobotConstants {
                 BACK_RIGHT_STEER_MOTOR_ID, BACK_RIGHT_DRIVE_MOTOR_ID, BACK_RIGHT_ENCODER_ID,
                 BACK_RIGHT_ENCODER_OFFSET, backRightXPos.magnitude(), backRightYPos.magnitude(), true);
         // swervemodule
-        public static LegacySwerveModuleConstants[] modules = {FrontLeft, FrontRight, BackLeft, BackRight};
-        public static final Translation2d[] modulePlacements = new Translation2d[]{
+        public static LegacySwerveModuleConstants[] modules = { FrontLeft, FrontRight, BackLeft, BackRight };
+        public static final Translation2d[] modulePlacements = new Translation2d[] {
                 new Translation2d(SwerveConstants.FrontLeft.LocationX,
                         SwerveConstants.FrontLeft.LocationY),
                 new Translation2d(SwerveConstants.FrontRight.LocationX,
@@ -226,7 +229,7 @@ public final class RobotConstants {
                 new Translation2d(SwerveConstants.BackLeft.LocationX,
                         SwerveConstants.BackLeft.LocationY),
                 new Translation2d(SwerveConstants.BackRight.LocationX,
-                        SwerveConstants.BackRight.LocationY)};
+                        SwerveConstants.BackRight.LocationY) };
 
         /**
          * Constants for the heading controller used in the swerve drivetrain.
@@ -321,19 +324,19 @@ public final class RobotConstants {
         }
     }
 
-
     /**
      * Constants related to the robot's intake subsystem.
      */
     public static class intakeConstants {
         public static final int INTAKER_MOTOR_ID = 15;
         public static final int INTAKER_PIVOT_MOTOR_ID = 16;
-        public static final TunableNumber INTAKE_VELOCITY = new TunableNumber("Intake/intakeVelocity", 600);
-        public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("Intake/intakeVoltage", 3.0);
         public static double PIVOT_RATIO = 1;
         public static Rotation2d RETRACTED_ANGLE = Rotation2d.fromDegrees(90);
         public static Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(120);
         public static Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
+
+        public static final TunableNumber INTAKE_VELOCITY = new TunableNumber("Intake/intakeVelocity", 600);
+        public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("Intake/intakeVoltage", 3.0);
 
         /**
          * Constants for the intake pivot motor gains in the intake subsystem.
@@ -367,36 +370,53 @@ public final class RobotConstants {
     /**
      * Constants related to the elevator subsystem.
      */
-    public static final class ElevatorConstants {
+    public static class ElevatorConstants {
         public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
         public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
 
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
-        public static final boolean leftMotorClockwise = true;
-        public static final double elevatorMotorRPS = 70; // In rotation * s^{-1}
-        public static final double elevatorMotorAccel = 160;// In rotation * s^{-2}
-        public static final double ELEVATOR_ZEROING_CURRENT = 15; //in amps
-        // Constants for elevator level positions relative to starting position. Todo: tune all constants below
-        public static final double[] Position = new double[]{
-                0.0,   //lowest
-                0.0,   //L1
-                0.8 - 0.105,   //L2
-                1.22 - 0.105,  //L3
-                1.80 - 0.105,  //L4
-                1.80   //highest
-        };
+        public static final double DEADZONE_DISTANCE = 0.0;
 
-        /**
-         * Constants for the elevator motor gains.
-         */
-        public static class ElevatorGainsClass {
-            public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 0.2);
-            public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
-            public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0.001);
-            public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka", 0.0037512677);
-            public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.113);// 0.107853495
-            public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.28475008);
-        }
+        public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
+                200);
+        public static final TunableNumber motionCruiseVelocity = new TunableNumber(
+                "Elevator/MotionCruiseVelocity", 100);
+        public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk", 0.0);
+
+        public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
+                1.57);
+        public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber(
+                "ELEVATOR GOALS/idle", 0);
+        public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
+                0.45);
+        public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
+                0.53);
+        public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
+                0.95);// 0.107853495
+        public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
+                1.55);
+        public static final TunableNumber INTAKER_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/INTAKER_INTAKE");
+        public static final TunableNumber FUNNEL_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/FUNNEL_INTAKE");
+        public static final TunableNumber INTAKER_AVOID_METERS = new TunableNumber("ELEVATOR SETPOINTS/INTAKER_AVOID");
+
+        public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
+                20);
+    }
+
+
+    /**
+     * Constants for the elevator motor gains.
+     */
+    public static class ElevatorGainsClass {
+        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 15);
+        public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
+        public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0);
+        public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka",
+                0);
+        public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0);// 0.107853495
+        public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
+                0);
+        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.3);
     }
 }

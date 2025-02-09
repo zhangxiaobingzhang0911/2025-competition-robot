@@ -26,6 +26,7 @@ import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 
 public class ElevatorIOTalonFX implements ElevatorIO {
+    private ElevatorSubsystem elevator;
     private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(0.0).withEnableFOC(true);
 
     private final TalonFX leftElevatorTalon = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
@@ -44,16 +45,17 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     public ElevatorIOTalonFX() {
         TalonFXConfiguration elevatorMotorConfig = new TalonFXConfiguration();
+        elevatorMotorConfig.CurrentLimits.StatorCurrentLimit = 80.0;
         elevatorMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
         elevatorMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         elevatorMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         elevatorMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         elevatorMotorConfig.Feedback.SensorToMechanismRatio = 1;
-        elevatorMotorConfig.MotorOutput.Inverted = RobotConstants.ElevatorConstants.leftMotorClockwise ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+        elevatorMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         MotionMagicConfigs mmConfigs = elevatorMotorConfig.MotionMagic;
-        mmConfigs.MotionMagicCruiseVelocity = RobotConstants.ElevatorConstants.elevatorMotorRPS;
-        mmConfigs.MotionMagicAcceleration = RobotConstants.ElevatorConstants.elevatorMotorAccel;
+        mmConfigs.MotionMagicCruiseVelocity = RobotConstants.ElevatorConstants.motionCruiseVelocity.get();
+        mmConfigs.MotionMagicAcceleration = RobotConstants.ElevatorConstants.motionAcceleration.get();
         leftElevatorTalon.setPosition(0.0);
         rightElevatorTalon.setPosition(0.0);
         leftElevatorTalon.getConfigurator().apply(elevatorMotorConfig);
@@ -99,7 +101,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
                 .withKD(inputs.ElevatorKD)
                 .withKA(inputs.ElevatorKA)
                 .withKV(inputs.ElevatorKV)
-                .withKS(inputs.ElevatorKS));
+                .withKS(inputs.ElevatorKS)
+                .withKG(inputs.ElevatorKG)
+        );
     }
 
     @Override
@@ -119,13 +123,24 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     }
 
     @Override
+    public void zeroingElevator(){
+        while(!isCurrentMax(ELEVATOR_ZEROING_CURRENT.get())) {
+            leftElevatorTalon.setControl(new VoltageOut(-5));
+        }
+        leftElevatorTalon.setControl(new VoltageOut(0));
+        leftElevatorTalon.setPosition(0.0);
+        rightElevatorTalon.setPosition(0.0);
+        elevator.setELevatorState(ElevatorSubsystem.WantedState.IDLE);
+    }
+
+    @Override
     public boolean isNearExtension(double expected) {
         return MathUtil.isNear(metersToRotations(expected), leftElevatorTalon.getPosition().getValueAsDouble(), 0.02);
     }
 
     @Override
     public boolean isCurrentMax(double max){
-        return leftElevatorTalon.getStatorCurrent().getValueAsDouble() > max;
+        return Math.abs(leftElevatorTalon.getStatorCurrent().getValueAsDouble()) > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get();
     }
 
     @Override

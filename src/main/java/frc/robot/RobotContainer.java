@@ -64,8 +64,6 @@ public class RobotContainer {
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
 
-    //Superstructure superstructure =  new Superstructure(endEffectorSubsystem);
-
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -131,10 +129,40 @@ public class RobotContainer {
     //Configure all commands for testing
     private void configureTesterBindings(CommandXboxController controller) {
         //test of endeffector state machine
+        //Funnel Intake
         new Trigger(controller.leftBumper())
-                .onTrue(endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE));
+                .onTrue(Commands.parallel(
+                        endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE),
+                        elevatorSubsystem.setElevatorWantedPositionCommand("Funnel Intake"),
+                        elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION)
+                ));
+
+        //Intaker Intake
+        new Trigger(controller.rightBumper())
+                .onTrue(Commands.parallel(
+                        endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.GROUND_INTAKE),
+                        elevatorSubsystem.setElevatorWantedPositionCommand("Intaker Intake"),
+                        elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION)
+                ));
+
+        //Shoot
         new Trigger(controller.rightTrigger())
-                .onTrue(endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.SHOOT));
+                .onTrue(Commands.parallel(
+                        endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.SHOOT),
+                        elevatorSubsystem.setElevatorWantedPositionCommand("Shoot"),
+                        elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION)
+                ));
+
+        //Change Shoot Position
+        new Trigger(controller.y()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L1", L1_EXTENSION_METERS.get()));
+        new Trigger(controller.b()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L2", L2_EXTENSION_METERS.get()));
+        new Trigger(controller.a()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L3", L3_EXTENSION_METERS.get()));
+        new Trigger(controller.x()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L4", L4_EXTENSION_METERS.get()));
+
+        //Elevator Home
+        new Trigger(controller.leftTrigger())
+                .onTrue(elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO));
+
         new Trigger(controller.start())
                 .onTrue(endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.IDLE));
     }
@@ -156,9 +184,12 @@ public class RobotContainer {
     }
 
     private Command rumbleDriver(double seconds) {
-            return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
+        return new RumbleCommand(Seconds.of(seconds), driverController.getHID());
     }
 
+    /**
+     * Returns the current AprilTag layout type.
+     */
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
 //        if (aprilTagsSpeakerOnly.getAsBoolean()) {
 //            return FieldConstants.AprilTagLayoutType.SPEAKERS_ONLY;

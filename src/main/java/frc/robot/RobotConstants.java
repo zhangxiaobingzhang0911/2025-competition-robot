@@ -232,13 +232,13 @@ public final class RobotConstants {
          */
         public static class headingController {
             public static final frc.robot.utils.TunableNumber HEADING_KP = new frc.robot.utils.TunableNumber(
-                    "HEADING PID/kp", 0.09);
+                    "HEADING PID/kp", 0.08);
             public static final frc.robot.utils.TunableNumber HEADING_KI = new frc.robot.utils.TunableNumber(
                     "HEADING PID/ki", 0.000);
             public static final frc.robot.utils.TunableNumber HEADING_KD = new frc.robot.utils.TunableNumber(
-                    "HEADING PID/kd", 0.004);
+                    "HEADING PID/kd", 0.005);
             public static final frc.robot.utils.TunableNumber MAX_ERROR_CORRECTION_ANGLE = new frc.robot.utils.TunableNumber(
-                    "HEADING/Max Error Correction Angle", 120.0);
+                    "HEADING/Max Error Correction Angle", 50);
         }
 
         /**
@@ -269,12 +269,9 @@ public final class RobotConstants {
          * Constants for the gains in the ReefAimCommand.
          */
         public static class AimGainsClass {
-            public static final TunableNumber DRIVE_KP = new TunableNumber("AIM PID/drive_kp", 10);
-            public static final TunableNumber DRIVE_KI = new TunableNumber("AIM PID/drive_ki", 1);
-            public static final TunableNumber DRIVE_KD = new TunableNumber("AIM PID/drive_kd", 1);
-            public static final TunableNumber TURN_KP = new TunableNumber("AIM PID/turn_kp", 100);
-            public static final TunableNumber TURN_KI = new TunableNumber("AIM PID/turn_ki", 1);
-            public static final TunableNumber TURN_KD = new TunableNumber("AIM PID/turn_kd", 1);
+            public static final TunableNumber AIM_KP = new TunableNumber("AIM PID/kp", 10);
+            public static final TunableNumber AIM_KI = new TunableNumber("AIM PID/ki", 1);
+            public static final TunableNumber AIM_KD = new TunableNumber("AIM PID/kd", 1);
         }
 
     }

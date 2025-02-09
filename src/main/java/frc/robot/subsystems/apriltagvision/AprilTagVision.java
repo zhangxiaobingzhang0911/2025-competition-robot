@@ -11,6 +11,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants.AprilTagLayoutType;
 import frc.robot.RobotConstants;
@@ -56,6 +57,11 @@ public class AprilTagVision extends SubsystemBase {
     private Pose3d cameraPose;
     @Getter
     private Pose3d robotPose3d;
+
+    private double deviationX;
+    private double deviationY;
+    private double deviationOmega;
+    private int measuerCnt = 0;
 
     /**
      * Constructs the AprilTagVision subsystem with a supplier for the AprilTag layout type and an array of IO instances.
@@ -342,6 +348,28 @@ public class AprilTagVision extends SubsystemBase {
         }
         RobotState.getInstance().setDemoTagPose(demoTagPose);
 
+        if (robotPose3d != null) {
+            if (measuerCnt <= 3) {
+                measuerCnt++;
+                deviationX = 0.01;
+                deviationY = 0.01;
+                deviationOmega = 0.001;
+            } else if (Swerve.getInstance().getState() == Swerve.State.PATH_FOLLOWING) {
+                deviationX = (0.0062 * robotPose3d.getX() + 0.0087) * 200;//140
+                deviationY = (0.0062 * robotPose3d.getY() + 0.0087) * 200;
+                deviationOmega = 15;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
+            } else {
+                deviationX = (0.0062 * robotPose3d.getX() + 0.0087) * 40;//80
+                deviationY = (0.0062 * robotPose3d.getY() + 0.0087) * 40;
+                deviationOmega = 15;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
+            }
+            Swerve.getInstance().getLocalizer().addMeasurement(
+                    Timer.getFPGATimestamp(),
+                    robotPose3d.toPose2d(),
+                    new Pose2d(new Translation2d(deviationX, deviationY),
+                            Rotation2d.fromDegrees(deviationOmega)));
+            SmartDashboard.putBoolean("TargetUpdated", true);
+        }
     }
 
 

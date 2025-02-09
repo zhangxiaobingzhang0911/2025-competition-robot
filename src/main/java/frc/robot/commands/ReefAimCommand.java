@@ -16,23 +16,18 @@ public class ReefAimCommand extends Command {
     private final int tagID;
     private final boolean rightReef; // true if shooting right reef
     private final PIDController xPID = new PIDController(
-            RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KP.get(),
-            RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KI.get(),
-            RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KD.get());
+            RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
+            RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
+            RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get());
     private final PIDController yPID = new PIDController(
-            RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KP.get(),
-            RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KI.get(),
-            RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KD.get());
-    private final PIDController omegaPID = new PIDController(
-            RobotConstants.SwerveConstants.AimGainsClass.TURN_KP.get(),
-            RobotConstants.SwerveConstants.AimGainsClass.TURN_KI.get(),
-            RobotConstants.SwerveConstants.AimGainsClass.TURN_KD.get());
+            RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
+            RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
+            RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get());
     private final BooleanSupplier stop;
     private Pose2d robotPose;
     private Pose2d tagPose;
     private Pose2d destinationPose;
     private Translation2d translationalVelocity;
-    private double rotationalVelocity;
 
     // Constructor for ReefAimCommand
     public ReefAimCommand(int tagID, boolean rightReef, BooleanSupplier stop) {
@@ -56,43 +51,38 @@ public class ReefAimCommand extends Command {
         xPID.setTolerance(0.02);
         yPID.setSetpoint(destinationPose.getTranslation().getY());
         yPID.setTolerance(0.02);
-        omegaPID.enableContinuousInput(-0.5, 0.5);
-        omegaPID.setSetpoint(destinationPose.getRotation().getRotations() - 0.5);
-        omegaPID.setTolerance(0.003);
         SmartDashboard.putString("ReefAimCommand/destinationPose", destinationPose.toString());
+        swerve.setLockHeading(true);
+        swerve.setHeadingTarget(destinationPose.getRotation().getRotations() - 180);
     }
 
     @Override
     public void execute() {
-        xPID.setP(RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KP.get());
-        xPID.setI(RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KI.get());
-        xPID.setD(RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KD.get());
-        yPID.setP(RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KP.get());
-        yPID.setI(RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KI.get());
-        yPID.setD(RobotConstants.SwerveConstants.AimGainsClass.DRIVE_KD.get());
-        omegaPID.setP(RobotConstants.SwerveConstants.AimGainsClass.TURN_KP.get());
-        omegaPID.setI(RobotConstants.SwerveConstants.AimGainsClass.TURN_KI.get());
-        omegaPID.setD(RobotConstants.SwerveConstants.AimGainsClass.TURN_KD.get());
+        xPID.setP(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get());
+        xPID.setI(RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get());
+        xPID.setD(RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get());
+        yPID.setP(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get());
+        yPID.setI(RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get());
+        yPID.setD(RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get());
         robotPose = swerve.getLocalizer().getLatestPose();
         translationalVelocity = new Translation2d(xPID.calculate(robotPose.getX() - 0.45), yPID.calculate(robotPose.getY()));
-        rotationalVelocity = omegaPID.calculate(robotPose.getRotation().getRotations());
         SmartDashboard.putString("ReefAimCommand/RobotPose", robotPose.toString());
         SmartDashboard.putString("ReefAimCommand/translationalVelocity", translationalVelocity.toString());
-        SmartDashboard.putNumber("ReefAimCommand/rotationalVelocity", rotationalVelocity);
-        swerve.drive(translationalVelocity, rotationalVelocity, true, false);
+        swerve.drive(translationalVelocity, 0.0, true, false);
     }
 
     @Override
     public boolean isFinished() {
         SmartDashboard.putBoolean("ReefAimCommand/xFinished", xPID.atSetpoint());
         SmartDashboard.putBoolean("ReefAimCommand/yFinished", yPID.atSetpoint());
-        SmartDashboard.putBoolean("ReefAimCommand/omegaFinished", omegaPID.atSetpoint());
+        SmartDashboard.putBoolean("ReefAimCommand/omegaFinished", Swerve.getInstance().aimingReady(1));
         SmartDashboard.putBoolean("ReefAimCommand/emergencyStopped", stop.getAsBoolean());
-        return (xPID.atSetpoint() && yPID.atSetpoint() && omegaPID.atSetpoint()) || stop.getAsBoolean();
+        return (xPID.atSetpoint() && yPID.atSetpoint() && Swerve.getInstance().aimingReady(1)) || stop.getAsBoolean();
     }
 
     @Override
     public void end(boolean interrupted) {
+        swerve.setLockHeading(false);
     }
 
     @Override

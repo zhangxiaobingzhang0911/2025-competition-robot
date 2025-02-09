@@ -33,9 +33,9 @@ public class AprilTagVisionConstants {
     public static final Pose3d[] cameraPoses =
             new Pose3d[]{
                     new Pose3d(
-                            -0.190,
-                            -0.045,
-                            0.22,
+                            0.28 + 0.014,
+                            0.33 - 0.13,
+                            0.15 + 0.104,
                             new Rotation3d(0.0, Units.degreesToRadians(-20), 0.0)
                                     .rotateBy(new Rotation3d(0.0, 0.0, Units.degreesToRadians(180)))),
                     new Pose3d(

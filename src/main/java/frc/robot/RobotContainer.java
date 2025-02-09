@@ -146,7 +146,7 @@ public class RobotContainer {
 
     //Configure all commands for Stream Deck
     private void configureStreamDeckBindings(CommandGenericHID controller) {
-        controller.button(1).onTrue(new ReefAimCommand(7, false));
+        controller.button(1).onTrue(new ReefAimCommand(7, false, () -> controller.button(17).getAsBoolean()));
     }
 
     /**

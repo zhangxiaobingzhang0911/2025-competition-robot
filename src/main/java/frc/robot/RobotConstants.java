@@ -269,12 +269,12 @@ public final class RobotConstants {
          * Constants for the gains in the ReefAimCommand.
          */
         public static class AimGainsClass {
-            public static final TunableNumber DRIVE_KP = new TunableNumber("AIM PID/drive_kp", 100);
-            public static final TunableNumber DRIVE_KI = new TunableNumber("AIM PID/drive_ki", 0);
-            public static final TunableNumber DRIVE_KD = new TunableNumber("AIM PID/drive_kd", 0);
+            public static final TunableNumber DRIVE_KP = new TunableNumber("AIM PID/drive_kp", 10);
+            public static final TunableNumber DRIVE_KI = new TunableNumber("AIM PID/drive_ki", 1);
+            public static final TunableNumber DRIVE_KD = new TunableNumber("AIM PID/drive_kd", 1);
             public static final TunableNumber TURN_KP = new TunableNumber("AIM PID/turn_kp", 100);
-            public static final TunableNumber TURN_KI = new TunableNumber("AIM PID/turn_ki", 0);
-            public static final TunableNumber TURN_KD = new TunableNumber("AIM PID/turn_kd", 0);
+            public static final TunableNumber TURN_KI = new TunableNumber("AIM PID/turn_ki", 1);
+            public static final TunableNumber TURN_KD = new TunableNumber("AIM PID/turn_kd", 1);
         }
 
     }

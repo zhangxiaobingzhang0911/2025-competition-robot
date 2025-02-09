@@ -64,9 +64,9 @@ public class ElevatorSubsystem extends SubsystemBase {
             systemState = newState;
         }
 
-        // if (DriverStation.isDisabled()) {
-        //     wantedState = wantedState.ZERO;
-        // }
+        if (DriverStation.isDisabled()) {
+            wantedState = wantedState.ZERO;
+        }
 
         // set movements based on state
         switch (systemState) {
@@ -78,9 +78,11 @@ public class ElevatorSubsystem extends SubsystemBase {
                 break;
             case IDLING:
                 io.setElevatorTarget(0.0);
+                io.setElevatorDirectVoltage(0);
                 break;
             default:
                 io.setElevatorTarget(0.0);
+                io.setElevatorDirectVoltage(0);
                 break;
         }
     }
@@ -90,10 +92,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         //Todo: change all the true in the if course into boolean variable after connect with other subsystem
         return switch (wantedState) {
             case ZERO -> {
-                if(isCurrentMax()){
-                    wantedState = WantedState.IDLE;
-                    yield SystemState.IDLING;
-                }
+
                 yield SystemState.ZEROING;
             }
             case POSITION -> {
@@ -158,9 +157,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void zeroElevator() {
         if(!isCurrentMax()) {
             io.setElevatorDirectVoltage(-1);
+            wantedState = WantedState.ZERO;
         }
-        io.setElevatorDirectVoltage(0);
-        io.resetElevatorPosition();
+        if(isCurrentMax()){
+            io.setElevatorDirectVoltage(0);
+            io.resetElevatorPosition();
+            wantedState = WantedState.IDLE;
+        }
+        
     }
 
     public Command setElevatorWantedPositionCommand(String wantedPositionType){

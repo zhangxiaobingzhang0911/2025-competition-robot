@@ -6,12 +6,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
-import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
-
-import com.ctre.phoenix6.configs.VoltageConfigs;
-import com.ctre.phoenix6.controls.VoltageOut;
 
 @Getter
 public class ElevatorSubsystem extends SubsystemBase {
@@ -77,19 +73,15 @@ public class ElevatorSubsystem extends SubsystemBase {
                 zeroElevator();
                 break;
             case IDLING:
-                io.setElevatorTarget(0.0);
                 io.setElevatorDirectVoltage(0);
                 break;
             default:
-                io.setElevatorTarget(0.0);
                 io.setElevatorDirectVoltage(0);
                 break;
         }
     }
 
-
     private SystemState handleStateTransition() {
-        //Todo: change all the true in the if course into boolean variable after connect with other subsystem
         return switch (wantedState) {
             case ZERO -> {
 
@@ -119,7 +111,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         previousWantedState = this.wantedState;
         this.wantedState = wantedState;
     }
-
     public Command setElevatorStateCommand(WantedState wantedState) {
         return new InstantCommand(() -> setElevatorState(wantedState));
     }
@@ -128,35 +119,33 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.shootPositionName = shootPositionName;
         this.shootPosition = shootPosition;
     }
-
     public Command setElevatorShootPositionCommand(String shootPositionName,double shootPosition){
         return new InstantCommand(() -> setElevatorShootPosition(shootPositionName,shootPosition));
     }
 
     public void setElevatorWantedPosition(String wantedPositionType) {
         this.wantedPositionType = wantedPositionType;
-        if (wantedPositionType.equals("Shoot")) {
-            this.wantedPosition = this.shootPosition;
-        }else if (wantedPositionType.equals("Intaker Intake")) {
-            this.wantedPosition = RobotConstants.ElevatorConstants.INTAKER_INTAKE_METERS.get();
-        }else if (wantedPositionType.equals("Funnel Intake")) {
-            this.wantedPosition = RobotConstants.ElevatorConstants.FUNNEL_INTAKE_METERS.get();
-        }else if (wantedPositionType.equals("Intake Avoid")) {
-            this.wantedPosition = RobotConstants.ElevatorConstants.INTAKER_AVOID_METERS.get();
+        switch (wantedPositionType) {
+            case "Shoot" -> this.wantedPosition = this.shootPosition;
+            case "Intaker Intake" -> this.wantedPosition = RobotConstants.ElevatorConstants.INTAKER_INTAKE_METERS.get();
+            case "Funnel Intake" -> this.wantedPosition = RobotConstants.ElevatorConstants.FUNNEL_INTAKE_METERS.get();
+            case "Intake Avoid" -> this.wantedPosition = RobotConstants.ElevatorConstants.INTAKER_AVOID_METERS.get();
         }
+    }
+    public Command setElevatorWantedPositionCommand(String wantedPositionType){
+        return new InstantCommand(() -> setElevatorWantedPosition(wantedPositionType));
     }
 
     public double getLeaderCurrent(){
         return currentFilterValue;
     }
-
     public boolean isCurrentMax(){
         return Math.abs(this.getLeaderCurrent()) > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get();
     }
 
     public void zeroElevator() {
         if(!isCurrentMax()) {
-            io.setElevatorDirectVoltage(-1);
+            io.setElevatorDirectVoltage(-3);
             wantedState = WantedState.ZERO;
         }
         if(isCurrentMax()){
@@ -164,10 +153,5 @@ public class ElevatorSubsystem extends SubsystemBase {
             io.resetElevatorPosition();
             wantedState = WantedState.IDLE;
         }
-        
-    }
-
-    public Command setElevatorWantedPositionCommand(String wantedPositionType){
-        return new InstantCommand(() -> setElevatorWantedPosition(wantedPositionType));
     }
 }

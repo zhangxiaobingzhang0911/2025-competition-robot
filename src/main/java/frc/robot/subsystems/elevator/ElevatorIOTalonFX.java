@@ -127,23 +127,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     }
 
     @Override
-    public void zeroingElevator(){
-        if(!isCurrentMax()) {
-            leftElevatorTalon.setControl(new VoltageOut(-5));
-        }
-        leftElevatorTalon.setControl(new VoltageOut(0));
-        leftElevatorTalon.setPosition(0.0);
-
-    }
-
-    @Override
     public boolean isNearExtension(double expected) {
         return MathUtil.isNear(metersToRotations(expected), leftElevatorTalon.getPosition().getValueAsDouble(), 0.02);
-    }
-
-    @Override
-    public boolean isCurrentMax(){
-        return false;
     }
 
     @Override

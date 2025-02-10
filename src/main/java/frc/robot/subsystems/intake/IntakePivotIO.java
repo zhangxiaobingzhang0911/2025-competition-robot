@@ -7,9 +7,10 @@ import static frc.robot.RobotConstants.intakeConstants.intakePivotGainsClass.*;
 
 public interface IntakePivotIO {
     @AutoLog
-    public static class IntakePivotIOInputs {
-        public Rotation2d position = new Rotation2d();
-        public double velocityRotationsPerSec = 0.0;
+    class IntakePivotIOInputs {
+        public double targetPositionDeg = 0.0;
+        public double currentPositionDeg = 0.0;
+        public double velocityRotPerSec = 0.0;
         public double appliedVolts = 0.0;
         public double statorCurrentAmps = 0.0;
         public double supplyCurrentAmps = 0.0;
@@ -23,16 +24,9 @@ public interface IntakePivotIO {
         public double intakePivotKS = INTAKE_PIVOT_KS.get();
     }
 
-    public default void updateInputs(IntakePivotIOInputs inputs) {
-    }
+    default void updateInputs(IntakePivotIOInputs inputs) {}
 
-    public default void setMotorVoltage(double voltage) {
-    }
+    default void setMotorVoltage(double voltage) {}
 
-    public default void setMotorPosition(Rotation2d targetPosition) {
-    }
-
-    public default void updateConfigs(double kp, double ki, double kd, double ka, double kv, double ks) {
-    }
-
+    default void setMotorPosition(double targetPositionDeg) {}
 }

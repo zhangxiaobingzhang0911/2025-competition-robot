@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
-import frc.robot.subsystems.intake.IntakerSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import org.littletonrobotics.junction.Logger;
 
 public class Superstructure extends SubsystemBase {
     // private EndEffectorSubsystem endEffector;
-    private IntakerSubsystem intakerSubsystem;
+    private IntakeSubsystem intakeSubsystem;
 
     public enum WantedSuperState {
         STOPPED,
@@ -32,10 +32,10 @@ public class Superstructure extends SubsystemBase {
     CurrentSuperState currentSuperState = CurrentSuperState.STOPPED;
     CurrentSuperState previousSuperState;
 
-    public Superstructure(IntakerSubsystem intakerSubsystem){
+    public Superstructure(IntakeSubsystem intakeSubsystem){
             // EndEffectorSubsystem endEffector) {
         // this.endEffector = endEffector;
-        this.intakerSubsystem = intakerSubsystem;
+        this.intakeSubsystem = intakeSubsystem;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     private void intakeCoralFunnel() {
-        intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.INTAKE);
+        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.INTAKE);
         // if (endEffector.isIntakeFinished()) {
         //     endEffector.setWantedState(EndEffectorSubsystem.WantedState.TRANSFER);
         // } else {
@@ -109,7 +109,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     private void intakeCoralGround() {
-        intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.INTAKE);
+        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.INTAKE);
         // if (endEffector.isIntakeFinished()) {
         //     intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.INTAKE);
         //     endEffector.setWantedState(EndEffectorSubsystem.WantedState.TRANSFER);
@@ -123,13 +123,13 @@ public class Superstructure extends SubsystemBase {
     // }
 
     private void outtake() {
-        intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.OUTTAKE);
+        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.OUTTAKE);
     }
 
 
     private void handleStopped() {
         // endEffector.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
-        intakerSubsystem.setWantedState(IntakerSubsystem.WantedState.IDLE);
+        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.IDLE);
     }
 
 }

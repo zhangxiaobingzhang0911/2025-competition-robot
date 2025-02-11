@@ -80,7 +80,8 @@ public class EndEffectorSubsystem extends RollerSubsystem {
 
         Logger.processInputs(NAME + "/Middle Beambreak", middleBBInputs);
         Logger.processInputs(NAME + "/Edge Beambreak", edgeBBInputs);
-        Logger.recordOutput("EndEffector/SystemState", newState.toString());
+        Logger.recordOutput("EndEffector/SystemState", systemState.toString());
+        Logger.recordOutput(NAME+"/wantedState",wantedState.toString());
 
         if (newState != systemState) {
             systemState = newState;
@@ -136,12 +137,14 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             case FUNNEL_INTAKE -> {
                 if (middleBBInputs.isBeambreakOn) {
                     hasTransitionedToTransfer = true;
+                    wantedState = WantedState.TRANSFER;
                     yield SystemState.TRANSFERRING;
                 }
                 yield SystemState.FUNNEL_INTAKING;
             }
             case GROUND_INTAKE -> {
                 if (middleBBInputs.isBeambreakOn) {
+                    wantedState = WantedState.TRANSFER;
                     hasTransitionedToTransfer = true;
                     yield SystemState.TRANSFERRING;
                 }
@@ -149,6 +152,8 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             }
             case TRANSFER -> {
                 if (edgeBBInputs.isBeambreakOn && !middleBBInputs.isBeambreakOn) {
+                    wantedState = WantedState.HOLD;
+                    hasTransitionedToHold = true;
                     yield SystemState.HOLDING;
                 }
                 yield SystemState.TRANSFERRING;
@@ -161,6 +166,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
                 if (isShootFinished()) {
                     hasTransitionedToTransfer = false;
                     hasTransitionedToHold = false;
+                    wantedState = WantedState.IDLE;
                     yield SystemState.IDLING;
                 }
                 yield SystemState.SHOOTING;

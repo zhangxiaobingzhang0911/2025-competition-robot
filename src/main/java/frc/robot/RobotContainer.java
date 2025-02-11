@@ -75,60 +75,76 @@ public class RobotContainer {
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
-//     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
     private Command TRY_STOPPED(){
         return Commands.parallel(
-                        elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO)
-                        // endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+                        elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO),
+                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
                 )
         ;
     }
     private Command TRY_L1(){
         return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get())
-                        // endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()),
+                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
                 )
         ;
     }
     private Command TRY_L2(){
         return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L2_EXTENSION_METERS.get())
-                        // endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+                        elevatorSubsystem.setElevatorPositionCommand(L2_EXTENSION_METERS.get()),
+                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
                 )
         ;
     }
     private Command TRY_L3(){
         return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L3_EXTENSION_METERS.get())
-                        // endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+                        elevatorSubsystem.setElevatorPositionCommand(L3_EXTENSION_METERS.get()),
+                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
                 )
         ;
     }private Command TRY_L4(){
         return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(L4_EXTENSION_METERS.get())
-                        // endEffectorSubsyste\[]m.setWantedStateCommand(WantedState.IDLE)
+                        elevatorSubsystem.setElevatorPositionCommand(L4_EXTENSION_METERS.get()),
+                        endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
                 )
         ;
     }
     private Command TRY_GROUND_INTAKE() {
-        return elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()).withTimeout(2)
-                .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
-                .andThen(elevatorSubsystem.setElevatorPositionCommand(INTAKER_INTAKE_METERS.get()))
-                // .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE))
-                ;
+        if (endEffectorSubsystem.isIntakeFinished()) {
+                return Commands.parallel(
+                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()).withTimeout(2)
+                        .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
+                        .andThen(elevatorSubsystem.setElevatorPositionCommand(INTAKER_INTAKE_METERS.get()))
+                        .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
+                        endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.TRANSFER));
+        }else {
+                return Commands.parallel(
+                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()).withTimeout(2)
+                        .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
+                        .andThen(elevatorSubsystem.setElevatorPositionCommand(INTAKER_INTAKE_METERS.get())),
+                        // .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
+                        endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.GROUND_INTAKE));
         }
-
+        }
     private Command TRY_FUNNEL_INTAKE(){
-        return Commands.parallel(
-                        elevatorSubsystem.setElevatorPositionCommand(FUNNEL_INTAKE_METERS.get())
-                        // endEffectorSubsystem.setWantedStateCommand(WantedState.FUNNEL_INTAKE)
-                )
-        ;
+        if (endEffectorSubsystem.isIntakeFinished()) {
+                return Commands.parallel(
+                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()).withTimeout(2)
+                        .andThen(new WaitUntilCommand(() -> elevatorSubsystem.getIo().isNearExtension(L1_EXTENSION_METERS.get())))
+                        .andThen(elevatorSubsystem.setElevatorPositionCommand(INTAKER_INTAKE_METERS.get())),
+                        // .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
+                        endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.TRANSFER));
+        }else {
+                return Commands.parallel(
+                        elevatorSubsystem.setElevatorPositionCommand(FUNNEL_INTAKE_METERS.get()),                        // .andThen(endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)),
+                        endEffectorSubsystem.setWantedStateCommand(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE));
+        }
     }
     private Command TRY_SHOOT_CORAL(){
-        return Commands.parallel(
-                        // endEffectorSubsystem.setWantedStateCommand(WantedState.SHOOT)
-                )
+        return new WaitUntilCommand(()->endEffectorSubsystem.isCoralReady()).andThen(
+                        endEffectorSubsystem.setWantedStateCommand(WantedState.SHOOT)
+        )
         ;
     }
     private Command setSuperState(superState state){

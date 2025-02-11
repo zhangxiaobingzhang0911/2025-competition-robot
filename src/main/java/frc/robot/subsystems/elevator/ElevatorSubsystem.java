@@ -49,7 +49,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
         Logger.recordOutput("Elevator/WantedState", wantedState.toString());
-        Logger.recordOutput("Elevator/preiousWantedState", previousWantedState.toString());
+        Logger.recordOutput("Elevator/previousWantedState", previousWantedState.toString());
 
         currentFilterValue = currentFilter.calculate(inputs.statorCurrentAmps[0]);
         Logger.recordOutput("Elevator/CurrentFilter", currentFilterValue);
@@ -61,7 +61,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
 
         if (DriverStation.isDisabled()) {
-            wantedState = wantedState.IDLE;
+            wantedState = WantedState.IDLE;
         }
 
         // set movements based on state

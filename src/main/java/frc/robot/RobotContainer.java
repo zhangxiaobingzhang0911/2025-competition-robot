@@ -26,6 +26,7 @@ import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endeffector.EndEffectorSubsystem.WantedState;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
@@ -49,7 +50,13 @@ import java.util.function.*;
 public class RobotContainer {
     private enum superState{
         STOPPED,
-        POSITION
+        L1,
+        L2,
+        L3,
+        L4,
+        GROUND_INTAKE,
+        FUNNEL_INTAKE,
+        SHOOT_CORAL
     }
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
@@ -68,11 +75,71 @@ public class RobotContainer {
     Display display = Display.getInstance();
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
 //     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+    private Command TRY_STOPPED(){
+        return Commands.parallel(
+                        elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO)
+                        // endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+                )
+        ;
+    }
+    private Command TRY_L1(){
+        return Commands.parallel(
+                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get())
+                        // endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+                )
+        ;
+    }
+    private Command TRY_L2(){
+        return Commands.parallel(
+                        elevatorSubsystem.setElevatorPositionCommand(L2_EXTENSION_METERS.get())
+                        // endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+                )
+        ;
+    }
+    private Command TRY_L3(){
+        return Commands.parallel(
+                        elevatorSubsystem.setElevatorPositionCommand(L3_EXTENSION_METERS.get())
+                        // endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+                )
+        ;
+    }private Command TRY_L4(){
+        return Commands.parallel(
+                        elevatorSubsystem.setElevatorPositionCommand(L4_EXTENSION_METERS.get())
+                        // endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
+                )
+        ;
+    }
+    private Command TRY_GROUND_INTAKE(){
+        return Commands.parallel(
+                        elevatorSubsystem.setElevatorPositionCommand(0)
+                        // endEffectorSubsystem.setWantedStateCommand(WantedState.GROUND_INTAKE)
+                )
+        ;
+    }
+    private Command TRY_FUNNEL_INTAKE(){
+        return Commands.parallel(
+                        elevatorSubsystem.setElevatorPositionCommand(0)
+                        // endEffectorSubsystem.setWantedStateCommand(WantedState.FUNNEL_INTAKE)
+                )
+        ;
+    }
+    private Command TRY_SHOOT_CORAL(){
+        return Commands.parallel(
+                        elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION)
+                        // endEffectorSubsystem.setWantedStateCommand(WantedState.SHOOT)
+                )
+        ;
+    }
     private Command setSuperState(superState state){
         return switch (state) {
-                case STOPPED -> elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO);
-                case POSITION -> elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION);
-                default -> elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO); // or some other default value that makes sense in your context
+                case STOPPED -> TRY_STOPPED();
+                case L1 -> TRY_L1();
+                case L2 -> TRY_L2();
+                case L3 -> TRY_L3();
+                case L4 -> TRY_L4();
+                case GROUND_INTAKE -> TRY_GROUND_INTAKE();
+                case FUNNEL_INTAKE -> TRY_FUNNEL_INTAKE();
+                default -> TRY_STOPPED(); // or some other default value that makes sense in your context
         };
         }
     /**
@@ -140,23 +207,17 @@ public class RobotContainer {
     //Configure all commands for testing
     private void configureTesterBindings(CommandXboxController controller) {
         new Trigger(controller.a())
-                .onTrue(
-                        Commands.sequence(
-                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()),
-                        setSuperState(superState.POSITION)));
+                .onTrue(setSuperState(superState.L1));
         new Trigger(controller.b())
-                .onTrue(
-                        Commands.sequence(
-                                elevatorSubsystem.setElevatorPositionCommand(L2_EXTENSION_METERS.get()),
-                                setSuperState(superState.POSITION)));
+                .onTrue(setSuperState(superState.L2));
         new Trigger(controller.x())
-                .onTrue(Commands.sequence(
-                        elevatorSubsystem.setElevatorPositionCommand(L3_EXTENSION_METERS.get()),
-                        setSuperState(superState.POSITION)));
+                .onTrue(setSuperState(superState.L3));
         new Trigger(controller.y())
-                .onTrue(Commands.sequence(
-                        elevatorSubsystem.setElevatorPositionCommand(L4_EXTENSION_METERS.get()),
-                        setSuperState(superState.POSITION)));
+                .onTrue(setSuperState(superState.L4));
+        
+        new Trigger(controller.leftTrigger())
+                .onTrue(setSuperState(superState.STOPPED));
+
         //test of endeffector state machine
         //Funnel Intake
         // new Trigger(controller.leftBumper()
@@ -193,13 +254,6 @@ public class RobotContainer {
         // new Trigger(controller.y()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L4", L4_EXTENSION_METERS.get()));
 
         // //Elevator Home
-        new Trigger(controller.leftTrigger())
-                .onTrue(setSuperState(superState.STOPPED));
-
-        
-
-        // new Trigger(controller.start())
-                // .onTrue(endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.IDLE));
     }
 
     /**

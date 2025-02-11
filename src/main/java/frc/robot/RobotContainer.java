@@ -107,18 +107,18 @@ public class RobotContainer {
                 Commands.runOnce(() -> {
                     /*
                         TODO: the reset command will be activated twice when the start button is pressed only once,
-                        this is only a temporary solution to avoid execute the command twice within 0.01s,
+                        this is only a temporary solution to avoid execute the command twice within 0.02s,
                         please fix the bug
                     */
-                    if (Timer.getFPGATimestamp() - lastResetTime > 0.01) {
+                    if (Timer.getFPGATimestamp() - lastResetTime > 0.02) {
                         swerve.resetHeadingController();
                         swerve.resetPose(
-                                new Pose2d(
-                                        AllianceFlipUtil.apply(
-                                                new Translation2d(0, 0)),
-                                        swerve.getLocalizer().getLatestPose().getRotation()));
+                                AllianceFlipUtil.apply(new Pose2d(
+                                        new Translation2d(0, 0),
+                                        swerve.getLocalizer().getLatestPose().getRotation())));
                     }
                     lastResetTime = Timer.getFPGATimestamp();
+                    aprilTagVision.setMeasuerCnt(0);
                 }).ignoringDisable(true));
     }
 

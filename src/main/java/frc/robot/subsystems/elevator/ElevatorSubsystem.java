@@ -48,6 +48,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
+        Logger.recordOutput("Elevator/isnear", io.isNearExtension(wantedPosition));
+        Logger.recordOutput("Elevator/setPoint", wantedPosition);
         Logger.recordOutput("Elevator/WantedState", wantedState.toString());
         Logger.recordOutput("Elevator/previousWantedState", previousWantedState.toString());
 
@@ -119,7 +121,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public Command setElevatorPositionCommand(double position) {
-        return new InstantCommand(() -> setElevatorPosition(position));
+        return new InstantCommand(() -> setElevatorPosition(position)).until(()->io.isNearExtension(position));
     }
 
     public void zeroElevator() {

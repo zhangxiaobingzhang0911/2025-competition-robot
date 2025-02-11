@@ -376,7 +376,7 @@ public final class RobotConstants {
 
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
-        public static final double DEADZONE_DISTANCE = 0.0;
+        public static final double DEADZONE_DISTANCE = 0.2;
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                 200);
@@ -396,7 +396,7 @@ public final class RobotConstants {
                 0.95);// 0.107853495
         public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
                 1.55);
-        public static final TunableNumber INTAKER_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/INTAKER_INTAKE",0);
+        public static final TunableNumber INTAKER_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/INTAKER_INTAKE",0.05);
         public static final TunableNumber FUNNEL_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/FUNNEL_INTAKE",0.37);
         public static final TunableNumber INTAKER_AVOID_METERS = new TunableNumber("ELEVATOR SETPOINTS/INTAKER_AVOID",0);
 

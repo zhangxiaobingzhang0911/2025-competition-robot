@@ -192,7 +192,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
 
     public void setWantedState(WantedState wantedState) {this.wantedState = wantedState;}
 
-    public Command setWantedSuperStateCommand(WantedState wantedState) {
+    public Command setWantedStateCommand(WantedState wantedState) {
         return new InstantCommand(() -> setWantedState(wantedState));
     }
 }

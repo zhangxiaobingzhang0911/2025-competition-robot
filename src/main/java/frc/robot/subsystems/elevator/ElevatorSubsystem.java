@@ -113,41 +113,21 @@ public class ElevatorSubsystem extends SubsystemBase {
     public Command setElevatorStateCommand(WantedState wantedState) {
         return new InstantCommand(() -> setElevatorState(wantedState));
     }
-
-    public void setElevatorShootPosition(String shootPositionName,double shootPosition) {
-        this.shootPositionName = shootPositionName;
-        this.shootPosition = shootPosition;
-    }
-    public Command setElevatorShootPositionCommand(String shootPositionName,double shootPosition){
-        return new InstantCommand(() -> setElevatorShootPosition(shootPositionName,shootPosition));
+    public void setElevatorPosition(double position) {
+        wantedPosition = position;
+        setElevatorState(WantedState.POSITION);
     }
 
-    public void setElevatorWantedPosition(String wantedPositionType) {
-        this.wantedPositionType = wantedPositionType;
-        switch (wantedPositionType) {
-            case "Shoot" -> this.wantedPosition = this.shootPosition;
-            case "Intaker Intake" -> this.wantedPosition = RobotConstants.ElevatorConstants.INTAKER_INTAKE_METERS.get();
-            case "Funnel Intake" -> this.wantedPosition = RobotConstants.ElevatorConstants.FUNNEL_INTAKE_METERS.get();
-            case "Intake Avoid" -> this.wantedPosition = RobotConstants.ElevatorConstants.INTAKER_AVOID_METERS.get();
-        }
-    }
-    public Command setElevatorWantedPositionCommand(String wantedPositionType){
-        return new InstantCommand(() -> setElevatorWantedPosition(wantedPositionType));
-    }
-
-    public double getLeaderCurrent(){
-        return currentFilterValue;
-    }
-    public boolean isCurrentMax(){
-        return Math.abs(this.getLeaderCurrent()) > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get();
+    public Command setElevatorPositionCommand(double position) {
+        return new InstantCommand(() -> setElevatorPosition(position));
     }
 
     public void zeroElevator() {
-        if(!isCurrentMax()) {
+        if(!(Math.abs(currentFilterValue) > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get())) {
             io.setElevatorDirectVoltage(-3);
             wantedState = WantedState.ZERO;
         }
-        if(isCurrentMax()){
+        if(Math.abs(currentFilterValue) > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()){
             io.setElevatorDirectVoltage(0);
             io.resetElevatorPosition();
             wantedState = WantedState.IDLE;

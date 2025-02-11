@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.auto.basics.AutoActions;
@@ -144,8 +143,7 @@ public class RobotContainer {
     private Command TRY_SHOOT_CORAL(){
         return new WaitUntilCommand(()->endEffectorSubsystem.isCoralReady()).andThen(
                         endEffectorSubsystem.setWantedStateCommand(WantedState.SHOOT)
-        )
-        ;
+        );
     }
     private Command setSuperState(superState state){
         return switch (state) {
@@ -156,7 +154,6 @@ public class RobotContainer {
                 case L4 -> TRY_L4();
                 case GROUND_INTAKE -> TRY_GROUND_INTAKE();
                 case FUNNEL_INTAKE -> TRY_FUNNEL_INTAKE();
-                case SHOOT_CORAL -> TRY_SHOOT_CORAL();
                 default -> TRY_STOPPED(); // or some other default value that makes sense in your context
         };
         }
@@ -232,12 +229,7 @@ public class RobotContainer {
                 .onTrue(setSuperState(superState.L3));
         new Trigger(controller.y())
                 .onTrue(setSuperState(superState.L4));
-        new Trigger(controller.leftBumper())
-                .onTrue(setSuperState(superState.GROUND_INTAKE));
-        new Trigger(controller.rightBumper())
-                .onTrue(setSuperState(superState.FUNNEL_INTAKE));
-        new Trigger(controller.rightTrigger())
-                .onTrue(setSuperState(superState.SHOOT_CORAL));
+        
         new Trigger(controller.leftTrigger())
                 .onTrue(setSuperState(superState.STOPPED));
 

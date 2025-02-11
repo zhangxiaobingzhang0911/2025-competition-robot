@@ -51,7 +51,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         Logger.recordOutput("Elevator/isnear", io.isNearExtension(wantedPosition));
         Logger.recordOutput("Elevator/setPoint", wantedPosition);
         Logger.recordOutput("Elevator/WantedState", wantedState.toString());
-        Logger.recordOutput("Elevator/preiousWantedState", previousWantedState.toString());
+        Logger.recordOutput("Elevator/previousWantedState", previousWantedState.toString());
 
         currentFilterValue = currentFilter.calculate(inputs.statorCurrentAmps[0]);
         Logger.recordOutput("Elevator/CurrentFilter", currentFilterValue);
@@ -63,7 +63,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
 
         if (DriverStation.isDisabled()) {
-            wantedState = wantedState.IDLE;
+            wantedState = WantedState.IDLE;
         }
 
         // set movements based on state

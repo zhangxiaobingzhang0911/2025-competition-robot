@@ -25,7 +25,7 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 
-public class ElevatorIOTalonFX implements ElevatorIO {
+public class ElevatorIOReal implements ElevatorIO {
     private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(0.0).withEnableFOC(true);
 
     private final TalonFX leftElevatorTalon = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
@@ -45,7 +45,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final StatusSignal<Current> statorLeft = leftElevatorTalon.getStatorCurrent();
     private final StatusSignal<Current> statorRight = rightElevatorTalon.getStatorCurrent();
 
-    public ElevatorIOTalonFX() {
+    public ElevatorIOReal() {
         TalonFXConfiguration elevatorMotorConfig = new TalonFXConfiguration();
         elevatorMotorConfig.CurrentLimits.StatorCurrentLimit = 80.0;
         elevatorMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;

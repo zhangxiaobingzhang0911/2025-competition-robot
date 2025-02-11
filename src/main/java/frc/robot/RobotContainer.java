@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.*;
 
@@ -21,7 +22,7 @@ import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
-import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
+import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
@@ -46,6 +47,10 @@ import java.util.function.*;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+    private enum superState{
+        STOPPED,
+        POSITION
+    }
     CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
     CommandXboxController testerController = new CommandXboxController(2);
@@ -61,9 +66,15 @@ public class RobotContainer {
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
-    ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
+    ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
 //     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
-
+    private Command setSuperState(superState state){
+        return switch (state) {
+                case STOPPED -> elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO);
+                case POSITION -> elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION);
+                default -> elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO); // or some other default value that makes sense in your context
+        };
+        }
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -128,44 +139,62 @@ public class RobotContainer {
 
     //Configure all commands for testing
     private void configureTesterBindings(CommandXboxController controller) {
+        new Trigger(controller.a())
+                .onTrue(
+                        Commands.sequence(
+                        elevatorSubsystem.setElevatorPositionCommand(L1_EXTENSION_METERS.get()),
+                        setSuperState(superState.POSITION)));
+        new Trigger(controller.b())
+                .onTrue(
+                        Commands.sequence(
+                                elevatorSubsystem.setElevatorPositionCommand(L2_EXTENSION_METERS.get()),
+                                setSuperState(superState.POSITION)));
+        new Trigger(controller.x())
+                .onTrue(Commands.sequence(
+                        elevatorSubsystem.setElevatorPositionCommand(L3_EXTENSION_METERS.get()),
+                        setSuperState(superState.POSITION)));
+        new Trigger(controller.y())
+                .onTrue(Commands.sequence(
+                        elevatorSubsystem.setElevatorPositionCommand(L4_EXTENSION_METERS.get()),
+                        setSuperState(superState.POSITION)));
         //test of endeffector state machine
         //Funnel Intake
-        new Trigger(controller.leftBumper())
-                .onTrue(Commands.parallel(
-                        // endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE),
-                        elevatorSubsystem.setElevatorWantedPositionCommand("Funnel Intake"),
+        // new Trigger(controller.leftBumper()
+        //         .onTrue(Commands.parallel(
+        //                 // endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE),
+        //                 elevatorSubsystem.setElevatorWantedPositionCommand("Funnel Intake"),
                         
-                        elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION)
-                ));
+        //                 elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION)
+        //         ));
 
-        //Intaker Intake
+        // //Intaker Intake
         
 
         
-        new Trigger(controller.rightBumper())
-                .onTrue(Commands.parallel(
-                        // endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.GROUND_INTAKE),
-                        elevatorSubsystem.setElevatorWantedPositionCommand("Intaker Intake"),
-                        elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION)
-                ));
+        // new Trigger(controller.rightBumper())
+        //         .onTrue(Commands.parallel(
+        //                 // endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.GROUND_INTAKE),
+        //                 elevatorSubsystem.setElevatorWantedPositionCommand("Intaker Intake"),
+        //                 elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION)
+        //         ));
 
-        //Shoot
-        new Trigger(controller.rightTrigger())
-                .onTrue(Commands.parallel(
-                        // endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.SHOOT),
-                        elevatorSubsystem.setElevatorWantedPositionCommand("Shoot"),
-                        elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION)
-                ));
+        // //Shoot
+        // new Trigger(controller.rightTrigger())
+        //         .onTrue(Commands.parallel(
+        //                 // endEffectorSubsystem.setWantedSuperStateCommand(EndEffectorSubsystem.WantedState.SHOOT),
+        //                 elevatorSubsystem.setElevatorWantedPositionCommand("Shoot"),
+        //                 elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.POSITION)
+        //         ));
 
-        //Change Shoot Position
-        new Trigger(controller.a()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L1", L1_EXTENSION_METERS.get()));
-        new Trigger(controller.b()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L2", L2_EXTENSION_METERS.get()));
-        new Trigger(controller.x()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L3", L3_EXTENSION_METERS.get()));
-        new Trigger(controller.y()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L4", L4_EXTENSION_METERS.get()));
+        // //Change Shoot Position
+        // new Trigger(controller.a()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L1", L1_EXTENSION_METERS.get()));
+        // new Trigger(controller.b()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L2", L2_EXTENSION_METERS.get()));
+        // new Trigger(controller.x()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L3", L3_EXTENSION_METERS.get()));
+        // new Trigger(controller.y()).onTrue(elevatorSubsystem.setElevatorShootPositionCommand("L4", L4_EXTENSION_METERS.get()));
 
-        //Elevator Home
+        // //Elevator Home
         new Trigger(controller.leftTrigger())
-                .onTrue(elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO));
+                .onTrue(setSuperState(superState.STOPPED));
 
         
 

@@ -172,46 +172,43 @@ public final class RobotConstants {
                 .withDriveFrictionVoltage(driveFrictionVoltage.magnitude())
                 .withFeedbackSource(LegacySwerveModuleConstants.SteerFeedbackType.SyncCANcoder)
                 .withCouplingGearRatio(COUPLE_RATIO).withSteerMotorInverted(STEER_MOTOR_REVERSED);
-        private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 8;
-        private static final int FRONT_LEFT_STEER_MOTOR_ID = 7;
-        private static final int FRONT_LEFT_ENCODER_ID = 20;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.4609375;
-        private static final Measure<DistanceUnit> frontLeftXPos = Meters.of(0.127);
-        private static final Measure<DistanceUnit> frontLeftYPos = Meters.of(0.247);
+        private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
+        private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
+        private static final int FRONT_LEFT_ENCODER_ID = 10;
+        private static final double FRONT_LEFT_ENCODER_OFFSET = -0.458007;
+        private static final Measure<DistanceUnit> frontLeftXPos = Meters.of(0.29);
+        private static final Measure<DistanceUnit> frontLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
                 FRONT_LEFT_STEER_MOTOR_ID, FRONT_LEFT_DRIVE_MOTOR_ID, FRONT_LEFT_ENCODER_ID,
                 FRONT_LEFT_ENCODER_OFFSET, frontLeftXPos.magnitude(), frontLeftYPos.magnitude(), false);
         // Front Right
-        private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
-        private static final int FRONT_RIGHT_STEER_MOTOR_ID = 1;
-        private static final int FRONT_RIGHT_ENCODER_ID = 0;
-        private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.3500976;
-        // 0.125685;//0.13623046875//0.117686//0.046875
-        private static final Measure<DistanceUnit> frontRightXPos = Meters.of(0.127);
-        private static final Measure<DistanceUnit> frontRightYPos = Meters.of(-0.247);
+        private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 6;
+        private static final int FRONT_RIGHT_STEER_MOTOR_ID = 5;
+        private static final int FRONT_RIGHT_ENCODER_ID = 11;
+        private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.420166;
+        private static final Measure<DistanceUnit> frontRightXPos = Meters.of(0.29);
+        private static final Measure<DistanceUnit> frontRightYPos = Meters.of(-0.29);
         public static final LegacySwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
                 FRONT_RIGHT_STEER_MOTOR_ID, FRONT_RIGHT_DRIVE_MOTOR_ID, FRONT_RIGHT_ENCODER_ID,
                 FRONT_RIGHT_ENCODER_OFFSET, frontRightXPos.magnitude(), frontRightYPos.magnitude(),
                 true);
         // Back Left
-        private static final int BACK_LEFT_DRIVE_MOTOR_ID = 6;
-        private static final int BACK_LEFT_STEER_MOTOR_ID = 5;
-        private static final int BACK_LEFT_ENCODER_ID = 11;
-        private static final double BACK_LEFT_ENCODER_OFFSET = -0.420166;
-        // 0.773925;//-0.223//0.401611//0.77392578125
-        private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.180);
-        private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.247);
+        private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
+        private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
+        private static final int BACK_LEFT_ENCODER_ID = 0;
+        private static final double BACK_LEFT_ENCODER_OFFSET = -0.3500976;
+        private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.29);
+        private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
                 BACK_LEFT_STEER_MOTOR_ID, BACK_LEFT_DRIVE_MOTOR_ID, BACK_LEFT_ENCODER_ID,
                 BACK_LEFT_ENCODER_OFFSET, backLeftXPos.magnitude(), backLeftYPos.magnitude(), false);
         // Back Right
-        private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 4;
-        private static final int BACK_RIGHT_STEER_MOTOR_ID = 3;
-        private static final int BACK_RIGHT_ENCODER_ID = 10;
-        private static final double BACK_RIGHT_ENCODER_OFFSET = -0.458007;
-        // 0.422119;//-0.5684550781//-0.064453//0.432279296875
-        private static final Measure<DistanceUnit> backRightXPos = Meters.of(-0.180);
-        private static final Measure<DistanceUnit> backRightYPos = Meters.of(-0.247);
+        private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 8;
+        private static final int BACK_RIGHT_STEER_MOTOR_ID = 7;
+        private static final int BACK_RIGHT_ENCODER_ID = 20;
+        private static final double BACK_RIGHT_ENCODER_OFFSET = 0.4609375;
+        private static final Measure<DistanceUnit> backRightXPos = Meters.of(-0.29);
+        private static final Measure<DistanceUnit> backRightYPos = Meters.of(-0.29);
         public static final LegacySwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
                 BACK_RIGHT_STEER_MOTOR_ID, BACK_RIGHT_DRIVE_MOTOR_ID, BACK_RIGHT_ENCODER_ID,
                 BACK_RIGHT_ENCODER_OFFSET, backRightXPos.magnitude(), backRightYPos.magnitude(), true);

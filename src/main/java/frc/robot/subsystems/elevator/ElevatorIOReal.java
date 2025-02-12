@@ -99,13 +99,13 @@ public class ElevatorIOReal implements ElevatorIO {
 
         inputs.targetElevatorVelocity = RadiansPerSecond.of(targetElevatorVelocity);
 
-        inputs.ElevatorKP = RobotConstants.ElevatorGainsClass.ELEVATOR_KP.get();
-        inputs.ElevatorKI = RobotConstants.ElevatorGainsClass.ELEVATOR_KI.get();
-        inputs.ElevatorKD = RobotConstants.ElevatorGainsClass.ELEVATOR_KD.get();
-        inputs.ElevatorKA = RobotConstants.ElevatorGainsClass.ELEVATOR_KA.get();
-        inputs.ElevatorKV = RobotConstants.ElevatorGainsClass.ELEVATOR_KV.get();
-        inputs.ElevatorKS = RobotConstants.ElevatorGainsClass.ELEVATOR_KS.get();
-        inputs.ElevatorKG = RobotConstants.ElevatorGainsClass.ELEVATOR_KG.get();
+        inputs.ElevatorKP = ElevatorGainsClass.ELEVATOR_KP.get();
+        inputs.ElevatorKI = ElevatorGainsClass.ELEVATOR_KI.get();
+        inputs.ElevatorKD = ElevatorGainsClass.ELEVATOR_KD.get();
+        inputs.ElevatorKA = ElevatorGainsClass.ELEVATOR_KA.get();
+        inputs.ElevatorKV = ElevatorGainsClass.ELEVATOR_KV.get();
+        inputs.ElevatorKS = ElevatorGainsClass.ELEVATOR_KS.get();
+        inputs.ElevatorKG = ElevatorGainsClass.ELEVATOR_KG.get();
 
         leftElevatorTalon.getConfigurator().apply(new Slot0Configs()
                 .withKP(inputs.ElevatorKP)
@@ -147,6 +147,11 @@ public class ElevatorIOReal implements ElevatorIO {
     @Override
     public double getElevatorVelocity() {
         return leftElevatorVelocity.getValueAsDouble() * 60;
+    }
+
+    @Override
+    public boolean isNearZeroExtension(){
+        return MathUtil.isNear(metersToRotations(0.05), leftElevatorTalon.getPosition().getValueAsDouble(), 0.3);
     }
 
     private double metersToRotations(double heightMeters) {

@@ -402,21 +402,23 @@ public final class RobotConstants {
 
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 20);
+
+        public static class ElevatorGainsClass {
+                        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 1.8);
+                        public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0.07);
+                        public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0.004);
+                        public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka",
+                                0.001);
+                        public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.001);// 0.107853495
+                        public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
+                                0.001);
+                        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.35);
+        }
     }
 
 
     /**
      * Constants for the elevator motor gains.
      */
-    public static class ElevatorGainsClass {
-        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 15);
-        public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
-        public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0);
-        public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka",
-                0);
-        public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0);// 0.107853495
-        public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
-                0);
-        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.3);
-    }
+    
 }

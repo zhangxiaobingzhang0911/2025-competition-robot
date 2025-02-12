@@ -29,7 +29,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private WantedState wantedState = WantedState.IDLE;
     private SystemState systemState = SystemState.IDLING;
-    private WantedState previousWantedState = WantedState.IDLE;
 
     private String shootPositionName = "Null";
     private double shootPosition = 0.0;
@@ -40,6 +39,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private String wantedPositionType = "Null";
     private double wantedPosition = 0.0;
 
+    private boolean hasReachedNearZero = false;
+
     public ElevatorSubsystem(ElevatorIO io) {
         this.io = io;
     }
@@ -48,10 +49,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
+        Logger.recordOutput("ElevatorPosition", io.getElevatorPosition());
         Logger.recordOutput("Elevator/isnear", io.isNearExtension(wantedPosition));
+        Logger.recordOutput("Elevator/isnearZero", io.isNearZeroExtension());
         Logger.recordOutput("Elevator/setPoint", wantedPosition);
         Logger.recordOutput("Elevator/WantedState", wantedState.toString());
-        Logger.recordOutput("Elevator/previousWantedState", previousWantedState.toString());
 
         currentFilterValue = currentFilter.calculate(inputs.statorCurrentAmps[0]);
         Logger.recordOutput("Elevator/CurrentFilter", currentFilterValue);
@@ -90,14 +92,14 @@ public class ElevatorSubsystem extends SubsystemBase {
             }
             case POSITION -> {
                 if(systemState == SystemState.ZEROING) {
-                    wantedState = previousWantedState;
+                    wantedState = WantedState.ZERO;
                     yield SystemState.ZEROING;
                 }
                 yield SystemState.POSITION_GOING;
             }
             case IDLE -> {
                 if(systemState == SystemState.POSITION_GOING) {
-                    wantedState = previousWantedState;
+                    wantedState = WantedState.ZERO;
                     yield SystemState.POSITION_GOING;
                 }
                 yield SystemState.IDLING;
@@ -109,7 +111,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void setElevatorState(WantedState wantedState) {
-        previousWantedState = this.wantedState;
         this.wantedState = wantedState;
     }
     public Command setElevatorStateCommand(WantedState wantedState) {
@@ -119,20 +120,25 @@ public class ElevatorSubsystem extends SubsystemBase {
         wantedPosition = position;
         setElevatorState(WantedState.POSITION);
     }
-
     public Command setElevatorPositionCommand(double position) {
         return new InstantCommand(() -> setElevatorPosition(position)).until(()->io.isNearExtension(position));
     }
 
     public void zeroElevator() {
-        if(!(Math.abs(currentFilterValue) > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get())) {
-            io.setElevatorDirectVoltage(-3);
+        if (!io.isNearZeroExtension() && !hasReachedNearZero) {
+            io.setElevatorTarget(0.05);
+            return;
+        }
+        hasReachedNearZero = true;
+        if(currentFilterValue <= RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()) {
+            io.setElevatorDirectVoltage(-1);
             wantedState = WantedState.ZERO;
         }
-        if(Math.abs(currentFilterValue) > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()){
+        if(currentFilterValue > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()){
             io.setElevatorDirectVoltage(0);
             io.resetElevatorPosition();
             wantedState = WantedState.IDLE;
+            hasReachedNearZero = false;
         }
     }
 }

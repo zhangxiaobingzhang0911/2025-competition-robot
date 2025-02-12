@@ -70,6 +70,10 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
+    public boolean isNearZeroExtension() {
+        return true;
+    }
+    @Override
     public double getElevatorVelocity() {
         return rightElevatorTalonSim.getAngularVelocityRadPerSec() / 6.28 * 60;
     }

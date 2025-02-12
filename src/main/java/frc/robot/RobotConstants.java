@@ -329,22 +329,23 @@ public final class RobotConstants {
          * Constants related to the robot's intake subsystem.
          */
         public static class intakeConstants {
-                public static final int INTAKER_MOTOR_ID = 15;
-                public static final int INTAKER_PIVOT_MOTOR_ID = 16;
-                public static double PIVOT_RATIO = 1;
+                public static final int INTAKE_MOTOR_ID = 15;
+                public static final int INTAKE_PIVOT_MOTOR_ID = 16;
+                //Constants for intake pivot
+                public static double PIVOT_RATIO = 60*50/11;
+                //Constants for intake roller
                 public static final int STATOR_CURRENT_LIMIT_AMPS = 60;
                 public static final int SUPPLY_CURRENT_LIMIT_AMPS = 20;
                 public static final boolean IS_BRAKE = true;
                 public static final boolean IS_INVERT = false;
                 public static final double REDUCTION = 1;
-                public static Rotation2d RETRACTED_ANGLE = Rotation2d.fromDegrees(90);
-                public static Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(120);
-                public static Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
+                public static final double moi = 0;//inertia for simulation
+                public static final double ROLLER_RATIO = 1;
 
-                public static final TunableNumber INTAKE_VELOCITY = new TunableNumber("Intake/intakeVelocity", 600);
-                public static final TunableNumber OUTTAKE_VELOCITY = new TunableNumber("Intake/outtakeVelocity", -600);
-                public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("Intake/intakeVoltage", 3.0);
-                public static final TunableNumber INTAKE_IDLE_RPS = new TunableNumber("Intake/intakeIdleRPS", 0);
+                public static final TunableNumber GROUND_ANGLE = new TunableNumber("Intake/groundAngle", 30);
+                public static final TunableNumber RETRACTED_ANGLE = new TunableNumber("Intake/retractedAngle", 50);
+                public static final TunableNumber INTAKE_RPS = new TunableNumber("Intake/intakeRPS", 40);
+                public static final TunableNumber IDLE_RPS = new TunableNumber("Intake/idleRPS", 0);
                 /**
                  * Constants for the intake pivot motor gains in the intake subsystem.
                  */
@@ -359,6 +360,8 @@ public final class RobotConstants {
                                         0.12);
                         public static final TunableNumber INTAKE_PIVOT_KS = new TunableNumber("INTAKE_PIVOT PID/ks",
                                         0.045);
+                        public static final TunableNumber INTAKE_PIVOT_KG = new TunableNumber("INTAKE_PIVOT PID/kg",
+                                0.045);
                 }
 
                 /**

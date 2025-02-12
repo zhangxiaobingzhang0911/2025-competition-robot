@@ -16,17 +16,15 @@ import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.ElevatorZeroingCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
-import frc.robot.subsystems.intake.IntakerRollerIOReal;
+import frc.robot.subsystems.intake.IntakeRollerIOReal;
 import frc.robot.subsystems.intake.IntakePivotIOReal;
-import frc.robot.subsystems.intake.IntakerSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.endeffector.EndEffectorIOReal;
-import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
@@ -37,8 +35,6 @@ import java.io.IOException;
 import java.util.function.BooleanSupplier;
 
 import static edu.wpi.first.units.Units.Seconds;
-import static frc.robot.RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID;
-import static frc.robot.RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID;
 import static frc.robot.RobotConstants.BeamBreakConstants.INTAKER_BEAMBREAK_ID;
 import static frc.robot.RobotConstants.ElevatorConstants.*;
 
@@ -66,7 +62,7 @@ public class RobotContainer {
     Display display = Display.getInstance();
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
 //     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
-    IntakerSubsystem intakerSubsystem = new IntakerSubsystem(new IntakePivotIOReal(),new IntakerRollerIOReal(), new BeambreakIOReal(INTAKER_BEAMBREAK_ID));
+    IntakeSubsystem intakerSubsystem = new IntakeSubsystem(new IntakePivotIOReal(),new IntakeRollerIOReal(), new BeambreakIOReal(INTAKER_BEAMBREAK_ID));
     Superstructure superstructure = new Superstructure(intakerSubsystem);
 
     /**

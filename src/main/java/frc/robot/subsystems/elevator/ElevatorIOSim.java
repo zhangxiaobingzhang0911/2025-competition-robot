@@ -43,8 +43,6 @@ public class ElevatorIOSim implements ElevatorIO {
                 rightElevatorAppliedVoltage;
         inputs.rightElevatorSupplyCurrent =
                 Amps.of(rightElevatorTalonSim.getCurrentDrawAmps());
-
-        inputs.targetElevatorVelocity = targetElevatorVelocity;
     }
 
     @Override

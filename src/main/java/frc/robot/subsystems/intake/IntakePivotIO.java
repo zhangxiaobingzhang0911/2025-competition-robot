@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
-import edu.wpi.first.math.geometry.Rotation2d;
 
 import static frc.robot.RobotConstants.intakeConstants.intakePivotGainsClass.*;
 
@@ -19,9 +18,6 @@ public interface IntakePivotIO {
         public double intakePivotKP = INTAKE_PIVOT_KP.get();
         public double intakePivotKI = INTAKE_PIVOT_KI.get();
         public double intakePivotKD = INTAKE_PIVOT_KD.get();
-        public double intakePivotKA = INTAKE_PIVOT_KA.get();
-        public double intakePivotKV = INTAKE_PIVOT_KV.get();
-        public double intakePivotKS = INTAKE_PIVOT_KS.get();
     }
 
     default void updateInputs(IntakePivotIOInputs inputs) {}
@@ -29,4 +25,6 @@ public interface IntakePivotIO {
     default void setMotorVoltage(double voltage) {}
 
     default void setMotorPosition(double targetPositionDeg) {}
+
+    default void resetPosition(double position) {}
 }

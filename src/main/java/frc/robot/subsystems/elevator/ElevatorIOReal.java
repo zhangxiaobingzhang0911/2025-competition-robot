@@ -47,9 +47,9 @@ public class ElevatorIOReal implements ElevatorIO {
 
     public ElevatorIOReal() {
         TalonFXConfiguration elevatorMotorConfig = new TalonFXConfiguration();
-        elevatorMotorConfig.CurrentLimits.StatorCurrentLimit = 80.0;
-        elevatorMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
-        elevatorMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        //elevatorMotorConfig.CurrentLimits.StatorCurrentLimit = 80.0;
+        //elevatorMotorConfig.CurrentLimits.SupplyCurrentLimit = 30.0;
+        //elevatorMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         elevatorMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         elevatorMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         elevatorMotorConfig.Feedback.SensorToMechanismRatio = 1;
@@ -98,6 +98,14 @@ public class ElevatorIOReal implements ElevatorIO {
         inputs.statorCurrentAmps = new double[] { statorLeft.getValueAsDouble(), statorRight.getValueAsDouble() };
 
         inputs.targetElevatorVelocity = RadiansPerSecond.of(targetElevatorVelocity);
+
+        inputs.ElevatorKP = RobotConstants.ElevatorGainsClass.ELEVATOR_KP.get();
+        inputs.ElevatorKI = RobotConstants.ElevatorGainsClass.ELEVATOR_KI.get();
+        inputs.ElevatorKD = RobotConstants.ElevatorGainsClass.ELEVATOR_KD.get();
+        inputs.ElevatorKA = RobotConstants.ElevatorGainsClass.ELEVATOR_KA.get();
+        inputs.ElevatorKV = RobotConstants.ElevatorGainsClass.ELEVATOR_KV.get();
+        inputs.ElevatorKS = RobotConstants.ElevatorGainsClass.ELEVATOR_KS.get();
+        inputs.ElevatorKG = RobotConstants.ElevatorGainsClass.ELEVATOR_KG.get();
 
         leftElevatorTalon.getConfigurator().apply(new Slot0Configs()
                 .withKP(inputs.ElevatorKP)

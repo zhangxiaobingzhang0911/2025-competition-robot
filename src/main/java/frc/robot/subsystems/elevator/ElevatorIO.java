@@ -32,12 +32,12 @@ public interface ElevatorIO {
 
         public double[] statorCurrentAmps = new double[] {};
 
-        public double ElevatorKP = frc.robot.RobotConstants.ElevatorGainsClass.ELEVATOR_KP.get();
-        public double ElevatorKI = frc.robot.RobotConstants.ElevatorGainsClass.ELEVATOR_KI.get();
-        public double ElevatorKD = frc.robot.RobotConstants.ElevatorGainsClass.ELEVATOR_KD.get();
-        public double ElevatorKA = frc.robot.RobotConstants.ElevatorGainsClass.ELEVATOR_KA.get();
-        public double ElevatorKV = frc.robot.RobotConstants.ElevatorGainsClass.ELEVATOR_KV.get();
-        public double ElevatorKS = frc.robot.RobotConstants.ElevatorGainsClass.ELEVATOR_KS.get();
-        public double ElevatorKG = frc.robot.RobotConstants.ElevatorGainsClass.ELEVATOR_KG.get();
+        public double ElevatorKP = RobotConstants.ElevatorGainsClass.ELEVATOR_KP.get();
+        public double ElevatorKI = RobotConstants.ElevatorGainsClass.ELEVATOR_KI.get();
+        public double ElevatorKD = RobotConstants.ElevatorGainsClass.ELEVATOR_KD.get();
+        public double ElevatorKA = RobotConstants.ElevatorGainsClass.ELEVATOR_KA.get();
+        public double ElevatorKV = RobotConstants.ElevatorGainsClass.ELEVATOR_KV.get();
+        public double ElevatorKS = RobotConstants.ElevatorGainsClass.ELEVATOR_KS.get();
+        public double ElevatorKG = RobotConstants.ElevatorGainsClass.ELEVATOR_KG.get();
     }
 }

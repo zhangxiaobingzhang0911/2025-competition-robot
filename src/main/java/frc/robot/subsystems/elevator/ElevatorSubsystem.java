@@ -2,8 +2,6 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
 import lombok.Getter;
@@ -12,18 +10,6 @@ import org.littletonrobotics.junction.Logger;
 @Getter
 public class ElevatorSubsystem extends SubsystemBase {
 
-    public enum WantedState {
-        POSITION,
-        ZERO,
-        IDLE
-    }
-
-    public enum SystemState {
-        POSITION_GOING,
-        ZEROING,
-        IDLING
-    }
-
     private final ElevatorIO io;
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
@@ -31,7 +17,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     private WantedState wantedState = WantedState.IDLE;
     private SystemState systemState = SystemState.IDLING;
     private double wantedPosition = 0.0;
-
     private boolean hasReachedNearZero = false;
 
     public ElevatorSubsystem(ElevatorIO io) {
@@ -100,15 +85,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setElevatorState(WantedState wantedState) {
         this.wantedState = wantedState;
     }
-    public Command setElevatorStateCommand(WantedState wantedState) {
-        return new InstantCommand(() -> setElevatorState(wantedState));
-    }
+
     public void setElevatorPosition(double position) {
         wantedPosition = position;
         setElevatorState(WantedState.POSITION);
-    }
-    public Command setElevatorPositionCommand(double position) {
-        return new InstantCommand(() -> setElevatorPosition(position)).until(()->io.isNearExtension(position));
     }
 
     public void zeroElevator() {
@@ -127,5 +107,18 @@ public class ElevatorSubsystem extends SubsystemBase {
             wantedState = WantedState.IDLE;
             hasReachedNearZero = false;
         }
+    }
+
+    public enum WantedState {
+        POSITION,
+        ZERO,
+        IDLE
+    }
+
+
+    public enum SystemState {
+        POSITION_GOING,
+        ZEROING,
+        IDLING
     }
 }

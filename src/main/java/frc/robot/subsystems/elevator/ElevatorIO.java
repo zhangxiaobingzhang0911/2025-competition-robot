@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator;
 import edu.wpi.first.units.*;
 import frc.robot.RobotConstants;
 import org.littletonrobotics.junction.AutoLog;
+import frc.robot.RobotConstants.ElevatorConstants.ElevatorGainsClass;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -15,6 +16,7 @@ public interface ElevatorIO {
     double getElevatorVelocity();
     double getElevatorPosition();
     boolean isNearExtension(double expected);
+    boolean isNearZeroExtension();
 
     @AutoLog
     class ElevatorIOInputs {
@@ -32,12 +34,12 @@ public interface ElevatorIO {
 
         public double[] statorCurrentAmps = new double[] {};
 
-        public double ElevatorKP = RobotConstants.ElevatorGainsClass.ELEVATOR_KP.get();
-        public double ElevatorKI = RobotConstants.ElevatorGainsClass.ELEVATOR_KI.get();
-        public double ElevatorKD = RobotConstants.ElevatorGainsClass.ELEVATOR_KD.get();
-        public double ElevatorKA = RobotConstants.ElevatorGainsClass.ELEVATOR_KA.get();
-        public double ElevatorKV = RobotConstants.ElevatorGainsClass.ELEVATOR_KV.get();
-        public double ElevatorKS = RobotConstants.ElevatorGainsClass.ELEVATOR_KS.get();
-        public double ElevatorKG = RobotConstants.ElevatorGainsClass.ELEVATOR_KG.get();
+        public double ElevatorKP = ElevatorGainsClass.ELEVATOR_KP.get();
+        public double ElevatorKI = ElevatorGainsClass.ELEVATOR_KI.get();
+        public double ElevatorKD = ElevatorGainsClass.ELEVATOR_KD.get();
+        public double ElevatorKA = ElevatorGainsClass.ELEVATOR_KA.get();
+        public double ElevatorKV = ElevatorGainsClass.ELEVATOR_KV.get();
+        public double ElevatorKS = ElevatorGainsClass.ELEVATOR_KS.get();
+        public double ElevatorKG = ElevatorGainsClass.ELEVATOR_KG.get();
     }
 }

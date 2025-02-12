@@ -77,10 +77,12 @@ public class RobotContainer {
     ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
     EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
     private Command TRY_STOPPED(){
-        return Commands.parallel(
+        return 
+                Commands.parallel(
                         elevatorSubsystem.setElevatorStateCommand(ElevatorSubsystem.WantedState.ZERO),
                         endEffectorSubsystem.setWantedStateCommand(WantedState.IDLE)
                 )
+                
         ;
     }
     private Command TRY_L1(){

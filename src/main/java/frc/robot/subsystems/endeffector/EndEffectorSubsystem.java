@@ -76,6 +76,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         Logger.processInputs(NAME + "/Middle Beambreak", middleBBInputs);
         Logger.processInputs(NAME + "/Edge Beambreak", edgeBBInputs);
         Logger.recordOutput("EndEffector/SystemState", newState.toString());
+        Logger.recordOutput(NAME+"Velocity", inputs.velocityRotPerSec);
 
         RobotContainer.preShootIsDanger = isPreShootReady();
 

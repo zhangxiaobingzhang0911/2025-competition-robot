@@ -1,6 +1,8 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import frc.robot.RobotContainer;
 import org.littletonrobotics.junction.Logger;
 import frc.robot.RobotConstants;
@@ -40,6 +42,7 @@ public class IntakeSubsystem extends RollerSubsystem{
         SystemState newState = handleStateTransition();
 
         Logger.processInputs("Intake/Pivot", intakePivotIOInputs);
+
 
         Logger.recordOutput("Intake/SystemState",systemState.toString());
 

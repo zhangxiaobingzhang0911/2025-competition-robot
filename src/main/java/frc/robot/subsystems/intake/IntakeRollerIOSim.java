@@ -10,7 +10,7 @@ import static frc.robot.RobotConstants.intakeConstants.*;
 public class IntakeRollerIOSim extends RollerIOSim implements IntakeRollerIO {
 
     public IntakeRollerIOSim() {
-        super(moi, ROLLER_RATIO, new SimpleMotorFeedforward(0.0, 0.24),
+        super(1, ROLLER_RATIO, new SimpleMotorFeedforward(0.0, 0.24),
                 new ProfiledPIDController(0.5, 0.0, 0.0,
                         new TrapezoidProfile.Constraints(15,1)));
     }

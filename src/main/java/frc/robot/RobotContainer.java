@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
@@ -15,11 +16,17 @@ import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.endeffector.EndEffectorIOSim;
+import frc.robot.subsystems.beambreak.BeambreakIOSim;
+
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeRollerIOReal;
+import frc.robot.subsystems.intake.IntakeRollerIOSim;
 import frc.robot.subsystems.intake.IntakePivotIOReal;
+import frc.robot.subsystems.intake.IntakePivotIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
@@ -57,9 +64,9 @@ public class RobotContainer {
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
-    ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
-    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
-    IntakeSubsystem intakeSubsystem = new IntakeSubsystem(new IntakePivotIOReal(),new IntakeRollerIOReal());
+    ElevatorSubsystem elevatorSubsystem;
+    EndEffectorSubsystem endEffectorSubsystem;
+    IntakeSubsystem intakeSubsystem;
 
     //important flags for state logic
     public static boolean elevatorIsDanger;
@@ -72,6 +79,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        configureSubsystems();
         updateManager = new UpdateManager(swerve,
                 display);
         updateManager.registerAll();
@@ -91,6 +99,18 @@ public class RobotContainer {
      * PS4} controllers or {@link CommandJoystick Flight
      * joysticks}.
      */
+
+     public void configureSubsystems(){
+        if (RobotBase.isReal()) {
+                elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
+                endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+                intakeSubsystem = new IntakeSubsystem(new IntakePivotIOReal(),new IntakeRollerIOReal());
+        }else{
+                elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
+                endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+                intakeSubsystem = new IntakeSubsystem(new IntakePivotIOSim(), new IntakeRollerIOSim());
+        }
+     }
 
     //Define all commands here
     private final Command groundIntakeCommand = new Command() {

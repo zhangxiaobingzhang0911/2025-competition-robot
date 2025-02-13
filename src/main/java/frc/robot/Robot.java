@@ -30,10 +30,10 @@ public class Robot extends LoggedRobot {
     // Runs periodically while the robot is powered on
     @Override
     public void robotPeriodic() {
+        
         CommandScheduler.getInstance().run();
         robotContainer.getUpdateManager().runEnableSingle();
     }
-
     // Initializes the robot in disabled mode
     @Override
     public void disabledInit() {

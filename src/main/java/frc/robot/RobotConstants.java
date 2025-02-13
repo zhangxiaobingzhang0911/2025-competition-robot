@@ -302,11 +302,11 @@ public final class RobotConstants {
                 public static final boolean IS_INVERT = false;
                 public static final double REDUCTION = 1;
 
-                public static final TunableNumber INTAKE_RPS = new TunableNumber("EndEffector/indexRPS", -40);
-                public static final TunableNumber TRANSFER_RPS = new TunableNumber("EndEffector/transferRPS", -25);
-                public static final TunableNumber HOLD_RPS = new TunableNumber("EndEffector/holdRPS", 0.0);
-                public static final TunableNumber SHOOT_RPS = new TunableNumber("EndEffector/shootRPS", -80);
-                public static final TunableNumber IDLE_RPS = new TunableNumber("EndEffector/idleRPS", -0);
+                public static final TunableNumber INTAKE_RPS = new TunableNumber("ENDEFFECTOR/indexRPS", -40);
+                public static final TunableNumber HOLD_RPS = new TunableNumber("ENDEFFECTOR/holdRPS", 0.0);
+                public static final TunableNumber PRE_SHOOT_RPS = new TunableNumber("ENDEFFECTOR/preShootRPS", -25);
+                public static final TunableNumber SHOOT_RPS = new TunableNumber("ENDEFFECTOR/shootRPS", -80);
+                public static final TunableNumber IDLE_RPS = new TunableNumber("ENDEFFECTOR/idleRPS", -0);
 
                 /**
                  * Constants for the endeffector motor gains.
@@ -377,12 +377,14 @@ public final class RobotConstants {
                                 200);
                 public static final TunableNumber motionCruiseVelocity = new TunableNumber(
                                 "Elevator/MotionCruiseVelocity", 100);
-                public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk", 0.0);
-
+                public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk",
+                                0.0);
                 public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
-                        1.57);
-                public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber(
-                                "ELEVATOR GOALS/idle", 0);
+                                1.57);
+                public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/idle",
+                                0.03);
+                public static final TunableNumber HOME_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOME",
+                                0.5);
                 public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
                                 0.45);
                 public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
@@ -392,7 +394,7 @@ public final class RobotConstants {
                 public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
                                 1.55);
                 public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
-                        20);
+                                20);
 
         }
 

@@ -8,13 +8,16 @@ import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
+import frc.robot.subsystems.beambreak.BeambreakIOReal;
+import frc.robot.subsystems.elevator.ElevatorIOReal;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.endeffector.EndEffectorIOReal;
+import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeRollerIOReal;
 import frc.robot.subsystems.intake.IntakePivotIOReal;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -30,6 +33,7 @@ import java.io.IOException;
 import java.util.function.BooleanSupplier;
 
 import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -53,9 +57,16 @@ public class RobotContainer {
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
     Swerve swerve = Swerve.getInstance();
     Display display = Display.getInstance();
-    //ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
-    //EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+    ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
+    EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
     IntakeSubsystem intakeSubsystem = new IntakeSubsystem(new IntakePivotIOReal(),new IntakeRollerIOReal());
+
+    //important flags for state logic
+    public static boolean elevatorIsDanger;
+    public static boolean intakeIsDanger;
+    public static boolean preShootIsDanger;
+
+    private double elevatorSetPoint = IDLE_EXTENSION_METERS.get();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -80,6 +91,68 @@ public class RobotContainer {
      * PS4} controllers or {@link CommandJoystick Flight
      * joysticks}.
      */
+
+    //Define all commands here
+    private final Command groundIntakeCommand = new Command() {
+        @Override
+        public void execute() {
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
+            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
+            elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
+        }
+
+        @Override
+        public void end(boolean interrupted) {
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.FUNNEL_AVOID);
+            elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        }
+
+        @Override
+        public boolean isFinished() {
+            return endEffectorSubsystem.hasCoral();
+        }
+    };
+
+    private final Command preShootCommand = new Command() {
+        @Override
+        public void execute() {
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
+            elevatorSubsystem.setElevatorPosition(elevatorSetPoint);
+            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT);
+        }
+
+        @Override
+        public void end(boolean interrupted) {
+            elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        }
+
+        @Override
+        public boolean isFinished() {
+            return endEffectorSubsystem.isShootFinished();
+        }
+    };
+
+    private final Command shootCommand = new Command() {
+        @Override
+        public void execute() {
+            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);
+        }
+
+        @Override
+        public boolean isFinished() {
+            return endEffectorSubsystem.isShootFinished();
+        }
+    };
+
+    private final Command putCoralCommand = new ParallelCommandGroup(
+            preShootCommand,
+            Commands.sequence(
+                    new WaitUntilCommand(() -> operatorController.a().getAsBoolean() && endEffectorSubsystem.isShootReady()),
+                    shootCommand
+            )
+    );
+
+
 
     //Configure all commands for driver
     private void configureDriverBindings(CommandXboxController driverController) {
@@ -113,6 +186,9 @@ public class RobotContainer {
                     }
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
+
+        driverController.leftBumper().whileTrue(groundIntakeCommand);
+        driverController.rightBumper().whileTrue(putCoralCommand);
     }
 
     //Configure all commands for operator
@@ -123,10 +199,9 @@ public class RobotContainer {
     //Configure all commands for testing
     private void configureTesterBindings(CommandXboxController controller) {
         //test of endeffector state machine
-        // new Trigger(controller.leftBumper())
-        //         .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.INTAKE_CORAL_FUNNEL));
-        // new Trigger(controller.rightBumper())
-        //         .onTrue(superstructure.setWantedSuperStateCommand(Superstructure.WantedSuperState.SHOOT_CORAL));
+        controller.a().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE)));
+        controller.b().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE)));
+        controller.x().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT)));
 
         //test of elevator heights
         /*

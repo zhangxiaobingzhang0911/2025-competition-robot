@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.MathUtil;
+import frc.robot.RobotContainer;
 import org.littletonrobotics.junction.Logger;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.roller.RollerSubsystem;
@@ -41,6 +42,8 @@ public class IntakeSubsystem extends RollerSubsystem{
         Logger.processInputs("Intake/Pivot", intakePivotIOInputs);
 
         Logger.recordOutput("Intake/SystemState",systemState.toString());
+
+        RobotContainer.intakeIsDanger = intakeIsDanger();
 
         if(newState!= systemState) {
             systemState = newState;
@@ -136,4 +139,6 @@ public class IntakeSubsystem extends RollerSubsystem{
     public boolean isNearAngle(double targetAngle) {
         return MathUtil.isNear(targetAngle, intakePivotIOInputs.currentPositionDeg, 0.5);
     }
+
+    public boolean intakeIsDanger() {return intakePivotIOInputs.currentPositionDeg < 90;}
 }

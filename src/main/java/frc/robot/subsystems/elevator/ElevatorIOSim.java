@@ -12,69 +12,70 @@ import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_SPOOL_DIAMETER
 
 public class ElevatorIOSim implements ElevatorIO {
     private static final double LOOP_PERIOD_SECS = 0.02;
-    private final DCMotorSim leftElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500(1),
-            0.025, 6.75), DCMotor.getFalcon500(1), null);
-
-    private Measure<VoltageUnit> leftElevatorAppliedVoltage = Volts.zero();
+    private final DCMotorSim leaderTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60Foc(1),
+            0.025, 6.75), DCMotor.getKrakenX60Foc(1), null);
+    private Measure<VoltageUnit> leaderAppliedVoltage = Volts.zero();
+    private Measure<VoltageUnit> followerAppliedVoltage = Volts.zero();
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
-        leftElevatorTalonSim.update(LOOP_PERIOD_SECS);
+        leaderTalonSim.update(LOOP_PERIOD_SECS);
 
-        inputs.leftElevatorVelocity =
-                RadiansPerSecond.of(leftElevatorTalonSim.getAngularVelocityRadPerSec());
-        inputs.leftElevatorPosition =
-                Radians.of(leftElevatorTalonSim.getAngularPositionRad());
-        inputs.leftElevatorAppliedVoltage =
-                leftElevatorAppliedVoltage;
-        inputs.leftElevatorSupplyCurrent =
-                Amps.of(leftElevatorTalonSim.getCurrentDrawAmps());
-
-        inputs.rightElevatorVelocity =
-                RadiansPerSecond.of(leftElevatorTalonSim.getAngularVelocityRadPerSec());
-        inputs.rightElevatorPosition =
-                Radians.of(leftElevatorTalonSim.getAngularPositionRad());
-        inputs.rightElevatorAppliedVoltage =
-                leftElevatorAppliedVoltage;
-        inputs.rightElevatorSupplyCurrent =
-                Amps.of(leftElevatorTalonSim.getCurrentDrawAmps());
+        inputs.appliedVelocity = new double[]{
+            (leaderTalonSim.getAngularVelocityRPM())*60,
+            leaderTalonSim.getAngularVelocityRPM()*60};
+        inputs.appliedPosition = new double[]{
+            leaderTalonSim.getAngularPositionRotations(),
+            leaderTalonSim.getAngularPositionRotations()};
+        inputs.appliedVolts = new double[]{
+            leaderAppliedVoltage.magnitude(),
+            followerAppliedVoltage.magnitude()};
+        inputs.supplyCurrentAmps = new double[]{
+            leaderTalonSim.getCurrentDrawAmps(),
+            leaderTalonSim.getCurrentDrawAmps()};
+            
     }
 
     @Override
     public void setElevatorDirectVoltage(double volts) {
-        leftElevatorAppliedVoltage = Volts.of(volts);
-        leftElevatorTalonSim.setInputVoltage(volts);
+        leaderAppliedVoltage = Volts.of(volts);
+        leaderTalonSim.setInputVoltage(volts);
     }
 
     @Override
     public void resetElevatorPosition() {
-        leftElevatorTalonSim.setAngle(0);
+        leaderTalonSim.setAngle(0);;
     }
 
     @Override
     public boolean isNearExtension(double expected) {
-        return MathUtil.isNear(metersToRotations(expected), leftElevatorTalonSim.getAngularPositionRad(), 0);
+        return MathUtil.isNear(metersToRotations(expected), leaderTalonSim.getAngularPositionRotations(), 0);
     }
 
     @Override
-    public void setElevatorTarget(double radians) {
+    public void setElevatorTarget(double meters) {
         // FIXME: Adding delays?
-        leftElevatorTalonSim.setAngle(radians);
+        leaderTalonSim.setAngle(metersToRotations(meters) * 6.28);
     }
 
     @Override
     public double getElevatorPosition() {
-        return leftElevatorTalonSim.getAngularPositionRad();
+        return leaderTalonSim.getAngularPositionRotations();
+    }
+
+    @Override
+    public double getElevatorHeight() {
+        return rotationsToMeters(leaderTalonSim.getAngularPositionRotations());
     }
 
     @Override
     public boolean isNearZeroExtension() {
-        return MathUtil.isNear(metersToRotations(0.05), leftElevatorTalonSim.getAngularPositionRad(), 0.3);
+        return MathUtil.isNear(metersToRotations(0.05), leaderTalonSim.getAngularPositionRotations(), 0.3);
     }
 
     @Override
     public double getElevatorVelocity() {
-        return leftElevatorTalonSim.getAngularVelocityRadPerSec() / 6.28 * 60;
+        return leaderTalonSim.getAngularVelocityRadPerSec() / 6.28 * 60;
     }
 
     private double metersToRotations(double heightMeters) {

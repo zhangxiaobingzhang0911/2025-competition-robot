@@ -155,18 +155,6 @@ public class RobotContainer {
         );
     }
 
-    private Command setSuperState(superState state) {
-        return switch (state) {
-            case STOPPED -> TRY_STOPPED();
-            case L1 -> TRY_L1();
-            case L2 -> TRY_L2();
-            case L3 -> TRY_L3();
-            case L4 -> TRY_L4();
-            case GROUND_INTAKE -> TRY_GROUND_INTAKE();
-            case FUNNEL_INTAKE -> TRY_FUNNEL_INTAKE();
-            default -> TRY_STOPPED(); // or some other default value that makes sense in your context
-        };
-    }
 
     /**
      * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -220,16 +208,16 @@ public class RobotContainer {
     //Configure all commands for testing
     private void configureTesterBindings(CommandXboxController controller) {
         new Trigger(controller.a())
-                .onTrue(setSuperState(superState.L1));
+                .onTrue(TRY_L1());
         new Trigger(controller.b())
-                .onTrue(setSuperState(superState.L2));
+                .onTrue(TRY_L2());
         new Trigger(controller.x())
-                .onTrue(setSuperState(superState.L3));
+                .onTrue(TRY_L3());
         new Trigger(controller.y())
-                .onTrue(setSuperState(superState.L4));
+                .onTrue(TRY_L4());
 
         new Trigger(controller.leftTrigger())
-                .onTrue(setSuperState(superState.STOPPED));
+                .onTrue(TRY_STOPPED());
 
         //test of endeffector state machine
         //Funnel Intake

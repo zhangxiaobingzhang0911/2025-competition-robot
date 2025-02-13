@@ -7,22 +7,6 @@ import org.littletonrobotics.junction.AutoLog;
 import static edu.wpi.first.units.Units.*;
 
 public interface ElevatorIO {
-    @AutoLog
-    class ElevatorIOInputs {
-        public double positionMeters = 0.0;
-        public double velocityMetersPerSec = 0.0;
-        public double motionMagicVelocityTarget = 0.0;
-        public double motionMagicPositionTarget = 0.0;
-        public double setpointMeters = 0.0;
-        public double[] appliedPosition = new double[] {}; // {leader, follower}
-        public double[] appliedVelocity = new double[] {}; // {leader, follower}
-        public double[] appliedVolts = new double[] {}; // {leader, follower}
-        public double[] statorCurrentAmps = new double[] {}; // {leader, follower}
-        public double[] supplyCurrentAmps = new double[] {}; // {leader, follower}
-        public double[] tempCelsius = new double[] {}; // {leader, follower}
-        // public double acceleration = 0.0; may add later
-    }
-
     void updateInputs(ElevatorIOInputs inputs);
 
     void setElevatorDirectVoltage(double volts);
@@ -35,9 +19,30 @@ public interface ElevatorIO {
 
     double getElevatorPosition();
 
-    double getElevatorHeight();
-
     boolean isNearExtension(double expected);
 
     boolean isNearZeroExtension();
+
+    @AutoLog
+    class ElevatorIOInputs {
+        public Measure<AngularVelocityUnit> leftElevatorVelocity = RadiansPerSecond.zero();
+        public Measure<AngleUnit> leftElevatorPosition = Radians.zero();
+        public Measure<VoltageUnit> leftElevatorAppliedVoltage = Volts.zero();
+        public Measure<CurrentUnit> leftElevatorSupplyCurrent = Amps.zero();
+
+        public Measure<AngularVelocityUnit> rightElevatorVelocity = RadiansPerSecond.zero();
+        public Measure<AngleUnit> rightElevatorPosition = Radians.zero();
+        public Measure<VoltageUnit> rightElevatorAppliedVoltage = Volts.zero();
+        public Measure<CurrentUnit> rightElevatorSupplyCurrent = Amps.zero();
+
+        public double[] statorCurrentAmps = new double[]{};
+
+        public double ElevatorKP = ElevatorGainsClass.ELEVATOR_KP.get();
+        public double ElevatorKI = ElevatorGainsClass.ELEVATOR_KI.get();
+        public double ElevatorKD = ElevatorGainsClass.ELEVATOR_KD.get();
+        public double ElevatorKA = ElevatorGainsClass.ELEVATOR_KA.get();
+        public double ElevatorKV = ElevatorGainsClass.ELEVATOR_KV.get();
+        public double ElevatorKS = ElevatorGainsClass.ELEVATOR_KS.get();
+        public double ElevatorKG = ElevatorGainsClass.ELEVATOR_KG.get();
+    }
 }

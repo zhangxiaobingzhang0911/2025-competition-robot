@@ -60,6 +60,10 @@ public class ElevatorIOSim implements ElevatorIO {
         inputs.supplyCurrentAmps = new double[]{
             physicsSim.getCurrentDrawAmps(),
             physicsSim.getCurrentDrawAmps()};
+        inputs.statorCurrentAmps = new double[]{
+                physicsSim.getCurrentDrawAmps(),
+                physicsSim.getCurrentDrawAmps()
+        };
             
     }
 

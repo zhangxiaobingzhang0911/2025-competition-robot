@@ -207,8 +207,8 @@ public class RobotContainer {
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
 
-        driverController.leftBumper().whileTrue(groundIntakeCommand);
-        driverController.rightBumper().whileTrue(putCoralCommand);
+        driverController.x().whileTrue(groundIntakeCommand);
+        driverController.a().whileTrue(putCoralCommand);
         driverController.povDown().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO)));
         driverController.start().onTrue(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO)));
     }
@@ -225,13 +225,7 @@ public class RobotContainer {
         controller.b().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE)));
         controller.x().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT)));
 
-        //test of elevator heights
-        /*
-        controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L1_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L1_EXTENSION_METERS.get())));
-        controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L2_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L2_EXTENSION_METERS.get())));
-        controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L3_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L3_EXTENSION_METERS.get())));
-        controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setPosition(L4_EXTENSION_METERS.get()), elevatorSubsystem).until(() -> elevatorSubsystem.isAtSetpoint(L4_EXTENSION_METERS.get())));
-        controller.povDown().onTrue(new ElevatorZeroingCommand(elevatorSubsystem));*/
+
 
         //test of intake states
         /*

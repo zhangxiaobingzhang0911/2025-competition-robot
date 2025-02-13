@@ -79,6 +79,8 @@ public class EndEffectorSubsystem extends RollerSubsystem {
 
         RobotContainer.preShootIsDanger = isPreShootReady();
 
+        Logger.recordOutput("Flags/preShootIsDanger", isPreShootReady());
+
         if (newState != systemState) {
             systemState = newState;
         }
@@ -92,25 +94,25 @@ public class EndEffectorSubsystem extends RollerSubsystem {
                 io.setVelocity(idleRPS);
                 break;
             case FUNNEL_INTAKING:
-                io.setVelocity(intakeRPS);
-                if (isIntakeFinished()) {
-                    io.setVelocity(0.0);
-                }
-                break;
-            case GROUND_INTAKING:
                 io.setVelocity(-intakeRPS);
                 if (isIntakeFinished()) {
                     io.setVelocity(0.0);
                 }
                 break;
+            case GROUND_INTAKING:
+                io.setVelocity(intakeRPS);
+                if (isIntakeFinished()) {
+                    io.setVelocity(0.0);
+                }
+                break;
             case PRE_SHOOTING:
-                io.setVelocity(0.0);
+                io.setVelocity(-preShootRPS);
                 if (isShootReady()) {
-                    io.setVelocity(preShootRPS);
+                    io.setVelocity(0.0);
                 }
                 break;
             case SHOOTING:
-                io.setVelocity(shootRPS);
+                io.setVelocity(-shootRPS);
                 break;
             case OFF:
         }

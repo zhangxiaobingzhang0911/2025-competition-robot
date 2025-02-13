@@ -1,7 +1,6 @@
 package frc.robot.subsystems.endeffector;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -80,8 +79,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
 
         Logger.processInputs(NAME + "/Middle Beambreak", middleBBInputs);
         Logger.processInputs(NAME + "/Edge Beambreak", edgeBBInputs);
-        Logger.recordOutput("EndEffector/SystemState", systemState.toString());
-        Logger.recordOutput(NAME+"/wantedState",wantedState.toString());
+        Logger.recordOutput("EndEffector/SystemState", newState.toString());
 
         if (newState != systemState) {
             systemState = newState;
@@ -137,14 +135,12 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             case FUNNEL_INTAKE -> {
                 if (middleBBInputs.isBeambreakOn) {
                     hasTransitionedToTransfer = true;
-                    wantedState = WantedState.TRANSFER;
                     yield SystemState.TRANSFERRING;
                 }
                 yield SystemState.FUNNEL_INTAKING;
             }
             case GROUND_INTAKE -> {
                 if (middleBBInputs.isBeambreakOn) {
-                    wantedState = WantedState.TRANSFER;
                     hasTransitionedToTransfer = true;
                     yield SystemState.TRANSFERRING;
                 }
@@ -152,8 +148,6 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             }
             case TRANSFER -> {
                 if (edgeBBInputs.isBeambreakOn && !middleBBInputs.isBeambreakOn) {
-                    wantedState = WantedState.HOLD;
-                    hasTransitionedToHold = true;
                     yield SystemState.HOLDING;
                 }
                 yield SystemState.TRANSFERRING;
@@ -166,7 +160,6 @@ public class EndEffectorSubsystem extends RollerSubsystem {
                 if (isShootFinished()) {
                     hasTransitionedToTransfer = false;
                     hasTransitionedToHold = false;
-                    wantedState = WantedState.IDLE;
                     yield SystemState.IDLING;
                 }
                 yield SystemState.SHOOTING;
@@ -188,17 +181,5 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         return hasTransitionedToTransfer;
     }
 
-    public boolean isEndEffectorIntaking () {
-        return systemState == SystemState.FUNNEL_INTAKING || systemState==SystemState.GROUND_INTAKING || systemState==SystemState.TRANSFERRING;
-    }
-
-    public boolean isEndEffectorHolding () {
-        return systemState == SystemState.HOLDING;
-    }
-
     public void setWantedState(WantedState wantedState) {this.wantedState = wantedState;}
-
-    public Command setWantedStateCommand(WantedState wantedState) {
-        return new InstantCommand(() -> setWantedState(wantedState));
-    }
 }

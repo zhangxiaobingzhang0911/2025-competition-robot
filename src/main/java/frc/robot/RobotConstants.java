@@ -39,8 +39,8 @@ public final class RobotConstants {
         public static final double LOOPER_DT = 1 / 50.0;
         public static final boolean TUNING = true;
         // canbus name
-        public static String CAN_BUS_NAME = "rio";
-        public static String CANIVORE_CAN_BUS_NAME = "10541Canivore0";
+        public static String CAN_BUS_NAME = "6941Canivore0";
+        public static String CANIVORE_CAN_BUS_NAME = "6941Canivore0";
         // serial baud rate
         public static int baudRate = 115200;
 
@@ -304,7 +304,7 @@ public final class RobotConstants {
 
                 public static final TunableNumber INTAKE_RPS = new TunableNumber("ENDEFFECTOR/indexRPS", -40);
                 public static final TunableNumber HOLD_RPS = new TunableNumber("ENDEFFECTOR/holdRPS", 0.0);
-                public static final TunableNumber PRE_SHOOT_RPS = new TunableNumber("ENDEFFECTOR/preShootRPS", -25);
+                public static final TunableNumber PRE_SHOOT_RPS = new TunableNumber("ENDEFFECTOR/preShootRPS", -15);
                 public static final TunableNumber SHOOT_RPS = new TunableNumber("ENDEFFECTOR/shootRPS", -80);
                 public static final TunableNumber IDLE_RPS = new TunableNumber("ENDEFFECTOR/idleRPS", -0);
 
@@ -382,9 +382,9 @@ public final class RobotConstants {
                 public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
                                 1.57);
                 public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/idle",
-                                0.03);
+                                0.3);
                 public static final TunableNumber HOME_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOME",
-                                0.5);
+                                0.01);
                 public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
                                 0.45);
                 public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",

@@ -73,7 +73,7 @@ public class RobotContainer {
     public static boolean intakeIsDanger;
     public static boolean preShootIsDanger;
 
-    private double elevatorSetPoint = IDLE_EXTENSION_METERS.get();
+    private double elevatorSetPoint = L3_EXTENSION_METERS.get();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -167,7 +167,7 @@ public class RobotContainer {
     private final Command putCoralCommand = new ParallelCommandGroup(
             preShootCommand,
             Commands.sequence(
-                    new WaitUntilCommand(() -> operatorController.a().getAsBoolean() && endEffectorSubsystem.isShootReady()),
+                    new WaitUntilCommand(() -> driverController.a().getAsBoolean() && endEffectorSubsystem.isShootReady()),
                     shootCommand
             )
     );
@@ -209,6 +209,8 @@ public class RobotContainer {
 
         driverController.leftBumper().whileTrue(groundIntakeCommand);
         driverController.rightBumper().whileTrue(putCoralCommand);
+        driverController.povDown().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO)));
+        driverController.start().onTrue(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO)));
     }
 
     //Configure all commands for operator

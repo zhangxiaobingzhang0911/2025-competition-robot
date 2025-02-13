@@ -48,6 +48,8 @@ public class IntakeSubsystem extends RollerSubsystem{
 
         RobotContainer.intakeIsDanger = intakeIsDanger();
 
+        Logger.recordOutput("Flags/intakeIsDanger",intakeIsDanger());
+
         if(newState!= systemState) {
             systemState = newState;
         }

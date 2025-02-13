@@ -18,9 +18,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
     private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
     public double currentFilterValue = 0.0;
-    private WantedState wantedState = WantedState.IDLE;
-    private SystemState systemState = SystemState.IDLING;
-    private double wantedPosition = 0.0;
+    private WantedState wantedState = WantedState.POSITION;
+    private SystemState systemState = SystemState.POSITION_GOING;
+    private double wantedPosition = 0.5;
     private boolean hasReachedNearZero = false;
 
     public ElevatorSubsystem(ElevatorIO io) {
@@ -48,9 +48,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         elevatorIsDanger = elevatorIsDanger();
 
-        if (DriverStation.isDisabled()) {
-            wantedState = WantedState.IDLE;
-        }
+        Logger.recordOutput("Flags/elevatorIsDanger", elevatorIsDanger());
+
 
         // set movements based on state
         switch (systemState) {

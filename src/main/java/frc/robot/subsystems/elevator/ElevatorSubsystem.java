@@ -42,9 +42,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         // process inputs
         SystemState newState = handleStateTransition();
         if (newState != systemState) {
-            Logger.recordOutput("Elevator/SystemState", newState.toString());
+            // Logger.recordOutput("Elevator/SystemState", newState.toString());
             systemState = newState;
         }
+        Logger.recordOutput("Elevator/SystemState", systemState.toString());
 
         elevatorIsDanger = elevatorIsDanger();
 

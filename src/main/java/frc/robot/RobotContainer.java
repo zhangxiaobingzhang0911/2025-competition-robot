@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.auto.basics.AutoActions;
+import frc.robot.commands.FunnelIntakeCommand;
+import frc.robot.commands.GroundIntakeCommand;
+import frc.robot.commands.PutCoralCommand;
 import frc.robot.commands.RumbleCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
@@ -51,7 +54,7 @@ import static frc.robot.RobotConstants.ElevatorConstants.*;
 public class RobotContainer {
     @Getter
     private final UpdateManager updateManager;
-    CommandXboxController driverController = new CommandXboxController(0);
+    public static final CommandXboxController driverController = new CommandXboxController(0);
     CommandXboxController operatorController = new CommandXboxController(1);
     CommandXboxController testerController = new CommandXboxController(2);
     CommandGenericHID streamDeckController = new CommandGenericHID(3);
@@ -113,64 +116,64 @@ public class RobotContainer {
      }
 
     //Define all commands here
-    private final Command groundIntakeCommand = new Command() {
-        @Override
-        public void execute() {
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
-            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
-            elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
-        }
+    // private final Command groundIntakeCommand = new Command() {
+    //     @Override
+    //     public void execute() {
+    //         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
+    //         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
+    //         elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
+    //     }
 
-        @Override
-        public void end(boolean interrupted) {
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.FUNNEL_AVOID);
-            elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
-        }
+    //     @Override
+    //     public void end(boolean interrupted) {
+    //         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.FUNNEL_AVOID);
+    //         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+    //     }
 
-        @Override
-        public boolean isFinished() {
-            return endEffectorSubsystem.hasCoral();
-        }
-    };
+    //     @Override
+    //     public boolean isFinished() {
+    //         return endEffectorSubsystem.hasCoral();
+    //     }
+    // };
 
-    private final Command preShootCommand = new Command() {
-        @Override
-        public void execute() {
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-            elevatorSubsystem.setElevatorPosition(elevatorSetPoint);
-            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT);
-        }
+    // private final Command preShootCommand = new Command() {
+    //     @Override
+    //     public void execute() {
+    //         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
+    //         elevatorSubsystem.setElevatorPosition(elevatorSetPoint);
+    //         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT);
+    //     }
 
-        @Override
-        public void end(boolean interrupted) {
-            elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
-        }
+    //     @Override
+    //     public void end(boolean interrupted) {
+    //         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+    //     }
 
-        @Override
-        public boolean isFinished() {
-            return endEffectorSubsystem.isShootFinished();
-        }
-    };
+    //     @Override
+    //     public boolean isFinished() {
+    //         return endEffectorSubsystem.isShootFinished();
+    //     }
+    // };
 
-    private final Command shootCommand = new Command() {
-        @Override
-        public void execute() {
-            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);
-        }
+    // private final Command shootCommand = new Command() {
+    //     @Override
+    //     public void execute() {
+    //         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);
+    //     }
 
-        @Override
-        public boolean isFinished() {
-            return endEffectorSubsystem.isShootFinished();
-        }
-    };
+    //     @Override
+    //     public boolean isFinished() {
+    //         return endEffectorSubsystem.isShootFinished();
+    //     }
+    // };
 
-    private final Command putCoralCommand = new ParallelCommandGroup(
-            preShootCommand,
-            Commands.sequence(
-                    new WaitUntilCommand(() -> driverController.a().getAsBoolean() && endEffectorSubsystem.isShootReady()),
-                    shootCommand
-            )
-    );
+    // private final Command putCoralCommand = new ParallelCommandGroup(
+    //         preShootCommand,
+    //         Commands.sequence(
+    //                 new WaitUntilCommand(() -> driverController.a().getAsBoolean() && endEffectorSubsystem.isShootReady()),
+    //                 shootCommand
+    //         )
+    // );
 
 
 
@@ -207,8 +210,10 @@ public class RobotContainer {
                     lastResetTime = Timer.getFPGATimestamp();
                 }).ignoringDisable(true));
 
-        driverController.x().whileTrue(groundIntakeCommand);
-        driverController.a().whileTrue(putCoralCommand);
+                
+        driverController.rightBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+        driverController.rightTrigger().whileTrue(new PutCoralCommand(endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,L3_EXTENSION_METERS.get()));
+        driverController.leftBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
         driverController.povDown().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO)));
         driverController.start().onTrue(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO)));
     }
@@ -221,21 +226,25 @@ public class RobotContainer {
     //Configure all commands for testing
     private void configureTesterBindings(CommandXboxController controller) {
         //test of endeffector state machine
-        controller.a().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE)));
-        controller.b().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE)));
-        controller.x().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT)));
+        controller.povLeft().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE)));
+        controller.povRight().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE)));
+        controller.povUp().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT)));
 
-
+        //test of elevator state machine
+        controller.a().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L1_EXTENSION_METERS.get())));
+        controller.b().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L2_EXTENSION_METERS.get())));
+        controller.x().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L3_EXTENSION_METERS.get())));
+        controller.y().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L4_EXTENSION_METERS.get())));
 
         //test of intake states
-        /*
-        controller.a().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE))));
-        controller.rightBumper().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO))));
-        controller.b().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.FUNNEL_AVOID))));
-        controller.x().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME))));
-        controller.y().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.TREMBLE_INTAKE))));
-        controller.leftBumper().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.OUTTAKE))));
-        */
+        
+        controller.rightBumper().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE))));
+        controller.leftBumper().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO))));
+        controller.rightTrigger().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.FUNNEL_AVOID))));
+        controller.leftTrigger().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME))));
+        controller.povUp().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.TREMBLE_INTAKE))));
+        controller.povDown().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.OUTTAKE))));
+        
     }
 
     //Configure all commands for Stream Deck

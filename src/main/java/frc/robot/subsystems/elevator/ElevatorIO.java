@@ -17,8 +17,6 @@ public interface ElevatorIO {
 
     double getElevatorVelocity();
 
-    double getElevatorPosition();
-
     double getElevatorHeight();
 
     boolean isNearExtension(double expected);

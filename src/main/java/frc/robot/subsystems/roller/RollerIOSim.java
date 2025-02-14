@@ -1,8 +1,5 @@
 package frc.robot.subsystems.roller;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -13,25 +10,24 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 public class RollerIOSim implements RollerIO {
     private final DCMotorSim motorSim;
 
-  private final SimpleMotorFeedforward feedforward;
-  private final ProfiledPIDController pid;
+    private final SimpleMotorFeedforward feedforward;
+    private final ProfiledPIDController pid;
 
+    private final double appliedVolts = 0.0;
 
-  private double appliedVolts = 0.0;
-
-  public RollerIOSim(
-      double jKgMetersSquared,
-      double gearRatio,
-      SimpleMotorFeedforward feedforward,
-      ProfiledPIDController pid) {
-    this.motorSim =
-        new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(
-                DCMotor.getKrakenX60Foc(1), jKgMetersSquared, gearRatio),
-                DCMotor.getKrakenX60Foc(1),new double[] {0.0, 0.0});
-    this.feedforward = feedforward;
-    this.pid = pid;
-  }
+    public RollerIOSim(
+            double jKgMetersSquared,
+            double gearRatio,
+            SimpleMotorFeedforward feedforward,
+            ProfiledPIDController pid) {
+        this.motorSim =
+                new DCMotorSim(
+                        LinearSystemId.createDCMotorSystem(
+                                DCMotor.getKrakenX60Foc(1), jKgMetersSquared, gearRatio),
+                        DCMotor.getKrakenX60Foc(1), 0.0, 0.0);
+        this.feedforward = feedforward;
+        this.pid = pid;
+    }
 
     @Override
     public void updateInputs(RollerIOInputs inputs) {
@@ -41,7 +37,6 @@ public class RollerIOSim implements RollerIO {
         inputs.statorCurrentAmps = motorSim.getCurrentDrawAmps();
         inputs.supplyCurrentAmps = 0.0;
         inputs.tempCelsius = 0.0;
-
     }
 
     @Override

@@ -6,11 +6,10 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -19,7 +18,6 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class RollerIOReal implements RollerIO {
     private final TalonFX motor;
-    private final double reduction;
     private final Slot0Configs slot0Configs = new Slot0Configs();
 
     private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(true);
@@ -31,10 +29,9 @@ public class RollerIOReal implements RollerIO {
     private final StatusSignal<Current> supplyCurrentAmps;
     private final StatusSignal<Temperature> tempCelsius;
 
-    public RollerIOReal(int id, String canbus, int statorCurrentLimitAmps, int supplyCurrentLimitAmps, boolean invert, boolean brake, double reduction) {
+    public RollerIOReal(int id, String canbus, int statorCurrentLimitAmps, int supplyCurrentLimitAmps, boolean invert, boolean brake) {
         this.motor = new TalonFX(id, canbus);
-        this.reduction = reduction;
-        
+
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.MotorOutput.Inverted = invert ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
         config.MotorOutput.NeutralMode = brake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
@@ -43,6 +40,8 @@ public class RollerIOReal implements RollerIO {
         config.CurrentLimits.StatorCurrentLimit = statorCurrentLimitAmps;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         motor.getConfigurator().apply(config);
+
+        motor.clearStickyFaults();
 
         velocityRotPerSec = motor.getVelocity();
         appliedVolts = motor.getMotorVoltage();

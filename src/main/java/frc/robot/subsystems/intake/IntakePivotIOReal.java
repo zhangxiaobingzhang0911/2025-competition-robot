@@ -12,11 +12,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Temperature;
-import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.measure.*;
 import frc.robot.RobotConstants;
 
 import static frc.robot.RobotConstants.intakeConstants.*;
@@ -37,7 +33,6 @@ public class IntakePivotIOReal implements IntakePivotIO {
     private final MotionMagicConfigs motionMagicConfigs;
 
     double targetPositionDeg = 0.0;
-    double PIVOT_RATIO = RobotConstants.intakeConstants.PIVOT_RATIO;
 
     public IntakePivotIOReal() {
         var config = new TalonFXConfiguration();
@@ -61,6 +56,9 @@ public class IntakePivotIOReal implements IntakePivotIO {
         config.withMotionMagic(motionMagicConfigs);
 
         motor.getConfigurator().apply(config);
+
+        motor.clearStickyFaults();
+
         motor.optimizeBusUtilization();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
@@ -92,9 +90,9 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.targetPositionDeg = targetPositionDeg;
 
         if (RobotConstants.TUNING) {
-            inputs.intakePivotKP= intakePivotGainsClass.INTAKE_PIVOT_KP.get();
-            inputs.intakePivotKI= intakePivotGainsClass.INTAKE_PIVOT_KI.get();
-            inputs.intakePivotKD= intakePivotGainsClass.INTAKE_PIVOT_KD.get();
+            inputs.intakePivotKP = intakePivotGainsClass.INTAKE_PIVOT_KP.get();
+            inputs.intakePivotKI = intakePivotGainsClass.INTAKE_PIVOT_KI.get();
+            inputs.intakePivotKD = intakePivotGainsClass.INTAKE_PIVOT_KD.get();
 
             motor.getConfigurator().apply(new Slot0Configs()
                     .withKP(inputs.intakePivotKP)

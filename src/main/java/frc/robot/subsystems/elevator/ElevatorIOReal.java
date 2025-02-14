@@ -2,11 +2,7 @@ package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -14,11 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Temperature;
-import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.measure.*;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.ElevatorGainsClass;
 
@@ -27,35 +19,25 @@ import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 
 public class ElevatorIOReal implements ElevatorIO {
-    /* Hardware */
+    // Hardware
     private final TalonFX leader;
     private final TalonFX follower;
 
-    /* Configurators */
-    private TalonFXConfigurator leaderConfigurator;
-    private TalonFXConfigurator followerConfigurator;
+    // Configurators
+    private final TalonFXConfigurator leaderConfigurator;
+    private final TalonFXConfigurator followerConfigurator;
 
-    /* Configs */
-    private final CurrentLimitsConfigs currentLimitsConfigs;
-    private final MotorOutputConfigs leaderMotorConfigs;
-    private final MotorOutputConfigs followerMotorConfigs;
     private final Slot0Configs slot0Configs;
     private final MotionMagicConfigs motionMagicConfigs;
 
     private final MotionMagicVoltage motionRequest = new MotionMagicVoltage(0.0).withEnableFOC(true);
 
     private final StatusSignal<AngularVelocity> velocityLeft;
-    private final StatusSignal<AngularVelocity> velocityRight;
     private final StatusSignal<Angle> positionLeft;
-    private final StatusSignal<Angle> positionRight;
     private final StatusSignal<Voltage> voltageLeft;
-    private final StatusSignal<Voltage> voltageRight;
     private final StatusSignal<Current> statorLeft;
-    private final StatusSignal<Current> statorRight;
     private final StatusSignal<Current> supplyLeft;
-    private final StatusSignal<Current> supplyRight;
     private final StatusSignal<Temperature> tempLeft;
-    private final StatusSignal<Temperature> tempRight;
 
     public ElevatorIOReal() {
         this.leader = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, CANIVORE_CAN_BUS_NAME);
@@ -64,16 +46,17 @@ public class ElevatorIOReal implements ElevatorIO {
         this.leaderConfigurator = leader.getConfigurator();
         this.followerConfigurator = follower.getConfigurator();
 
-        currentLimitsConfigs = new CurrentLimitsConfigs();
+        // Configs
+        CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
         currentLimitsConfigs.StatorCurrentLimitEnable = true;
         currentLimitsConfigs.SupplyCurrentLimitEnable = true;
         currentLimitsConfigs.StatorCurrentLimit = 80.0;
         currentLimitsConfigs.SupplyCurrentLimit = 30.0;
 
-        leaderMotorConfigs = new MotorOutputConfigs();
+        MotorOutputConfigs leaderMotorConfigs = new MotorOutputConfigs();
         leaderMotorConfigs.NeutralMode = NeutralModeValue.Brake;
         leaderMotorConfigs.Inverted = InvertedValue.Clockwise_Positive;
-        followerMotorConfigs = new MotorOutputConfigs();
+        MotorOutputConfigs followerMotorConfigs = new MotorOutputConfigs();
         followerMotorConfigs.NeutralMode = NeutralModeValue.Brake;
 
         motionMagicConfigs = new MotionMagicConfigs();
@@ -89,8 +72,7 @@ public class ElevatorIOReal implements ElevatorIO {
         slot0Configs.kI = ElevatorGainsClass.ELEVATOR_KI.get();
         slot0Configs.kD = ElevatorGainsClass.ELEVATOR_KD.get();
 
-        leader.setPosition(0.0);
-        follower.setPosition(0.0);
+        resetElevatorPosition();
 
         leaderConfigurator.apply(currentLimitsConfigs);
         leaderConfigurator.apply(leaderMotorConfigs);
@@ -101,18 +83,15 @@ public class ElevatorIOReal implements ElevatorIO {
         followerConfigurator.apply(slot0Configs);
         followerConfigurator.apply(motionMagicConfigs);
 
+        leader.clearStickyFaults();
+        follower.clearStickyFaults();
+
         velocityLeft = leader.getVelocity();
-        velocityRight = follower.getVelocity();
         positionLeft = leader.getPosition();
-        positionRight = leader.getPosition();
         voltageLeft = leader.getSupplyVoltage();
-        voltageRight = follower.getSupplyVoltage();
         statorLeft = leader.getStatorCurrent();
-        statorRight = follower.getStatorCurrent();
         supplyLeft = leader.getSupplyCurrent();
-        supplyRight = follower.getSupplyCurrent();
         tempLeft = leader.getDeviceTemp();
-        tempRight = follower.getDeviceTemp();
 
         follower.setControl(new Follower(leader.getDeviceID(), true));
     }
@@ -120,26 +99,20 @@ public class ElevatorIOReal implements ElevatorIO {
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
         BaseStatusSignal.refreshAll(
-
-                velocityLeft, velocityRight,
-                positionLeft, positionRight,
-                voltageLeft, voltageRight,
-                statorLeft, statorRight,
-                supplyLeft, supplyRight,
-                tempLeft, tempRight
-
+                velocityLeft,
+                positionLeft,
+                voltageLeft,
+                statorLeft,
+                supplyLeft,
+                tempLeft
         );
 
         inputs.positionMeters = getElevatorHeight();
         inputs.velocityMetersPerSec = getElevatorVelocity();
-        inputs.motionMagicVelocityTarget = talonPosToHeight(leader.getClosedLoopReferenceSlope().getValue());
-        inputs.motionMagicPositionTarget = talonPosToHeight(leader.getClosedLoopReference().getValue());
-        inputs.appliedVelocity = new double[] { velocityLeft.getValueAsDouble(), velocityRight.getValueAsDouble() };
-        inputs.appliedPosition = new double[] { positionLeft.getValueAsDouble(), positionRight.getValueAsDouble() };
-        inputs.appliedVolts = new double[] { voltageLeft.getValueAsDouble(), voltageRight.getValueAsDouble() };
-        inputs.statorCurrentAmps = new double[] { statorLeft.getValueAsDouble(), statorRight.getValueAsDouble() };
-        inputs.supplyCurrentAmps = new double[] { supplyLeft.getValueAsDouble(), supplyRight.getValueAsDouble() };
-        inputs.tempCelsius = new double[] { tempLeft.getValueAsDouble(), tempRight.getValueAsDouble() };
+        inputs.appliedVolts = voltageLeft.getValueAsDouble();
+        inputs.statorCurrentAmps = statorLeft.getValueAsDouble();
+        inputs.supplyCurrentAmps = supplyLeft.getValueAsDouble();
+        inputs.tempCelsius = tempLeft.getValueAsDouble();
 
         if (RobotConstants.TUNING) {
             slot0Configs.kA = ElevatorGainsClass.ELEVATOR_KA.get();
@@ -162,7 +135,7 @@ public class ElevatorIOReal implements ElevatorIO {
     }
 
     @Override
-    public void setElevatorDirectVoltage(double volts) {
+    public void setElevatorVoltage(double volts) {
         leader.setControl(new VoltageOut(volts));
     }
 
@@ -172,11 +145,10 @@ public class ElevatorIOReal implements ElevatorIO {
     }
 
     @Override
-    public void resetElevatorPosition(){
+    public void resetElevatorPosition() {
         leader.setPosition(0.0);
         follower.setPosition(0.0);
     }
-
 
     @Override
     public double getElevatorVelocity() {
@@ -189,7 +161,7 @@ public class ElevatorIOReal implements ElevatorIO {
     }
 
     @Override
-    public boolean isNearZeroExtension(){
+    public boolean isNearZeroExtension() {
         return MathUtil.isNear(heightToTalonPos(0.05), leader.getPosition().getValueAsDouble(), 0.3);
     }
 
@@ -197,7 +169,6 @@ public class ElevatorIOReal implements ElevatorIO {
     public boolean isNearExtension(double expected) {
         return MathUtil.isNear(heightToTalonPos(expected), leader.getPosition().getValueAsDouble(), 0.02);
     }
-
 
     private double heightToTalonPos(double heightMeters) {
         return (heightMeters / (Math.PI * ELEVATOR_SPOOL_DIAMETER)) * ELEVATOR_GEAR_RATIO;

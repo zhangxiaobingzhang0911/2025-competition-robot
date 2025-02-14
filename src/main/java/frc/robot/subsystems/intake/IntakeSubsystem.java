@@ -116,12 +116,12 @@ public class IntakeSubsystem extends RollerSubsystem {
         intakePivotIO.setMotorVoltage(0.5);
         if (intakePivotIOInputs.statorCurrentAmps > 10) {
             intakePivotIO.resetPosition(120);
-            setWantedState(WantedState.FUNNEL_AVOID);
+            // setWantedState(WantedState.FUNNEL_AVOID);
         }
     }
 
     public boolean isNearAngle(double targetAngle) {
-        return MathUtil.isNear(targetAngle, intakePivotIOInputs.currentPositionDeg, 0.5);
+        return MathUtil.isNear(targetAngle, intakePivotIOInputs.currentPositionDeg, 3);
     }
 
     public boolean intakeIsDanger() {

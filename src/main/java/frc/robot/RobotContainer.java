@@ -139,7 +139,7 @@ public class RobotContainer {
         driverController.rightTrigger().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, L3_EXTENSION_METERS.get()));
         driverController.leftBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
         // driverController.povDown().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO)));
-        driverController.start().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem,climberSubsystem));
+        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem/*,climberSubsystem*/));
     }
 
     private void configureOperatorBindings() {

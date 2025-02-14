@@ -35,7 +35,7 @@ public final class RobotConstants {
     public static final boolean TUNING = true;
     // canbus name
     public static String CAN_BUS_NAME = "rio";
-    public static String CANIVORE_CAN_BUS_NAME = "6941Canivore0";
+    public static String CANIVORE_CAN_BUS_NAME = "10541Canivore0";
     // serial baud rate
     public static int baudRate = 115200;
 
@@ -341,7 +341,7 @@ public final class RobotConstants {
         public static final TunableNumber INTAKE_PIVOT_JERK = new TunableNumber("INTAKE_PIVOT/jerk", 1200);
         public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 113);
         public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 5);
-        public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 50);
+        public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 115);
         //Motion constants for intake roller
         public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 8.0);
         //Constants for intake pivot

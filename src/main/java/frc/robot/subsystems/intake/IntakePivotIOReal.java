@@ -86,8 +86,8 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.appliedVolts = appliedVolts.getValueAsDouble();
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
-        // inputs.currentPositionDeg = currentPositionRot.getValueAsDouble() * 360 / PIVOT_RATIO;
-        inputs.currentPositionDeg = (120 - (120 - (currentPositionRot.getValueAsDouble() / 360 * PIVOT_RATIO)) / 6);
+        inputs.currentPositionDeg = currentPositionRot.getValueAsDouble() * 360 / PIVOT_RATIO;
+        // inputs.currentPositionDeg = (120 - (120 - (currentPositionRot.getValueAsDouble() / 360 * PIVOT_RATIO)) / 6);
         inputs.targetPositionDeg = targetPositionDeg;
 
         if (RobotConstants.TUNING) {
@@ -114,8 +114,8 @@ public class IntakePivotIOReal implements IntakePivotIO {
     @Override
     public void setMotorPosition(double targetPositionDeg) {
         this.targetPositionDeg = targetPositionDeg;
-        // motor.setControl(motionMagic.withPosition(targetPositionDeg * PIVOT_RATIO / 360));
-        motor.setControl(motionMagic.withPosition((120 - (120 - targetPositionDeg) / 6) * PIVOT_RATIO / 360));
+        motor.setControl(motionMagic.withPosition(targetPositionDeg * PIVOT_RATIO / 360));
+        // motor.setControl(motionMagic.withPosition((120 - (120 - targetPositionDeg) / 6) * PIVOT_RATIO / 360));
     }
 
     @Override

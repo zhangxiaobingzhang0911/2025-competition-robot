@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import static frc.robot.RobotConstants.ElevatorConstants.L3_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.ClimberSubsystem;
@@ -23,7 +23,7 @@ public class ClimbCommand extends Command{
     }
     @Override
     public void execute() {
-        elevatorSubsystem.setElevatorPosition(L3_EXTENSION_METERS.get());
+        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
         climberSubsystem.setWantedState(WantedState.CLIMB);
         intakeSubsystem.setWantedState(frc.robot.subsystems.intake.IntakeSubsystem.WantedState.HOME);
         endEffectorSubsystem.setWantedState(frc.robot.subsystems.endeffector.EndEffectorSubsystem.WantedState.IDLE);

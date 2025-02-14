@@ -19,6 +19,13 @@ public class Robot extends LoggedRobot {
         // Logger.addDataReceiver(new WPILOGWriter());
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.start();
+
+        // early-stage initialization
+        DriverStation.silenceJoystickConnectionWarning(true);
+        PowerDistribution pdp = new PowerDistribution();
+        pdp.clearStickyFaults();
+        pdp.close();
+
         robotContainer = new RobotContainer();
     }
 

@@ -109,10 +109,9 @@ public class CTRESwerveIO {
     // Applies the given swerve module state to the hardware with specified drive and steer request types
     public void apply(SwerveModuleState state, LegacySwerveModule.DriveRequestType driveRequestType, LegacySwerveModule.SteerRequestType steerRequestType) {
         double angleToSetDeg;
-        SwerveModuleState optimized;
-        optimized = SwerveModuleState.optimize(state, internalState.angle);
-        targetState = optimized;
-        angleToSetDeg = optimized.angle.getRotations();
+        state.optimize(internalState.angle);
+        targetState = state;
+        angleToSetDeg = state.angle.getRotations();
 
         // steer
         requestSwitch:
@@ -138,7 +137,7 @@ public class CTRESwerveIO {
         }
 
         // drive
-        double velocityToSet = optimized.speedMetersPerSecond * driveRotationsPerMeter;
+        double velocityToSet = state.speedMetersPerSecond * driveRotationsPerMeter;
         double steerMotorError = angleToSetDeg - sigSteerPosition.getValueAsDouble();
         double cosineScalar = Math.cos(Units.rotationsToRadians(steerMotorError));
         if (cosineScalar < 0.0) {

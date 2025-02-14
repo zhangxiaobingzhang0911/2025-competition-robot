@@ -8,7 +8,7 @@
 package org.littletonrobotics;
 
 import frc.robot.RobotConstants;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class LoggedTunableNumber implements DoubleSupplier {
     private final Map<Integer, Double> lastHasChangedValues = new HashMap<>();
     private boolean hasDefault = false;
     private double defaultValue;
-    private LoggedDashboardNumber dashboardNumber;
+    private LoggedNetworkNumber dashboardNumber;
 
     /**
      * Create a new LoggedTunableNumber
@@ -82,7 +82,7 @@ public class LoggedTunableNumber implements DoubleSupplier {
             hasDefault = true;
             this.defaultValue = defaultValue;
             if (RobotConstants.TUNING) {
-                dashboardNumber = new LoggedDashboardNumber(key, defaultValue);
+                dashboardNumber = new LoggedNetworkNumber(key, defaultValue);
             }
         }
     }

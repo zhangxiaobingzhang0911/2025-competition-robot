@@ -1,33 +1,29 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import frc.robot.RobotContainer;
-import org.littletonrobotics.junction.Logger;
 import frc.robot.RobotConstants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.roller.RollerSubsystem;
+import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.RobotConstants.intakeConstants.*;
+import static frc.robot.RobotConstants.IntakeConstants.*;
 
-public class IntakeSubsystem extends RollerSubsystem{
+public class IntakeSubsystem extends RollerSubsystem {
     public static final String NAME = "Intake/Roller";
-    private final IntakePivotIO intakePivotIO;
-    private final IntakeRollerIO intakeRollerIO;
-    private IntakePivotIOInputsAutoLogged intakePivotIOInputs = new IntakePivotIOInputsAutoLogged();
-
-    private WantedState wantedState = WantedState.HOME;
-    private SystemState systemState = SystemState.HOMED;
-
     private static double deployAngle = DEPLOY_ANGLE.get();
     private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
     private static double homeAngle = HOME_ANGLE.get();
     private static double intakeVoltage = INTAKE_VOLTAGE.get();
+    private final IntakePivotIO intakePivotIO;
+    private final IntakeRollerIO intakeRollerIO;
+    private final IntakePivotIOInputsAutoLogged intakePivotIOInputs = new IntakePivotIOInputsAutoLogged();
+    private WantedState wantedState = WantedState.HOME;
+    private SystemState systemState = SystemState.HOMED;
 
     public IntakeSubsystem(
-        IntakePivotIO intakePivotIO,
-        IntakeRollerIO intakeRollerIO
-    ){
+            IntakePivotIO intakePivotIO,
+            IntakeRollerIO intakeRollerIO
+    ) {
         super(intakeRollerIO, NAME);
         this.intakePivotIO = intakePivotIO;
         this.intakeRollerIO = intakeRollerIO;
@@ -44,13 +40,13 @@ public class IntakeSubsystem extends RollerSubsystem{
         Logger.processInputs("Intake/Pivot", intakePivotIOInputs);
 
 
-        Logger.recordOutput("Intake/SystemState",systemState.toString());
+        Logger.recordOutput("Intake/SystemState", systemState.toString());
 
         RobotContainer.intakeIsDanger = intakeIsDanger();
-        Logger.recordOutput(NAME+"/isnear", isNearAngle(FUNNEL_AVOID_ANGLE.get()));
-        Logger.recordOutput("Flags/intakeIsDanger",intakeIsDanger());
+        Logger.recordOutput(NAME + "/isnear", isNearAngle(FUNNEL_AVOID_ANGLE.get()));
+        Logger.recordOutput("Flags/intakeIsDanger", intakeIsDanger());
 
-        if(newState!= systemState) {
+        if (newState != systemState) {
             systemState = newState;
         }
 
@@ -87,7 +83,7 @@ public class IntakeSubsystem extends RollerSubsystem{
             homeAngle = HOME_ANGLE.get();
             intakeVoltage = INTAKE_VOLTAGE.get();
         }
-    };
+    }
 
     private SystemState handleStateTransition() {
         return switch (wantedState) {
@@ -101,25 +97,8 @@ public class IntakeSubsystem extends RollerSubsystem{
         };
     }
 
-    public void setWantedState(WantedState wantedState) {this.wantedState = wantedState;}
-
-    public enum WantedState{
-        DEPLOY_INTAKE,
-        TREMBLE_INTAKE,
-        OUTTAKE,
-        FUNNEL_AVOID,
-        HOME,
-        GROUNDZERO,
-        OFF
-    }
-    public enum SystemState{
-        DEPLOY_INTAKING,
-        TREMBLE_INTAKING,
-        OUTTAKING,
-        FUNNEL_AVOIDING,
-        HOMED,
-        GROUNDZEROING,
-        OFF
+    public void setWantedState(WantedState wantedState) {
+        this.wantedState = wantedState;
     }
 
     public void trembleIntake() {
@@ -127,7 +106,7 @@ public class IntakeSubsystem extends RollerSubsystem{
         intakePivotIO.setMotorPosition(deployAngle - 3);
         if (intakePivotIOInputs.currentPositionDeg > deployAngle + 2) {
             intakePivotIO.setMotorPosition(deployAngle - 3);
-        } else if (intakePivotIOInputs.currentPositionDeg < deployAngle - 2){
+        } else if (intakePivotIOInputs.currentPositionDeg < deployAngle - 2) {
             intakePivotIO.setMotorPosition(deployAngle + 3);
         }
 
@@ -145,5 +124,27 @@ public class IntakeSubsystem extends RollerSubsystem{
         return MathUtil.isNear(targetAngle, intakePivotIOInputs.currentPositionDeg, 0.5);
     }
 
-    public boolean intakeIsDanger() {return intakePivotIOInputs.currentPositionDeg < 90;}
+    public boolean intakeIsDanger() {
+        return intakePivotIOInputs.currentPositionDeg < 90;
+    }
+
+    public enum WantedState {
+        DEPLOY_INTAKE,
+        TREMBLE_INTAKE,
+        OUTTAKE,
+        FUNNEL_AVOID,
+        HOME,
+        GROUNDZERO,
+        OFF
+    }
+
+    public enum SystemState {
+        DEPLOY_INTAKING,
+        TREMBLE_INTAKING,
+        OUTTAKING,
+        FUNNEL_AVOIDING,
+        HOMED,
+        GROUNDZEROING,
+        OFF
+    }
 }

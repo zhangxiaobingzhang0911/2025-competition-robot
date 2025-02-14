@@ -1,16 +1,13 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
-import frc.robot.RobotContainer;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.RobotConstants.ElevatorConstants.*;
-import static frc.robot.RobotContainer.*;
+import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
+import static frc.robot.RobotContainer.elevatorIsDanger;
 
 public class ElevatorSubsystem extends SubsystemBase {
     @Getter
@@ -37,7 +34,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         Logger.recordOutput("Elevator/setPoint", wantedPosition);
         Logger.recordOutput("Elevator/WantedState", wantedState.toString());
 
-        currentFilterValue = currentFilter.calculate(inputs.statorCurrentAmps[0]);
+        currentFilterValue = currentFilter.calculate(inputs.statorCurrentAmps);
         Logger.recordOutput("Elevator/CurrentFilter", currentFilterValue);
         // process inputs
         SystemState newState = handleStateTransition();
@@ -106,16 +103,21 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
         hasReachedNearZero = true;
         if (currentFilterValue <= RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()) {
-            io.setElevatorDirectVoltage(-1);
+            io.setElevatorVoltage(-1);
             wantedState = WantedState.ZERO;
         }
         if (currentFilterValue > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()) {
-            io.setElevatorDirectVoltage(0);
+            io.setElevatorVoltage(0);
             io.resetElevatorPosition();
             wantedState = WantedState.IDLE;
             hasReachedNearZero = false;
         }
     }
+
+    public boolean elevatorIsDanger() {
+        return (inputs.positionMeters < 0.5);
+    }
+
 
     public enum WantedState {
         POSITION,
@@ -123,14 +125,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         IDLE
     }
 
-
     public enum SystemState {
         POSITION_GOING,
         ZEROING,
         IDLING
-    }
-
-    public boolean elevatorIsDanger() {
-        return (inputs.positionMeters < 0.5);
     }
 }

@@ -5,6 +5,7 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
+import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
 import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
 public class GroundIntakeCommand extends Command {

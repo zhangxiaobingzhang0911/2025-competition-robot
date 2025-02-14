@@ -23,7 +23,7 @@ public class GroundIntakeCommand extends Command{
     public void execute() {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
-        elevatorSubsystem.setElevatorPosition(0.03);
+        elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
     }
  
     // Called once after isFinished returns true or when another command interrupts this one

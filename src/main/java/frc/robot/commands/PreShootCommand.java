@@ -12,7 +12,7 @@ public class PreShootCommand extends Command{
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
-    private double elevatorSetPoint;
+    private final double elevatorSetPoint;
     public PreShootCommand(EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem, double elevatorSetPoint) {
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.intakeSubsystem = intakeSubsystem;
@@ -21,7 +21,7 @@ public class PreShootCommand extends Command{
     }
     @Override
         public void execute() {
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.FUNNEL_AVOID);
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
             elevatorSubsystem.setElevatorPosition(elevatorSetPoint);
             endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT);
         }

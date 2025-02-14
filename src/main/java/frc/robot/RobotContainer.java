@@ -12,17 +12,20 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.auto.basics.AutoActions;
+import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.FunnelIntakeCommand;
 import frc.robot.commands.GroundIntakeCommand;
 import frc.robot.commands.PutCoralCommand;
 import frc.robot.commands.RumbleCommand;
+import frc.robot.commands.ZeroCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.endeffector.EndEffectorIOSim;
 import frc.robot.subsystems.beambreak.BeambreakIOSim;
-
+import frc.robot.subsystems.climber.ClimberIOReal;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
@@ -70,18 +73,32 @@ public class RobotContainer {
     ElevatorSubsystem elevatorSubsystem;
     EndEffectorSubsystem endEffectorSubsystem;
     IntakeSubsystem intakeSubsystem;
+    ClimberSubsystem climberSubsystem;
 
     //important flags for state logic
     public static boolean elevatorIsDanger;
     public static boolean intakeIsDanger;
     public static boolean preShootIsDanger;
 
-    private double elevatorSetPoint = L3_EXTENSION_METERS.get();
+    private double elevatorSetPoint;
+
+    private void setpoint(){
+        if (operatorController.a().getAsBoolean()){
+            elevatorSetPoint = L1_EXTENSION_METERS.get();
+        } else if (operatorController.b().getAsBoolean()){
+            elevatorSetPoint = L2_EXTENSION_METERS.get();
+        } else if (operatorController.x().getAsBoolean()){
+            elevatorSetPoint = L3_EXTENSION_METERS.get();
+        } else if (operatorController.y().getAsBoolean()){
+            elevatorSetPoint = L4_EXTENSION_METERS.get();
+        }
+    }
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+
         configureSubsystems();
         updateManager = new UpdateManager(swerve,
                 display);
@@ -91,6 +108,7 @@ public class RobotContainer {
         configureOperatorBindings(operatorController);
         configureTesterBindings(testerController);
         configureStreamDeckBindings(streamDeckController);
+        setpoint();
     }
 
     /**
@@ -108,10 +126,12 @@ public class RobotContainer {
                 elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
                 endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
                 intakeSubsystem = new IntakeSubsystem(new IntakePivotIOReal(),new IntakeRollerIOReal());
+                climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
         }else{
                 elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
                 endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
                 intakeSubsystem = new IntakeSubsystem(new IntakePivotIOSim(), new IntakeRollerIOSim());
+                climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
         }
      }
 
@@ -207,15 +227,17 @@ public class RobotContainer {
                                                 new Translation2d(0, 0)),
                                         swerve.getLocalizer().getLatestPose().getRotation()));
                     }
-                    lastResetTime = Timer.getFPGATimestamp();
+                    lastResetTime = Timer
+                    .getFPGATimestamp();
                 }).ignoringDisable(true));
 
-                
+
         driverController.rightBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.rightTrigger().whileTrue(new PutCoralCommand(endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,L3_EXTENSION_METERS.get()));
+        driverController.rightTrigger().whileTrue(new PutCoralCommand(endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, L3_EXTENSION_METERS.get()));
         driverController.leftBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
-        driverController.povDown().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO)));
-        driverController.start().onTrue(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO)));
+        driverController.b().onTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
+        // driverController.povDown().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO)));
+        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
     }
 
     //Configure all commands for operator

@@ -18,4 +18,8 @@ public class ShootCommand extends Command{
         public boolean isFinished() {
             return endEffectorSubsystem.isShootFinished();
         }
+    @Override
+    public void end(boolean interrupted){
+        endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
+    }
 }

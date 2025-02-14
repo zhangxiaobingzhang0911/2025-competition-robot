@@ -19,6 +19,7 @@ public class IntakeSubsystem extends RollerSubsystem{
     private WantedState wantedState = WantedState.HOME;
     private SystemState systemState = SystemState.HOMED;
 
+
     private static double deployAngle = DEPLOY_ANGLE.get();
     private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
     private static double homeAngle = HOME_ANGLE.get();
@@ -47,7 +48,7 @@ public class IntakeSubsystem extends RollerSubsystem{
         Logger.recordOutput("Intake/SystemState",systemState.toString());
 
         RobotContainer.intakeIsDanger = intakeIsDanger();
-
+        Logger.recordOutput(NAME+"/isnear", isNearAngle(FUNNEL_AVOID_ANGLE.get()));
         Logger.recordOutput("Flags/intakeIsDanger",intakeIsDanger());
 
         if(newState!= systemState) {
@@ -76,6 +77,7 @@ public class IntakeSubsystem extends RollerSubsystem{
                 break;
             case GROUNDZEROING:
                 intakeRollerIO.stop();
+                intakePivotIO.setMotorPosition(115);
                 zeroIntakeGround();
                 break;
             case OFF:
@@ -142,7 +144,7 @@ public class IntakeSubsystem extends RollerSubsystem{
     }
 
     public boolean isNearAngle(double targetAngle) {
-        return MathUtil.isNear(targetAngle, intakePivotIOInputs.currentPositionDeg, 0.5);
+        return MathUtil.isNear(targetAngle, intakePivotIOInputs.currentPositionDeg, 5);
     }
 
     public boolean intakeIsDanger() {return intakePivotIOInputs.currentPositionDeg < 90;}

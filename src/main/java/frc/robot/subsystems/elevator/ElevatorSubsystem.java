@@ -63,6 +63,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             //TODO verify utility, may delete
             case IDLING:
                 io.setElevatorDirectVoltage(0);
+                io.setElevatorTarget(IDLE_EXTENSION_METERS.get());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown systemState: " + systemState);

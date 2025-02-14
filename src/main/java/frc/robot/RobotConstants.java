@@ -323,7 +323,7 @@ public final class RobotConstants {
     /**
      * Constants related to the robot's intake subsystem.
      */
-    public static class intakeConstants {
+    public static class IntakeConstants {
         public static final int INTAKE_MOTOR_ID = 15;
         public static final int INTAKE_PIVOT_MOTOR_ID = 16;
         //Constants for intake roller
@@ -334,6 +334,7 @@ public final class RobotConstants {
         public static final double REDUCTION = 1;
         public static final double moi = 0;//inertia for simulation
         public static final double ROLLER_RATIO = 1;
+        public static final double INTAKE_DANGER_ZONE = 85.12719277223927;
         //Motion constants for intake pivot
         public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 100);
         public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 200);
@@ -392,7 +393,7 @@ public final class RobotConstants {
 
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
-        public static final double DEADZONE_DISTANCE = 0.0;
+        public static final double ELEVATOR_DANGER_ZONE = 0.4180619200456253;
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                 200);

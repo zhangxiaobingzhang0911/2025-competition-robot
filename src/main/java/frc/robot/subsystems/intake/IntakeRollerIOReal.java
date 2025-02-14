@@ -3,7 +3,7 @@ package frc.robot.subsystems.intake;
 import frc.robot.subsystems.roller.RollerIOReal;
 
 import static frc.robot.RobotConstants.CANIVORE_CAN_BUS_NAME;
-import static frc.robot.RobotConstants.intakeConstants.*;
+import static frc.robot.RobotConstants.IntakeConstants.*;
 
 public class IntakeRollerIOReal extends RollerIOReal implements IntakeRollerIO {
     private static final int id = INTAKE_MOTOR_ID;

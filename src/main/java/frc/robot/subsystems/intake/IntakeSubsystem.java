@@ -7,7 +7,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.RobotConstants.intakeConstants.*;
+import static frc.robot.RobotConstants.IntakeConstants.*;
 
 public class IntakeSubsystem extends RollerSubsystem {
     public static final String NAME = "Intake/Roller";
@@ -124,7 +124,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     }
 
     public boolean intakeIsDanger() {
-        return intakePivotIOInputs.currentPositionDeg < 90;
+        return intakePivotIOInputs.currentPositionDeg < INTAKE_DANGER_ZONE;
     }
 
     public enum WantedState {

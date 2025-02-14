@@ -15,10 +15,10 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
 import frc.robot.RobotConstants;
 
-import static frc.robot.RobotConstants.intakeConstants.*;
+import static frc.robot.RobotConstants.IntakeConstants.*;
 
 public class IntakePivotIOReal implements IntakePivotIO {
-    private final TalonFX motor = new TalonFX(RobotConstants.intakeConstants.INTAKE_PIVOT_MOTOR_ID,
+    private final TalonFX motor = new TalonFX(RobotConstants.IntakeConstants.INTAKE_PIVOT_MOTOR_ID,
             RobotConstants.CANIVORE_CAN_BUS_NAME);
 
     private final StatusSignal<AngularVelocity> velocityRotPerSec = motor.getVelocity();

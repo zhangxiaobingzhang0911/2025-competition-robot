@@ -52,7 +52,7 @@ import static frc.robot.RobotConstants.ElevatorConstants.*;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    //important flags for state logic
+    // flag states
     public static boolean elevatorIsDanger;
     public static boolean intakeIsDanger;
     public static boolean preShootIsDanger;

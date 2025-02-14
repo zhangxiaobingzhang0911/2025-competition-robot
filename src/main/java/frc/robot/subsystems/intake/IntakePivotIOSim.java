@@ -1,8 +1,5 @@
 package frc.robot.subsystems.intake;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -11,10 +8,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.RobotConstants;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 public class IntakePivotIOSim implements IntakePivotIO {
     private final SingleJointedArmSim intakePivotSim = new SingleJointedArmSim(
             DCMotor.getKrakenX60Foc(1),
-            RobotConstants.intakeConstants.PIVOT_RATIO,
+            RobotConstants.IntakeConstants.PIVOT_RATIO,
             0.07,
             0.4,
             Math.toRadians(0),

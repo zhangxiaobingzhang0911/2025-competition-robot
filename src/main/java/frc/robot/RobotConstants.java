@@ -360,7 +360,7 @@ public final class RobotConstants {
 
     public static class ClimberConstants {
         public static final int CLIMBER_MOTOR_ID = 52;
-        public static final double CLIMBER_RATIO = 60;
+        public static final double CLIMBER_RATIO = 5 * 5 * 4;
 
         public static final TunableNumber CLIMBER_CRUISE_VELOCITY = new TunableNumber("CLIMBER/ClimberCruiseVelocity", 60);
         public static final TunableNumber CLIMBER_ACCELERATION = new TunableNumber("CLIMBER/ClimberAcceleration", 200);

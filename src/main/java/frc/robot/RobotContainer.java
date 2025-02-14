@@ -7,13 +7,16 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.basics.AutoActions;
+import frc.robot.commands.ClimberCoastCommand;
 import frc.robot.commands.FunnelIntakeCommand;
 import frc.robot.commands.GroundIntakeCommand;
 import frc.robot.commands.PutCoralCommand;
@@ -22,6 +25,9 @@ import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.beambreak.BeambreakIOSim;
+import frc.robot.subsystems.climber.ClimberIOReal;
+import frc.robot.subsystems.climber.ClimberIOSim;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -68,6 +74,7 @@ public class RobotContainer {
     private final ElevatorSubsystem elevatorSubsystem;
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
+    private final ClimberSubsystem climberSubsystem;
     private double lastResetTime = 0.0;
 
     public RobotContainer() {
@@ -75,14 +82,18 @@ public class RobotContainer {
             elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
             endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOReal(), new IntakeRollerIOReal());
+            climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
         } else {
             elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
             endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOSim(), new IntakeRollerIOSim());
+            climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
         }
         updateManager = new UpdateManager(swerve,
                 display);
         updateManager.registerAll();
+
+        new Trigger(RobotController::getUserButton).onTrue(new ClimberCoastCommand(climberSubsystem).until(() -> !RobotController.getUserButton()));
 
         configureDriverBindings();
         configureOperatorBindings();

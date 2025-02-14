@@ -1,21 +1,21 @@
 package frc.robot.subsystems.climber;
 
-import frc.robot.utils.TunableNumber;
-import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.TunableNumber;
+import org.littletonrobotics.junction.Logger;
 
-public class ClimberSubsystem extends SubsystemBase{
-    private ClimberIO io;
-    private ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
+public class ClimberSubsystem extends SubsystemBase {
+    private final ClimberIO io;
+    private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
 
     private WantedState wantedState = WantedState.DEPLOY;
     private SystemState systemState = SystemState.DEPLOYING;
 
-    private TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 0);
-    private TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -450);
+    private final TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 0);
+    private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -450);
 
-    public ClimberSubsystem(ClimberIOReal io){
+    public ClimberSubsystem(ClimberIO io) {
         this.io = io;
     }
 
@@ -34,8 +34,7 @@ public class ClimberSubsystem extends SubsystemBase{
         if (DriverStation.isDisabled()) {
             systemState = SystemState.DEPLOYING;
             io.resetPosition();
-        }
-        else{
+        } else {
             setBrake();
         }
 
@@ -49,22 +48,15 @@ public class ClimberSubsystem extends SubsystemBase{
         }
     }
 
-    private SystemState handleStateTransition(){
-        return switch(wantedState){
+    private SystemState handleStateTransition() {
+        return switch (wantedState) {
             case DEPLOY -> SystemState.DEPLOYING;
             case CLIMB -> SystemState.CLIMBING;
         };
     }
 
-    public void setWantedState(WantedState wantedState) {this.wantedState = wantedState;}
-
-    public enum WantedState{
-        DEPLOY,
-        CLIMB
-    }
-    public enum SystemState{
-        DEPLOYING,
-        CLIMBING
+    public void setWantedState(WantedState wantedState) {
+        this.wantedState = wantedState;
     }
 
     public void resetPosition() {
@@ -77,6 +69,16 @@ public class ClimberSubsystem extends SubsystemBase{
 
     public void setBrake() {
         io.setBrake();
+    }
+
+    public enum WantedState {
+        DEPLOY,
+        CLIMB
+    }
+
+    public enum SystemState {
+        DEPLOYING,
+        CLIMBING
     }
 
 

@@ -20,6 +20,7 @@ import frc.robot.commands.ClimberCoastCommand;
 import frc.robot.commands.FunnelIntakeCommand;
 import frc.robot.commands.GroundIntakeCommand;
 import frc.robot.commands.PutCoralCommand;
+import frc.robot.commands.ZeroCommand;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
@@ -137,8 +138,8 @@ public class RobotContainer {
         driverController.rightBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.rightTrigger().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, L3_EXTENSION_METERS.get()));
         driverController.leftBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
-        driverController.povDown().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO)));
-        driverController.start().onTrue(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO)));
+        // driverController.povDown().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO)));
+        driverController.start().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem,climberSubsystem));
     }
 
     private void configureOperatorBindings() {

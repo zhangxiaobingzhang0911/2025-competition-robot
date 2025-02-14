@@ -1,10 +1,7 @@
 package frc.robot.subsystems.roller;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
-
-import java.util.function.DoubleSupplier;
 
 public class RollerSubsystem extends SubsystemBase {
     protected final RollerIO io;
@@ -21,22 +18,5 @@ public class RollerSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs(name, inputs);
-    }
-
-    // FIXME: put to command factory
-    public Command setVelocity(DoubleSupplier velocity) {
-        return this.run(() -> io.setVelocity(velocity.getAsDouble()));
-    }
-
-    public Command setVelocity(double velocity) {
-        return this.setVelocity(() -> velocity);
-    }
-
-    public Command setVoltage(DoubleSupplier voltage) {
-        return this.run(() -> io.setVoltage(voltage.getAsDouble()));
-    }
-
-    public Command setVoltage(double voltage) {
-        return this.setVoltage(() -> voltage);
     }
 }

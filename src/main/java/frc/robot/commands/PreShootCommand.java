@@ -5,7 +5,7 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.L3_EXTENSION_METERS;
 
 public class PreShootCommand extends Command {
     private final EndEffectorSubsystem endEffectorSubsystem;
@@ -29,7 +29,7 @@ public class PreShootCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        elevatorSubsystem.setElevatorPosition(L3_EXTENSION_METERS.get());
     }
 
     @Override

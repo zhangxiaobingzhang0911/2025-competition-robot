@@ -116,7 +116,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         intakePivotIO.setMotorVoltage(0.5);
         if (intakePivotIOInputs.statorCurrentAmps > 10) {
             intakePivotIO.resetPosition(120);
-            // setWantedState(WantedState.FUNNEL_AVOID);
+            setWantedState(WantedState.FUNNEL_AVOID);
         }
     }
 

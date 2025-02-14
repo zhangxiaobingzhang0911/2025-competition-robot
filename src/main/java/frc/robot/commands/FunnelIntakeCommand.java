@@ -34,7 +34,7 @@ public class FunnelIntakeCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.FUNNEL_AVOID);
+        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
     }
 }

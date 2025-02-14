@@ -1,13 +1,16 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
+import frc.robot.RobotContainer;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_DANGER_ZONE;
-import static frc.robot.RobotContainer.elevatorIsDanger;
+import static frc.robot.RobotConstants.ElevatorConstants.*;
+import static frc.robot.RobotContainer.*;
 
 public class ElevatorSubsystem extends SubsystemBase {
     @Getter
@@ -17,7 +20,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double currentFilterValue = 0.0;
     private WantedState wantedState = WantedState.POSITION;
     private SystemState systemState = SystemState.POSITION_GOING;
-    private double targetPosition = 0.5;
+    private double wantedPosition = 0.5;
     private boolean hasReachedNearZero = false;
 
     public ElevatorSubsystem(ElevatorIO io) {
@@ -28,28 +31,31 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Elevator", inputs);
-
-        currentFilterValue = currentFilter.calculate(inputs.statorCurrentAmps);
-        Logger.recordOutput("Elevator/CurrentFilter", currentFilterValue);
-
-        Logger.recordOutput("Elevator/isNear", io.isNearExtension(targetPosition));
+        Logger.recordOutput("ElevatorPosition", io.getElevatorHeight());
+        Logger.recordOutput("Elevator/isNear", io.isNearExtension(wantedPosition));
         Logger.recordOutput("Elevator/isNearZero", io.isNearZeroExtension());
-        Logger.recordOutput("Elevator/setPoint", targetPosition);
-        Logger.recordOutput("Elevator/wantedState", wantedState.toString());
+        Logger.recordOutput("Elevator/setPoint", wantedPosition);
+        Logger.recordOutput("Elevator/WantedState", wantedState.toString());
 
-        elevatorIsDanger = elevatorIsDanger();
-        Logger.recordOutput("Flags/elevatorIsDanger", elevatorIsDanger());
-
+        currentFilterValue = currentFilter.calculate(inputs.statorCurrentAmps[0]);
+        Logger.recordOutput("Elevator/CurrentFilter", currentFilterValue);
+        // process inputs
         SystemState newState = handleStateTransition();
         if (newState != systemState) {
+            // Logger.recordOutput("Elevator/SystemState", newState.toString());
             systemState = newState;
         }
-
         Logger.recordOutput("Elevator/SystemState", systemState.toString());
 
+        elevatorIsDanger = elevatorIsDanger();
+
+        Logger.recordOutput("Flags/elevatorIsDanger", elevatorIsDanger());
+
+
+        // set movements based on state
         switch (systemState) {
             case POSITION_GOING:
-                io.setElevatorTarget(targetPosition);
+                io.setElevatorTarget(wantedPosition);
                 break;
             case ZEROING:
                 zeroElevator();
@@ -57,6 +63,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             //TODO verify utility, may delete
             case IDLING:
                 io.setElevatorVoltage(0);
+                io.setElevatorTarget(IDLE_EXTENSION_METERS.get());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown systemState: " + systemState);
@@ -88,7 +95,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void setElevatorPosition(double position) {
-        targetPosition = position;
+        wantedPosition = position;
         setElevatorState(WantedState.POSITION);
     }
 
@@ -99,19 +106,15 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
         hasReachedNearZero = true;
         if (currentFilterValue <= RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()) {
-            io.setElevatorVoltage(-1);
+            io.setElevatorDirectVoltage(-1);
             wantedState = WantedState.ZERO;
         }
         if (currentFilterValue > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()) {
-            io.setElevatorVoltage(0);
+            io.setElevatorDirectVoltage(0);
             io.resetElevatorPosition();
             wantedState = WantedState.IDLE;
             hasReachedNearZero = false;
         }
-    }
-
-    public boolean elevatorIsDanger() {
-        return inputs.positionMeters < ELEVATOR_DANGER_ZONE;
     }
 
     public enum WantedState {
@@ -120,9 +123,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         IDLE
     }
 
+
     public enum SystemState {
         POSITION_GOING,
         ZEROING,
         IDLING
+    }
+
+    public boolean elevatorIsDanger() {
+        return (inputs.positionMeters < 0.5);
     }
 }

@@ -15,8 +15,12 @@ public class ShootCommand extends Command {
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);
     }
 
+        @Override
+        public boolean isFinished() {
+            return endEffectorSubsystem.isShootFinished();
+        }
     @Override
-    public boolean isFinished() {
-        return endEffectorSubsystem.isShootFinished();
+    public void end(boolean interrupted){
+        endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
     }
 }

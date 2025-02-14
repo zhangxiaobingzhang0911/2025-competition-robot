@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -13,12 +14,12 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotInit() {
+        // logger initialization
         Logger.addDataReceiver(new NT4Publisher());
         // Logger.addDataReceiver(new WPILOGWriter());
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.start();
         robotContainer = new RobotContainer();
-        DriverStation.silenceJoystickConnectionWarning(true);
     }
 
     @Override

@@ -19,7 +19,7 @@ import static frc.robot.RobotConstants.intakeConstants.*;
 
 public class IntakePivotIOReal implements IntakePivotIO {
     private final TalonFX motor = new TalonFX(RobotConstants.intakeConstants.INTAKE_PIVOT_MOTOR_ID,
-            RobotConstants.CAN_BUS_NAME);
+            RobotConstants.CANIVORE_CAN_BUS_NAME);
 
     private final StatusSignal<AngularVelocity> velocityRotPerSec = motor.getVelocity();
     private final StatusSignal<Voltage> appliedVolts = motor.getSupplyVoltage();

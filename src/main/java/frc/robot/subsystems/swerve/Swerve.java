@@ -87,15 +87,15 @@ public class Swerve implements Updatable, Subsystem {
         if (RobotBase.isReal()) {
             swerveMods = new SwerveModuleBase[]{
                     new CTRESwerveModule(0, RobotConstants.SwerveConstants.FrontLeft,
-                            RobotConstants.CAN_BUS_NAME),
+                            RobotConstants.CANIVORE_CAN_BUS_NAME),
                     new CTRESwerveModule(1, RobotConstants.SwerveConstants.FrontRight,
-                            RobotConstants.CAN_BUS_NAME),
+                            RobotConstants.CANIVORE_CAN_BUS_NAME),
                     new CTRESwerveModule(2, RobotConstants.SwerveConstants.BackLeft,
-                            RobotConstants.CAN_BUS_NAME),
+                            RobotConstants.CANIVORE_CAN_BUS_NAME),
                     new CTRESwerveModule(3, RobotConstants.SwerveConstants.BackRight,
-                            RobotConstants.CAN_BUS_NAME),
+                            RobotConstants.CANIVORE_CAN_BUS_NAME),
             };
-            gyro = new Pigeon2Gyro(RobotConstants.SwerveConstants.PIGEON_ID, RobotConstants.CAN_BUS_NAME);
+            gyro = new Pigeon2Gyro(RobotConstants.SwerveConstants.PIGEON_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
         } else {
             swerveMods = new SwerveModuleBase[]{
                     new SimSwerveModuleDummy(0, RobotConstants.SwerveConstants.FrontLeft),

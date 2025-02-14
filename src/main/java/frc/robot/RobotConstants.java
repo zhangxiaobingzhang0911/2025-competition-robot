@@ -347,7 +347,7 @@ public final class RobotConstants {
                 public static final TunableNumber INTAKE_PIVOT_JERK = new TunableNumber("INTAKE_PIVOT/jerk", 1200);
                 public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 113);
                 public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 5);
-                public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 50);
+                public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 117);
                 //Motion constants for intake roller
                 public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 8.0);
                 /**
@@ -359,6 +359,32 @@ public final class RobotConstants {
                         public static final TunableNumber INTAKE_PIVOT_KI = new TunableNumber("INTAKE_PIVOT PID/ki", 0);
                         public static final TunableNumber INTAKE_PIVOT_KD = new TunableNumber("INTAKE_PIVOT PID/kd",
                                         0.25);
+                }
+        }
+
+        
+        public static class ClimberConstants {
+                public static final int CLIMBER_MOTOR_ID = 52;
+                public static final double CLIMBER_RATIO = 60;
+
+                public static final TunableNumber CLIMBER_CRUISE_VELOCITY = new TunableNumber("CLIMBER/ClimberCruiseVelocity", 60);
+                public static final TunableNumber CLIMBER_ACCELERATION = new TunableNumber("CLIMBER/ClimberAcceleration", 200);
+                public static final TunableNumber CLIMBER_JERK = new TunableNumber("CLIMBER/ClimberJerk", 0);
+
+                /**
+                 * Constants for the CLIMBER pivot motor gains in the CLIMBER subsystem.
+                 */
+                public static class ClimberGainsClass {
+                        public static final TunableNumber CLIMBER_KP = new TunableNumber("CLIMBER PID/kp",
+                                        2.001);
+                        public static final TunableNumber CLIMBER_KI = new TunableNumber("CLIMBER PID/ki", 0);
+                        public static final TunableNumber CLIMBER_KD = new TunableNumber("CLIMBER PID/kd",
+                                        0.01);
+                        public static final TunableNumber CLIMBER_KA = new TunableNumber("CLIMBER PID/ka", 0);
+                        public static final TunableNumber CLIMBER_KV = new TunableNumber("CLIMBER PID/kv",
+                                        0);
+                        public static final TunableNumber CLIMBER_KS = new TunableNumber("CLIMBER PID/ks",
+                                        0);
                 }
         }
 
@@ -374,9 +400,9 @@ public final class RobotConstants {
                 public static final double DEADZONE_DISTANCE = 0.0;
 
                 public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
-                                200);
+                                64);
                 public static final TunableNumber motionCruiseVelocity = new TunableNumber(
-                                "Elevator/MotionCruiseVelocity", 100);
+                                "Elevator/MotionCruiseVelocity", 32);
                 public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk",
                                 0.0);
                 public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",

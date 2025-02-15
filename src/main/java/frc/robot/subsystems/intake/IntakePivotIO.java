@@ -2,7 +2,7 @@ package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import static frc.robot.RobotConstants.IntakeConstants.intakePivotGainsClass.*;
+import static frc.robot.RobotConstants.IntakeConstants.IntakePivotGainsClass.*;
 
 public interface IntakePivotIO {
     default void updateInputs(IntakePivotIOInputs inputs) {

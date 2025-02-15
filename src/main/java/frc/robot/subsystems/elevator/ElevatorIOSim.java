@@ -10,6 +10,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
+import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.ElevatorGainsClass;
 
 import static edu.wpi.first.units.Units.Volts;
@@ -18,18 +19,6 @@ import static frc.robot.RobotConstants.ElevatorConstants.MAX_EXTENSION_METERS;
 
 public class ElevatorIOSim implements ElevatorIO {
     public static final double carriaeMass = Units.lbsToKilograms(7.0 + (3.25 / 2));
-    private static final double LOOP_PERIOD_SECS = 0.02;
-    //    public final ElevatorSim elevatorTalonSim =
-//    new ElevatorSim(
-//            DCMotor.getKrakenX60Foc(2),
-//            6.75,
-//            // Add half of first stage mass bc its on a 2:1 ratio compared to carriage
-//            Units.lbsToKilograms(7.0 + (3.25 / 2)),
-//            ELEVATOR_SPOOL_DIAMETER/2,
-//            0.0,
-//            MAX_EXTENSION_METERS.get(),
-//            true,
-//            0.0);
     private static final DCMotor elevatorTalonsim = DCMotor.getKrakenX60Foc(2).withReduction(6.75);
     public static final Matrix<N2, N2> A =
             MatBuilder.fill(
@@ -43,34 +32,30 @@ public class ElevatorIOSim implements ElevatorIO {
                             * Math.pow(ELEVATOR_SPOOL_DIAMETER, 2)
                             * (carriaeMass)
                             * elevatorTalonsim.KvRadPerSecPerVolt));
-    //    private final ElevatorFeedforward ff =
-//        new ElevatorFeedforward(
-//            ElevatorGainsClass.ELEVATOR_KS.get(),
-//            ElevatorGainsClass.ELEVATOR_KG.get(),
-//            ElevatorGainsClass.ELEVATOR_KV.get(),
-//            (DCMotor.getKrakenX60Foc(1).KvRadPerSecPerVolt * ELEVATOR_SPOOL_DIAMETER/2)
-//            / ELEVATOR_GEAR_RATIO);
+
     public static final Vector<N2> B =
             VecBuilder.fill(
                     0.0, elevatorTalonsim.KtNMPerAmp / (ELEVATOR_SPOOL_DIAMETER * carriaeMass));
-    //private Measure<VoltageUnit> followerAppliedVoltage = Volts.zero();
     private final ProfiledPIDController controller =
-            new ProfiledPIDController(ElevatorGainsClass.ELEVATOR_KP.get(), ElevatorGainsClass.ELEVATOR_KI.get(), ElevatorGainsClass.ELEVATOR_KD.get(),
+            new ProfiledPIDController(
+                    ElevatorGainsClass.ELEVATOR_KP.get(),
+                    ElevatorGainsClass.ELEVATOR_KI.get(),
+                    ElevatorGainsClass.ELEVATOR_KD.get(),
                     new Constraints(5.0, 10.0));
     private double feedforward = 0.0;
     private Measure<VoltageUnit> appliedVolts = Volts.zero();
-    // State given by elevator carriage position and velocity
-    // Input given by torque current to motor
+    private double targetPositionMeters = 0.0;
     private Vector<N2> simState;
     private double inputTorqueCurrent = 0.0;
 
     public ElevatorIOSim() {
+        //initial position
         simState = VecBuilder.fill(0.0, 0.0);
     }
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
-        for (int i = 0; i < LOOP_PERIOD_SECS / (1.0 / 1000.0); i++) {
+        for (int i = 0; i < RobotConstants.LOOPER_DT / (1.0 / 1000.0); i++) {
             setInputTorqueCurrent(
                     controller.calculate(simState.get(0) / ELEVATOR_SPOOL_DIAMETER) + feedforward);
             update(1.0 / 1000.0);
@@ -113,7 +98,8 @@ public class ElevatorIOSim implements ElevatorIO {
         inputTorqueCurrent = torqueCurrent;
         appliedVolts =
                 Volts.of(elevatorTalonsim.getVoltage(
-                        elevatorTalonsim.getTorque(inputTorqueCurrent), simState.get(1, 0) / ELEVATOR_SPOOL_DIAMETER));
+                        elevatorTalonsim.getTorque(inputTorqueCurrent),
+                        simState.get(1, 0) / ELEVATOR_SPOOL_DIAMETER));
         appliedVolts = Volts.of(MathUtil.clamp(appliedVolts.magnitude(), -12.0, 12.0));
     }
 
@@ -135,7 +121,7 @@ public class ElevatorIOSim implements ElevatorIO {
     @Override
     public void setElevatorTarget(double meters) {
         controller.setGoal(heightToTalonPos(meters));
-        this.feedforward = feedforward;
+
     }
 
 

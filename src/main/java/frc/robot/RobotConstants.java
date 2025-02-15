@@ -350,7 +350,7 @@ public final class RobotConstants {
         /**
          * Constants for the intake pivot motor gains in the intake subsystem.
          */
-        public static class intakePivotGainsClass {
+        public static class IntakePivotGainsClass {
             public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp",
                     40);
             public static final TunableNumber INTAKE_PIVOT_KI = new TunableNumber("INTAKE_PIVOT PID/ki", 0);

@@ -45,9 +45,9 @@ public class IntakePivotIOReal implements IntakePivotIO {
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
         motor.getConfigurator().apply(new Slot0Configs()
-                .withKP(intakePivotGainsClass.INTAKE_PIVOT_KP.get())
-                .withKI(intakePivotGainsClass.INTAKE_PIVOT_KI.get())
-                .withKD(intakePivotGainsClass.INTAKE_PIVOT_KD.get()));
+                .withKP(IntakePivotGainsClass.INTAKE_PIVOT_KP.get())
+                .withKI(IntakePivotGainsClass.INTAKE_PIVOT_KI.get())
+                .withKD(IntakePivotGainsClass.INTAKE_PIVOT_KD.get()));
 
         motionMagicConfigs = new MotionMagicConfigs();
         motionMagicConfigs.MotionMagicCruiseVelocity = INTAKE_PIVOT_CRUISE_VELOCITY.get();
@@ -91,9 +91,9 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.targetPositionDeg = targetPositionDeg;
 
         if (RobotConstants.TUNING) {
-            inputs.intakePivotKP = intakePivotGainsClass.INTAKE_PIVOT_KP.get();
-            inputs.intakePivotKI = intakePivotGainsClass.INTAKE_PIVOT_KI.get();
-            inputs.intakePivotKD = intakePivotGainsClass.INTAKE_PIVOT_KD.get();
+            inputs.intakePivotKP = IntakePivotGainsClass.INTAKE_PIVOT_KP.get();
+            inputs.intakePivotKI = IntakePivotGainsClass.INTAKE_PIVOT_KI.get();
+            inputs.intakePivotKD = IntakePivotGainsClass.INTAKE_PIVOT_KD.get();
 
             motor.getConfigurator().apply(new Slot0Configs()
                     .withKP(inputs.intakePivotKP)

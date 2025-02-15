@@ -21,7 +21,6 @@ public class GroundIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
         elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
     }

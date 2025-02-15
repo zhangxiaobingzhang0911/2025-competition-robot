@@ -347,6 +347,8 @@ public final class RobotConstants {
         //Constants for intake pivot
         public static double PIVOT_RATIO = 36 * 50 / 11;
 
+        public static final double COLLISION_AVOID_ANGLE = INTAKE_DANGER_ZONE + 2;
+
         /**
          * Constants for the intake pivot motor gains in the intake subsystem.
          */
@@ -419,6 +421,7 @@ public final class RobotConstants {
                 0.5);
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 20);
+        public static final double ELEVATOR_MIN_SAFE_HEIGHT = 0.5;
 
     }
 

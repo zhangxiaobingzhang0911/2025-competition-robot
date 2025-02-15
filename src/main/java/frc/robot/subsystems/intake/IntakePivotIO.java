@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import frc.robot.RobotConstants;
 import org.littletonrobotics.junction.AutoLog;
 
 import static frc.robot.RobotConstants.IntakeConstants.IntakePivotGainsClass.*;

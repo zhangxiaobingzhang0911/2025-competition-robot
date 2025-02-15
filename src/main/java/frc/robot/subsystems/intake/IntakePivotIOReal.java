@@ -28,6 +28,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
     private final StatusSignal<Temperature> tempCelsius = motor.getDeviceTemp();
     private final StatusSignal<Angle> currentPositionRot = motor.getPosition();
 
+
     private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(true);
     private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0.0).withEnableFOC(true);
     private final MotionMagicConfigs motionMagicConfigs;

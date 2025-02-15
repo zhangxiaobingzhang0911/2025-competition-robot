@@ -3,9 +3,12 @@ package frc.robot.subsystems.elevator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
+import frc.robot.RobotContainer;
 import lombok.Getter;
+import lombok.Setter;
 import org.littletonrobotics.junction.Logger;
 
+import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT;
 import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 import static frc.robot.RobotContainer.elevatorIsDanger;
 
@@ -52,7 +55,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         // set movements based on state
         switch (systemState) {
             case POSITION_GOING:
-                io.setElevatorTarget(wantedPosition);
+                if (wantedPosition < RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT && RobotContainer.intakeIsDanger) {
+                    io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT);
+                } else {
+                    io.setElevatorTarget(wantedPosition);
+                }
                 break;
             case ZEROING:
                 zeroElevator();
@@ -98,7 +105,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void zeroElevator() {
         if (!io.isNearZeroExtension() && !hasReachedNearZero) {
-            io.setElevatorTarget(0.05);
+            if (wantedPosition < RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT && RobotContainer.intakeIsDanger) {
+                io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT);
+            } else {
+                io.setElevatorTarget(0.05);
+            }
             return;
         }
         hasReachedNearZero = true;
@@ -115,7 +126,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean elevatorIsDanger() {
-        return (inputs.positionMeters < 0.5);
+        return (inputs.positionMeters < ELEVATOR_MIN_SAFE_HEIGHT - 0.03);
     }
 
 

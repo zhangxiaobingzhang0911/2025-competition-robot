@@ -74,6 +74,9 @@ public class IntakeSubsystem extends RollerSubsystem {
                 intakeRollerIO.stop();
                 zeroIntakeGround();
                 break;
+            case COLLISION_AVOIDING:
+                intakePivotIO.setMotorPosition(COLLISION_AVOID_ANGLE);
+                break;
             case OFF:
         }
 
@@ -90,8 +93,20 @@ public class IntakeSubsystem extends RollerSubsystem {
             case DEPLOY_INTAKE -> SystemState.DEPLOY_INTAKING;
             case TREMBLE_INTAKE -> SystemState.TREMBLE_INTAKING;
             case OUTTAKE -> SystemState.OUTTAKING;
-            case FUNNEL_AVOID -> SystemState.FUNNEL_AVOIDING;
-            case HOME -> SystemState.HOMED;
+            case FUNNEL_AVOID -> {
+                if (RobotContainer.elevatorIsDanger) {
+                    yield SystemState.COLLISION_AVOIDING;
+                } else {
+                    yield SystemState.FUNNEL_AVOIDING;
+                }
+            }
+            case HOME -> {
+                if (RobotContainer.elevatorIsDanger) {
+                    yield SystemState.COLLISION_AVOIDING;
+                } else {
+                    yield SystemState.HOMED;
+                }
+            }
             case GROUNDZERO -> SystemState.GROUNDZEROING;
             case OFF -> SystemState.OFF;
         };
@@ -125,7 +140,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     }
 
     public boolean intakeIsDanger() {
-        return intakePivotIOInputs.currentPositionDeg < 90;
+        return intakePivotIOInputs.currentPositionDeg < COLLISION_AVOID_ANGLE;
     }
 
     public enum WantedState {
@@ -143,6 +158,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         TREMBLE_INTAKING,
         OUTTAKING,
         FUNNEL_AVOIDING,
+        COLLISION_AVOIDING,
         HOMED,
         GROUNDZEROING,
         OFF

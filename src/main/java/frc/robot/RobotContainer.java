@@ -16,12 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.ClimbCommand;
-import frc.robot.commands.ClimberCoastCommand;
-import frc.robot.commands.FunnelIntakeCommand;
-import frc.robot.commands.GroundIntakeCommand;
-import frc.robot.commands.PutCoralCommand;
-import frc.robot.commands.ZeroCommand;
+import frc.robot.commands.*;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
@@ -78,6 +73,8 @@ public class RobotContainer {
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
     private double lastResetTime = 0.0;
+
+    private double elevatorTargetPosition = L3_EXTENSION_METERS.get(); // Used for storing an elevator target position to be used with commands like PutCoralCommand
 
 
 
@@ -139,9 +136,10 @@ public class RobotContainer {
                 }).ignoringDisable(true));
 
 
-        driverController.a().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.b().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, L3_EXTENSION_METERS.get()));
+        driverController.a().whileTrue(new GroundIntakeCommandGroup(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+        driverController.b().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, elevatorTargetPosition));
         driverController.x().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
+        driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem, climberSubsystem));
 //        // driverController.povDown().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO)));
 //        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem,climberSubsystem));
 //        driverController.povUp().onTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
@@ -152,7 +150,11 @@ public class RobotContainer {
     }
 
     private void configureOperatorBindings() {
-
+        operatorController.a().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L1_EXTENSION_METERS.get()));
+        operatorController.b().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L2_EXTENSION_METERS.get()));
+        operatorController.x().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L3_EXTENSION_METERS.get()));
+        operatorController.y().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L4_EXTENSION_METERS.get()));
+//        operatorController.y().onTrue(Commands.runOnce());
     }
 
     private void configureTesterBindings() {

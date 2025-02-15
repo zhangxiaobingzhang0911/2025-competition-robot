@@ -52,7 +52,7 @@ public class RobotContainer {
     // flag states
     public static boolean elevatorIsDanger;
     public static boolean intakeIsDanger;
-    public static boolean preShootIsDanger;
+    public static boolean intakeIsAvoiding;
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);
     private final CommandXboxController operatorController = new CommandXboxController(1);
@@ -136,7 +136,7 @@ public class RobotContainer {
                 }).ignoringDisable(true));
 
 
-        driverController.a().whileTrue(new GroundIntakeCommandGroup(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+        driverController.a().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.b().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, elevatorTargetPosition));
         driverController.x().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
         driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem, climberSubsystem));

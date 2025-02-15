@@ -72,7 +72,8 @@ public class ElevatorIOReal implements ElevatorIO {
         slot0Configs.kI = ElevatorGainsClass.ELEVATOR_KI.get();
         slot0Configs.kD = ElevatorGainsClass.ELEVATOR_KD.get();
 
-        resetElevatorPosition();
+        //Since elevator don't start at zero, not needed
+        //resetElevatorPosition();
 
         leaderConfigurator.apply(currentLimitsConfigs);
         leaderConfigurator.apply(leaderMotorConfigs);

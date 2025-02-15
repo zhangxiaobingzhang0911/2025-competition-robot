@@ -20,7 +20,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double currentFilterValue = 0.0;
     private WantedState wantedState = WantedState.POSITION;
     private SystemState systemState = SystemState.POSITION_GOING;
-    private double wantedPosition = 0.5;
+    private double wantedPosition = IDLE_EXTENSION_METERS.get();
     private boolean hasReachedNearZero = false;
 
     public ElevatorSubsystem(ElevatorIO io) {
@@ -55,7 +55,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         // set movements based on state
         switch (systemState) {
             case POSITION_GOING:
-                if (wantedPosition < RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT && RobotContainer.intakeIsDanger) {
+                //worked, but need clean up
+                if (wantedPosition < ELEVATOR_MIN_SAFE_HEIGHT && RobotContainer.intakeIsAvoiding && RobotContainer.intakeIsDanger) {
+                    io.setElevatorTarget(Math.max(wantedPosition,0.4));
+                } else if (wantedPosition < RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT && RobotContainer.intakeIsDanger){
                     io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT);
                 } else {
                     io.setElevatorTarget(wantedPosition);
@@ -105,7 +108,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void zeroElevator() {
         if (!io.isNearZeroExtension() && !hasReachedNearZero) {
-            if (wantedPosition < RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT && RobotContainer.intakeIsDanger) {
+            if (RobotContainer.intakeIsDanger) {
                 io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT);
             } else {
                 io.setElevatorTarget(0.05);
@@ -126,7 +129,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean elevatorIsDanger() {
-        return (inputs.positionMeters < ELEVATOR_MIN_SAFE_HEIGHT - 0.03);
+        return (inputs.positionMeters < ELEVATOR_MIN_SAFE_HEIGHT - 0.01);
     }
 
 

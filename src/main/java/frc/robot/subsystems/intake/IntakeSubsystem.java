@@ -43,6 +43,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         Logger.recordOutput("Intake/SystemState", systemState.toString());
 
         RobotContainer.intakeIsDanger = intakeIsDanger();
+        RobotContainer.intakeIsAvoiding = intakeIsAvoiding();
         Logger.recordOutput(NAME + "/isnear", isNearAngle(FUNNEL_AVOID_ANGLE.get()));
         Logger.recordOutput("Flags/intakeIsDanger", intakeIsDanger());
 
@@ -51,6 +52,9 @@ public class IntakeSubsystem extends RollerSubsystem {
         }
 
         switch (systemState) {
+            case DEPLOY_WITHOUT_ROLLING:
+                intakePivotIO.setMotorPosition(deployAngle);
+                break;
             case DEPLOY_INTAKING:
                 intakeRollerIO.setVoltage(intakeVoltage);
                 intakePivotIO.setMotorPosition(deployAngle);
@@ -90,16 +94,11 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     private SystemState handleStateTransition() {
         return switch (wantedState) {
+            case DEPLOY_WITHOUT_ROLL -> SystemState.DEPLOY_WITHOUT_ROLLING;
             case DEPLOY_INTAKE -> SystemState.DEPLOY_INTAKING;
             case TREMBLE_INTAKE -> SystemState.TREMBLE_INTAKING;
             case OUTTAKE -> SystemState.OUTTAKING;
-            case FUNNEL_AVOID -> {
-                if (RobotContainer.elevatorIsDanger) {
-                    yield SystemState.COLLISION_AVOIDING;
-                } else {
-                    yield SystemState.FUNNEL_AVOIDING;
-                }
-            }
+            case FUNNEL_AVOID -> SystemState.FUNNEL_AVOIDING;
             case HOME -> {
                 if (RobotContainer.elevatorIsDanger) {
                     yield SystemState.COLLISION_AVOIDING;
@@ -128,22 +127,27 @@ public class IntakeSubsystem extends RollerSubsystem {
     }
 
     public void zeroIntakeGround() {
-        intakePivotIO.setMotorVoltage(0.5);
+        intakePivotIO.setMotorVoltage(3);
         if (intakePivotIOInputs.statorCurrentAmps > 10) {
             intakePivotIO.resetPosition(120);
-            setWantedState(WantedState.FUNNEL_AVOID);
+            setWantedState(WantedState.HOME);
         }
     }
 
     public boolean isNearAngle(double targetAngle) {
-        return MathUtil.isNear(targetAngle, intakePivotIOInputs.currentPositionDeg, 3);
+        return MathUtil.isNear(targetAngle, intakePivotIOInputs.currentPositionDeg, 1);
     }
 
     public boolean intakeIsDanger() {
-        return intakePivotIOInputs.currentPositionDeg < COLLISION_AVOID_ANGLE;
+        return intakePivotIOInputs.currentPositionDeg < INTAKE_DANGER_ZONE;
+    }
+
+    private boolean intakeIsAvoiding() {
+        return intakePivotIOInputs.currentPositionDeg > 50;
     }
 
     public enum WantedState {
+        DEPLOY_WITHOUT_ROLL,
         DEPLOY_INTAKE,
         TREMBLE_INTAKE,
         OUTTAKE,
@@ -154,6 +158,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     }
 
     public enum SystemState {
+        DEPLOY_WITHOUT_ROLLING,
         DEPLOY_INTAKING,
         TREMBLE_INTAKING,
         OUTTAKING,

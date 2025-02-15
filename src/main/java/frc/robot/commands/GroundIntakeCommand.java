@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -21,13 +22,21 @@ public class GroundIntakeCommand extends Command {
 
     @Override
     public void execute() {
+        //sometimes don't work, state stuck in "WITHOUT_ROLL", need further testing, currently don't know why, guess can be elevator not at position because of mechanic issue
+        if(intakeSubsystem.isNearAngle(RobotConstants.IntakeConstants.DEPLOY_ANGLE.get())
+                && elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())){
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
+        }
+        else{
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
+        }
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
         elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
     }
 
     @Override
     public void end(boolean interrupted) {
-        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.FUNNEL_AVOID);
+        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
     }
 

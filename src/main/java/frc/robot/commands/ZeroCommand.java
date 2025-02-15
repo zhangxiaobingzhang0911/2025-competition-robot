@@ -16,12 +16,12 @@ public class ZeroCommand extends SequentialCommandGroup {
         addCommands(
                 Commands.parallel(
                         Commands.runOnce(() -> { endEffectorSubsystem.setWantedState(WantedState.IDLE); System.out.println("Finished setting end effector state"); }),
-                        new ClimberInitiateCommand(climberSubsystem),
+                        //new ClimberInitiateCommand(climberSubsystem),
                         Commands.sequence(
                                 Commands.runOnce(() -> { intakeSubsystem.setWantedState(frc.robot.subsystems.intake.IntakeSubsystem.WantedState.GROUNDZERO); System.out.println("Finished setting intaker state"); }),
-                                new WaitUntilCommand(() -> intakeSubsystem.isNearAngle(103)),
-                                Commands.runOnce(() -> { elevatorSubsystem.setElevatorState(frc.robot.subsystems.elevator.ElevatorSubsystem.WantedState.ZERO); System.out.println("Finished setting elevator state"); }),
-                                Commands.runOnce(() -> intakeSubsystem.setWantedState(frc.robot.subsystems.intake.IntakeSubsystem.WantedState.FUNNEL_AVOID))
+                                //new WaitUntilCommand(() -> intakeSubsystem.isNearAngle(103)),
+                                Commands.runOnce(() -> { elevatorSubsystem.setElevatorState(frc.robot.subsystems.elevator.ElevatorSubsystem.WantedState.ZERO); System.out.println("Finished setting elevator state"); })
+                                //Commands.runOnce(() -> intakeSubsystem.setWantedState(frc.robot.subsystems.intake.IntakeSubsystem.WantedState.FUNNEL_AVOID))
                         
                         )
                 )

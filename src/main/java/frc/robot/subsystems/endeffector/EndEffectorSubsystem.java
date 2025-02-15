@@ -52,7 +52,6 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         Logger.recordOutput("EndEffector/SystemState", newState.toString());
         Logger.recordOutput(NAME + "Velocity", inputs.velocityRotPerSec);
 
-        RobotContainer.preShootIsDanger = isPreShootReady();
         Logger.recordOutput("Flags/preShootIsDanger", isPreShootReady());
 
         if (newState != systemState) {

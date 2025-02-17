@@ -2,7 +2,7 @@ package org.frcteam6941.drivers;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.utils.AllianceFlipUtil;
+import org.littletonrobotics.AllianceFlipUtil;
 
 // This class implements a Gyro interface using the Pigeon2 sensor from CTRE Phoenix6
 public class Pigeon2Gyro implements Gyro {

@@ -16,9 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.basics.AutoActions;
-import frc.robot.commands.ElevatorZeroingCommand;
-import frc.robot.commands.ReefAimCommand;
-import frc.robot.commands.RumbleCommand;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
@@ -43,7 +40,6 @@ import org.littletonrobotics.AllianceFlipUtil;
 
 import java.io.IOException;
 
-import static edu.wpi.first.units.Units.Seconds;
 import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 /**
@@ -57,6 +53,7 @@ public class RobotContainer {
     public static boolean elevatorIsDanger;
     public static boolean intakeIsDanger;
     public static boolean intakeIsAvoiding;
+    public static double elevatorTargetPosition = L3_EXTENSION_METERS.get(); // Used for storing an elevator target position to be used with commands like PutCoralCommand
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);
     private final CommandXboxController operatorController = new CommandXboxController(1);
@@ -77,10 +74,6 @@ public class RobotContainer {
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
     private double lastResetTime = 0.0;
-
-    public static double elevatorTargetPosition = L3_EXTENSION_METERS.get(); // Used for storing an elevator target position to be used with commands like PutCoralCommand
-
-
 
 
     public RobotContainer() {
@@ -108,7 +101,7 @@ public class RobotContainer {
     }
 
     //Configure all commands for driver
-    private void configureDriverBindings(CommandXboxController driverController) {
+    private void configureDriverBindings() {
         swerve.setDefaultCommand(Commands.runOnce(() -> swerve.drive(
                 new Translation2d(
                         Math.abs(driverController.getLeftY()) < RobotConstants.SwerveConstants.deadband ?
@@ -177,7 +170,7 @@ public class RobotContainer {
     }
 
     private void configureStreamDeckBindings() {
-        streamDeckController.button(1).onTrue(Commands.runOnce(() -> System.out.println("Stream Deck Controller Test Successful!")));
+        streamDeckController.button(1).onTrue(new ReefAimCommand(7, false, () -> streamDeckController.button(17).getAsBoolean()));
     }
 
     public Command getAutonomousCommand() throws IOException, ParseException {

@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.SwerveConstants;
-import frc.robot.utils.AllianceFlipUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;

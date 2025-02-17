@@ -53,6 +53,9 @@ public class ElevatorIOReal implements ElevatorIO {
         currentLimitsConfigs.StatorCurrentLimit = 80.0;
         currentLimitsConfigs.SupplyCurrentLimit = 30.0;
 
+        leader.setPosition(heightToTalonPos(0.4));
+        follower.setPosition(heightToTalonPos(0.4));
+
         MotorOutputConfigs leaderMotorConfigs = new MotorOutputConfigs();
         leaderMotorConfigs.NeutralMode = NeutralModeValue.Brake;
         leaderMotorConfigs.Inverted = InvertedValue.Clockwise_Positive;
@@ -168,7 +171,7 @@ public class ElevatorIOReal implements ElevatorIO {
 
     @Override
     public boolean isNearExtension(double expected) {
-        return MathUtil.isNear(heightToTalonPos(expected), leader.getPosition().getValueAsDouble(), 0.02);
+        return MathUtil.isNear(expected, talonPosToHeight(leader.getPosition().getValueAsDouble()), 0.02);
     }
 
     private double heightToTalonPos(double heightMeters) {

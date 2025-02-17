@@ -74,7 +74,7 @@ public class RobotContainer {
     private final ClimberSubsystem climberSubsystem;
     private double lastResetTime = 0.0;
 
-    private double elevatorTargetPosition = L3_EXTENSION_METERS.get(); // Used for storing an elevator target position to be used with commands like PutCoralCommand
+    public static double elevatorTargetPosition = L3_EXTENSION_METERS.get(); // Used for storing an elevator target position to be used with commands like PutCoralCommand
 
 
 
@@ -95,7 +95,7 @@ public class RobotContainer {
                 display);
         updateManager.registerAll();
 
-        new Trigger(RobotController::getUserButton).onTrue(new ClimberCoastCommand(climberSubsystem).until(() -> !RobotController.getUserButton()));
+        new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
 
         configureDriverBindings();
         configureOperatorBindings();
@@ -136,27 +136,19 @@ public class RobotContainer {
                 }).ignoringDisable(true));
 
 
-        driverController.a().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.b().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, elevatorTargetPosition));
-        driverController.x().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
+        driverController.leftBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+        driverController.leftTrigger().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem));
+        driverController.rightBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
         driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem, climberSubsystem));
-
-        driverController.rightTrigger().whileTrue(new TrembleIntakeCommandGroup(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-//        // driverController.povDown().onTrue(Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO)));
-//        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem,climberSubsystem));
-//        driverController.povUp().onTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-//        driverController.a().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE))));
-//        driverController.b().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO))));
-//        driverController.x().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.FUNNEL_AVOID))));
-//        driverController.leftTrigger().onTrue((Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME))));
+        driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
     }
 
     private void configureOperatorBindings() {
-        operatorController.a().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L1_EXTENSION_METERS.get()));
+        //Operator's triggers to change target reef heights
+        operatorController.a().onTrue(Commands.runOnce(() -> System.out.println("triggered")));
         operatorController.b().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L2_EXTENSION_METERS.get()));
         operatorController.x().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L3_EXTENSION_METERS.get()));
-        operatorController.y().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L4_EXTENSION_METERS.get()));
-//        operatorController.y().onTrue(Commands.runOnce());
+        operatorController.y().onTrue(Commands.runOnce(() -> System.out.println(elevatorTargetPosition)));
     }
 
     private void configureTesterBindings() {

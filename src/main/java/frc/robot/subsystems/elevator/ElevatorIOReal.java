@@ -38,6 +38,7 @@ public class ElevatorIOReal implements ElevatorIO {
     private final StatusSignal<Current> statorLeft;
     private final StatusSignal<Current> supplyLeft;
     private final StatusSignal<Temperature> tempLeft;
+    private double setpointMeters = 0;
 
     public ElevatorIOReal() {
         this.leader = new TalonFX(LEFT_ELEVATOR_MOTOR_ID, CANIVORE_CAN_BUS_NAME);
@@ -98,6 +99,7 @@ public class ElevatorIOReal implements ElevatorIO {
         tempLeft = leader.getDeviceTemp();
 
         follower.setControl(new Follower(leader.getDeviceID(), true));
+
     }
 
     @Override
@@ -112,6 +114,7 @@ public class ElevatorIOReal implements ElevatorIO {
         );
 
         inputs.positionMeters = getElevatorHeight();
+        inputs.setpointMeters = setpointMeters;
         inputs.velocityMetersPerSec = getElevatorVelocity();
         inputs.appliedVolts = voltageLeft.getValueAsDouble();
         inputs.statorCurrentAmps = statorLeft.getValueAsDouble();
@@ -145,6 +148,7 @@ public class ElevatorIOReal implements ElevatorIO {
 
     @Override
     public void setElevatorTarget(double meters) {
+        setpointMeters = meters;
         leader.setControl(motionRequest.withPosition(heightToTalonPos(meters)));
     }
 

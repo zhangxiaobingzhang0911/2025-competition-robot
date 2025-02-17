@@ -1,6 +1,7 @@
 package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
@@ -116,13 +117,19 @@ public class ElevatorSubsystem extends SubsystemBase {
             return;
         }
         hasReachedNearZero = true;
-        if (currentFilterValue <= RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()) {
-            io.setElevatorVoltage(-1);
-            wantedState = WantedState.ZERO;
-        }
-        if (currentFilterValue > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()) {
-            io.setElevatorVoltage(0);
-            io.resetElevatorPosition();
+        if (RobotBase.isReal()) {
+            if (currentFilterValue <= RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()) {
+                io.setElevatorVoltage(-1);
+                wantedState = WantedState.ZERO;
+            }
+            if (currentFilterValue > RobotConstants.ElevatorConstants.ELEVATOR_ZEROING_CURRENT.get()) {
+                io.setElevatorVoltage(0);
+                io.resetElevatorPosition();
+                wantedState = WantedState.IDLE;
+                hasReachedNearZero = false;
+            }
+        }else{
+            io.setElevatorTarget(0);
             wantedState = WantedState.IDLE;
             hasReachedNearZero = false;
         }

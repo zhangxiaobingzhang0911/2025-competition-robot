@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.FieldConstants;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.AllianceFlipUtil;
 
 import java.util.function.BooleanSupplier;
 
@@ -58,17 +59,19 @@ public class ReefAimCommand extends Command {
 
     @Override
     public void execute() {
-        xPID.setP(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get());
-        xPID.setI(RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get());
-        xPID.setD(RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get());
-        yPID.setP(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get());
-        yPID.setI(RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get());
-        yPID.setD(RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get());
-        robotPose = swerve.getLocalizer().getLatestPose();
+        if (RobotConstants.TUNING) {
+            xPID.setP(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get());
+            xPID.setI(RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get());
+            xPID.setD(RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get());
+            yPID.setP(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get());
+            yPID.setI(RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get());
+            yPID.setD(RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get());
+        }
+        robotPose = swerve.getLocalizer().getCoarseFieldPose(0);
         translationalVelocity = new Translation2d(xPID.calculate(robotPose.getX() - 0.45), yPID.calculate(robotPose.getY()));
         SmartDashboard.putString("ReefAimCommand/RobotPose", robotPose.toString());
         SmartDashboard.putString("ReefAimCommand/translationalVelocity", translationalVelocity.toString());
-        swerve.drive(translationalVelocity, 0.0, true, false);
+        swerve.drive(AllianceFlipUtil.shouldFlip() ? translationalVelocity.unaryMinus() : translationalVelocity, 0.0, true, false);
     }
 
     @Override
@@ -86,6 +89,7 @@ public class ReefAimCommand extends Command {
     }
 
     @Override
+
     public InterruptionBehavior getInterruptionBehavior() {
         return InterruptionBehavior.kCancelIncoming;
     }

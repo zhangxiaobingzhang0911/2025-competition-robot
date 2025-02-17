@@ -53,6 +53,7 @@ public class RobotContainer {
     public static boolean elevatorIsDanger;
     public static boolean intakeIsDanger;
     public static boolean intakeIsAvoiding;
+    public static double elevatorTargetPosition = L3_EXTENSION_METERS.get(); // Used for storing an elevator target position to be used with commands like PutCoralCommand
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);
     private final CommandXboxController operatorController = new CommandXboxController(1);
@@ -73,10 +74,6 @@ public class RobotContainer {
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
     private double lastResetTime = 0.0;
-
-    public static double elevatorTargetPosition = L3_EXTENSION_METERS.get(); // Used for storing an elevator target position to be used with commands like PutCoralCommand
-
-
 
 
     public RobotContainer() {
@@ -103,19 +100,18 @@ public class RobotContainer {
         configureStreamDeckBindings();
     }
 
+    //Configure all commands for driver
     private void configureDriverBindings() {
-        swerve.setDefaultCommand(Commands
-                .runOnce(() -> swerve.drive(
-                                new Translation2d(
-                                        -driverController.getLeftY()
-                                                * RobotConstants.SwerveConstants.maxSpeed.magnitude(),
-                                        -driverController.getLeftX()
-                                                * RobotConstants.SwerveConstants.maxSpeed.magnitude()),
-                                -driverController.getRightX()
-                                        * RobotConstants.SwerveConstants.maxAngularRate.magnitude(),
-                                true,
-                                false),
-                        swerve));
+        swerve.setDefaultCommand(Commands.runOnce(() -> swerve.drive(
+                new Translation2d(
+                        Math.abs(driverController.getLeftY()) < RobotConstants.SwerveConstants.deadband ?
+                                0 : -driverController.getLeftY() * RobotConstants.SwerveConstants.maxSpeed.magnitude(),
+                        Math.abs(driverController.getLeftX()) < RobotConstants.SwerveConstants.deadband ?
+                                0 : -driverController.getLeftX() * RobotConstants.SwerveConstants.maxSpeed.magnitude()),
+                Math.abs(-driverController.getRightX()) < RobotConstants.SwerveConstants.rotationalDeadband ?
+                        0 : -driverController.getRightX() * RobotConstants.SwerveConstants.maxAngularRate.magnitude(),
+                true,
+                false), swerve));
 
         driverController.start().onTrue(
                 Commands.runOnce(() -> {
@@ -127,12 +123,12 @@ public class RobotContainer {
                     if (Timer.getFPGATimestamp() - lastResetTime > 0.01) {
                         swerve.resetHeadingController();
                         swerve.resetPose(
-                                new Pose2d(
-                                        AllianceFlipUtil.apply(
-                                                new Translation2d(0, 0)),
-                                        swerve.getLocalizer().getLatestPose().getRotation()));
+                                AllianceFlipUtil.apply(new Pose2d(
+                                        new Translation2d(0, 0),
+                                        swerve.getLocalizer().getLatestPose().getRotation())));
                     }
                     lastResetTime = Timer.getFPGATimestamp();
+                    aprilTagVision.setMeasuerCnt(0);
                 }).ignoringDisable(true));
 
 
@@ -174,7 +170,7 @@ public class RobotContainer {
     }
 
     private void configureStreamDeckBindings() {
-        streamDeckController.button(1).onTrue(Commands.runOnce(() -> System.out.println("Stream Deck Controller Test Successful!")));
+        streamDeckController.button(1).onTrue(new ReefAimCommand(7, false, () -> streamDeckController.button(17).getAsBoolean()));
     }
 
     public Command getAutonomousCommand() throws IOException, ParseException {

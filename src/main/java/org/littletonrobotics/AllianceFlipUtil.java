@@ -91,10 +91,10 @@ public class AllianceFlipUtil {
 
     /**
      * Determines if the coordinates and poses should be flipped based on the current alliance color.
-     * Returns true if the alliance is blue, indicating that the coordinates need to be mirrored across the field.
+     * Returns true if the alliance is red, indicating that the coordinates need to be mirrored across the field.
      */
     public static boolean shouldFlip() {
         return DriverStation.getAlliance().isPresent()
-                && DriverStation.getAlliance().get() == Alliance.Blue;
+                && DriverStation.getAlliance().get() == Alliance.Red;
     }
 }

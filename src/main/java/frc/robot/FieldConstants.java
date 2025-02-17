@@ -4,26 +4,24 @@
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file at
 // the root directory of this project.
- 
+
 package frc.robot;
- 
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
- 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
- 
 import lombok.Getter;
- 
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
- 
+
 /**
  * Contains various field dimensions and useful reference points. All units are in meters and poses
  * have a blue alliance origin.
@@ -35,15 +33,16 @@ public class FieldConstants {
     public static final double startingLineX =
             Units.inchesToMeters(299.438); // Measured from the inside of starting line
     public static final double aprilTagWidth = Units.inchesToMeters(6.5);
-    public static final AprilTagLayoutType defaultAprilTagType = AprilTagLayoutType.OFFICIAL;
- 
+    public static final AprilTagLayoutType defaultAprilTagType = AprilTagLayoutType.CUSTOM;
+
     @Getter
     public enum AprilTagLayoutType {
-        OFFICIAL("2025-official");
- 
+        OFFICIAL("2025-official"),
+        CUSTOM("2025-custom");
+
         private final AprilTagFieldLayout layout;
         private final String layoutString;
- 
+
         AprilTagLayoutType(String name) {
             if (RobotConstants.disableHAL) {
                 layout = null;
@@ -68,27 +67,27 @@ public class FieldConstants {
             }
         }
     }
- 
+
     public enum ReefHeight {
         L4(Units.inchesToMeters(72), -90),
         L3(Units.inchesToMeters(47.625), -35),
         L2(Units.inchesToMeters(31.875), -35),
         L1(Units.inchesToMeters(18), 0);
- 
+
         public final double height;
         public final double pitch;
- 
+
         ReefHeight(double height, double pitch) {
             this.height = height;
             this.pitch = pitch; // in degrees
         }
     }
- 
+
     public static class Processor {
         public static final Pose2d centerFace =
                 new Pose2d(Units.inchesToMeters(235.726), 0, Rotation2d.fromDegrees(90));
     }
- 
+
     public static class Barge {
         public static final Translation2d farCage =
                 new Translation2d(Units.inchesToMeters(345.428), Units.inchesToMeters(286.779));
@@ -96,12 +95,12 @@ public class FieldConstants {
                 new Translation2d(Units.inchesToMeters(345.428), Units.inchesToMeters(242.855));
         public static final Translation2d closeCage =
                 new Translation2d(Units.inchesToMeters(345.428), Units.inchesToMeters(199.947));
- 
+
         // Measured from floor to bottom of cage
         public static final double deepHeight = Units.inchesToMeters(3.125);
         public static final double shallowHeight = Units.inchesToMeters(30.125);
     }
- 
+
     public static class CoralStation {
         public static final Pose2d leftCenterFace =
                 new Pose2d(
@@ -114,18 +113,18 @@ public class FieldConstants {
                         Units.inchesToMeters(25.824),
                         Rotation2d.fromDegrees(144.011 - 90));
     }
- 
+
     public static class Reef {
         public static final Translation2d center =
                 new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
         public static final double faceToZoneLine =
                 Units.inchesToMeters(12); // Side of the reef to the inside of the reef zone line
- 
+
         public static final Pose2d[] centerFaces =
                 new Pose2d[6]; // Starting facing the driver station in clockwise order
         public static final List<Map<ReefHeight, Pose3d>> branchPositions =
                 new ArrayList<>(); // Starting at the right branch facing the driver station in clockwise
- 
+
         static {
             // Initialize faces
             centerFaces[0] =
@@ -158,7 +157,7 @@ public class FieldConstants {
                             Units.inchesToMeters(160.375),
                             Units.inchesToMeters(130.144),
                             Rotation2d.fromDegrees(-120));
- 
+
             // Initialize branch positions
             for (int face = 0; face < 6; face++) {
                 Map<ReefHeight, Pose3d> fillRight = new HashMap<>();
@@ -167,7 +166,7 @@ public class FieldConstants {
                     Pose2d poseDirection = new Pose2d(center, Rotation2d.fromDegrees(180 - (60 * face)));
                     double adjustX = Units.inchesToMeters(30.738);
                     double adjustY = Units.inchesToMeters(6.469);
- 
+
                     fillRight.put(
                             level,
                             new Pose3d(
@@ -204,7 +203,7 @@ public class FieldConstants {
             }
         }
     }
- 
+
     public static class StagingPositions {
         // Measured from the center of the ice cream
         public static final Pose2d leftIceCream =

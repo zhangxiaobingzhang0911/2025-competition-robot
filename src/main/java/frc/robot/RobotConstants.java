@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.*;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.utils.TunableNumber;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
@@ -29,10 +30,14 @@ import static edu.wpi.first.units.Units.*;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class RobotConstants {
+
     // basic constants
     public static final boolean disableHAL = false;
     public static final double LOOPER_DT = 1 / 50.0;
     public static final boolean TUNING = true;
+    // Judge whether the team is 10541
+    public static final String Serial10541 = "03415993";
+    public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541);
     // canbus name
     public static String CAN_BUS_NAME = "rio";
     public static String CANIVORE_CAN_BUS_NAME = "10541Canivore0";
@@ -114,8 +119,8 @@ public final class RobotConstants {
         public static final double statorCurrent = 110;
         public static final double supplyCurrent = 50;
         public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
-        public static final double deadband = maxSpeed.magnitude() * 0.05;
-        public static final double rotationalDeadband = maxAngularRate.magnitude() * 0.05;
+        public static final double deadband = 0.05;
+        public static final double rotationalDeadband = 0.05;
 
         /**
          * Swerve steering gains
@@ -171,43 +176,43 @@ public final class RobotConstants {
                 .withDriveFrictionVoltage(driveFrictionVoltage.magnitude())
                 .withFeedbackSource(LegacySwerveModuleConstants.SteerFeedbackType.SyncCANcoder)
                 .withCouplingGearRatio(COUPLE_RATIO).withSteerMotorInverted(STEER_MOTOR_REVERSED);
-        private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 8;
-        private static final int FRONT_LEFT_STEER_MOTOR_ID = 7;
-        private static final int FRONT_LEFT_ENCODER_ID = 20;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.6191403281;
-        private static final Measure<DistanceUnit> frontLeftXPos = Meters.of(0.127);
-        private static final Measure<DistanceUnit> frontLeftYPos = Meters.of(0.247);
+        private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
+        private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
+        private static final int FRONT_LEFT_ENCODER_ID = 10;
+        private static final double FRONT_LEFT_ENCODER_OFFSET = is10541 ? -0.1481936719 : -0.458007;
+        private static final Measure<DistanceUnit> frontLeftXPos = Meters.of(0.29);
+        private static final Measure<DistanceUnit> frontLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
                 FRONT_LEFT_STEER_MOTOR_ID, FRONT_LEFT_DRIVE_MOTOR_ID, FRONT_LEFT_ENCODER_ID,
                 FRONT_LEFT_ENCODER_OFFSET, frontLeftXPos.magnitude(), frontLeftYPos.magnitude(), false);
         // Front Right
-        private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
-        private static final int FRONT_RIGHT_STEER_MOTOR_ID = 1;
-        private static final int FRONT_RIGHT_ENCODER_ID = 0;
-        private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.11840865625;
-        private static final Measure<DistanceUnit> frontRightXPos = Meters.of(0.127);
-        private static final Measure<DistanceUnit> frontRightYPos = Meters.of(-0.247);
+        private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 6;
+        private static final int FRONT_RIGHT_STEER_MOTOR_ID = 5;
+        private static final int FRONT_RIGHT_ENCODER_ID = 11;
+        private static final double FRONT_RIGHT_ENCODER_OFFSET = is10541 ? -0.310058875 : -0.420166;
+        private static final Measure<DistanceUnit> frontRightXPos = Meters.of(0.29);
+        private static final Measure<DistanceUnit> frontRightYPos = Meters.of(-0.29);
         public static final LegacySwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
                 FRONT_RIGHT_STEER_MOTOR_ID, FRONT_RIGHT_DRIVE_MOTOR_ID, FRONT_RIGHT_ENCODER_ID,
                 FRONT_RIGHT_ENCODER_OFFSET, frontRightXPos.magnitude(), frontRightYPos.magnitude(),
                 true);
         // Back Left
-        private static final int BACK_LEFT_DRIVE_MOTOR_ID = 6;
-        private static final int BACK_LEFT_STEER_MOTOR_ID = 5;
-        private static final int BACK_LEFT_ENCODER_ID = 11;
-        private static final double BACK_LEFT_ENCODER_OFFSET = -0.309081875;
-        private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.180);
-        private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.247);
+        private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
+        private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
+        private static final int BACK_LEFT_ENCODER_ID = 0;
+        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1186526563 : -0.3500976;//-0.3500976;
+        private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.29);
+        private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
                 BACK_LEFT_STEER_MOTOR_ID, BACK_LEFT_DRIVE_MOTOR_ID, BACK_LEFT_ENCODER_ID,
                 BACK_LEFT_ENCODER_OFFSET, backLeftXPos.magnitude(), backLeftYPos.magnitude(), false);
         // Back Right
-        private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 4;
-        private static final int BACK_RIGHT_STEER_MOTOR_ID = 3;
-        private static final int BACK_RIGHT_ENCODER_ID = 10;
-        private static final double BACK_RIGHT_ENCODER_OFFSET = -0.150878671875;
-        private static final Measure<DistanceUnit> backRightXPos = Meters.of(-0.180);
-        private static final Measure<DistanceUnit> backRightYPos = Meters.of(-0.247);
+        private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 8;
+        private static final int BACK_RIGHT_STEER_MOTOR_ID = 7;
+        private static final int BACK_RIGHT_ENCODER_ID = 20;
+        private static final double BACK_RIGHT_ENCODER_OFFSET = is10541 ? 0.6188965 : 0.4609375;
+        private static final Measure<DistanceUnit> backRightXPos = Meters.of(-0.29);
+        private static final Measure<DistanceUnit> backRightYPos = Meters.of(-0.29);
         public static final LegacySwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
                 BACK_RIGHT_STEER_MOTOR_ID, BACK_RIGHT_DRIVE_MOTOR_ID, BACK_RIGHT_ENCODER_ID,
                 BACK_RIGHT_ENCODER_OFFSET, backRightXPos.magnitude(), backRightYPos.magnitude(), true);
@@ -228,17 +233,18 @@ public final class RobotConstants {
          */
         public static class headingController {
             public static final frc.robot.utils.TunableNumber HEADING_KP = new frc.robot.utils.TunableNumber(
-                    "HEADING PID/kp", 0.09);
+                    "HEADING PID/kp", 0.08);
             public static final frc.robot.utils.TunableNumber HEADING_KI = new frc.robot.utils.TunableNumber(
                     "HEADING PID/ki", 0.000);
             public static final frc.robot.utils.TunableNumber HEADING_KD = new frc.robot.utils.TunableNumber(
-                    "HEADING PID/kd", 0.004);
+                    "HEADING PID/kd", 0.005);
             public static final frc.robot.utils.TunableNumber MAX_ERROR_CORRECTION_ANGLE = new frc.robot.utils.TunableNumber(
-                    "HEADING/Max Error Correction Angle", 120.0);
+                    "HEADING/Max Error Correction Angle", 50);
         }
 
         /**
          * Constants for the steer motor gains in the swerve drivetrain.
+         * IF YOU WANT TO ADJUST SWERVE PID, GO TO src/main/java/org/frcteam6941/swerve/CTRESwerveModule.java AND FOLLOW THE INSTRUCTION
          */
         public static class steerGainsClass {
             public static final TunableNumber STEER_KP = new TunableNumber("STEER PID/kp", 120);
@@ -251,6 +257,7 @@ public final class RobotConstants {
 
         /**
          * Constants for the drive motor gains in the swerve drivetrain.
+         * IF YOU WANT TO ADJUST SWERVE PID, GO TO src/main/java/org/frcteam6941/swerve/CTRESwerveModule.java AND FOLLOW THE INSTRUCTION
          */
         public static class driveGainsClass {
             public static final TunableNumber DRIVE_KP = new TunableNumber("DRIVE PID/kp", 0.03);
@@ -259,6 +266,15 @@ public final class RobotConstants {
             public static final TunableNumber DRIVE_KA = new TunableNumber("DRIVE PID/ka", 0);
             public static final TunableNumber DRIVE_KV = new TunableNumber("DRIVE PID/kv", 0.12);
             public static final TunableNumber DRIVE_KS = new TunableNumber("DRIVE PID/ks", 0.045);
+        }
+
+        /**
+         * Constants for the gains in the ReefAimCommand.
+         */
+        public static class AimGainsClass {
+            public static final TunableNumber AIM_KP = new TunableNumber("AIM PID/kp", 5);
+            public static final TunableNumber AIM_KI = new TunableNumber("AIM PID/ki", 0.5);
+            public static final TunableNumber AIM_KD = new TunableNumber("AIM PID/kd", 0.5);
         }
 
     }

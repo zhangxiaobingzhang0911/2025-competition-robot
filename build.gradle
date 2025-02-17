@@ -120,12 +120,12 @@ tasks.withType(JavaCompile) {
 // Create version file
 project.compileJava.dependsOn(createVersionFile)
 gversion {
-  srcDir       = "src/main/java/"
-  classPackage = "frc.robot"
-  className    = "BuildConstants"
-  dateFormat   = "yyyy-MM-dd HH:mm:ss z"
-  timeZone     = "Asia/Shanghai" // Use preferred time zone
-  indent       = "  "
+    srcDir = "src/main/java/"
+    classPackage = "frc.robot"
+    className = "BuildConstants"
+    dateFormat = "yyyy-MM-dd HH:mm:ss z"
+    timeZone = "Asia/Shanghai" // Use preferred time zone
+    indent = "  "
 }
 
 // Create commit with working changes on event branches

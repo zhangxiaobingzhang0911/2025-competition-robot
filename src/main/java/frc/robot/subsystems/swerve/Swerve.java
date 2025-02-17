@@ -277,16 +277,6 @@ public class Swerve implements Updatable, Subsystem {
     // Drive the swerve drive based on translation and rotation inputs.
     public void drive(Translation2d translationalVelocity, double rotationalVelocity,
                       boolean isFieldOriented, boolean isOpenLoop) {
-
-        if (Math.abs(translationalVelocity.getX()) < RobotConstants.SwerveConstants.deadband) {
-            translationalVelocity = new Translation2d(0, translationalVelocity.getY());
-        }
-        if (Math.abs(translationalVelocity.getY()) < RobotConstants.SwerveConstants.deadband) {
-            translationalVelocity = new Translation2d(translationalVelocity.getX(), 0);
-        }
-        if (Math.abs(rotationalVelocity) < RobotConstants.SwerveConstants.rotationalDeadband) {
-            rotationalVelocity = 0;
-        }
         driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented, isOpenLoop);
     }
 

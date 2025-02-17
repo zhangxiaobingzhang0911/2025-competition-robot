@@ -55,8 +55,8 @@ public class IntakePivotIOSim implements IntakePivotIO {
                     controller.calculate(simState.get(0)));
             update(1.0 / 1000.0);
         }
-        inputs.targetPositionDeg = setpointDegrees;
-        inputs.currentPositionDeg = Math.toDegrees(simState.get(0));
+        inputs.targetAngleDeg = setpointDegrees;
+        inputs.currentAngleDeg = Math.toDegrees(simState.get(0));
         inputs.velocityRotPerSec = Math.toDegrees(simState.get(1));
         inputs.appliedVolts = appliedVolts.magnitude();
         inputs.statorCurrentAmps = Math.copySign(inputTorqueCurrent, appliedVolts.magnitude());
@@ -69,14 +69,14 @@ public class IntakePivotIOSim implements IntakePivotIO {
     }
 
     @Override
-    public void setMotorPosition(double targetPositionDeg) {
-        this.setpointDegrees = targetPositionDeg;
-        controller.setSetpoint(Math.toRadians(targetPositionDeg));
+    public void setPivotAngle(double targetAngleDeg) {
+        this.setpointDegrees = targetAngleDeg;
+        controller.setSetpoint(Math.toRadians(targetAngleDeg));
 
     }
 
     @Override
-    public void resetPosition(double position) {
+    public void resetAngle(double resetAngleDeg) {
 
     }
 

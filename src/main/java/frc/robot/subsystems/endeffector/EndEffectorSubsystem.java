@@ -1,66 +1,37 @@
 package frc.robot.subsystems.endeffector;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import org.littletonrobotics.junction.Logger;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotConstants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerSubsystem;
+import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.RobotConstants.EndEffectorConstants.*;
 import static frc.robot.RobotConstants.EndEffectorConstants.EndEffectorGainsClass.*;
+import static frc.robot.RobotConstants.EndEffectorConstants.*;
 
 public class EndEffectorSubsystem extends RollerSubsystem {
-
     public static final String NAME = "EndEffector";
-
+    private static final double idleRPS = IDLE_RPS.get();
+    private static double intakeRPS = INTAKE_RPS.get();
+    private static double preShootRPS = PRE_SHOOT_RPS.get();
+    private static double shootRPS = SHOOT_RPS.get();
     private final EndEffectorIO endEffectorIO;
     private final BeambreakIO middleBBIO, edgeBBIO;
-    private BeambreakIOInputsAutoLogged middleBBInputs = new BeambreakIOInputsAutoLogged();
-    private BeambreakIOInputsAutoLogged edgeBBInputs = new BeambreakIOInputsAutoLogged();
-
-    private WantedState wantedState = WantedState.IDLE;
-    private SystemState systemState = SystemState.IDLING;
-
-    private boolean hasTransitionedToTransfer = false;
-    private boolean hasTransitionedToHold = false;
-
+    private final BeambreakIOInputsAutoLogged middleBBInputs = new BeambreakIOInputsAutoLogged();
+    private final BeambreakIOInputsAutoLogged edgeBBInputs = new BeambreakIOInputsAutoLogged();
     public double kp = ENDEFFECTOR_KP.get();
     public double ki = ENDEFFECTOR_KI.get();
     public double kd = ENDEFFECTOR_KD.get();
     public double ka = ENDEFFECTOR_KA.get();
     public double kv = ENDEFFECTOR_KV.get();
     public double ks = ENDEFFECTOR_KS.get();
+    private WantedState wantedState = WantedState.IDLE;
+    private SystemState systemState = SystemState.IDLING;
+    private boolean hasTransitionedToPreShoot = false;
 
-    private static double idleRPS = IDLE_RPS.get();
-    private static double intakeRPS = INTAKE_RPS.get();
-    private static double transferRPS = TRANSFER_RPS.get();
-    private static double holdRPS = HOLD_RPS.get();
-    private static double shootRPS = SHOOT_RPS.get();
-
-    public enum WantedState {
-        IDLE,
-        FUNNEL_INTAKE,
-        GROUND_INTAKE,
-        TRANSFER,
-        HOLD,
-        SHOOT,
-        OFF
-    }
-
-    public enum SystemState {
-        IDLING,
-        FUNNEL_INTAKING,
-        GROUND_INTAKING,
-        TRANSFERRING,
-        HOLDING,
-        SHOOTING,
-        OFF
-    }
-
-    public EndEffectorSubsystem(EndEffectorIO endEffectorIO , BeambreakIO middleBBIO, BeambreakIO edgeBBIO) {
+    public EndEffectorSubsystem(EndEffectorIO endEffectorIO, BeambreakIO middleBBIO, BeambreakIO edgeBBIO) {
         super(endEffectorIO, NAME);
         this.endEffectorIO = endEffectorIO;
         this.middleBBIO = middleBBIO;
@@ -71,15 +42,17 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     public void periodic() {
         super.periodic();
 
-        endEffectorIO.updateConfigs(kp, ki, kd, ka, kv, ks);
         middleBBIO.updateInputs(middleBBInputs);
         edgeBBIO.updateInputs(edgeBBInputs);
+        Logger.processInputs(NAME + "/Middle Beambreak", middleBBInputs);
+        Logger.processInputs(NAME + "/Edge Beambreak", edgeBBInputs);
 
         SystemState newState = handleStateTransition();
 
-        Logger.processInputs(NAME + "/Middle Beambreak", middleBBInputs);
-        Logger.processInputs(NAME + "/Edge Beambreak", edgeBBInputs);
         Logger.recordOutput("EndEffector/SystemState", newState.toString());
+        Logger.recordOutput(NAME + "Velocity", inputs.velocityRotPerSec);
+
+        Logger.recordOutput("Flags/preShootIsDanger", isPreShootReady());
 
         if (newState != systemState) {
             systemState = newState;
@@ -89,35 +62,37 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             systemState = SystemState.IDLING;
         }
 
-        switch(systemState) {
+        switch (systemState) {
             case IDLING:
                 io.setVelocity(idleRPS);
                 break;
             case FUNNEL_INTAKING:
-                io.setVelocity(intakeRPS);
+                io.setVelocity(-intakeRPS);
+                if (isIntakeFinished()) {
+                    io.setVelocity(0.0);
+                }
                 break;
             case GROUND_INTAKING:
-                io.setVelocity(-intakeRPS);
+                io.setVelocity(intakeRPS);
+                if (isIntakeFinished()) {
+                    io.setVelocity(0.0);
+                }
                 break;
-            case TRANSFERRING:
-                io.setVelocity(transferRPS);
-                break;
-            case HOLDING:
-                io.setVelocity(holdRPS);
+            case PRE_SHOOTING:
+                io.setVelocity(-preShootRPS);
+                if (isShootReady()) {
+                    io.setVelocity(0.0);
+                }
                 break;
             case SHOOTING:
-                io.setVelocity(shootRPS);
+                io.setVelocity(-shootRPS);
                 break;
             case OFF:
-            default:
-                io.setVelocity(0.0);
-                break;
         }
 
         if (RobotConstants.TUNING) {
             intakeRPS = INTAKE_RPS.get();
-            holdRPS = HOLD_RPS.get();
-            transferRPS = TRANSFER_RPS.get();
+            preShootRPS = PRE_SHOOT_RPS.get();
             shootRPS = SHOOT_RPS.get();
 
             kp = ENDEFFECTOR_KP.get();
@@ -126,6 +101,8 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             ka = ENDEFFECTOR_KA.get();
             kv = ENDEFFECTOR_KV.get();
             ks = ENDEFFECTOR_KS.get();
+
+            endEffectorIO.updateConfigs(kp, ki, kd, ka, kv, ks);
         }
     }
 
@@ -133,53 +110,76 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         return switch (wantedState) {
             case IDLE -> SystemState.IDLING;
             case FUNNEL_INTAKE -> {
-                if (middleBBInputs.isBeambreakOn) {
-                    hasTransitionedToTransfer = true;
-                    yield SystemState.TRANSFERRING;
+                if (!RobotContainer.elevatorIsDanger && (isIntakeFinished() || hasTransitionedToPreShoot)) {
+                    hasTransitionedToPreShoot = true;
+                    setWantedState(WantedState.PRE_SHOOT);
+                    yield SystemState.PRE_SHOOTING;
                 }
                 yield SystemState.FUNNEL_INTAKING;
             }
             case GROUND_INTAKE -> {
-                if (middleBBInputs.isBeambreakOn) {
-                    hasTransitionedToTransfer = true;
-                    yield SystemState.TRANSFERRING;
+                if (!RobotContainer.elevatorIsDanger && (isIntakeFinished() || hasTransitionedToPreShoot)) {
+                    hasTransitionedToPreShoot = true;
+                    setWantedState(WantedState.PRE_SHOOT);
+                    yield SystemState.PRE_SHOOTING;
                 }
                 yield SystemState.GROUND_INTAKING;
             }
-            case TRANSFER -> {
-                if (edgeBBInputs.isBeambreakOn && !middleBBInputs.isBeambreakOn) {
-                    yield SystemState.HOLDING;
-                }
-                yield SystemState.TRANSFERRING;
-            }
-            case HOLD -> {
-                hasTransitionedToHold = true;
-                yield SystemState.HOLDING;
+            case PRE_SHOOT -> {
+                hasTransitionedToPreShoot = true;
+                yield SystemState.PRE_SHOOTING;
             }
             case SHOOT -> {
                 if (isShootFinished()) {
-                    hasTransitionedToTransfer = false;
-                    hasTransitionedToHold = false;
+                    hasTransitionedToPreShoot = false;
+                    setWantedState(WantedState.IDLE);
                     yield SystemState.IDLING;
                 }
                 yield SystemState.SHOOTING;
             }
             case OFF -> SystemState.OFF;
-            default -> SystemState.IDLING;
         };
     }
 
-    public boolean isCoralReady () {
-        return hasTransitionedToHold;
+    public boolean hasCoral() {
+        return middleBBInputs.isBeambreakOn;
     }
 
-    public boolean isShootFinished () {
-        return hasTransitionedToHold && !edgeBBInputs.isBeambreakOn;
+    public boolean isShootFinished() {
+        return hasTransitionedToPreShoot && !edgeBBInputs.isBeambreakOn;
     }
 
-    public boolean isIntakeFinished () {
-        return hasTransitionedToTransfer;
+    public boolean isIntakeFinished() {
+        return middleBBInputs.isBeambreakOn && !edgeBBInputs.isBeambreakOn;
     }
 
-    public void setWantedState(WantedState wantedState) {this.wantedState = wantedState;}
+    public boolean isShootReady() {
+        return edgeBBInputs.isBeambreakOn && !middleBBInputs.isBeambreakOn;
+    }
+
+    public boolean isPreShootReady() {
+        return hasTransitionedToPreShoot;
+    }
+
+    public void setWantedState(WantedState wantedState) {
+        this.wantedState = wantedState;
+    }
+
+    public enum WantedState {
+        IDLE,
+        FUNNEL_INTAKE,
+        GROUND_INTAKE,
+        PRE_SHOOT,
+        SHOOT,
+        OFF
+    }
+
+    public enum SystemState {
+        IDLING,
+        FUNNEL_INTAKING,
+        GROUND_INTAKING,
+        PRE_SHOOTING,
+        SHOOTING,
+        OFF
+    }
 }

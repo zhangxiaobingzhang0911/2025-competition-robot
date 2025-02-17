@@ -1,56 +1,116 @@
 package frc.robot.subsystems.elevator;
 
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.*;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.system.NumericalIntegration;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.units.AngularVelocityUnit;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.RobotConstants;
+import frc.robot.RobotConstants.ElevatorGainsClass;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_SPOOL_DIAMETER;
+import static frc.robot.RobotConstants.ElevatorConstants.MAX_EXTENSION_METERS;
 
-/*
 public class ElevatorIOSim implements ElevatorIO {
-    private static final double LOOP_PERIOD_SECS = 0.02;
-    private final DCMotorSim leftElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500(1),
-    0.025, 6.75), DCMotor.getFalcon500(1), null);
-    private final DCMotorSim rightElevatorTalonSim = new DCMotorSim(edu.wpi.first.math.system.plant.LinearSystemId.createDCMotorSystem(DCMotor.getFalcon500(1),
-    0.025, 6.75), DCMotor.getFalcon500(1) , null);
+    public static final double carriaeMass = Units.lbsToKilograms(7.0 + (3.25 / 2));
+    private static final DCMotor elevatorTalonsim = DCMotor.getKrakenX60Foc(2).withReduction(6.75);
+    public static final Matrix<N2, N2> A =
+            MatBuilder.fill(
+                    Nat.N2(),
+                    Nat.N2(),
+                    0,
+                    1,
+                    0,
+                    -elevatorTalonsim.KtNMPerAmp
+                            / (elevatorTalonsim.rOhms
+                            * Math.pow(ELEVATOR_SPOOL_DIAMETER, 2)
+                            * (carriaeMass)
+                            * elevatorTalonsim.KvRadPerSecPerVolt));
 
-    private Measure<VoltageUnit> leftElevatorAppliedVoltage = Volts.zero();
-    private Measure<VoltageUnit> rightElevatorAppliedVoltage = Volts.zero();
-    private Measure<AngularVelocityUnit> targetElevatorVelocity = RadiansPerSecond.zero();
+    public static final Vector<N2> B =
+            VecBuilder.fill(
+                    0.0, elevatorTalonsim.KtNMPerAmp / (ELEVATOR_SPOOL_DIAMETER * carriaeMass));
+    private final ProfiledPIDController controller =
+            new ProfiledPIDController(
+                    ElevatorGainsClass.ELEVATOR_KP.get(),
+                    ElevatorGainsClass.ELEVATOR_KI.get(),
+                    ElevatorGainsClass.ELEVATOR_KD.get(),
+                    new Constraints(5.0, 10.0));
+    private double feedforward = 0.0;
+    private Measure<VoltageUnit> appliedVolts = Volts.zero();
+    private double targetPositionMeters = 0.0;
+    private Vector<N2> simState;
+    private double inputTorqueCurrent = 0.0;
 
-    @Override
-    public void updateInputs(ElevatorIOInputs inputs) {
-        leftElevatorTalonSim.update(LOOP_PERIOD_SECS);
-        rightElevatorTalonSim.update(LOOP_PERIOD_SECS);
-
-        inputs.leftElevatorVelocity =
-                RadiansPerSecond.of(leftElevatorTalonSim.getAngularVelocityRadPerSec());
-        inputs.leftElevatorPosition =
-                Radians.of(leftElevatorTalonSim.getAngularPositionRad());
-        inputs.leftElevatorAppliedVoltage =
-                leftElevatorAppliedVoltage;
-        inputs.leftElevatorSupplyCurrent =
-                Amps.of(leftElevatorTalonSim.getCurrentDrawAmps());
-
-        inputs.rightElevatorVelocity =
-                RadiansPerSecond.of(rightElevatorTalonSim.getAngularVelocityRadPerSec());
-        inputs.rightElevatorPosition =
-                Radians.of(rightElevatorTalonSim.getAngularPositionRad());
-        inputs.rightElevatorAppliedVoltage =
-                rightElevatorAppliedVoltage;
-        inputs.rightElevatorSupplyCurrent =
-                Amps.of(rightElevatorTalonSim.getCurrentDrawAmps());
-
-        inputs.targetElevatorVelocity = targetElevatorVelocity;
+    public ElevatorIOSim() {
+        //initial position
+        simState = VecBuilder.fill(0.0, 0.0);
     }
 
     @Override
-    public void setElevatorDirectVoltage(double volts) {
+    public void updateInputs(ElevatorIOInputs inputs) {
+        for (int i = 0; i < RobotConstants.LOOPER_DT / (1.0 / 1000.0); i++) {
+            setInputTorqueCurrent(
+                    controller.calculate(simState.get(0) / ELEVATOR_SPOOL_DIAMETER) + feedforward);
+            update(1.0 / 1000.0);
+        }
+
+        inputs.positionMeters = talonPosToHeight(simState.get(0));
+        inputs.velocityMetersPerSec = talonPosToHeight(simState.get(1));
+        inputs.statorCurrentAmps = Math.copySign(inputTorqueCurrent, appliedVolts.magnitude());
+        inputs.supplyCurrentAmps = Math.copySign(inputTorqueCurrent, appliedVolts.magnitude());
+    }
+
+    private void update(double dt) {
+        inputTorqueCurrent =
+                MathUtil.clamp(inputTorqueCurrent, -elevatorTalonsim.stallCurrentAmps, elevatorTalonsim.stallCurrentAmps);
+        Matrix<N2, N1> updatedState =
+                NumericalIntegration.rkdp(
+                        (Matrix<N2, N1> x, Matrix<N1, N1> u) ->
+                                A.times(x)
+                                        .plus(B.times(u))
+                                        .plus(
+                                                VecBuilder.fill(
+                                                        0.0,
+                                                        -9.8)),
+                        simState,
+                        MatBuilder.fill(Nat.N1(), Nat.N1(), inputTorqueCurrent),
+                        dt);
+        // Apply limits
+        simState = VecBuilder.fill(updatedState.get(0, 0), updatedState.get(1, 0));
+        if (simState.get(0) <= 0.0) {
+            simState.set(1, 0, 0.0);
+            simState.set(0, 0, 0.0);
+        }
+        if (simState.get(0) >= MAX_EXTENSION_METERS.get()) {
+            simState.set(1, 0, 0.0);
+            simState.set(0, 0, MAX_EXTENSION_METERS.get());
+        }
+    }
+
+    private void setInputTorqueCurrent(double torqueCurrent) {
+        inputTorqueCurrent = torqueCurrent;
+        appliedVolts =
+                Volts.of(elevatorTalonsim.getVoltage(
+                        elevatorTalonsim.getTorque(inputTorqueCurrent),
+                        simState.get(1, 0) / ELEVATOR_SPOOL_DIAMETER));
+        appliedVolts = Volts.of(MathUtil.clamp(appliedVolts.magnitude(), -12.0, 12.0));
+    }
+
+    @Override
+    public void setElevatorVoltage(double volts) {
+
+    }
+
+    @Override
+    public void resetElevatorPosition() {
+        // physicsSim.setState(0,0);
     }
 
     @Override
@@ -59,17 +119,32 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
-    public void setElevatorTarget(double radians) {
+    public void setElevatorTarget(double meters) {
+        controller.setGoal(heightToTalonPos(meters));
+
+    }
+
+
+    @Override
+    public double getElevatorHeight() {
+        return talonPosToHeight(simState.get(0));
     }
 
     @Override
-    public double getElevatorPosition() {
-        return leftElevatorTalonSim.getAngularPositionRad();
+    public boolean isNearZeroExtension() {
+        return true;
     }
 
     @Override
-    public double getVelocity() {
-        return rightElevatorTalonSim.getAngularVelocityRadPerSec() / 6.28 * 60;
+    public double getElevatorVelocity() {
+        return talonPosToHeight(simState.get(1));
+    }
+
+    private double heightToTalonPos(double heightMeters) {
+        return (heightMeters / (Math.PI * ELEVATOR_SPOOL_DIAMETER));
+    }
+
+    private double talonPosToHeight(double rotations) {
+        return rotations * (Math.PI * ELEVATOR_SPOOL_DIAMETER);
     }
 }
-*/

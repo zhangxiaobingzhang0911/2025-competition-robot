@@ -33,7 +33,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
     private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0.0).withEnableFOC(true);
     private final MotionMagicConfigs motionMagicConfigs;
 
-    double targetPositionDeg = 0.0;
+    double targetAngleDeg = 0.0;
 
     public IntakePivotIOReal() {
         var config = new TalonFXConfiguration();
@@ -44,6 +44,8 @@ public class IntakePivotIOReal implements IntakePivotIO {
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
         config.CurrentLimits.StatorCurrentLimit = 40.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        motor.setPosition(angleToTalonPos(5));
 
         motor.getConfigurator().apply(new Slot0Configs()
                 .withKP(IntakePivotGainsClass.INTAKE_PIVOT_KP.get())
@@ -87,9 +89,8 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.appliedVolts = appliedVolts.getValueAsDouble();
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
-        inputs.currentPositionDeg = currentPositionRot.getValueAsDouble() * 360 / PIVOT_RATIO;
-        // inputs.currentPositionDeg = (120 - (120 - (currentPositionRot.getValueAsDouble() / 360 * PIVOT_RATIO)) / 6);
-        inputs.targetPositionDeg = targetPositionDeg;
+        inputs.currentAngleDeg = talonPosToAngle(currentPositionRot.getValueAsDouble());
+        inputs.targetAngleDeg = targetAngleDeg;
 
         if (RobotConstants.TUNING) {
             inputs.intakePivotKP = IntakePivotGainsClass.INTAKE_PIVOT_KP.get();
@@ -113,15 +114,21 @@ public class IntakePivotIOReal implements IntakePivotIO {
     }
 
     @Override
-    public void setMotorPosition(double targetPositionDeg) {
-        this.targetPositionDeg = targetPositionDeg;
-        motor.setControl(motionMagic.withPosition(targetPositionDeg * PIVOT_RATIO / 360));
-        // motor.setControl(motionMagic.withPosition((120 - (120 - targetPositionDeg) / 6) * PIVOT_RATIO / 360));
+    public void setPivotAngle(double targetAngleDeg) {
+        this.targetAngleDeg = targetAngleDeg;
+        motor.setControl(motionMagic.withPosition(angleToTalonPos(targetAngleDeg)));
     }
 
     @Override
-    public void resetPosition(double position) {
-        motor.setPosition(position * PIVOT_RATIO / 360);
-        //  motor.setControl(motionMagic.withPosition((120 - (120 - targetPositionDeg) / 6 )* PIVOT_RATIO / 360));
+    public void resetAngle(double resetAngleDeg) {
+        motor.setPosition(angleToTalonPos(resetAngleDeg));
+    }
+
+    private double angleToTalonPos(double angleDeg) {
+        return (angleDeg / 360) * PIVOT_RATIO;
+    }
+
+    private double talonPosToAngle(double rotations) {
+        return rotations * 360 / PIVOT_RATIO;
     }
 }

@@ -174,8 +174,7 @@ public final class RobotConstants {
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 8;
         private static final int FRONT_LEFT_STEER_MOTOR_ID = 7;
         private static final int FRONT_LEFT_ENCODER_ID = 20;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.4609375; // -0.37451171875;//
-        // 0.052955;//0.127686//0.5329550781
+        private static final double FRONT_LEFT_ENCODER_OFFSET = 0.6191403281;
         private static final Measure<DistanceUnit> frontLeftXPos = Meters.of(0.127);
         private static final Measure<DistanceUnit> frontLeftYPos = Meters.of(0.247);
         public static final LegacySwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
@@ -185,8 +184,7 @@ public final class RobotConstants {
         private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
         private static final int FRONT_RIGHT_STEER_MOTOR_ID = 1;
         private static final int FRONT_RIGHT_ENCODER_ID = 0;
-        private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.3500976; // -0.119385;//
-        // 0.125685;//0.13623046875//0.117686//0.046875
+        private static final double FRONT_RIGHT_ENCODER_OFFSET = -0.11840865625;
         private static final Measure<DistanceUnit> frontRightXPos = Meters.of(0.127);
         private static final Measure<DistanceUnit> frontRightYPos = Meters.of(-0.247);
         public static final LegacySwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
@@ -197,8 +195,7 @@ public final class RobotConstants {
         private static final int BACK_LEFT_DRIVE_MOTOR_ID = 6;
         private static final int BACK_LEFT_STEER_MOTOR_ID = 5;
         private static final int BACK_LEFT_ENCODER_ID = 11;
-        private static final double BACK_LEFT_ENCODER_OFFSET = -0.420166; // -0.310302734375;//
-        // 0.773925;//-0.223//0.401611//0.77392578125
+        private static final double BACK_LEFT_ENCODER_OFFSET = -0.309081875;
         private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.180);
         private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.247);
         public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
@@ -208,8 +205,7 @@ public final class RobotConstants {
         private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 4;
         private static final int BACK_RIGHT_STEER_MOTOR_ID = 3;
         private static final int BACK_RIGHT_ENCODER_ID = 10;
-        private static final double BACK_RIGHT_ENCODER_OFFSET = -0.458007;// -0.151611;//
-        // 0.422119;//-0.5684550781//-0.064453//0.432279296875
+        private static final double BACK_RIGHT_ENCODER_OFFSET = -0.150878671875;
         private static final Measure<DistanceUnit> backRightXPos = Meters.of(-0.180);
         private static final Measure<DistanceUnit> backRightYPos = Meters.of(-0.247);
         public static final LegacySwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
@@ -334,21 +330,18 @@ public final class RobotConstants {
         public static final double REDUCTION = 1;
         public static final double moi = 0;//inertia for simulation
         public static final double ROLLER_RATIO = 1;
-        //public static final double INTAKE_DANGER_ZONE = 85.12719277223927;
         public static final double INTAKE_DANGER_ZONE = 90;
-        //Motion constants for intake pivot
-        public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 100);
-        public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 200);
-        public static final TunableNumber INTAKE_PIVOT_JERK = new TunableNumber("INTAKE_PIVOT/jerk", 1200);
-        public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle",113);
-        public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 5);
-        public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 60);
-        //Motion constants for intake roller
-        public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 8.0);
         //Constants for intake pivot
         public static double PIVOT_RATIO = 36 * 50 / 11;
-
-        public static final double COLLISION_AVOID_ANGLE = INTAKE_DANGER_ZONE + 2;
+        //Motion constants for intake pivot
+        public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 100);
+        public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 500);
+        public static final TunableNumber INTAKE_PIVOT_JERK = new TunableNumber("INTAKE_PIVOT/jerk", 0);
+        public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle",113);
+        public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 5);
+        public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 90);
+        //Motion constants for intake roller
+        public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 8.0);
 
         /**
          * Constants for the intake pivot motor gains in the intake subsystem.
@@ -366,7 +359,7 @@ public final class RobotConstants {
         public static final int CLIMBER_MOTOR_ID = 52;
         public static final double CLIMBER_RATIO = 5 * 5 * 4;
 
-        public static final TunableNumber CLIMBER_CRUISE_VELOCITY = new TunableNumber("CLIMBER/ClimberCruiseVelocity", 60);
+        public static final TunableNumber CLIMBER_CRUISE_VELOCITY = new TunableNumber("CLIMBER/ClimberCruiseVelocity", 100);
         public static final TunableNumber CLIMBER_ACCELERATION = new TunableNumber("CLIMBER/ClimberAcceleration", 200);
         public static final TunableNumber CLIMBER_JERK = new TunableNumber("CLIMBER/ClimberJerk", 0);
 
@@ -419,7 +412,7 @@ public final class RobotConstants {
         public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
                 1.55);
         public static final TunableNumber FUNNEL_INTAKE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/FunnnelIntake",
-                0.47);
+                0.35);
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 20);
         public static final double ELEVATOR_MIN_SAFE_HEIGHT = 0.5;

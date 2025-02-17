@@ -75,7 +75,7 @@ public class ClimberIOReal implements ClimberIO {
                 supplyCurrentAmps,
                 statorCurrentAmps);
 
-        inputs.currentPositionDeg = currentPositionRot.getValueAsDouble() * 360 / 60;
+        inputs.currentPositionDeg = currentPositionRot.getValueAsDouble() * 360 / CLIMBER_RATIO;
         inputs.velocityRotationsPerSec = velocityRotPerSec.getValueAsDouble();
         inputs.tempCelsius = tempCelsius.getValue().in(Units.Celsius);
         inputs.appliedVolts = appliedVolts.getValueAsDouble();
@@ -119,6 +119,7 @@ public class ClimberIOReal implements ClimberIO {
     public void setCoast() {
         motor.setNeutralMode(NeutralModeValue.Coast);
     }
+
     @Override
     public void setBrake() {
         motor.setNeutralMode(NeutralModeValue.Brake);

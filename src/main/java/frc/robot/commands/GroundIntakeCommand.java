@@ -23,8 +23,7 @@ public class GroundIntakeCommand extends Command {
     @Override
     public void execute() {
         //sometimes don't work, state stuck in "WITHOUT_ROLL", need further testing, currently don't know why, guess can be elevator not at position because of mechanic issue
-        if(intakeSubsystem.isNearAngle(RobotConstants.IntakeConstants.DEPLOY_ANGLE.get())
-                && elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())){
+        if(elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())){
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
         }
         else{

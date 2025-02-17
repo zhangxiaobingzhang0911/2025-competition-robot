@@ -13,7 +13,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private SystemState systemState = SystemState.DEPLOYING;
 
     private final TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 0);
-    private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -450);
+    private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -650);
 
     public ClimberSubsystem(ClimberIO io) {
         this.io = io;
@@ -24,7 +24,7 @@ public class ClimberSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         SystemState newState = handleStateTransition();
 
-        Logger.processInputs("Climber/inputs", inputs);
+        Logger.processInputs("Climber", inputs);
         Logger.recordOutput("Climber/SystemState", newState.toString());
 
         if (newState != systemState) {

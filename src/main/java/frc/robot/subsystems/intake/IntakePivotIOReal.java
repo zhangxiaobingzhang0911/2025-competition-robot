@@ -47,7 +47,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
 
         motor.setPosition(angleToTalonPos(5));
 
-        motor.getConfigurator().apply(new Slot0Configs()
+        config.withSlot0(new Slot0Configs()
                 .withKP(IntakePivotGainsClass.INTAKE_PIVOT_KP.get())
                 .withKI(IntakePivotGainsClass.INTAKE_PIVOT_KI.get())
                 .withKD(IntakePivotGainsClass.INTAKE_PIVOT_KD.get()));

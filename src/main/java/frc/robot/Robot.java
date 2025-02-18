@@ -1,6 +1,9 @@
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -21,13 +24,18 @@ public class Robot extends LoggedRobot {
         // Logger.addDataReceiver(new WPILOGWriter());
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.start();
+        WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
         // early-stage initialization
         DriverStation.silenceJoystickConnectionWarning(true);
         PowerDistribution PDP = new PowerDistribution();
         PDP.clearStickyFaults();
         PDP.close();
-        
+        // Camera used by driver to help aiming
+        // Remember to adjust fps & resolution in elastic (5fps, 300*200)
+        // If network is bad or rio is in high cpu usage, annotate the following line:
+        CameraServer.startAutomaticCapture("Driver Camera", "/dev/video0");
+
         robotContainer = new RobotContainer();
     }
 

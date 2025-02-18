@@ -34,7 +34,7 @@ public final class RobotConstants {
     // basic constants
     public static final boolean disableHAL = false;
     public static final double LOOPER_DT = 1 / 50.0;
-    public static final boolean TUNING = false;
+    public static final boolean TUNING = true;
     // Judge whether the team is 10541
     public static final String Serial10541 = "03415993";
     public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541) || Robot.isReal();

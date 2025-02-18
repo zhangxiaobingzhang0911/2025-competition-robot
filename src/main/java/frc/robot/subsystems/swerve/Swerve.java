@@ -250,6 +250,7 @@ public class Swerve implements Updatable, Subsystem {
     // Drive the swerve drive based on translation and rotation inputs.
     public void drive(Translation2d translationalVelocity, double rotationalVelocity,
                       boolean isFieldOriented, boolean isOpenLoop) {
+        System.out.println("driving");
         driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented, isOpenLoop);
     }
 
@@ -455,8 +456,10 @@ public class Swerve implements Updatable, Subsystem {
                 swerveLocalizer.getMeasuredVelocity().getRotation().getDegrees(),
                 time, dt);
         if (trajectorySignal.isPresent()) {
+            System.out.println("auto");
             driveSignal = trajectorySignal.get();
         } else if (isLockHeading) {
+            System.out.println("now locking heading");
             headingTarget = AngleNormalization.placeInAppropriate0To360Scope(gyro.getYaw().getDegrees(), headingTarget);
 
             // clamp max rotation output value from the heading controller to prevent controller overshoot
@@ -475,6 +478,7 @@ public class Swerve implements Updatable, Subsystem {
             //            Logger.recordOutput("swerve/heading/difference", Math.abs(headingTarget - gyro.getYaw().getDegrees()));
 
         } else if (overrideRotation != null) {
+            System.out.println("now overriding rotation");
             driveSignal = new HolonomicDriveSignal(driveSignal.getTranslation(), overrideRotation,
                     driveSignal.isFieldOriented(), driveSignal.isOpenLoop());
         }

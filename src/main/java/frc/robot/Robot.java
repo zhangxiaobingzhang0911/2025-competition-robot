@@ -71,19 +71,26 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousExit() {
+        System.out.println("E1");
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
+        }
+        System.out.println("E2");
         robotContainer.getUpdateManager().invokeStop();
+        System.out.println("E3");
         swerve.normal();
+        System.out.println("E4");
         swerve.cancelFollow();
+        System.out.println("EF");
     }
 
     @Override
     public void teleopInit() {
-        if (autonomousCommand != null) {
-            autonomousCommand.cancel();
-        }
-        // swerve.normal();
+        System.out.println("A1");
+        swerve.normal();
+        System.out.println("A2");
         robotContainer.getUpdateManager().invokeStart();
-
+        System.out.println("AF");
     }
 
     @Override

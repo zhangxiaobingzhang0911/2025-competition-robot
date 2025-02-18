@@ -5,11 +5,9 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.SuperstructureVisualizer;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT;
 import static frc.robot.RobotConstants.IntakeConstants.*;
 
 public class IntakeSubsystem extends RollerSubsystem {
@@ -48,7 +46,6 @@ public class IntakeSubsystem extends RollerSubsystem {
 
         RobotContainer.intakeIsDanger = intakeIsDanger();
         RobotContainer.intakeIsAvoiding = intakeIsAvoiding();
-        Logger.recordOutput(NAME + "/isnear", isNearAngle(FUNNEL_AVOID_ANGLE.get()));
         Logger.recordOutput("Flags/intakeIsDanger", intakeIsDanger());
 
         SuperstructureVisualizer.getInstance().updateIntake(intakePivotIOInputs.currentAngleDeg);
@@ -132,11 +129,11 @@ public class IntakeSubsystem extends RollerSubsystem {
     public void zeroIntakeGround() {
         intakeRollerIO.stop();
         if (!isNearAngle(funnelAvoidAngle) && !hasHomed) {
-                intakePivotIO.setPivotAngle(funnelAvoidAngle);
-                return;
+            intakePivotIO.setPivotAngle(funnelAvoidAngle);
+            return;
         }
         hasHomed = true;
-        if(RobotBase.isReal()) {
+        if (RobotBase.isReal()) {
             if (intakePivotIOInputs.statorCurrentAmps <= 15) {
                 intakePivotIO.setMotorVoltage(1);
                 setWantedState(WantedState.GROUNDZERO);
@@ -147,14 +144,12 @@ public class IntakeSubsystem extends RollerSubsystem {
                 setWantedState(WantedState.DEPLOY_WITHOUT_ROLL);
                 hasHomed = false;
             }
-        }else{
+        } else {
             intakePivotIO.setPivotAngle(0);
             setWantedState(WantedState.DEPLOY_WITHOUT_ROLL);
             hasHomed = false;
         }
     }
-
-
 
 
     public boolean isNearAngle(double targetAngleDeg) {

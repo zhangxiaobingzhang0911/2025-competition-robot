@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
@@ -24,6 +25,8 @@ public class IntakeSubsystem extends RollerSubsystem {
     private WantedState wantedState = WantedState.HOME;
     private SystemState systemState = SystemState.HOMING;
     private boolean hasHomed = false;
+    private double currentFilterValue = 0.0;
+    private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
 
     public IntakeSubsystem(
             IntakePivotIO intakePivotIO,
@@ -52,6 +55,9 @@ public class IntakeSubsystem extends RollerSubsystem {
         Logger.recordOutput("Flags/intakeIsDanger", intakeIsDanger());
 
         SuperstructureVisualizer.getInstance().updateIntake(intakePivotIOInputs.currentAngleDeg);
+
+        currentFilterValue = currentFilter.calculate(intakePivotIOInputs.statorCurrentAmps);
+        Logger.recordOutput("Intake/StatorCurrent", currentFilterValue);
 
         if (newState != systemState) {
             systemState = newState;
@@ -131,24 +137,23 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     public void zeroIntakeGround() {
         intakeRollerIO.stop();
-        if (!isNearAngle(funnelAvoidAngle) && !hasHomed) {
-                intakePivotIO.setPivotAngle(funnelAvoidAngle);
+        if (!isNearAngle(100) && !hasHomed) {
+                intakePivotIO.setPivotAngle(100);
                 return;
         }
         hasHomed = true;
         if(RobotBase.isReal()) {
-            if (intakePivotIOInputs.statorCurrentAmps <= 15) {
+            if (currentFilterValue <= 15) {
                 intakePivotIO.setMotorVoltage(1);
                 setWantedState(WantedState.GROUNDZERO);
             }
-            if (intakePivotIOInputs.statorCurrentAmps > 15) {
+            if (currentFilterValue > 15) {
                 intakePivotIO.setMotorVoltage(0);
                 intakePivotIO.resetAngle(120);
-                setWantedState(WantedState.DEPLOY_WITHOUT_ROLL);
+                setWantedState(WantedState.HOME);
                 hasHomed = false;
             }
         }else{
-            intakePivotIO.setPivotAngle(0);
             setWantedState(WantedState.DEPLOY_WITHOUT_ROLL);
             hasHomed = false;
         }
@@ -162,7 +167,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     }
 
     public boolean intakeIsDanger() {
-        return intakePivotIOInputs.currentAngleDeg < INTAKE_DANGER_ZONE;
+        return intakePivotIOInputs.currentAngleDeg < INTAKE_DANGER_ZONE + 2;
     }
 
     private boolean intakeIsAvoiding() {

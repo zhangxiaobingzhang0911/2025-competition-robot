@@ -22,6 +22,7 @@ import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.SwerveConstants;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.Synchronized;
 import org.frcteam6941.control.HolonomicDriveSignal;
 import org.frcteam6941.control.HolonomicTrajectoryFollower;
@@ -62,6 +63,8 @@ public class Swerve implements Updatable, Subsystem {
     private final HolonomicTrajectoryFollower trajectoryFollower = new HolonomicTrajectoryFollower(
             new PIDController(3.5, 0.0, 0.0), new PIDController(3.5, 0.0, 0.0),
             this.headingController, RobotConstants.SwerveConstants.DRIVETRAIN_FEEDFORWARD);
+    @Getter
+    private final RobotConfig autoConfig;
     private boolean isLockHeading;
     // Lock heading target for the swerve drive.
     @Getter
@@ -83,6 +86,7 @@ public class Swerve implements Updatable, Subsystem {
     private State state = State.DRIVE;
 
     // Private constructor for singleton pattern.
+    @SneakyThrows
     private Swerve() {
         if (RobotBase.isReal()) {
             swerveMods = new SwerveModuleBase[]{
@@ -123,40 +127,9 @@ public class Swerve implements Updatable, Subsystem {
         setpoint = new SwerveSetpoint(new edu.wpi.first.math.kinematics.ChassisSpeeds(), getModuleStates());
         previousSetpoint = new SwerveSetpoint(new edu.wpi.first.math.kinematics.ChassisSpeeds(), getModuleStates());
         generator = new SwerveSetpointGenerator(RobotConstants.SwerveConstants.modulePlacements);
-        kinematicLimits = RobotConstants.SwerveConstants.DRIVETRAIN_UNCAPPED;
+        kinematicLimits = SwerveConstants.DRIVETRAIN_LIMITED; // TODO
 
-        RobotConfig config;
-        try {
-            config = RobotConfig.fromGUISettings();
-        } catch (Exception e) {
-            // Handle exception as needed
-            e.printStackTrace();
-        }
-
-        // Configure AutoBuilder last
-//        AutoBuilder.configure(
-//                this.swerveLocalizer::getLatestPose, // Robot pose supplier
-//                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-//                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-//                (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-//                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-//                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-//                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-//                ),
-//                config, // The robot configuration
-//                () -> { // Boolean supplier that controls when the path will be mirrored for the red alliance
-//                    // This will flip the path being followed to the red side of the field.
-//                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-//                    var alliance = DriverStation.getAlliance();
-//                    if (alliance.isPresent()) {
-//                        return alliance.get() == DriverStation.Alliance.Red;
-//                    }
-//                    return false;
-//                },
-//                this // Reference to this subsystem to set requirements
-//        );
-
+        autoConfig = RobotConfig.fromGUISettings();
     }
 
     // Calculate the drive base radius based on module locations.

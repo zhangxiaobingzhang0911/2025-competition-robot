@@ -37,13 +37,13 @@ public class AutoActions {
             return new PathPlannerTrajectory(
                     PathPlannerPath.fromPathFile(name).flipPath(),
                     swerve.getChassisSpeeds(),
-                    swerve.getLocalizer().getLatestPose().getRotation(), null
+                    swerve.getLocalizer().getLatestPose().getRotation(), swerve.getAutoConfig()
             );
         } else {
             return new PathPlannerTrajectory(
                     PathPlannerPath.fromPathFile(name),
                     swerve.getChassisSpeeds(),
-                    swerve.getLocalizer().getLatestPose().getRotation(), null
+                    swerve.getLocalizer().getLatestPose().getRotation(), swerve.getAutoConfig()
             );
         }
     }

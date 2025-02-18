@@ -173,7 +173,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() throws IOException, ParseException {
-        return AutoActions.followTrajectoryVolatile(AutoActions.getTrajectory("Test"), false, true);
+        return AutoActions.followTrajectory(AutoActions.getTrajectory("Test"), false, true);
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

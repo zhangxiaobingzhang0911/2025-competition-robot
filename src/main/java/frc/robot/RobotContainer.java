@@ -175,7 +175,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() throws IOException, ParseException {
         return new SequentialCommandGroup(
-                AutoActions.waitFor(0.000001), // FIXME Why?
+                AutoActions.waitFor(0.000001), // FIXME the first auto action will not be run
                 AutoActions.followTrajectory(AutoActions.getTrajectory("T_4"), true, true)
         );
     }
@@ -183,4 +183,5 @@ public class RobotContainer {
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
         return FieldConstants.defaultAprilTagType;
     }
+
 }

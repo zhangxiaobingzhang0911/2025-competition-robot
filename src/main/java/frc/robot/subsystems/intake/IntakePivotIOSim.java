@@ -106,7 +106,7 @@ public class IntakePivotIOSim implements IntakePivotIO {
 //                                                        / moi),
                         simState,
                         VecBuilder.fill(inputTorqueCurrent*15),
-                        //magic constant of DOOM from god(6328), dont change it unless you know what you are doing
+                        //magic constant of DOOM from (6328), dont change it unless you know what you are doing
                         dt);
         simState = VecBuilder.fill(updatedState.get(0, 0), updatedState.get(1, 0));
 

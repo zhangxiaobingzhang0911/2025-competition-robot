@@ -14,12 +14,11 @@ import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.ElevatorGainsClass;
 
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_SPOOL_DIAMETER;
-import static frc.robot.RobotConstants.ElevatorConstants.MAX_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 public class ElevatorIOSim implements ElevatorIO {
     public static final double carriaeMass = Units.lbsToKilograms(7.0 + (3.25 / 2));
-    private static final DCMotor elevatorTalonsim = DCMotor.getKrakenX60Foc(2).withReduction(6.75);
+    private static final DCMotor elevatorTalonsim = DCMotor.getKrakenX60Foc(2).withReduction(ELEVATOR_GEAR_RATIO);
     public static final Matrix<N2, N2> A =
             MatBuilder.fill(
                     Nat.N2(),
@@ -29,16 +28,16 @@ public class ElevatorIOSim implements ElevatorIO {
                     0,
                     -elevatorTalonsim.KtNMPerAmp
                             / (elevatorTalonsim.rOhms
-                            * Math.pow(ELEVATOR_SPOOL_DIAMETER, 2)
+                            * Math.pow(ELEVATOR_SPOOL_DIAMETER/2, 2)
                             * (carriaeMass)
                             * elevatorTalonsim.KvRadPerSecPerVolt));
 
     public static final Vector<N2> B =
             VecBuilder.fill(
-                    0.0, elevatorTalonsim.KtNMPerAmp / (ELEVATOR_SPOOL_DIAMETER * carriaeMass));
+                    0.0, elevatorTalonsim.KtNMPerAmp / ((ELEVATOR_SPOOL_DIAMETER/2) * carriaeMass));
     private final ProfiledPIDController controller =
             new ProfiledPIDController(
-                    ElevatorGainsClass.ELEVATOR_KP.get(),
+                    ElevatorGainsClass.ELEVATOR_KP.get()*10,
                     ElevatorGainsClass.ELEVATOR_KI.get(),
                     ElevatorGainsClass.ELEVATOR_KD.get(),
                     new Constraints(5.0, 10.0));
@@ -57,12 +56,13 @@ public class ElevatorIOSim implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         for (int i = 0; i < RobotConstants.LOOPER_DT / (1.0 / 1000.0); i++) {
             setInputTorqueCurrent(
-                    controller.calculate(simState.get(0) / ELEVATOR_SPOOL_DIAMETER) + feedforward);
+                    controller.calculate(simState.get(0) ) + feedforward);
             update(1.0 / 1000.0);
         }
 
-        inputs.positionMeters = talonPosToHeight(simState.get(0));
-        inputs.velocityMetersPerSec = talonPosToHeight(simState.get(1));
+        inputs.positionMeters = radToHeight(simState.get(0));
+        inputs.velocityMetersPerSec = radToHeight(simState.get(1));
+        inputs.setpointMeters = targetPositionMeters;
         inputs.statorCurrentAmps = Math.copySign(inputTorqueCurrent, appliedVolts.magnitude());
         inputs.supplyCurrentAmps = Math.copySign(inputTorqueCurrent, appliedVolts.magnitude());
     }
@@ -80,7 +80,7 @@ public class ElevatorIOSim implements ElevatorIO {
                                                         0.0,
                                                         -9.8)),
                         simState,
-                        MatBuilder.fill(Nat.N1(), Nat.N1(), inputTorqueCurrent),
+                        MatBuilder.fill(Nat.N1(), Nat.N1(), inputTorqueCurrent*15),
                         dt);
         // Apply limits
         simState = VecBuilder.fill(updatedState.get(0, 0), updatedState.get(1, 0));
@@ -88,9 +88,9 @@ public class ElevatorIOSim implements ElevatorIO {
             simState.set(1, 0, 0.0);
             simState.set(0, 0, 0.0);
         }
-        if (simState.get(0) >= MAX_EXTENSION_METERS.get()) {
+        if (simState.get(0) >= heightToRad(MAX_EXTENSION_METERS.get())) {
             simState.set(1, 0, 0.0);
-            simState.set(0, 0, MAX_EXTENSION_METERS.get());
+            simState.set(0, 0, heightToRad(MAX_EXTENSION_METERS.get()));
         }
     }
 
@@ -99,7 +99,7 @@ public class ElevatorIOSim implements ElevatorIO {
         appliedVolts =
                 Volts.of(elevatorTalonsim.getVoltage(
                         elevatorTalonsim.getTorque(inputTorqueCurrent),
-                        simState.get(1, 0) / ELEVATOR_SPOOL_DIAMETER));
+                        simState.get(1, 0) ));
         appliedVolts = Volts.of(MathUtil.clamp(appliedVolts.magnitude(), -12.0, 12.0));
     }
 
@@ -110,7 +110,7 @@ public class ElevatorIOSim implements ElevatorIO {
 
     @Override
     public void resetElevatorPosition() {
-        // physicsSim.setState(0,0);
+        simState.set(0, 0, 0.0);
     }
 
     @Override
@@ -120,31 +120,33 @@ public class ElevatorIOSim implements ElevatorIO {
 
     @Override
     public void setElevatorTarget(double meters) {
-        controller.setGoal(heightToTalonPos(meters));
+        targetPositionMeters = meters;
+        controller.setGoal(heightToRad(meters));
 
     }
 
 
     @Override
     public double getElevatorHeight() {
-        return talonPosToHeight(simState.get(0));
+        return radToHeight(simState.get(0));
     }
 
     @Override
     public boolean isNearZeroExtension() {
-        return true;
+        return MathUtil.isNear(heightToRad(0.05), simState.get(0), 0.3);
     }
 
     @Override
     public double getElevatorVelocity() {
-        return talonPosToHeight(simState.get(1));
+        return radToHeight(simState.get(1));
     }
 
-    private double heightToTalonPos(double heightMeters) {
-        return (heightMeters / (Math.PI * ELEVATOR_SPOOL_DIAMETER));
+    private double heightToRad(double heightMeters) {
+        return heightMeters / (ELEVATOR_SPOOL_DIAMETER / 2);
     }
 
-    private double talonPosToHeight(double rotations) {
-        return rotations * (Math.PI * ELEVATOR_SPOOL_DIAMETER);
+    private double radToHeight(double rad) {
+        return rad * (ELEVATOR_SPOOL_DIAMETER / 2);
     }
+
 }

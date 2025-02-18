@@ -1,8 +1,10 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.SuperstructureVisualizer;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import org.littletonrobotics.junction.Logger;
@@ -48,6 +50,8 @@ public class IntakeSubsystem extends RollerSubsystem {
         RobotContainer.intakeIsAvoiding = intakeIsAvoiding();
         Logger.recordOutput(NAME + "/isnear", isNearAngle(FUNNEL_AVOID_ANGLE.get()));
         Logger.recordOutput("Flags/intakeIsDanger", intakeIsDanger());
+
+        SuperstructureVisualizer.getInstance().updateIntake(intakePivotIOInputs.currentAngleDeg);
 
         if (newState != systemState) {
             systemState = newState;
@@ -127,18 +131,24 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     public void zeroIntakeGround() {
         intakeRollerIO.stop();
-        if (!isNearAngle(90) && !hasHomed) {
-                intakePivotIO.setPivotAngle(90);
+        if (!isNearAngle(funnelAvoidAngle) && !hasHomed) {
+                intakePivotIO.setPivotAngle(funnelAvoidAngle);
                 return;
         }
         hasHomed = true;
-        if (intakePivotIOInputs.statorCurrentAmps <= 15) {
-            intakePivotIO.setMotorVoltage(1);
-            setWantedState(WantedState.GROUNDZERO);
-        }
-        if (intakePivotIOInputs.statorCurrentAmps > 15) {
-            intakePivotIO.setMotorVoltage(0);
-            intakePivotIO.resetAngle(120);
+        if(RobotBase.isReal()) {
+            if (intakePivotIOInputs.statorCurrentAmps <= 15) {
+                intakePivotIO.setMotorVoltage(1);
+                setWantedState(WantedState.GROUNDZERO);
+            }
+            if (intakePivotIOInputs.statorCurrentAmps > 15) {
+                intakePivotIO.setMotorVoltage(0);
+                intakePivotIO.resetAngle(120);
+                setWantedState(WantedState.DEPLOY_WITHOUT_ROLL);
+                hasHomed = false;
+            }
+        }else{
+            intakePivotIO.setPivotAngle(0);
             setWantedState(WantedState.DEPLOY_WITHOUT_ROLL);
             hasHomed = false;
         }

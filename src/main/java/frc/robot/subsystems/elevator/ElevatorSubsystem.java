@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.SuperstructureVisualizer;
 import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.Logger;
@@ -51,6 +52,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorIsDanger = elevatorIsDanger();
 
         Logger.recordOutput("Flags/elevatorIsDanger", elevatorIsDanger());
+
+        SuperstructureVisualizer.getInstance().updateElevator(io.getElevatorHeight());
+
+
 
 
         // set movements based on state

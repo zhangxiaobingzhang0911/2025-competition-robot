@@ -10,11 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Temperature;
-import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.measure.*;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.ClimberConstants;
 import frc.robot.RobotConstants.ClimberConstants.ClimberGainsClass;
@@ -30,12 +26,10 @@ public class ClimberIOReal implements ClimberIO {
     private final StatusSignal<Current> statorCurrentAmps = motor.getStatorCurrent();
     private final StatusSignal<Current> supplyCurrentAmps = motor.getSupplyCurrent();
     private final StatusSignal<Temperature> tempCelsius = motor.getDeviceTemp();
-
-    private double CLIMBER_RATIO = RobotConstants.ClimberConstants.CLIMBER_RATIO;
-    private double targetPositionDeg = 0.0;
-
     private final MotionMagicConfigs motionMagicConfigs;
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0).withEnableFOC(true);
+    private final double CLIMBER_RATIO = RobotConstants.ClimberConstants.CLIMBER_RATIO;
+    private double targetPositionDeg = 0.0;
 
     public ClimberIOReal() {
         var config = new TalonFXConfiguration();
@@ -46,6 +40,14 @@ public class ClimberIOReal implements ClimberIO {
         config.CurrentLimits.StatorCurrentLimit = 80.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
+        config.withSlot0(new Slot0Configs()
+                .withKP(ClimberGainsClass.CLIMBER_KP.get())
+                .withKI(ClimberGainsClass.CLIMBER_KI.get())
+                .withKD(ClimberGainsClass.CLIMBER_KD.get())
+                .withKA(ClimberGainsClass.CLIMBER_KA.get())
+                .withKV(ClimberGainsClass.CLIMBER_KV.get())
+                .withKS(ClimberGainsClass.CLIMBER_KS.get()));
+
         motionMagicConfigs = new MotionMagicConfigs();
         motionMagicConfigs.MotionMagicCruiseVelocity = ClimberConstants.CLIMBER_CRUISE_VELOCITY.get();
         motionMagicConfigs.MotionMagicAcceleration = ClimberConstants.CLIMBER_ACCELERATION.get();
@@ -54,15 +56,6 @@ public class ClimberIOReal implements ClimberIO {
 
         motor.getConfigurator().apply(config);
         motor.optimizeBusUtilization();
-
-        BaseStatusSignal.setUpdateFrequencyForAll(
-                50.0,
-                currentPositionRot,
-                velocityRotPerSec,
-                tempCelsius,
-                appliedVolts,
-                supplyCurrentAmps,
-                statorCurrentAmps);
     }
 
     @Override
@@ -82,14 +75,13 @@ public class ClimberIOReal implements ClimberIO {
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
         inputs.targetPositionDeg = targetPositionDeg;
-        inputs.ClimberKP = ClimberGainsClass.CLIMBER_KP.get();
-        inputs.ClimberKI = ClimberGainsClass.CLIMBER_KI.get();
-        inputs.ClimberKD = ClimberGainsClass.CLIMBER_KD.get();
-        inputs.ClimberKA = ClimberGainsClass.CLIMBER_KA.get();
-        inputs.ClimberKV = ClimberGainsClass.CLIMBER_KV.get();
-        inputs.ClimberKS = ClimberGainsClass.CLIMBER_KS.get();
-
-        if(RobotConstants.TUNING){
+        if (RobotConstants.TUNING) {
+            inputs.ClimberKP = ClimberGainsClass.CLIMBER_KP.get();
+            inputs.ClimberKI = ClimberGainsClass.CLIMBER_KI.get();
+            inputs.ClimberKD = ClimberGainsClass.CLIMBER_KD.get();
+            inputs.ClimberKA = ClimberGainsClass.CLIMBER_KA.get();
+            inputs.ClimberKV = ClimberGainsClass.CLIMBER_KV.get();
+            inputs.ClimberKS = ClimberGainsClass.CLIMBER_KS.get();
             motor.getConfigurator().apply(new Slot0Configs()
                     .withKP(inputs.ClimberKP)
                     .withKI(inputs.ClimberKI)
@@ -122,8 +114,6 @@ public class ClimberIOReal implements ClimberIO {
 
     @Override
     public void setBrake() {
-        motor.setNeutralMode(NeutralModeValue.Brake);
+        System.out.println(motor.setNeutralMode(NeutralModeValue.Brake));
     }
-
-
 }

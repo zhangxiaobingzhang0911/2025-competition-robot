@@ -1,6 +1,5 @@
 package frc.robot.subsystems.climber;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.TunableNumber;
 import org.littletonrobotics.junction.Logger;
@@ -8,12 +7,10 @@ import org.littletonrobotics.junction.Logger;
 public class ClimberSubsystem extends SubsystemBase {
     private final ClimberIO io;
     private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
-
+    private final TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 0);
+    private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -550);
     private WantedState wantedState = WantedState.DEPLOY;
     private SystemState systemState = SystemState.DEPLOYING;
-
-    private final TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 0);
-    private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -650);
 
     public ClimberSubsystem(ClimberIO io) {
         this.io = io;
@@ -29,13 +26,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
         if (newState != systemState) {
             systemState = newState;
-        }
-
-        if (DriverStation.isDisabled()) {
-            systemState = SystemState.DEPLOYING;
-            io.resetPosition();
-        } else {
-            setBrake();
         }
 
         switch (systemState) {

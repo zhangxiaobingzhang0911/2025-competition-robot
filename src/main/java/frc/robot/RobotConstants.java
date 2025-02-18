@@ -292,8 +292,8 @@ public final class RobotConstants {
      * Constants related to the beambreak subsystem.
      */
     public static class BeamBreakConstants {
-        public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 0;
-        public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 2;
+        public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 2;
+        public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 0;
     }
 
     /**

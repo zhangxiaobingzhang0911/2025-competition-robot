@@ -49,9 +49,6 @@ public class RollerIOReal implements RollerIO {
         supplyCurrentAmps = motor.getSupplyCurrent();
         tempCelsius = motor.getDeviceTemp();
 
-        BaseStatusSignal.setUpdateFrequencyForAll(50.0, velocityRotPerSec, appliedVolts, statorCurrentAmps,
-                supplyCurrentAmps, tempCelsius);
-
         motor.optimizeBusUtilization();
     }
 

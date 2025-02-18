@@ -34,10 +34,10 @@ public final class RobotConstants {
     // basic constants
     public static final boolean disableHAL = false;
     public static final double LOOPER_DT = 1 / 50.0;
-    public static final boolean TUNING = true;
+    public static final boolean TUNING = false;
     // Judge whether the team is 10541
     public static final String Serial10541 = "03415993";
-    public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541);
+    public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541) || Robot.isReal();
     // canbus name
     public static String CAN_BUS_NAME = "rio";
     public static String CANIVORE_CAN_BUS_NAME = "10541Canivore0";
@@ -200,7 +200,7 @@ public final class RobotConstants {
         private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
         private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
         private static final int BACK_LEFT_ENCODER_ID = 0;
-        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1186526563 : -0.3500976;//-0.3500976;
+        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1186526563 : -0.3500976;
         private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.29);
         private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
@@ -292,9 +292,8 @@ public final class RobotConstants {
      * Constants related to the beambreak subsystem.
      */
     public static class BeamBreakConstants {
-        public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 1;
-        public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 3;
-        public static final int INTAKER_BEAMBREAK_ID = 0;
+        public static final int ENDEFFECTOR_MIDDLE_BEAMBREAK_ID = 0;
+        public static final int ENDEFFECTOR_EDGE_BEAMBREAK_ID = 2;
     }
 
     /**
@@ -347,17 +346,17 @@ public final class RobotConstants {
         public static final double moi = 0;//inertia for simulation
         public static final double ROLLER_RATIO = 1;
         public static final double INTAKE_DANGER_ZONE = 90;
-        //Constants for intake pivot
-        public static double PIVOT_RATIO = 36 * 50 / 11;
         //Motion constants for intake pivot
         public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 100);
         public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 500);
         public static final TunableNumber INTAKE_PIVOT_JERK = new TunableNumber("INTAKE_PIVOT/jerk", 0);
-        public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle",113);
+        public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 113);
         public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 5);
         public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 90);
         //Motion constants for intake roller
         public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 8.0);
+        //Constants for intake pivot
+        public static double PIVOT_RATIO = 36 * 50 / 11;
 
         /**
          * Constants for the intake pivot motor gains in the intake subsystem.

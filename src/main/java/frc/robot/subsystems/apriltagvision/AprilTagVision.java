@@ -10,12 +10,10 @@ package frc.robot.subsystems.apriltagvision;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants.AprilTagLayoutType;
-import frc.robot.RobotConstants;
 import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +36,7 @@ import static org.littletonrobotics.RobotState.VisionObservation;
 @ExtensionMethod({GeomUtil.class})
 public class AprilTagVision extends SubsystemBase {
     // Serial
-    public static final SerialPort serial = new SerialPort(RobotConstants.baudRate, RobotConstants.VisionConstants.serialPort);
+    // public static final SerialPort serial = new SerialPort(RobotConstants.baudRate, RobotConstants.VisionConstants.serialPort);
     // Others
     private static final LoggedTunableNumber timestampOffset =
             new LoggedTunableNumber("AprilTagVision/TimestampOffset", -(1.0 / 50.0));
@@ -83,8 +81,8 @@ public class AprilTagVision extends SubsystemBase {
         }
 
         // Disable serial termination of \n
-        serial.disableTermination();
-        serial.reset();
+//        serial.disableTermination();
+//        serial.reset();
     }
 
     /**
@@ -97,8 +95,8 @@ public class AprilTagVision extends SubsystemBase {
             Logger.processInputs("AprilTagVision/Inst" + i, inputs[i]);
         }
 
-        serial.writeString("OK");
-        serial.flush();
+//        serial.writeString("OK");
+//        serial.flush();
 
         // Loop over instances to process all frames and poses
         List<Pose2d> allRobotPoses = new ArrayList<>();

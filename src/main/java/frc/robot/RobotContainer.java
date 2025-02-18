@@ -141,10 +141,10 @@ public class RobotContainer {
 
     private void configureOperatorBindings() {
         //Operator's triggers to change target reef heights
-
+        operatorController.a().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L1_EXTENSION_METERS.get()));
         operatorController.b().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L2_EXTENSION_METERS.get()));
         operatorController.x().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L3_EXTENSION_METERS.get()));
-
+        operatorController.y().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L4_EXTENSION_METERS.get()));
     }
 
     private void configureTesterBindings() {

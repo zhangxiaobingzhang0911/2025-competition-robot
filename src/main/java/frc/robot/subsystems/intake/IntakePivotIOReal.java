@@ -63,15 +63,6 @@ public class IntakePivotIOReal implements IntakePivotIO {
         motor.clearStickyFaults();
 
         motor.optimizeBusUtilization();
-
-        BaseStatusSignal.setUpdateFrequencyForAll(
-                50.0,
-                velocityRotPerSec,
-                tempCelsius,
-                appliedVolts,
-                supplyCurrentAmps,
-                statorCurrentAmps,
-                currentPositionRot);
     }
 
     @Override

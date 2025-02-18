@@ -24,10 +24,10 @@ public class Robot extends LoggedRobot {
 
         // early-stage initialization
         DriverStation.silenceJoystickConnectionWarning(true);
-        PowerDistribution pdp = new PowerDistribution();
-        pdp.clearStickyFaults();
-        pdp.close();
-
+        PowerDistribution PDP = new PowerDistribution();
+        PDP.clearStickyFaults();
+        PDP.close();
+        
         robotContainer = new RobotContainer();
     }
 

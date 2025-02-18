@@ -141,10 +141,10 @@ public class RobotContainer {
 
     private void configureOperatorBindings() {
         //Operator's triggers to change target reef heights
-        operatorController.a().onTrue(Commands.runOnce(() -> System.out.println("triggered")));
+
         operatorController.b().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L2_EXTENSION_METERS.get()));
         operatorController.x().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L3_EXTENSION_METERS.get()));
-        operatorController.y().onTrue(Commands.runOnce(() -> System.out.println(elevatorTargetPosition)));
+
     }
 
     private void configureTesterBindings() {
@@ -175,7 +175,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() throws IOException, ParseException {
         return new SequentialCommandGroup(
-                AutoActions.waitFor(0.000001), // FIXME Why?
+                AutoActions.waitFor(0.000001), // FIXME the first auto action will not be run
                 AutoActions.followTrajectory(AutoActions.getTrajectory("T_4"), true, true)
         );
     }
@@ -183,4 +183,5 @@ public class RobotContainer {
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {
         return FieldConstants.defaultAprilTagType;
     }
+
 }

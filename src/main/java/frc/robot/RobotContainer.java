@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -174,10 +173,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() throws IOException, ParseException {
-        return new SequentialCommandGroup(
-                AutoActions.waitFor(0.000001), // FIXME the first auto action will not be run
-                AutoActions.followTrajectory(AutoActions.getTrajectory("T_4"), true, true)
-        );
+        return AutoActions.followTrajectory(AutoActions.getTrajectory("Test"), false, true);
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

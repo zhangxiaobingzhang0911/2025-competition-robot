@@ -4,15 +4,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.SuperstructureVisualizer;
+import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 public class Robot extends LoggedRobot {
+    private final Swerve swerve = Swerve.getInstance();
     private Command autonomousCommand;
     private RobotContainer robotContainer;
-    private SuperstructureVisualizer currentStateVisualizer;
 
     @Override
     public void robotInit() {
@@ -27,7 +27,7 @@ public class Robot extends LoggedRobot {
         PowerDistribution PDP = new PowerDistribution();
         PDP.clearStickyFaults();
         PDP.close();
-        
+
         robotContainer = new RobotContainer();
     }
 
@@ -55,14 +55,14 @@ public class Robot extends LoggedRobot {
             autonomousCommand = robotContainer.getAutonomousCommand();
         } catch (Exception e) {
             System.out.println("Autonomous command failed: " + e);
+            e.printStackTrace();
             autonomousCommand = null;
         }
-
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
         }
+        swerve.auto();
         robotContainer.getUpdateManager().invokeStart();
-        // swerve.auto();
     }
 
     @Override
@@ -71,19 +71,18 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousExit() {
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
+        }
         robotContainer.getUpdateManager().invokeStop();
-        // swerve.normal();
-        // swerve.cancelFollow();
+        swerve.normal();
+        swerve.cancelFollow();
     }
 
     @Override
     public void teleopInit() {
-        if (autonomousCommand != null) {
-            autonomousCommand.cancel();
-        }
-        // swerve.normal();
+        swerve.normal();
         robotContainer.getUpdateManager().invokeStart();
-
     }
 
     @Override
@@ -94,7 +93,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopExit() {
         robotContainer.getUpdateManager().invokeStop();
-
     }
 
     @Override

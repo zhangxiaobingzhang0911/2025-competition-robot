@@ -60,14 +60,14 @@ public class SuperstructureVisualizer {
     public SuperstructureVisualizer() {
         // Elevator mechanism setup
         elevatorMechanism = new LoggedMechanism2d(
-                2.0,
-                2.0,
+                0,
+                0,
                 new Color8Bit(Color.kWhite));
 
         LoggedMechanismRoot2d elevatorRoot = elevatorMechanism.getRoot(
                 "ElevatorBase",
                 0,
-                0);
+                ELEVATOR_CENTER.getZ());
 
         elevatorStage1 = new LoggedMechanismLigament2d(
                 "stage1",
@@ -83,14 +83,14 @@ public class SuperstructureVisualizer {
 
         // Intake mechanism setup
         intakeMechanism = new LoggedMechanism2d(
-                2.0,
-                2.0,
+                0,
+                0,
                 new Color8Bit(Color.kWhite));
 
         LoggedMechanismRoot2d intakeRoot = intakeMechanism.getRoot(
                 "IntakePivot",
-                0,
-                0);
+                -0.25,
+                INTAKE_CENTER.getZ());
 
         intakeArm = new LoggedMechanismLigament2d(
                 "intakeArm",

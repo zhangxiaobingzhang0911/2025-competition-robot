@@ -133,7 +133,8 @@ public class ElevatorIOSim implements ElevatorIO {
 
     @Override
     public boolean isNearZeroExtension() {
-        return MathUtil.isNear(heightToRad(0.05), simState.get(0), 0.3);
+
+        return MathUtil.isNear(0.05, radToHeight(simState.get(0)), 0.3);
     }
 
     @Override

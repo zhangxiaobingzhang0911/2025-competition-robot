@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -36,6 +37,7 @@ import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.json.simple.parser.ParseException;
 import org.littletonrobotics.AllianceFlipUtil;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import java.io.IOException;
 
@@ -72,6 +74,8 @@ public class RobotContainer {
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
+    @Getter
+    private LoggedDashboardChooser<Command> autoChooser;
     private double lastResetTime = 0.0;
 
 
@@ -169,10 +173,11 @@ public class RobotContainer {
     }
 
     private void configureStreamDeckBindings() {
-        streamDeckController.button(1).onTrue(new ReefAimCommand(7, false, () -> streamDeckController.button(17).getAsBoolean()));
+        streamDeckController.button(1).onTrue(new ReefAimCommand(8, false, () -> streamDeckController.button(17).getAsBoolean()));
     }
 
     public Command getAutonomousCommand() throws IOException, ParseException {
+        // autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
         return AutoActions.followTrajectory(AutoActions.getTrajectory("Test"), false, true);
     }
 

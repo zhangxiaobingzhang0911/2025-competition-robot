@@ -90,6 +90,9 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             case SHOOTING:
                 io.setVelocity(-shootRPS);
                 break;
+            case POKING:
+                io.setVoltage(12);
+                break;
             case OFF:
         }
 
@@ -140,6 +143,9 @@ public class EndEffectorSubsystem extends RollerSubsystem {
                 }
                 yield SystemState.SHOOTING;
             }
+            case POKE -> {
+                yield SystemState.POKING;
+            }
             case OFF -> SystemState.OFF;
         };
     }
@@ -174,6 +180,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         GROUND_INTAKE,
         PRE_SHOOT,
         SHOOT,
+        POKE,
         OFF
     }
 
@@ -183,6 +190,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         GROUND_INTAKING,
         PRE_SHOOTING,
         SHOOTING,
+        POKING,
         OFF
     }
 }

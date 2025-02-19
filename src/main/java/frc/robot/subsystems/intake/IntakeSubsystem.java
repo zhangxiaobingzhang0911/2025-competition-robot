@@ -5,7 +5,7 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.SuperstructureVisualizer;
+import frc.robot.display.SuperstructureVisualizer;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import org.littletonrobotics.junction.Logger;
 

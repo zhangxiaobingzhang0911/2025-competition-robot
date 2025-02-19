@@ -25,9 +25,9 @@ public class PreShootCommand extends Command {
         public void execute() {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
             elevatorSubsystem.setElevatorPosition(RobotContainer.elevatorTargetPosition);
-            System.out.println(RobotContainer.elevatorTargetPosition);
+
             endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT);
-            //System.out.println(elevatorSetPoint);
+
         }
 
     @Override
@@ -37,6 +37,6 @@ public class PreShootCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return endEffectorSubsystem.isShootFinished();
+        return false;
     }
 }

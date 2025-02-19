@@ -54,7 +54,7 @@ public class ReefAimCommand extends Command {
         yPID.setTolerance(0.02);
         SmartDashboard.putString("ReefAimCommand/destinationPose", destinationPose.toString());
         swerve.setLockHeading(true);
-        swerve.setHeadingTarget(destinationPose.getRotation().getRotations() - 180);
+        swerve.setHeadingTarget(destinationPose.getRotation().getDegrees() - 180.0);
     }
 
     @Override

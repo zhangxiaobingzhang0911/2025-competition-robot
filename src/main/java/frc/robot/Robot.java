@@ -12,6 +12,8 @@ import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 
+import static frc.robot.RobotConstants.DriverCamera;
+
 public class Robot extends LoggedRobot {
     private Command autonomousCommand;
     private RobotContainer robotContainer;
@@ -33,8 +35,10 @@ public class Robot extends LoggedRobot {
         PDP.close();
         // Camera used by driver to help aiming
         // Remember to adjust fps & resolution in elastic (5fps, 300*200)
-        // If network is bad or rio is in high cpu usage, annotate the following line:
-        CameraServer.startAutomaticCapture("Driver Camera", "/dev/video0");
+        // If network is bad or rio is in high cpu usage, disable it
+        if (DriverCamera) {
+            CameraServer.startAutomaticCapture("Driver Camera", "/dev/video0");
+        }
 
         robotContainer = new RobotContainer();
     }

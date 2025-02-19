@@ -37,6 +37,9 @@ public class GroundIntakeCommand extends Command {
     public void end(boolean interrupted) {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        if (interrupted) {
+            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
+        }
     }
 
     @Override

@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.display;
 
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.util.Color;

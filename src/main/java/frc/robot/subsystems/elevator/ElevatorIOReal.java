@@ -54,8 +54,8 @@ public class ElevatorIOReal implements ElevatorIO {
         currentLimitsConfigs.StatorCurrentLimit = 80.0;
         currentLimitsConfigs.SupplyCurrentLimit = 30.0;
 
-        leader.setPosition(heightToTalonPos(0.4));
-        follower.setPosition(heightToTalonPos(0.4));
+        leader.setPosition(heightToTalonPos(0.46));
+        follower.setPosition(heightToTalonPos(0.46));
 
         MotorOutputConfigs leaderMotorConfigs = new MotorOutputConfigs();
         leaderMotorConfigs.NeutralMode = NeutralModeValue.Brake;

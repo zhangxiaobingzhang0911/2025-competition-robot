@@ -6,8 +6,11 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
 import frc.robot.display.SuperstructureVisualizer;
+import frc.robot.subsystems.roller.RollerIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.wpilibj.Timer;
+
 
 import static frc.robot.RobotConstants.IntakeConstants.*;
 
@@ -17,14 +20,18 @@ public class IntakeSubsystem extends RollerSubsystem {
     private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
     private static double homeAngle = HOME_ANGLE.get();
     private static double intakeVoltage = INTAKE_VOLTAGE.get();
+    private static double rollerAmpsHasCoral = ROLLER_AMPS_HAS_CORAL.get();
     private final IntakePivotIO intakePivotIO;
     private final IntakeRollerIO intakeRollerIO;
     private final IntakePivotIOInputsAutoLogged intakePivotIOInputs = new IntakePivotIOInputsAutoLogged();
+    private final RollerIOInputsAutoLogged intakeRollerIOInputs = new RollerIOInputsAutoLogged();
     private WantedState wantedState = WantedState.HOME;
     private SystemState systemState = SystemState.HOMING;
     private boolean hasHomed = false;
     private double currentFilterValue = 0.0;
     private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
+    Timer timer = new Timer();
+    private boolean timerStarted = false;
 
     public IntakeSubsystem(
             IntakePivotIO intakePivotIO,
@@ -95,6 +102,7 @@ public class IntakeSubsystem extends RollerSubsystem {
             funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
             homeAngle = HOME_ANGLE.get();
             intakeVoltage = INTAKE_VOLTAGE.get();
+            rollerAmpsHasCoral = ROLLER_AMPS_HAS_CORAL.get();
         }
     }
 
@@ -155,6 +163,33 @@ public class IntakeSubsystem extends RollerSubsystem {
             setWantedState(WantedState.HOME);
             hasHomed = false;
         }
+    }
+
+    private void rollerIntake(){
+        intakeRollerIO.setVoltage(intakeVoltage);
+        if(intakeRollerIOInputs.supplyCurrentAmps > rollerAmpsHasCoral && !timerStarted){
+            timer.start();
+            return;
+        }
+        if(intakeRollerIOInputs.supplyCurrentAmps < rollerAmpsHasCoral && timerStarted){
+            timer.stop();
+            timer.reset();
+            timerStarted = false;
+        }
+        if(timerStarted && timer.hasElapsed(2)){
+            intakeRollerIO.setVoltage(-6);
+            if(timer.hasElapsed(2.5)){
+                intakeRollerIO.setVoltage(intakeVoltage);
+                timer.stop();
+                timer.reset();
+                timerStarted = false;
+            }
+        }
+
+    }
+
+    public boolean hasCoral(){
+        return timerStarted && timer.hasElapsed(0.1);
     }
 
 

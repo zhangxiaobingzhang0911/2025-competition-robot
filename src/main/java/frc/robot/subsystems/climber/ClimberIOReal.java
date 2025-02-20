@@ -54,6 +54,15 @@ public class ClimberIOReal implements ClimberIO {
         motionMagicConfigs.MotionMagicJerk = ClimberConstants.CLIMBER_JERK.get();
         config.withMotionMagic(motionMagicConfigs);
 
+        BaseStatusSignal.setUpdateFrequencyForAll(
+                50.0,
+                velocityRotPerSec,
+                tempCelsius,
+                appliedVolts,
+                supplyCurrentAmps,
+                statorCurrentAmps,
+                currentPositionRot);
+
         motor.getConfigurator().apply(config);
         motor.optimizeBusUtilization();
     }

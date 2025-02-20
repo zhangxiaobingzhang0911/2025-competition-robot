@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -174,6 +173,7 @@ public class RobotContainer {
 
     private void configureStreamDeckBindings() {
         streamDeckController.button(1).onTrue(new ReefAimCommand(8, false, () -> streamDeckController.button(17).getAsBoolean()));
+        streamDeckController.button(2).onTrue(new ReefAimCommand(11, true, () -> streamDeckController.button(17).getAsBoolean()));
     }
 
     public Command getAutonomousCommand() throws IOException, ParseException {

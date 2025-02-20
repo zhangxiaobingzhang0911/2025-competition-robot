@@ -85,13 +85,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private SystemState handleStateTransition() {
         return switch (wantedState) {
             case ZERO -> SystemState.ZEROING;
-            case POSITION -> {
-                if (systemState == SystemState.ZEROING) {
-                    wantedState = WantedState.ZERO;
-                    yield SystemState.ZEROING;
-                }
-                yield SystemState.POSITION_GOING;
-            }
+            case POSITION -> SystemState.POSITION_GOING;
             case IDLE -> {
                 if (systemState == SystemState.POSITION_GOING) {
                     wantedState = WantedState.ZERO;

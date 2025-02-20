@@ -6,32 +6,33 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
-
 public class PokeCommand extends Command {
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
-
+    private double lastPosition = 0.0;
 
     public PokeCommand(EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
-
     }
 
     @Override
-        public void execute() {
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-            elevatorSubsystem.setElevatorPosition(DestinationSupplier.getInstance().getElevatorSetpoint(false));
-            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.POKE);
+    public void initialize() {
+        lastPosition = DestinationSupplier.getInstance().getElevatorSetpoint(true);
+    }
 
-        }
+    @Override
+    public void execute() {
+        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
+        elevatorSubsystem.setElevatorPosition(DestinationSupplier.getInstance().getElevatorSetpoint(false));
+        endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.POKE);
+    }
 
     @Override
     public void end(boolean interrupted) {
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        elevatorSubsystem.setElevatorPosition(lastPosition);
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
     }
 

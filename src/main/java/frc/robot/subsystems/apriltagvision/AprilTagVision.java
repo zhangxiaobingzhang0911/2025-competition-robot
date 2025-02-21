@@ -18,7 +18,6 @@ import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.ExtensionMethod;
-import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.GeomUtil;
 import org.littletonrobotics.LoggedTunableNumber;
 import org.littletonrobotics.RobotState;
@@ -157,17 +156,12 @@ public class AprilTagVision extends SubsystemBase {
                                 cameraPose1.transformBy(cameraPoses[instanceIndex].toTransform3d().inverse());
 
                         Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/CameraPoseConstants", cameraPoses[instanceIndex]);
+                        Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/robotPose3d0", robotPose3d0);
+                        Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/robotPose3d1", robotPose3d1);
 
                         // Select the most likely pose based on the estimated rotation
                         if (error0 < error1 * ambiguityThreshold || error1 < error0 * ambiguityThreshold) {
-                            Rotation2d currentRotation =
-                                    AllianceFlipUtil.shouldFlip() ?
-                                            Swerve.getInstance().getLocalizer().getCoarseFieldPose(timestamp).getRotation().minus(Rotation2d.fromDegrees(180)) :
-                                            Swerve.getInstance().getLocalizer().getCoarseFieldPose(timestamp).getRotation();
-                            Rotation2d visionRotation0 = robotPose3d0.toPose2d().getRotation();
-                            Rotation2d visionRotation1 = robotPose3d1.toPose2d().getRotation();
-                            if (Math.abs(currentRotation.minus(visionRotation0).getRadians())
-                                    < Math.abs(currentRotation.minus(visionRotation1).getRadians())) {
+                            if (Math.abs(robotPose3d0.getMeasureZ().magnitude()) < Math.abs(robotPose3d1.getMeasureZ().magnitude())) {
                                 cameraPose = cameraPose0;
                                 robotPose3d = robotPose3d0;
                             } else {

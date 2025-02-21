@@ -21,7 +21,7 @@ import static frc.robot.RobotConstants.ReefAimConstants;
 
 public class ReefAimCommand extends Command {
     private final Swerve swerve = Swerve.getInstance();
-    private final int tagID;
+    private int tagID;
     private boolean rightReef; // true if shooting right reef
     private final ProfiledPIDController xPID = new ProfiledPIDController(
             RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
@@ -45,18 +45,21 @@ public class ReefAimCommand extends Command {
     private Translation2d translationalVelocity;
 
 
-    public ReefAimCommand(int tagID, BooleanSupplier stop) {
+    public ReefAimCommand( BooleanSupplier stop) {
         addRequirements(this.swerve);
-        this.tagID = tagID;
-        this.rightReef = rightReef;
         this.stop = stop;
     }
 
     @Override
     public void initialize() {
         // Calculate destination
-        tagPose = FieldConstants.officialAprilTagType.getLayout().getTagPose(tagID).get().toPose2d();
+        robotPose = swerve.getLocalizer().getCoarseFieldPose(0);
+
         rightReef = DestinationSupplier.getInstance().getCurrentBranch();
+        tagID = DestinationSupplier.getInstance().getNearestTagID(robotPose);
+
+        tagPose = FieldConstants.officialAprilTagType.getLayout().getTagPose(tagID).get().toPose2d();
+
         SmartDashboard.putString("ReefAimCommand/tagPose", tagPose.toString());
         destinationPose = tagPose.transformBy(new Transform2d(
                 new Translation2d(

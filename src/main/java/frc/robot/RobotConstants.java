@@ -65,6 +65,10 @@ public final class RobotConstants {
      * Constants specific to the swerve drivetrain configuration.
      */
     public static class SwerveConstants {
+        // tolerance seconds, for swerve to reset in auto.
+        // current set to 0.01s (10ms) since no path would consume <10ms.
+        public static final double AUTO_SWERVE_TOLERANCE_SECS = 0.01;
+
         // pigeon id
         public static final int PIGEON_ID = 14;
 

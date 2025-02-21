@@ -95,8 +95,6 @@ public class AprilTagVision extends SubsystemBase {
             Logger.processInputs("AprilTagVision/Inst" + i, inputs[i]);
         }
 
-//        serial.writeString("OK");
-//        serial.flush();
 
         // Loop over instances to process all frames and poses
         List<Pose2d> allRobotPoses = new ArrayList<>();
@@ -240,7 +238,7 @@ public class AprilTagVision extends SubsystemBase {
                 Logger.recordOutput(
                         "AprilTagVision/Inst" + instanceIndex + "/TagPoses", tagPoses.toArray(Pose3d[]::new));
             }
-// Record demo tag pose if available
+            // Record demo tag pose if available
             if (inputs[instanceIndex].demoFrame.length > 0) {
                 var values = inputs[instanceIndex].demoFrame;
                 double error0 = values[0];

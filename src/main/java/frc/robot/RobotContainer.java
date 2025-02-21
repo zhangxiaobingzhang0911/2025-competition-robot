@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -18,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
-import frc.robot.utils.DestinationSupplier;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
@@ -71,6 +70,7 @@ public class RobotContainer {
             this::getAprilTagLayoutType,
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
+
     private final Swerve swerve = Swerve.getInstance();
     private final Display display = Display.getInstance();
     private final ElevatorSubsystem elevatorSubsystem;
@@ -179,7 +179,9 @@ public class RobotContainer {
     }
 
     private void configureStreamDeckBindings() {
-        streamDeckController.button(1).onTrue(new ReefAimCommand(8, false, () -> streamDeckController.button(17).getAsBoolean()));
+        streamDeckController.button(1).whileTrue(new ReefAimCommand(aprilTagVision));
+        streamDeckController.button(2).onTrue(Commands.runOnce(() ->DestinationSupplier.getInstance().updateBranch(false)));
+        streamDeckController.button(3).onTrue(Commands.runOnce(() ->DestinationSupplier.getInstance().updateBranch(true)));
     }
 
     public Command getAutonomousCommand() throws IOException, ParseException {

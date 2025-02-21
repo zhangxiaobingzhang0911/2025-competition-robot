@@ -1,8 +1,11 @@
-package frc.robot.utils;
+package frc.robot.drivers;
 
 import frc.robot.RobotConstants;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.apriltagvision.AprilTagVision;
+import org.frcteam6941.looper.Updatable;
 
-public class DestinationSupplier {
+public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
     public static DestinationSupplier getInstance() {
         if (instance == null) {
@@ -15,18 +18,18 @@ public class DestinationSupplier {
     public enum elevatorSetpoint {
         L1, L2, L3, L4, P1, P2
     }
-    public enum chassisSetpoint {
-        LEFT, RIGHT
-    }
 
+    private int targetTagID = 0;
+    private boolean coralRight = false;
     private boolean useCoral = false;
+
     private elevatorSetpoint currentElevSetpointCoral = elevatorSetpoint.L2;
     private elevatorSetpoint currentElevSetpointPoke = elevatorSetpoint.P1;
 
-    private chassisSetpoint currentChassisSetpoint;
 
     private DestinationSupplier() {
     }
+
 
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {
         switch (setpoint) {
@@ -39,10 +42,6 @@ public class DestinationSupplier {
             default:
                 System.out.println("Unknown elevator setpoint: " + setpoint);
         }
-    }
-
-    public void updateChassisSetpoint(chassisSetpoint setpoint) {
-        currentChassisSetpoint = setpoint;
     }
 
     public double getElevatorSetpoint(boolean useCoral) {
@@ -64,4 +63,20 @@ public class DestinationSupplier {
         }
     }
 
+    public void updateBranch(boolean coralRight) {
+        this.coralRight = coralRight;
+    }
+    public void updateTagID(int tagID) {
+        this.targetTagID = tagID;
+    }
+    public int getTargetTagID(){
+        return targetTagID;
+    }
+
+    public boolean getCurrentBranch() {
+        return coralRight;
+    }
+
+
 }
+

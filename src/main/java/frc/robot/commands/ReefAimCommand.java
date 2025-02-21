@@ -7,15 +7,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.FieldConstants;
 import frc.robot.RobotConstants;
+import frc.robot.drivers.DestinationSupplier;
+import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.AllianceFlipUtil;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.function.BooleanSupplier;
 
 public class ReefAimCommand extends Command {
     private final Swerve swerve = Swerve.getInstance();
-    private final int tagID;
-    private final boolean rightReef; // true if shooting right reef
+    private int tagID;
+    private boolean rightReef; // true if shooting right reef
     private final PIDController xPID = new PIDController(
             RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
             RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
@@ -24,37 +27,26 @@ public class ReefAimCommand extends Command {
             RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
             RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
             RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get());
-    private final BooleanSupplier stop;
     private Pose2d robotPose;
     private Pose2d tagPose;
     private Pose2d destinationPose;
     private Translation2d translationalVelocity;
 
     // Constructor for ReefAimCommand
-    public ReefAimCommand(int tagID, boolean rightReef, BooleanSupplier stop) {
+    public ReefAimCommand(AprilTagVision aprilTagVision) {
+
         addRequirements(this.swerve);
-        this.tagID = tagID;
-        this.rightReef = rightReef;
-        this.stop = stop;
-        SmartDashboard.putNumber("ReefAimCommand/tagID", tagID);
-        SmartDashboard.putBoolean("ReefAimCommand/rightReef", rightReef);
+
     }
 
     @Override
     public void initialize() {
-        tagPose = FieldConstants.defaultAprilTagType.getLayout().getTagPose(tagID).get().toPose2d();
-        if (rightReef) {
-            destinationPose = tagPose.transformBy(RobotConstants.ReefAimConstants.tagRightToRobot);
-        } else {
-            destinationPose = tagPose.transformBy(RobotConstants.ReefAimConstants.tagLeftToRobot);
-        }
-        xPID.setSetpoint(destinationPose.getTranslation().getX());
+
         xPID.setTolerance(0.02);
-        yPID.setSetpoint(destinationPose.getTranslation().getY());
+
         yPID.setTolerance(0.02);
-        SmartDashboard.putString("ReefAimCommand/destinationPose", destinationPose.toString());
-        swerve.setLockHeading(true);
-        swerve.setHeadingTarget(destinationPose.getRotation().getDegrees() - 180.0);
+
+
     }
 
     @Override
@@ -67,20 +59,40 @@ public class ReefAimCommand extends Command {
             yPID.setI(RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get());
             yPID.setD(RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get());
         }
+
+        rightReef = DestinationSupplier.getInstance().getCurrentBranch();
+        //testing delete when not using sim
+        tagPose = FieldConstants.defaultAprilTagType.getLayout().getTagPose(17).get().toPose2d();
+        //tagPose = vision.getClosestTagPose().toPose2d();
+        //[fixme]IMMINANT, use coarsed field pose
+
+        if (rightReef) {
+            destinationPose = tagPose.transformBy(RobotConstants.ReefAimConstants.tagRightToRobot);
+        } else {
+            destinationPose = tagPose.transformBy(RobotConstants.ReefAimConstants.tagLeftToRobot);
+        }
+        xPID.setSetpoint(destinationPose.getTranslation().getX());
+        yPID.setSetpoint(destinationPose.getTranslation().getY());
+        swerve.setLockHeading(true);
+        swerve.setHeadingTarget(destinationPose.getRotation().getDegrees() - 180.0);
         robotPose = swerve.getLocalizer().getCoarseFieldPose(0);
         translationalVelocity = new Translation2d(xPID.calculate(robotPose.getX() - 0.45), yPID.calculate(robotPose.getY()));
-        SmartDashboard.putString("ReefAimCommand/RobotPose", robotPose.toString());
-        SmartDashboard.putString("ReefAimCommand/translationalVelocity", translationalVelocity.toString());
         swerve.drive(AllianceFlipUtil.shouldFlip() ? translationalVelocity.unaryMinus() : translationalVelocity, 0.0, true, false);
+
+
+        Logger.recordOutput("ReefAimCommand/tagID", tagID);
+        Logger.recordOutput("ReefAimCommand/rightReef", rightReef);
+        Logger.recordOutput("ReefAimCommand/destinationPose", destinationPose.toString());
+        Logger.recordOutput("ReefAimCommand/xFinished", xPID.atSetpoint());
+        Logger.recordOutput("ReefAimCommand/yFinished", yPID.atSetpoint());
+        Logger.recordOutput("ReefAimCommand/omegaFinished", Swerve.getInstance().aimingReady(1,2.14));
+        Logger.recordOutput("ReefAimCommand/RobotPose", robotPose.toString());
+        Logger.recordOutput("ReefAimCommand/translationalVelocity", translationalVelocity.toString());
     }
 
     @Override
     public boolean isFinished() {
-        SmartDashboard.putBoolean("ReefAimCommand/xFinished", xPID.atSetpoint());
-        SmartDashboard.putBoolean("ReefAimCommand/yFinished", yPID.atSetpoint());
-        SmartDashboard.putBoolean("ReefAimCommand/omegaFinished", Swerve.getInstance().aimingReady(1));
-        SmartDashboard.putBoolean("ReefAimCommand/emergencyStopped", stop.getAsBoolean());
-        return (xPID.atSetpoint() && yPID.atSetpoint() && Swerve.getInstance().aimingReady(1)) || stop.getAsBoolean();
+        return (xPID.atSetpoint() && yPID.atSetpoint() && Swerve.getInstance().aimingReady(1,2.14));
     }
 
     @Override

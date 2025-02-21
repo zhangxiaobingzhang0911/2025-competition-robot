@@ -18,6 +18,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.ExtensionMethod;
+import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.GeomUtil;
 import org.littletonrobotics.LoggedTunableNumber;
 import org.littletonrobotics.RobotState;
@@ -160,7 +161,9 @@ public class AprilTagVision extends SubsystemBase {
                         // Select the most likely pose based on the estimated rotation
                         if (error0 < error1 * ambiguityThreshold || error1 < error0 * ambiguityThreshold) {
                             Rotation2d currentRotation =
-                                    Swerve.getInstance().getLocalizer().getCoarseFieldPose(timestamp).getRotation();
+                                    AllianceFlipUtil.shouldFlip() ?
+                                            Swerve.getInstance().getLocalizer().getCoarseFieldPose(timestamp).getRotation().minus(Rotation2d.fromDegrees(180)) :
+                                            Swerve.getInstance().getLocalizer().getCoarseFieldPose(timestamp).getRotation();
                             Rotation2d visionRotation0 = robotPose3d0.toPose2d().getRotation();
                             Rotation2d visionRotation1 = robotPose3d1.toPose2d().getRotation();
                             if (Math.abs(currentRotation.minus(visionRotation0).getRadians())
@@ -313,7 +316,6 @@ public class AprilTagVision extends SubsystemBase {
 
                 // Clear tag poses if no recent frames from instance
                 if (Timer.getFPGATimestamp() - lastFrameTimes.get(instanceIndex) > targetLogTimeSecs) {
-                    //noinspection RedundantArrayCreation
                     Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/TagPoses", new Pose3d[]{});
                 }
             }

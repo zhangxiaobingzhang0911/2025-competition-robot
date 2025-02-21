@@ -33,6 +33,7 @@ import frc.robot.subsystems.endeffector.EndEffectorIOSim;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.DestinationSupplier;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.json.simple.parser.ParseException;
@@ -59,9 +60,8 @@ public class RobotContainer {
 
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);
-    private final CommandXboxController operatorController = new CommandXboxController(1);
     private final CommandXboxController testerController = new CommandXboxController(2);
-    private final CommandGenericHID streamDeckController = new CommandGenericHID(3);
+    private final CommandGenericHID streamDeckController = new CommandGenericHID(1);
     // Update Manager
     @Getter
     private final UpdateManager updateManager;
@@ -70,7 +70,6 @@ public class RobotContainer {
             this::getAprilTagLayoutType,
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
-
     private final Swerve swerve = Swerve.getInstance();
     private final Display display = Display.getInstance();
     private final ElevatorSubsystem elevatorSubsystem;
@@ -101,7 +100,6 @@ public class RobotContainer {
         new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
 
         configureDriverBindings();
-        configureOperatorBindings();
         configureTesterBindings();
         configureStreamDeckBindings();
     }
@@ -139,21 +137,11 @@ public class RobotContainer {
 
 
         driverController.leftBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.x().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem));
+        driverController.leftTrigger().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem));
         driverController.rightBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
         driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem, climberSubsystem));
         driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-        driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem,intakeSubsystem,elevatorSubsystem));
-    }
-
-    private void configureOperatorBindings() {
-        //Operator's triggers to change target reef heights
-        operatorController.a().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
-        operatorController.b().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
-        operatorController.x().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
-        operatorController.y().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
-        operatorController.leftBumper().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
-        operatorController.rightBumper().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
+        driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
     }
 
     private void configureTesterBindings() {
@@ -179,9 +167,15 @@ public class RobotContainer {
     }
 
     private void configureStreamDeckBindings() {
-        streamDeckController.button(1).whileTrue(new ReefAimCommand(aprilTagVision));
-        streamDeckController.button(2).onTrue(Commands.runOnce(() ->DestinationSupplier.getInstance().updateBranch(false)));
-        streamDeckController.button(3).onTrue(Commands.runOnce(() ->DestinationSupplier.getInstance().updateBranch(true)));
+        // Operator's controller
+        streamDeckController.button(1).onTrue(new ReefAimCommand(8, false, () -> streamDeckController.button(17).getAsBoolean()));
+        streamDeckController.button(2).onTrue(new ReefAimCommand(11, true, () -> streamDeckController.button(17).getAsBoolean()));
+        streamDeckController.button(13).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
+        streamDeckController.button(14).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
+        streamDeckController.button(15).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
+        streamDeckController.button(16).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
+        streamDeckController.button(18).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
+        streamDeckController.button(19).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
     }
 
     public Command getAutonomousCommand() throws IOException, ParseException {

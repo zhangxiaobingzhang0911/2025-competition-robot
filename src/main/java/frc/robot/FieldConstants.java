@@ -34,6 +34,7 @@ public class FieldConstants {
             Units.inchesToMeters(299.438); // Measured from the inside of starting line
     public static final double aprilTagWidth = Units.inchesToMeters(6.5);
     public static final AprilTagLayoutType defaultAprilTagType = AprilTagLayoutType.CUSTOM;
+    public static final AprilTagLayoutType officialAprilTagType = AprilTagLayoutType.OFFICIAL;
 
     @Getter
     public enum AprilTagLayoutType {

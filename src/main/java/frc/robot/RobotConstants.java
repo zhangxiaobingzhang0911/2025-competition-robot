@@ -9,7 +9,6 @@ import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.ClosedLoopOutputTy
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstantsFactory;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.RobotController;
@@ -180,7 +179,7 @@ public final class RobotConstants {
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
         private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
         private static final int FRONT_LEFT_ENCODER_ID = 10;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = is10541 ? -0.1481936719 : -0.458007;
+        private static final double FRONT_LEFT_ENCODER_OFFSET = is10541 ? -0.1513673594 : -0.458007;
         private static final Measure<DistanceUnit> frontLeftXPos = Meters.of(0.29);
         private static final Measure<DistanceUnit> frontLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
@@ -273,9 +272,9 @@ public final class RobotConstants {
          * Constants for the gains in the ReefAimCommand.
          */
         public static class AimGainsClass {
-            public static final TunableNumber AIM_KP = new TunableNumber("AIM PID/kp", 5);
-            public static final TunableNumber AIM_KI = new TunableNumber("AIM PID/ki", 0.5);
-            public static final TunableNumber AIM_KD = new TunableNumber("AIM PID/kd", 0.5);
+            public static final TunableNumber AIM_KP = new TunableNumber("AIM PID/kp", 3);
+            public static final TunableNumber AIM_KI = new TunableNumber("AIM PID/ki", 0);
+            public static final TunableNumber AIM_KD = new TunableNumber("AIM PID/kd", 0);
         }
 
     }
@@ -284,9 +283,12 @@ public final class RobotConstants {
      * Constants specific to the reef aim mechanism.
      */
     public static final class ReefAimConstants {
-        public static final Transform2d tagLeftToRobot = new Transform2d(); // vec(robot) - vec(tag) when
-        // shooting left coral
-        public static final Transform2d tagRightToRobot = new Transform2d();
+        public static final Measure<DistanceUnit> PIPE_TO_TAG = Meters.of(0.164308503);
+        public static final Measure<DistanceUnit> ROBOT_TO_PIPE = Meters.of(0.48);
+        public static final Measure<DistanceUnit> X_TOLERANCE = Meters.of(0.02);
+        public static final Measure<DistanceUnit> Y_TOLERANCE = Meters.of(0.02);
+        public static final Measure<LinearVelocityUnit> MAX_AIMING_SPEED = MetersPerSecond.of(4.5);
+        public static final Measure<LinearAccelerationUnit> MAX_AIMING_ACCELERATION = MetersPerSecondPerSecond.of(11);
     }
 
     /**
@@ -347,7 +349,7 @@ public final class RobotConstants {
         public static final double moi = 0;//inertia for simulation
         public static final double ROLLER_RATIO = 1;
         public static final double INTAKE_DANGER_ZONE = 90;
-        public static final TunableNumber ROLLER_AMPS_HAS_CORAL = new TunableNumber("INTAKE_ROLLER/rollerAmpsHasCoral",10);
+        public static final TunableNumber ROLLER_AMPS_HAS_CORAL = new TunableNumber("INTAKE_ROLLER/rollerAmpsHasCoral", 10);
         //Motion constants for intake pivot
         public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 100);
         public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 500);
@@ -399,8 +401,7 @@ public final class RobotConstants {
      * Constants related to the elevator subsystem.
      */
     public static class ElevatorConstants {
-        public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
-        public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
+        public static final int ELEVATOR_MOTOR_ID = 50;
 
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
@@ -452,6 +453,6 @@ public final class RobotConstants {
         public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0);// 0.107853495
         public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
                 0);
-        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.3);
+        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.45);//0.3
     }
 }

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.basics.AutoActions;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
+import frc.robot.utils.DestinationSupplier;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
@@ -49,11 +50,13 @@ import static frc.robot.RobotConstants.ElevatorConstants.*;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+
     // flag states
     public static boolean elevatorIsDanger;
     public static boolean intakeIsDanger;
     public static boolean intakeIsAvoiding;
-    public static double elevatorTargetPosition = L3_EXTENSION_METERS.get(); // Used for storing an elevator target position to be used with commands like PutCoralCommand
+
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);
     private final CommandXboxController operatorController = new CommandXboxController(1);
@@ -139,14 +142,17 @@ public class RobotContainer {
         driverController.rightBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
         driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem, climberSubsystem));
         driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
+        driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem,intakeSubsystem,elevatorSubsystem));
     }
 
     private void configureOperatorBindings() {
         //Operator's triggers to change target reef heights
-        operatorController.a().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L1_EXTENSION_METERS.get()));
-        operatorController.b().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L2_EXTENSION_METERS.get()));
-        operatorController.x().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L3_EXTENSION_METERS.get()));
-        operatorController.y().onTrue(Commands.runOnce(() -> elevatorTargetPosition = L4_EXTENSION_METERS.get()));
+        operatorController.a().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
+        operatorController.b().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
+        operatorController.x().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
+        operatorController.y().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
+        operatorController.leftBumper().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
+        operatorController.rightBumper().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
     }
 
     private void configureTesterBindings() {

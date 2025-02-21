@@ -5,9 +5,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.SuperstructureVisualizer;
+import frc.robot.display.SuperstructureVisualizer;
 import lombok.Getter;
-import lombok.Setter;
 import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT;
@@ -86,13 +85,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private SystemState handleStateTransition() {
         return switch (wantedState) {
             case ZERO -> SystemState.ZEROING;
-            case POSITION -> {
-                if (systemState == SystemState.ZEROING) {
-                    wantedState = WantedState.ZERO;
-                    yield SystemState.ZEROING;
-                }
-                yield SystemState.POSITION_GOING;
-            }
+            case POSITION -> SystemState.POSITION_GOING;
             case IDLE -> {
                 if (systemState == SystemState.POSITION_GOING) {
                     wantedState = WantedState.ZERO;

@@ -122,7 +122,6 @@ public class ElevatorIOSim implements ElevatorIO {
     public void setElevatorTarget(double meters) {
         targetPositionMeters = meters;
         controller.setGoal(heightToRad(meters));
-
     }
 
 
@@ -133,7 +132,6 @@ public class ElevatorIOSim implements ElevatorIO {
 
     @Override
     public boolean isNearZeroExtension() {
-
         return MathUtil.isNear(0.05, radToHeight(simState.get(0)), 0.3);
     }
 

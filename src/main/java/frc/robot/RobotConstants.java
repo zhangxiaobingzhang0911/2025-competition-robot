@@ -349,6 +349,7 @@ public final class RobotConstants {
         public static final double moi = 0;//inertia for simulation
         public static final double ROLLER_RATIO = 1;
         public static final double INTAKE_DANGER_ZONE = 90;
+        public static final TunableNumber ROLLER_AMPS_HAS_CORAL = new TunableNumber("INTAKE_ROLLER/rollerAmpsHasCoral",10);
         //Motion constants for intake pivot
         public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 100);
         public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 500);
@@ -400,17 +401,17 @@ public final class RobotConstants {
      * Constants related to the elevator subsystem.
      */
     public static class ElevatorConstants {
-        public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
-        public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
+        public static final int ELEVATOR_MOTOR_ID = 50;
 
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
         public static final double ELEVATOR_DANGER_ZONE = 0.4180619200456253;
+        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.46;
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                 200);
         public static final TunableNumber motionCruiseVelocity = new TunableNumber("Elevator/MotionCruiseVelocity",
-                80);
+                40);
         public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk",
                 0.0);
         public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
@@ -426,7 +427,11 @@ public final class RobotConstants {
         public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
                 1.01);// 0.107853495
         public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
-                1.57);
+                1.625);
+        public static final TunableNumber P1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P1",
+                0.50);
+        public static final TunableNumber P2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P2",
+                0.80);
         public static final TunableNumber FUNNEL_INTAKE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/FunnnelIntake",
                 0.35);
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
@@ -448,6 +453,6 @@ public final class RobotConstants {
         public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0);// 0.107853495
         public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
                 0);
-        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.3);
+        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.45);//0.3
     }
 }

@@ -399,8 +399,7 @@ public final class RobotConstants {
      * Constants related to the elevator subsystem.
      */
     public static class ElevatorConstants {
-        public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
-        public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
+        public static final int ELEVATOR_MOTOR_ID = 50;
 
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
@@ -452,6 +451,6 @@ public final class RobotConstants {
         public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0);// 0.107853495
         public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
                 0);
-        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.3);
+        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.45);//0.3
     }
 }

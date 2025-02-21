@@ -1,73 +1,71 @@
 package frc.robot.auto.basics;
 
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-import com.pathplanner.lib.util.FileVersionException;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.subsystems.swerve.Swerve;
-import lombok.Getter;
+import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import lombok.Synchronized;
-import org.json.simple.parser.ParseException;
-import org.littletonrobotics.AllianceFlipUtil;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
+import static frc.robot.RobotConstants.ElevatorConstants.*;
+
 public class AutoActions {
-    private final static Swerve swerve = Swerve.getInstance();
+    public static boolean initialized = false;
 
-    @Getter
-    private static final Map<String, Command> eventMap = new HashMap<>();
-
-    @Synchronized
-    public static PathPlannerTrajectory getTrajectory(String name) throws FileVersionException, IOException, ParseException {
-        if (AllianceFlipUtil.shouldFlip()) {
-            return new PathPlannerTrajectory(
-                    PathPlannerPath.fromPathFile(name).flipPath(),
-                    swerve.getChassisSpeeds(),
-                    swerve.getLocalizer().getLatestPose().getRotation(), swerve.getAutoConfig()
-            );
-        } else {
-            return new PathPlannerTrajectory(
-                    PathPlannerPath.fromPathFile(name),
-                    swerve.getChassisSpeeds(),
-                    swerve.getLocalizer().getLatestPose().getRotation(), swerve.getAutoConfig()
-            );
+    public static void initializeAutoCommands(ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, EndEffectorSubsystem endEffectorSubsystem) {
+        if (initialized) {
+            throw new IllegalStateException("AutoActions already initialized");
         }
-    }
-
-    @Synchronized
-    public static Command followTrajectory(PathPlannerTrajectory trajectory, boolean angleLock, boolean requiredOnTarget) {
-        return new FollowTrajectory(swerve, trajectory, angleLock, requiredOnTarget);
-    }
-
-    @Synchronized
-    public static Command followTrajectoryVolatile(PathPlannerTrajectory trajectory, boolean angleLock, boolean requiredOnTarget) {
-        return new SequentialCommandGroup(
-                resetOdometryToTrajectoryStart(trajectory),
-                followTrajectory(trajectory, angleLock, requiredOnTarget)
+        Map<String, Command> autoCommands = Map.ofEntries(
+                Map.entry(
+                        "EE-GROUND-INTAKE", Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE))
+                ),
+                Map.entry(
+                        "EE-PRE-SHOOT", Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT))
+                ),
+                Map.entry(
+                        "EE-IDLE", Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE))
+                ),
+                Map.entry(
+                        "EE-SHOOT", Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT))
+                ),
+                Map.entry(
+                        "ELE-ZERO", Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO))
+                ),
+                Map.entry(
+                        "ELE-L1", Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L1_EXTENSION_METERS.get()))
+                ),
+                Map.entry(
+                        "ELE-L2", Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L2_EXTENSION_METERS.get()))
+                ),
+                Map.entry(
+                        "ELE-L3", Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L3_EXTENSION_METERS.get()))
+                ),
+                Map.entry(
+                        "ELE-L4", Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L4_EXTENSION_METERS.get()))
+                ),
+                Map.entry(
+                        "ELE-HOME", Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get()))
+                ),
+                Map.entry(
+                        "INTAKE-DEPLOY", Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE))
+                ),
+                Map.entry(
+                        "INTAKE-HOME", Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME))
+                ),
+                Map.entry(
+                        "INTAKE-ZERO", Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO))
+                )
         );
-    }
-
-    @Synchronized
-    public static Command resetOdometryToTrajectoryStart(PathPlannerTrajectory trajectory) {
-        return new InstantCommand(() -> swerve.resetPose(trajectory.getInitialPose()));
-    }
-
-    @Synchronized
-    public static Command resetOdometry(Pose2d startingPose) {
-        return new InstantCommand(() -> swerve.resetPose(startingPose));
+        NamedCommands.registerCommands(autoCommands);
     }
 
     @Synchronized
     public static Command waitFor(double seconds) {
         return new WaitCommand(seconds);
-    }
-
-    @Synchronized
-    public static Command print(String message) {
-        return new PrintCommand(message);
     }
 }

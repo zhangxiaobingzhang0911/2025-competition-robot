@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -16,9 +15,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.basics.AutoActions;
+import frc.robot.auto.basics.AutoFile;
+import frc.robot.auto.basics.CustomAutoChooser;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
-import frc.robot.utils.DestinationSupplier;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
@@ -34,13 +34,11 @@ import frc.robot.subsystems.endeffector.EndEffectorIOSim;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.DestinationSupplier;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
-import org.json.simple.parser.ParseException;
 import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import java.io.IOException;
 
 import static frc.robot.RobotConstants.ElevatorConstants.*;
 
@@ -78,7 +76,7 @@ public class RobotContainer {
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
     @Getter
-    private LoggedDashboardChooser<Command> autoChooser;
+    private final LoggedDashboardChooser<String> autoChooser;
     private double lastResetTime = 0.0;
 
 
@@ -97,6 +95,9 @@ public class RobotContainer {
         updateManager = new UpdateManager(swerve,
                 display);
         updateManager.registerAll();
+
+        autoChooser = new LoggedDashboardChooser<>("Chooser", CustomAutoChooser.buildAutoChooser("New Auto"));
+        AutoActions.initializeAutoCommands(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem);
 
         new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
 
@@ -143,7 +144,7 @@ public class RobotContainer {
         driverController.rightBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
         driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem, climberSubsystem));
         driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-        driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem,intakeSubsystem,elevatorSubsystem));
+        driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
     }
 
     private void configureOperatorBindings() {
@@ -182,9 +183,9 @@ public class RobotContainer {
         streamDeckController.button(1).onTrue(new ReefAimCommand(8, false, () -> streamDeckController.button(17).getAsBoolean()));
     }
 
-    public Command getAutonomousCommand() throws IOException, ParseException {
-        // autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
-        return AutoActions.followTrajectory(AutoActions.getTrajectory("Test"), false, true);
+    public Command getAutonomousCommand() {
+        // FIXME: set resetOdometry to false when vision is completed and usable
+        return AutoFile.runAuto(autoChooser.get(), false, true, true);
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

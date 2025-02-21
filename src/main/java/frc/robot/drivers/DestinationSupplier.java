@@ -1,35 +1,26 @@
 package frc.robot.drivers;
 
 import frc.robot.RobotConstants;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import org.frcteam6941.looper.Updatable;
+import org.littletonrobotics.junction.Logger;
 
 public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
+    private int targetTagID = 0;
+    private boolean coralRight = false;
+    private boolean useCoral = false;
+    private elevatorSetpoint currentElevSetpointCoral = elevatorSetpoint.L2;
+    private elevatorSetpoint currentElevSetpointPoke = elevatorSetpoint.P1;
+
+    private DestinationSupplier() {
+    }
+
     public static DestinationSupplier getInstance() {
         if (instance == null) {
             instance = new DestinationSupplier();
         }
         return instance;
     }
-
-
-    public enum elevatorSetpoint {
-        L1, L2, L3, L4, P1, P2
-    }
-
-    private int targetTagID = 0;
-    private boolean coralRight = false;
-    private boolean useCoral = false;
-
-    private elevatorSetpoint currentElevSetpointCoral = elevatorSetpoint.L2;
-    private elevatorSetpoint currentElevSetpointPoke = elevatorSetpoint.P1;
-
-
-    private DestinationSupplier() {
-    }
-
 
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {
         switch (setpoint) {
@@ -69,15 +60,21 @@ public class DestinationSupplier implements Updatable {
     public void updateBranch(boolean coralRight) {
         this.coralRight = coralRight;
     }
+
     public void updateTagID(int tagID) {
         this.targetTagID = tagID;
     }
-    public int getTargetTagID(){
+
+    public int getTargetTagID() {
         return targetTagID;
     }
 
     public boolean getCurrentBranch() {
         return coralRight;
+    }
+
+    public enum elevatorSetpoint {
+        L1, L2, L3, L4, P1, P2
     }
 
 

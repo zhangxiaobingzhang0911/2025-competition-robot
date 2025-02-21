@@ -102,7 +102,7 @@ public class ReefAimCommand extends Command {
     public boolean isFinished() {
         xFinished = Math.abs(robotPose.getX() - destinationPose.getX()) < ReefAimConstants.X_TOLERANCE.magnitude();
         yFinished = Math.abs(robotPose.getY() - destinationPose.getY()) < ReefAimConstants.Y_TOLERANCE.magnitude();
-        omegaFinished = Swerve.getInstance().aimingReady(0.5);
+        omegaFinished = Swerve.getInstance().aimingReady(0.5, 2.14);
         SmartDashboard.putBoolean("ReefAimCommand/xFinished", xFinished);
         SmartDashboard.putBoolean("ReefAimCommand/yFinished", yFinished);
         SmartDashboard.putBoolean("ReefAimCommand/omegaFinished", omegaFinished);

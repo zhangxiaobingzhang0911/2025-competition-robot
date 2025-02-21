@@ -1,14 +1,17 @@
-package frc.robot.utils;
+package frc.robot.drivers;
 
 import frc.robot.RobotConstants;
+import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.junction.Logger;
 
-public class DestinationSupplier {
+public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
+    private int targetTagID = 0;
+    private boolean coralRight = false;
     private boolean useCoral = false;
     private elevatorSetpoint currentElevSetpointCoral = elevatorSetpoint.L2;
     private elevatorSetpoint currentElevSetpointPoke = elevatorSetpoint.P1;
-    private chassisSetpoint currentChassisSetpoint;
+
     private DestinationSupplier() {
     }
 
@@ -35,10 +38,6 @@ public class DestinationSupplier {
 
     }
 
-    public void updateChassisSetpoint(chassisSetpoint setpoint) {
-        currentChassisSetpoint = setpoint;
-    }
-
     public double getElevatorSetpoint(boolean useCoral) {
         this.useCoral = useCoral;
         if (useCoral) {
@@ -58,12 +57,26 @@ public class DestinationSupplier {
         }
     }
 
+    public void updateBranch(boolean coralRight) {
+        this.coralRight = coralRight;
+    }
+
+    public void updateTagID(int tagID) {
+        this.targetTagID = tagID;
+    }
+
+    public int getTargetTagID() {
+        return targetTagID;
+    }
+
+    public boolean getCurrentBranch() {
+        return coralRight;
+    }
+
     public enum elevatorSetpoint {
         L1, L2, L3, L4, P1, P2
     }
 
-    public enum chassisSetpoint {
-        LEFT, RIGHT
-    }
 
 }
+

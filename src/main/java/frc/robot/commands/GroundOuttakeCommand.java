@@ -22,11 +22,12 @@ public class GroundOuttakeCommand extends Command {
 
     @Override
     public void execute() {
+        //TODO elevator may not need to home
         if(elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())){
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.OUTTAKE);
         }
         else{
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.OUTTAKE);
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
         }
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
         elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());

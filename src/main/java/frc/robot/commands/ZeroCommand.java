@@ -18,6 +18,7 @@ public class ZeroCommand extends SequentialCommandGroup {
         );
     }
 
+<<<<<<< HEAD
     @Override
     public InterruptionBehavior getInterruptionBehavior() {return InterruptionBehavior.kCancelIncoming;}
 }

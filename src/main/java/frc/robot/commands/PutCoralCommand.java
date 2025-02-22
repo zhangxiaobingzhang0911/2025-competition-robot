@@ -23,7 +23,6 @@ public class PutCoralCommand extends ParallelCommandGroup {
         );
     }
 
-<<<<<<< HEAD
     @Override
     public InterruptionBehavior getInterruptionBehavior() {return InterruptionBehavior.kCancelIncoming;}
 }

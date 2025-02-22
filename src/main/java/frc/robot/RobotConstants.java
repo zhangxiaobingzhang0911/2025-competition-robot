@@ -351,7 +351,7 @@ public final class RobotConstants {
         public static final double moi = 0;//inertia for simulation
         public static final double ROLLER_RATIO = 1;
         public static final double INTAKE_DANGER_ZONE = 90;
-        public static final TunableNumber ROLLER_AMPS_HAS_CORAL = new TunableNumber("INTAKE_ROLLER/rollerAmpsHasCoral",10);
+        public static final TunableNumber ROLLER_AMPS_HAS_CORAL = new TunableNumber("INTAKE_ROLLER/rollerAmpsHasCoral",55);
         //Motion constants for intake pivot
         public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 100);
         public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 500);
@@ -361,8 +361,13 @@ public final class RobotConstants {
         public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 5);
         public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 90);
         //Motion constants for intake roller
-        public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 12.0);
+        public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 15.0);
         public static final TunableNumber OUTTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/outtakeVoltage", -6.0);
+
+        public static final TunableNumber OUTTAKE_TIME = new TunableNumber("INTAKE_ROLLER/outtake time",0.4);
+        public static final TunableNumber INTAKE_TIME = new TunableNumber("INTAKE_ROLLER/intake time",0.55);
+        // public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intake time",10);
+
         //Constants for intake pivot
         public static double PIVOT_RATIO = 36 * 50 / 11;
 
@@ -413,7 +418,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.46;
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
-                200);
+                100);
         public static final TunableNumber motionCruiseVelocity = new TunableNumber("Elevator/MotionCruiseVelocity",
                 40);
         public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk",
@@ -449,7 +454,7 @@ public final class RobotConstants {
      * Constants for the elevator motor gains.
      */
     public static class ElevatorGainsClass {
-        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 15);
+        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 5);
         public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
         public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0);
         public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka",

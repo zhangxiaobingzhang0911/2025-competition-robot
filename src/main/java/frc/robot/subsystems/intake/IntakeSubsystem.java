@@ -16,6 +16,7 @@ import static frc.robot.RobotConstants.IntakeConstants.*;
 
 public class IntakeSubsystem extends RollerSubsystem {
     public static final String NAME = "Intake/Roller";
+    private boolean shouldOuttake = false;
     private static double deployAngle = DEPLOY_ANGLE.get();
     private static double outtakeAngle = OUTTAKE_ANGLE.get();
     private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
@@ -23,6 +24,10 @@ public class IntakeSubsystem extends RollerSubsystem {
     private static double intakeVoltage = INTAKE_VOLTAGE.get();
     private static double outtakeVoltage = OUTTAKE_VOLTAGE.get();
     private static double rollerAmpsHasCoral = ROLLER_AMPS_HAS_CORAL.get();
+
+    private static double intakeTime = INTAKE_TIME.get();
+    private static double outtakeTime = OUTTAKE_TIME.get();
+
     private final IntakePivotIO intakePivotIO;
     private final IntakeRollerIO intakeRollerIO;
     private final IntakePivotIOInputsAutoLogged intakePivotIOInputs = new IntakePivotIOInputsAutoLogged();
@@ -48,6 +53,11 @@ public class IntakeSubsystem extends RollerSubsystem {
     public void periodic() {
         super.periodic();
 
+        if (RobotConstants.TUNING){
+            intakeTime = INTAKE_TIME.get();
+            outtakeTime = OUTTAKE_TIME.get();
+        }
+
         intakePivotIO.updateInputs(intakePivotIOInputs);
 
         SystemState newState = handleStateTransition();
@@ -55,6 +65,9 @@ public class IntakeSubsystem extends RollerSubsystem {
         Logger.processInputs("Intake/Pivot", intakePivotIOInputs);
 
         Logger.recordOutput("Intake/SystemState", systemState.toString());
+
+        Logger.recordOutput("Intake/rollertimerstarted", timerStarted);
+        Logger.recordOutput("Intake/rollertimer", timer.get());
 
         RobotContainer.intakeIsDanger = intakeIsDanger();
         RobotContainer.intakeIsAvoiding = intakeIsAvoiding();
@@ -75,7 +88,7 @@ public class IntakeSubsystem extends RollerSubsystem {
                 intakePivotIO.setPivotAngle(deployAngle);
                 break;
             case DEPLOY_INTAKING:
-                intakeRollerIO.setVoltage(intakeVoltage);
+                rollerIntake();
                 intakePivotIO.setPivotAngle(deployAngle);
                 break;
             case TREMBLE_INTAKING:
@@ -170,24 +183,32 @@ public class IntakeSubsystem extends RollerSubsystem {
     }
 
     private void rollerIntake(){
-        intakeRollerIO.setVoltage(intakeVoltage);
-        if(intakeRollerIOInputs.supplyCurrentAmps > rollerAmpsHasCoral && !timerStarted){
+        
+        System.out.println(shouldOuttake);
+        if(inputs.statorCurrentAmps > rollerAmpsHasCoral && !timerStarted){
+            System.out.println("2");
             timer.start();
-            return;
+            timerStarted = true;
         }
-        if(intakeRollerIOInputs.supplyCurrentAmps < rollerAmpsHasCoral && timerStarted){
+        if(inputs.statorCurrentAmps < rollerAmpsHasCoral && timerStarted&& !shouldOuttake){
+            System.out.println("3");
             timer.stop();
             timer.reset();
             timerStarted = false;
         }
-        if(timerStarted && timer.hasElapsed(2)){
-            intakeRollerIO.setVoltage(-6);
-            if(timer.hasElapsed(2.5)){
+        if(timerStarted && timer.hasElapsed(outtakeTime)){
+            intakeRollerIO.setVoltage(outtakeVoltage);
+            shouldOuttake = true;
+            if(timer.hasElapsed(intakeTime)){
                 intakeRollerIO.setVoltage(intakeVoltage);
                 timer.stop();
                 timer.reset();
+                shouldOuttake = false;
                 timerStarted = false;
             }
+        }
+        else{
+            intakeRollerIO.setVoltage(intakeVoltage);
         }
 
     }
@@ -217,7 +238,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         FUNNEL_AVOID,
         HOME,
         GROUNDZERO,
-        OFF
+        OFF,
     }
 
     public enum SystemState {
@@ -228,6 +249,6 @@ public class IntakeSubsystem extends RollerSubsystem {
         FUNNEL_AVOIDING,
         HOMING,
         GROUNDZEROING,
-        OFF
+        OFF,
     }
 }

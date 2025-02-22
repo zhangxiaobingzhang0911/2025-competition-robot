@@ -18,15 +18,17 @@ public class GroundOuttakeCommand extends Command {
         this.intakeSubsystem = intakeSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
+        addRequirements(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem);
     }
 
     @Override
     public void execute() {
+        //TODO elevator may not need to home
         if(elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())){
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.OUTTAKE);
         }
         else{
-            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.OUTTAKE);
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
         }
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
         elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
@@ -41,5 +43,10 @@ public class GroundOuttakeCommand extends Command {
     @Override
     public boolean isFinished() {
         return false;
+    }
+
+    @Override
+    public InterruptionBehavior getInterruptionBehavior() {
+        return InterruptionBehavior.kCancelSelf;
     }
 }

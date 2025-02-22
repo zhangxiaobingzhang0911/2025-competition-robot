@@ -18,6 +18,7 @@ public class GroundIntakeCommand extends Command {
         this.intakeSubsystem = intakeSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
+        addRequirements(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem);
     }
 
     @Override
@@ -44,5 +45,10 @@ public class GroundIntakeCommand extends Command {
     @Override
     public boolean isFinished() {
         return endEffectorSubsystem.hasCoral();
+    }
+
+    @Override
+    public InterruptionBehavior getInterruptionBehavior() {
+        return InterruptionBehavior.kCancelIncoming;
     }
 }

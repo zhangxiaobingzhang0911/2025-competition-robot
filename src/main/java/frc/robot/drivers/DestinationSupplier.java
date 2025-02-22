@@ -1,11 +1,16 @@
 package frc.robot.drivers;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.FieldConstants;
 import frc.robot.RobotConstants;
+import frc.robot.subsystems.swerve.Swerve;
 import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.junction.Logger;
+import org.opencv.core.Mat;
 
 public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
+    Swerve swerve;
     private int targetTagID = 0;
     private boolean coralRight = false;
     private boolean useCoral = false;
@@ -13,6 +18,7 @@ public class DestinationSupplier implements Updatable {
     private elevatorSetpoint currentElevSetpointPoke = elevatorSetpoint.P1;
 
     private DestinationSupplier() {
+        swerve = Swerve.getInstance();
     }
 
     public static DestinationSupplier getInstance() {
@@ -57,6 +63,11 @@ public class DestinationSupplier implements Updatable {
         }
     }
 
+    /**
+     * @param coralRight: It always means the right reef RELATIVE TO TAG
+     *                   (i.e when you are facing the tag, rightReef = true means the tag on your right is the target)
+     */
+
     public void updateBranch(boolean coralRight) {
         this.coralRight = coralRight;
     }
@@ -73,8 +84,37 @@ public class DestinationSupplier implements Updatable {
         return coralRight;
     }
 
+    public int getNearestTagID(Pose2d robotPose){
+        double minDistance = Double.MAX_VALUE;
+        int minDistanceID= 0;
+        // Loop from 6 to 11
+        for (int i = 6; i <= 11; i++) {
+            if (minDistance>FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                    toPose2d().getTranslation().getDistance(robotPose.getTranslation())){
+                minDistanceID = i;
+                minDistance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                        toPose2d().getTranslation().getDistance(robotPose.getTranslation());
+            }
+        }
+
+        // Loop from 17 to 22
+        for (int i = 17; i <= 22; i++) {
+            if (minDistance>FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                    toPose2d().getTranslation().getDistance(robotPose.getTranslation())){
+                minDistanceID = i;
+                minDistance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                        toPose2d().getTranslation().getDistance(robotPose.getTranslation());}
+        }
+        minDistance = Double.MAX_VALUE;
+        return minDistanceID;
+    }
+
     public enum elevatorSetpoint {
         L1, L2, L3, L4, P1, P2
+    }
+
+    @Override
+    public void update(double time, double dt){
     }
 
 

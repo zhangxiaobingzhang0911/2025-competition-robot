@@ -66,9 +66,6 @@ public class IntakeSubsystem extends RollerSubsystem {
 
         Logger.recordOutput("Intake/SystemState", systemState.toString());
 
-        Logger.recordOutput("Intake/rollertimerstarted", timerStarted);
-        Logger.recordOutput("Intake/rollertimer", timer.get());
-
         RobotContainer.intakeIsDanger = intakeIsDanger();
         RobotContainer.intakeIsAvoiding = intakeIsAvoiding();
         Logger.recordOutput("Flags/intakeIsDanger", intakeIsDanger());
@@ -186,12 +183,10 @@ public class IntakeSubsystem extends RollerSubsystem {
         
         System.out.println(shouldOuttake);
         if(inputs.statorCurrentAmps > rollerAmpsHasCoral && !timerStarted){
-            System.out.println("2");
             timer.start();
             timerStarted = true;
         }
         if(inputs.statorCurrentAmps < rollerAmpsHasCoral && timerStarted&& !shouldOuttake){
-            System.out.println("3");
             timer.stop();
             timer.reset();
             timerStarted = false;

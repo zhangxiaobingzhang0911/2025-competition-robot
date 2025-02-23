@@ -35,10 +35,10 @@ public final class RobotConstants {
     public static final boolean disableHAL = false;
     public static final double LOOPER_DT = 1 / 50.0;
     public static final boolean TUNING = true;
-    public static final boolean DriverCamera = true;
+    public static final boolean DriverCamera = false;
     // Judge whether the team is 10541
     public static final String Serial10541 = "03415993";
-    public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541) || Robot.isReal();
+    public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541) && Robot.isReal();
     // canbus name
     public static String CAN_BUS_NAME = "rio";
     public static String CANIVORE_CAN_BUS_NAME = "10541Canivore0";
@@ -343,8 +343,8 @@ public final class RobotConstants {
         public static final int INTAKE_MOTOR_ID = 15;
         public static final int INTAKE_PIVOT_MOTOR_ID = 16;
         //Constants for intake roller
-        public static final int STATOR_CURRENT_LIMIT_AMPS = 60;
-        public static final int SUPPLY_CURRENT_LIMIT_AMPS = 20;
+        public static final int STATOR_CURRENT_LIMIT_AMPS = 80;
+        public static final int SUPPLY_CURRENT_LIMIT_AMPS = 40;
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERT = false;
         public static final double REDUCTION = 1;
@@ -420,7 +420,7 @@ public final class RobotConstants {
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                 100);
         public static final TunableNumber motionCruiseVelocity = new TunableNumber("Elevator/MotionCruiseVelocity",
-                40);
+                60);
         public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk",
                 0.0);
         public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",

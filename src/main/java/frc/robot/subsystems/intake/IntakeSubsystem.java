@@ -53,11 +53,6 @@ public class IntakeSubsystem extends RollerSubsystem {
     public void periodic() {
         super.periodic();
 
-        if (RobotConstants.TUNING){
-            intakeTime = INTAKE_TIME.get();
-            outtakeTime = OUTTAKE_TIME.get();
-        }
-
         intakePivotIO.updateInputs(intakePivotIOInputs);
 
         SystemState newState = handleStateTransition();
@@ -117,6 +112,8 @@ public class IntakeSubsystem extends RollerSubsystem {
             homeAngle = HOME_ANGLE.get();
             intakeVoltage = INTAKE_VOLTAGE.get();
             rollerAmpsHasCoral = ROLLER_AMPS_HAS_CORAL.get();
+            intakeTime = INTAKE_TIME.get();
+            outtakeTime = OUTTAKE_TIME.get();
         }
     }
 
@@ -181,7 +178,7 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     private void rollerIntake(){
         
-        System.out.println(shouldOuttake);
+        //System.out.println(shouldOuttake);
         if(inputs.statorCurrentAmps > rollerAmpsHasCoral && !timerStarted){
             timer.start();
             timerStarted = true;

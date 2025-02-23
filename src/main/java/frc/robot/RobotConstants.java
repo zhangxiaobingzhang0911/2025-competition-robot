@@ -313,7 +313,7 @@ public final class RobotConstants {
         public static final boolean IS_INVERT = false;
         public static final double REDUCTION = 1;
 
-        public static final TunableNumber INTAKE_RPS = new TunableNumber("ENDEFFECTOR/indexRPS", -40);
+        public static final TunableNumber INTAKE_RPS = new TunableNumber("ENDEFFECTOR/indexRPS", -100);
         public static final TunableNumber HOLD_RPS = new TunableNumber("ENDEFFECTOR/holdRPS", 0.0);
         public static final TunableNumber PRE_SHOOT_RPS = new TunableNumber("ENDEFFECTOR/preShootRPS", -15);
         public static final TunableNumber SHOOT_RPS = new TunableNumber("ENDEFFECTOR/shootRPS", -80);
@@ -375,7 +375,7 @@ public final class RobotConstants {
          * Constants for the intake pivot motor gains in the intake subsystem.
          */
         public static class IntakePivotGainsClass {
-            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 50);
+            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 30);
             public static final TunableNumber INTAKE_PIVOT_KI = new TunableNumber("INTAKE_PIVOT PID/ki", 0);
             public static final TunableNumber INTAKE_PIVOT_KD = new TunableNumber("INTAKE_PIVOT PID/kd", 0);
         }
@@ -433,7 +433,7 @@ public final class RobotConstants {
         public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
                 0.45);
         public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
-                0.58);
+                0.6);
         public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
                 1.01);// 0.107853495
         public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
@@ -441,12 +441,12 @@ public final class RobotConstants {
         public static final TunableNumber P1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P1",
                 0.50);
         public static final TunableNumber P2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P2",
-                0.80);
+                0.70);
         public static final TunableNumber FUNNEL_INTAKE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/FunnnelIntake",
-                0.35);
+                0.37);
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 20);
-        public static final double ELEVATOR_MIN_SAFE_HEIGHT = 0.5;
+        public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT = new TunableNumber("Elevator min safe height",0.46);
 
     }
 
@@ -455,7 +455,7 @@ public final class RobotConstants {
      * Constants for the elevator motor gains.
      */
     public static class ElevatorGainsClass {
-        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 5);
+        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 15);
         public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
         public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0);
         public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka",

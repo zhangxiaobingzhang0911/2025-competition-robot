@@ -215,7 +215,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     }
 
     public boolean intakeIsDanger() {
-        return intakePivotIOInputs.currentAngleDeg < INTAKE_DANGER_ZONE + 2;
+        return intakePivotIOInputs.currentAngleDeg < INTAKE_DANGER_ZONE - 2;
     }
 
     private boolean intakeIsAvoiding() {

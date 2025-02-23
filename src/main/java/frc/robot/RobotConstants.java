@@ -205,7 +205,7 @@ public final class RobotConstants {
         private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
         private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
         private static final int BACK_LEFT_ENCODER_ID = 0;
-        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1186526563 : -0.3500976;
+        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1186526563 : -0.354248046875;
         private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.29);
         private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
@@ -215,7 +215,7 @@ public final class RobotConstants {
         private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 8;
         private static final int BACK_RIGHT_STEER_MOTOR_ID = 7;
         private static final int BACK_RIGHT_ENCODER_ID = 20;
-        private static final double BACK_RIGHT_ENCODER_OFFSET = is10541 ? 0.6188965 : 0.4609375;
+        private static final double BACK_RIGHT_ENCODER_OFFSET = is10541 ? 0.6188965 : 0.46240234375;
         private static final Measure<DistanceUnit> backRightXPos = Meters.of(-0.29);
         private static final Measure<DistanceUnit> backRightYPos = Meters.of(-0.29);
         public static final LegacySwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
@@ -410,7 +410,8 @@ public final class RobotConstants {
      * Constants related to the elevator subsystem.
      */
     public static class ElevatorConstants {
-        public static final int ELEVATOR_MOTOR_ID = 50;
+        public static final int LEFT_ELEVATOR_MOTOR_ID = 50;
+        public static final int RIGHT_ELEVATOR_MOTOR_ID = 51;
 
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
@@ -462,6 +463,6 @@ public final class RobotConstants {
         public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0);// 0.107853495
         public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
                 0);
-        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.45);//0.3
+        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.3);//0.3
     }
 }

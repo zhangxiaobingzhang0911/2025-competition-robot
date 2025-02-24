@@ -59,7 +59,7 @@ public class Swerve implements Updatable, Subsystem {
             RobotConstants.SwerveConstants.headingController.HEADING_KI.get(),
             RobotConstants.SwerveConstants.headingController.HEADING_KD.get(),
             new TrapezoidProfile.Constraints(400, 720));
-    // Path Following Controller
+    // Path Following Controller TODO tuning
     private final HolonomicTrajectoryFollower trajectoryFollower = new HolonomicTrajectoryFollower(
             new PIDController(3.5, 0.0, 0.0), new PIDController(3.5, 0.0, 0.0),
             this.headingController, RobotConstants.SwerveConstants.DRIVETRAIN_FEEDFORWARD);
@@ -127,7 +127,7 @@ public class Swerve implements Updatable, Subsystem {
         setpoint = new SwerveSetpoint(new edu.wpi.first.math.kinematics.ChassisSpeeds(), getModuleStates());
         previousSetpoint = new SwerveSetpoint(new edu.wpi.first.math.kinematics.ChassisSpeeds(), getModuleStates());
         generator = new SwerveSetpointGenerator(RobotConstants.SwerveConstants.modulePlacements);
-        kinematicLimits = SwerveConstants.DRIVETRAIN_LIMITED; // TODO
+        kinematicLimits = SwerveConstants.DRIVETRAIN_UNCAPPED;
 
         autoConfig = RobotConfig.fromGUISettings();
     }

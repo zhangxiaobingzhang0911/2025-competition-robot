@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.basics.AutoActions;
+import frc.robot.auto.basics.AutoFile;
+import frc.robot.auto.basics.CustomAutoChooser;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
@@ -33,13 +35,11 @@ import frc.robot.subsystems.endeffector.EndEffectorIOSim;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.DestinationSupplier;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
-import org.json.simple.parser.ParseException;
 import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import java.io.IOException;
 
 import static frc.robot.RobotConstants.ElevatorConstants.*;
 
@@ -59,8 +59,9 @@ public class RobotContainer {
 
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);
+    private final CommandXboxController operatorController = new CommandXboxController(1);
     private final CommandXboxController testerController = new CommandXboxController(2);
-    private final CommandGenericHID streamDeckController = new CommandGenericHID(1);
+    private final CommandGenericHID streamDeckController = new CommandGenericHID(3);
     // Update Manager
     @Getter
     private final UpdateManager updateManager;
@@ -77,7 +78,7 @@ public class RobotContainer {
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
     @Getter
-    private LoggedDashboardChooser<Command> autoChooser;
+    private final LoggedDashboardChooser<String> autoChooser;
     private double lastResetTime = 0.0;
 
 
@@ -97,9 +98,13 @@ public class RobotContainer {
                 display,destinationSupplier);
         updateManager.registerAll();
 
+        autoChooser = new LoggedDashboardChooser<>("Chooser", CustomAutoChooser.buildAutoChooser("New Auto"));
+        AutoActions.initializeAutoCommands(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem);
+
         new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
 
         configureDriverBindings();
+        configureOperatorBindings();
         configureTesterBindings();
         configureStreamDeckBindings();
     }
@@ -139,9 +144,22 @@ public class RobotContainer {
         driverController.leftBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.leftTrigger().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem));
         driverController.rightBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
-        driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem, climberSubsystem));
+        driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
+        driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+
+    }
+
+    private void configureOperatorBindings() {
+
+        //Operator's triggers to change target reef heights
+        operatorController.a().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
+        operatorController.b().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
+        operatorController.x().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
+        operatorController.y().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
+        operatorController.leftBumper().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
+        operatorController.rightBumper().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
     }
 
     private void configureTesterBindings() {
@@ -180,9 +198,9 @@ public class RobotContainer {
         streamDeckController.button(19).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
     }
 
-    public Command getAutonomousCommand() throws IOException, ParseException {
-        // autoChooser = new LoggedDashboardChooser<>("Chooser", AutoBuilder.buildAutoChooser());
-        return AutoActions.followTrajectory(AutoActions.getTrajectory("Test"), false, true);
+    public Command getAutonomousCommand() {
+        // FIXME: set resetOdometry to false when vision is completed and usable
+        return AutoFile.runAuto(autoChooser.get(), false, true, true);
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

@@ -335,6 +335,51 @@
                 200.0
               ]
             }
+          },
+          {
+            "title": "currentElevSetpointCoral",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/currentElevSetpointCoral",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "currentElevSetpointPoke",
+            "x": 128.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/currentElevSetpointPoke",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "RightCoral",
+            "x": 0.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/RightCoral",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
           }
         ]
       }
@@ -696,7 +741,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/brightness",
+                  "topic": "/northstar_2/config/brightness",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -710,7 +755,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/buffersize",
+                  "topic": "/northstar_2/config/buffersize",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -724,7 +769,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_auto_exposure",
+                  "topic": "/northstar_2/config/camera_auto_exposure",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -738,7 +783,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_exposure",
+                  "topic": "/northstar_2/config/camera_exposure",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -752,7 +797,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_gain",
+                  "topic": "/northstar_2/config/camera_gain",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -766,7 +811,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_id",
+                  "topic": "/northstar_2/config/camera_id",
                   "period": 0.06,
                   "data_type": "string",
                   "show_submit_button": false
@@ -780,7 +825,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_resolution_height",
+                  "topic": "/northstar_2/config/camera_resolution_height",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -794,7 +839,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_resolution_width",
+                  "topic": "/northstar_2/config/camera_resolution_width",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -808,7 +853,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/contrast",
+                  "topic": "/northstar_2/config/contrast",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -822,7 +867,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/fiducial_size_m",
+                  "topic": "/northstar_2/config/fiducial_size_m",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -836,7 +881,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/fps",
+                  "topic": "/northstar_2/config/fps",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -863,7 +908,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/brightness",
+                  "topic": "/northstar_3/config/brightness",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -877,7 +922,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/buffersize",
+                  "topic": "/northstar_3/config/buffersize",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -891,7 +936,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_auto_exposure",
+                  "topic": "/northstar_3/config/camera_auto_exposure",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -905,7 +950,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_exposure",
+                  "topic": "/northstar_3/config/camera_exposure",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -919,7 +964,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_gain",
+                  "topic": "/northstar_3/config/camera_gain",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -933,7 +978,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_id",
+                  "topic": "/northstar_3/config/camera_id",
                   "period": 0.06,
                   "data_type": "string",
                   "show_submit_button": false
@@ -947,7 +992,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_resolution_height",
+                  "topic": "/northstar_3/config/camera_resolution_height",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -961,7 +1006,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/camera_resolution_width",
+                  "topic": "/northstar_3/config/camera_resolution_width",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -975,7 +1020,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/contrast",
+                  "topic": "/northstar_3/config/contrast",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -989,7 +1034,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/fiducial_size_m",
+                  "topic": "/northstar_3/config/fiducial_size_m",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
@@ -1003,7 +1048,7 @@
                 "height": 128.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/northstar_1/config/fps",
+                  "topic": "/northstar_3/config/fps",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": false
@@ -1131,6 +1176,62 @@
               "topic": "/SmartDashboard/swerve/localizer/latest_pose",
               "period": 0.06,
               "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "fps",
+            "x": 512.0,
+            "y": 768.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/northstar_2/output/fps",
+              "period": 0.06,
+              "data_type": "int",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "fps",
+            "x": 768.0,
+            "y": 768.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/northstar_3/output/fps",
+              "period": 0.06,
+              "data_type": "int",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "observations",
+            "x": 896.0,
+            "y": 768.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/northstar_3/output/observations",
+              "period": 0.06,
+              "data_type": "double[]",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "observations",
+            "x": 640.0,
+            "y": 768.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/northstar_2/output/observations",
+              "period": 0.06,
+              "data_type": "double[]",
               "show_submit_button": false
             }
           }

@@ -7,16 +7,25 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import lombok.Synchronized;
 
 import java.util.Map;
 
 import static frc.robot.RobotConstants.ElevatorConstants.*;
 
 public class AutoActions {
-    public static boolean initialized = false;
+    private final EndEffectorSubsystem endEffectorSubsystem;
+    private final IntakeSubsystem intakeSubsystem;
+    private final ElevatorSubsystem elevatorSubsystem;
+    public boolean initialized = false;
 
-    public static void initializeAutoCommands(ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, EndEffectorSubsystem endEffectorSubsystem) {
+    public AutoActions(ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem) {
+        this.intakeSubsystem = intakeSubsystem;
+        this.endEffectorSubsystem = endEffectorSubsystem;
+        this.elevatorSubsystem = elevatorSubsystem;
+        initializeAutoCommands();
+    }
+
+    public void initializeAutoCommands() {
         if (initialized) {
             throw new IllegalStateException("AutoActions already initialized");
         }
@@ -64,8 +73,23 @@ public class AutoActions {
         NamedCommands.registerCommands(autoCommands);
     }
 
-    @Synchronized
-    public static Command waitFor(double seconds) {
+    public Command waitFor(double seconds) {
         return new WaitCommand(seconds);
+    }
+
+    public Command raiseElevator() {
+        return Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L4_EXTENSION_METERS.get()));
+    }
+
+    public Command homeIntake() {
+        return Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME));
+    }
+
+    public Command preShoot() {
+        return Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT));
+    }
+
+    public Command shootCoral() {
+        return Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT));
     }
 }

@@ -11,7 +11,13 @@ import java.io.IOException;
 import java.util.List;
 
 public class AutoFile {
-    private static List<PathPlannerPath> getAutoPaths(String fileName) {
+    private final AutoActions autoActions;
+
+    public AutoFile(AutoActions autoActions) {
+        this.autoActions = autoActions;
+    }
+
+    private List<PathPlannerPath> getAutoPaths(String fileName) {
         try {
             return PathPlannerAuto.getPathGroupFromAutoFile(fileName);
         } catch (IOException | ParseException e) {
@@ -19,14 +25,27 @@ public class AutoFile {
         }
     }
 
-    public static Command runAuto(String fileName, boolean angleLock, boolean requiredOnTarget, boolean resetOdometry) {
+    public Command runAuto(String fileName, boolean angleLock, boolean requiredOnTarget, boolean resetOdometry) {
+//        List<PathPlannerPath> paths = getAutoPaths(fileName);
+//        SequentialCommandGroup group = new SequentialCommandGroup();
+//        for (int i = 0; i < paths.size(); i++) {
+//            PathPlannerPath path = paths.get(i);
+//            // reset odometry only at auto start
+//            group.addCommands(new FollowPath(Swerve.getInstance(), path, angleLock, requiredOnTarget, resetOdometry && i == 0));
+//        }
+//        return group;
+//    }
+        return buildTestAuto(fileName);
+    }
+
+    Command buildTestAuto(String fileName) {
+        SequentialCommandGroup testAuto = new SequentialCommandGroup();
         List<PathPlannerPath> paths = getAutoPaths(fileName);
-        SequentialCommandGroup group = new SequentialCommandGroup();
-        for (int i = 0; i < paths.size(); i++) {
-            PathPlannerPath path = paths.get(i);
-            // reset odometry only at auto start
-            group.addCommands(new FollowPath(Swerve.getInstance(), path, angleLock, requiredOnTarget, resetOdometry && i == 0));
-        }
-        return group;
+        PathPlannerPath path = paths.get(0);
+        testAuto.addCommands(autoActions.preShoot());
+        testAuto.addCommands(new FollowPath(Swerve.getInstance(), path, true, true, true));
+        testAuto.addCommands(autoActions.raiseElevator());
+        testAuto.addCommands(autoActions.shootCoral());
+        return testAuto;
     }
 }

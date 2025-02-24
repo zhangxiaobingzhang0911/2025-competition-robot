@@ -1,13 +1,15 @@
 package frc.robot.auto.basics;
 
-import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.swerve.Swerve;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static frc.robot.RobotConstants.ElevatorConstants.*;
@@ -16,12 +18,15 @@ public class AutoActions {
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
+    private final Swerve swerve;
     public boolean initialized = false;
+    private Map<String, Command> autoCommands = new HashMap<>();
 
     public AutoActions(ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
+        this.swerve = Swerve.getInstance();
         initializeAutoCommands();
     }
 
@@ -29,7 +34,7 @@ public class AutoActions {
         if (initialized) {
             throw new IllegalStateException("AutoActions already initialized");
         }
-        Map<String, Command> autoCommands = Map.ofEntries(
+        autoCommands = Map.ofEntries(
                 Map.entry(
                         "EE-GROUND-INTAKE", Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE))
                 ),
@@ -70,7 +75,15 @@ public class AutoActions {
                         "INTAKE-ZERO", Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO))
                 )
         );
-        NamedCommands.registerCommands(autoCommands);
+    }
+
+    public void invokeCommand(String name) {
+        assert autoCommands.containsKey(name);
+        autoCommands.get(name).schedule();
+    }
+
+    public Command followPath(PathPlannerPath path, boolean angleLock, boolean requiredOnTarget, boolean resetOdometry) {
+        return new FollowPath(this, swerve, path, angleLock, requiredOnTarget, resetOdometry);
     }
 
     public Command waitFor(double seconds) {
@@ -81,8 +94,8 @@ public class AutoActions {
         return Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L4_EXTENSION_METERS.get()));
     }
 
-    public Command homeIntake() {
-        return Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME));
+    public Command deployIntake() {
+        return Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE));
     }
 
     public Command preShoot() {
@@ -91,5 +104,10 @@ public class AutoActions {
 
     public Command shootCoral() {
         return Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT));
+    }
+
+    public Command shootCoralAtSetpoint() {
+        return preShoot().andThen(
+                shootCoral().onlyIf(() -> elevatorSubsystem.getIo().isNearExtension(elevatorSubsystem.getWantedPosition())));
     }
 }

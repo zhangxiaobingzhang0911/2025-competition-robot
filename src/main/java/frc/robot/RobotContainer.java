@@ -100,7 +100,6 @@ public class RobotContainer {
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", CustomAutoChooser.buildAutoChooser("New Auto"));
         autoActions = new AutoActions(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
-        autoActions.initializeAutoCommands();
         autoFile = new AutoFile(autoActions);
 
         new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
@@ -159,7 +158,7 @@ public class RobotContainer {
         driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
         driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        
+
     }
 
     private void configureOperatorBindings() {
@@ -201,7 +200,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // FIXME: set resetOdometry to false when vision is completed and usable
-        return autoFile.runAuto("New Auto", false, false, false);
+        return autoFile.runAuto("4CoralUp");
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

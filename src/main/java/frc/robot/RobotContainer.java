@@ -35,7 +35,6 @@ import frc.robot.subsystems.endeffector.EndEffectorIOSim;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.utils.DestinationSupplier;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.AllianceFlipUtil;
@@ -69,7 +68,9 @@ public class RobotContainer {
     private final AprilTagVision aprilTagVision = new AprilTagVision(
             this::getAprilTagLayoutType,
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
+            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1),
+            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 2),
+            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 3));
     private final Swerve swerve = Swerve.getInstance();
     private final Display display = Display.getInstance();
     private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();
@@ -95,7 +96,7 @@ public class RobotContainer {
             climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
         }
         updateManager = new UpdateManager(swerve,
-                display,destinationSupplier);
+                display, destinationSupplier);
         updateManager.registerAll();
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", CustomAutoChooser.buildAutoChooser("New Auto"));

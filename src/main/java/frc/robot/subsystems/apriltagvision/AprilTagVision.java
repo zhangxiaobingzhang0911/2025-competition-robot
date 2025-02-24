@@ -345,6 +345,7 @@ public class AprilTagVision extends SubsystemBase {
         }
         RobotState.getInstance().setDemoTagPose(demoTagPose);
 
+        //TODO combine this one with Line 210
         if (robotPose3d != null) {
             if (measuerCnt <= 3) {
                 measuerCnt++;

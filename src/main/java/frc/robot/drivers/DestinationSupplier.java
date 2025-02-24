@@ -1,11 +1,16 @@
 package frc.robot.drivers;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.FieldConstants;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.swerve.Swerve;
 import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.junction.Logger;
+import frc.robot.FieldConstants.Reef;
 
 public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
@@ -84,7 +89,7 @@ public class DestinationSupplier implements Updatable {
         return coralRight;
     }
 
-    public int getNearestTagID(Pose2d robotPose) {
+    public Pose2d getNearestTag(Pose2d robotPose) {
         double minDistance = Double.MAX_VALUE;
         int minDistanceID = 0;
         // Loop from 6 to 11
@@ -107,8 +112,37 @@ public class DestinationSupplier implements Updatable {
             }
         }
         minDistance = Double.MAX_VALUE;
-        return minDistanceID;
+        Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
+
+        return goal;
     }
+
+
+    public static Pose2d getDriveTarget(Pose2d robot, Pose2d goal , boolean rightReef) {
+                goal = goal.transformBy(new Transform2d(
+                new Translation2d(
+                        RobotConstants.ReefAimConstants.ROBOT_TO_PIPE.magnitude(),
+                        RobotConstants.ReefAimConstants.PIPE_TO_TAG.magnitude() * (rightReef ? 1 : -1)),
+                new Rotation2d()));
+        var offset = goal.relativeTo(robot);
+        double yDistance = Math.abs(offset.getY());
+        double xDistance = Math.abs(offset.getX());
+        double shiftXT =
+                MathUtil.clamp(
+                        (yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
+                        0.0,
+                        1.0);
+        double shiftYT =
+                MathUtil.clamp(yDistance <= 0.2 ? 0.0 : -offset.getX() / Reef.faceLength, 0.0, 1.0);
+        goal = goal.transformBy(
+                new Transform2d(
+                        shiftXT * RobotConstants.ReefAimConstants.MAX_DISTANCE_REEF_LINEUP.get(),
+                        Math.copySign(shiftYT * RobotConstants.ReefAimConstants.MAX_DISTANCE_REEF_LINEUP.get() * 0.8, offset.getY()),
+                        new Rotation2d()));
+
+        return goal;
+    }
+
 
     @Override
     public void update(double time, double dt) {

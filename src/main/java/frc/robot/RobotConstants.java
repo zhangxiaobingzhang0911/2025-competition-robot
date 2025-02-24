@@ -276,9 +276,9 @@ public final class RobotConstants {
          * Constants for the gains in the ReefAimCommand.
          */
         public static class AimGainsClass {
-            public static final TunableNumber AIM_KP = new TunableNumber("AIM PID/kp", 3);
-            public static final TunableNumber AIM_KI = new TunableNumber("AIM PID/ki", 0);
-            public static final TunableNumber AIM_KD = new TunableNumber("AIM PID/kd", 0);
+            public static final TunableNumber AIM_KP = new TunableNumber("AIM/kp", 3);
+            public static final TunableNumber AIM_KI = new TunableNumber("AIM/ki", 0);
+            public static final TunableNumber AIM_KD = new TunableNumber("AIM/kd", 0);
         }
 
     }
@@ -287,6 +287,7 @@ public final class RobotConstants {
      * Constants specific to the reef aim mechanism.
      */
     public static final class ReefAimConstants {
+        public static final TunableNumber MAX_DISTANCE_REEF_LINEUP = new TunableNumber("AIM/maxLineupDistance",1.5);
         public static final Measure<DistanceUnit> PIPE_TO_TAG = Meters.of(0.164308503);
         public static final Measure<DistanceUnit> ROBOT_TO_PIPE = Meters.of(0.55);
         public static final Measure<DistanceUnit> X_TOLERANCE = Meters.of(0.02);

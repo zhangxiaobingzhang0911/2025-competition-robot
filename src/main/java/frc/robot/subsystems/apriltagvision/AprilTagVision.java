@@ -159,7 +159,12 @@ public class AprilTagVision extends SubsystemBase {
 
                         // Select the most likely pose based on the estimated rotation
                         if (error0 < error1 * ambiguityThreshold || error1 < error0 * ambiguityThreshold) {
-                            if (Math.abs(robotPose3d0.getMeasureZ().magnitude()) < Math.abs(robotPose3d1.getMeasureZ().magnitude())) {
+                            Rotation2d currentRotation =
+                                    Swerve.getInstance().getLocalizer().getCoarseFieldPose(timestamp).getRotation();
+                            Rotation2d visionRotation0 = robotPose3d0.toPose2d().getRotation();
+                            Rotation2d visionRotation1 = robotPose3d1.toPose2d().getRotation();
+                            if (Math.abs(currentRotation.minus(visionRotation0).getRadians())
+                                    < Math.abs(currentRotation.minus(visionRotation1).getRadians())) {
                                 cameraPose = cameraPose0;
                                 robotPose3d = robotPose3d0;
                             } else {

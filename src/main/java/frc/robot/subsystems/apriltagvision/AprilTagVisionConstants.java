@@ -30,6 +30,7 @@ public class AprilTagVisionConstants {
     public static final double[] stdDevFactors = new double[]{1.0, 1, 1.0, 1};
 
     // Array of camera poses relative to the robot's coordinate system
+    // forward as X+, leftward as Y+, upward as Z+, clockwise as yaw+
     public static final Pose3d[] cameraPoses =
             new Pose3d[]{
                     new Pose3d(
@@ -43,14 +44,14 @@ public class AprilTagVisionConstants {
                             0.198006,
                             new Rotation3d(0.0, Units.degreesToRadians(-25), Units.degreesToRadians(195))),
                     new Pose3d(
-                            0.14604,
-                            0.33615,
-                            0.31695,
-                            new Rotation3d(0.0, Units.degreesToRadians(-10), Units.degreesToRadians(9.9))),
+                            0.20556,
+                            0.33419,
+                            0.31560,
+                            new Rotation3d(0.0, 0.0, Units.degreesToRadians(-21))),
                     new Pose3d(
                             0.19651,
                             -0.29981,
-                            0.3156,
+                            0.31560,
                             new Rotation3d(0.0, 0.0, Units.degreesToRadians(20))),
             };
 

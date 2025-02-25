@@ -13,16 +13,16 @@ public class PutCoralCommand extends ParallelCommandGroup {
                            ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem) {
         addRequirements(endeffectorSubsystem, elevatorSubsystem, intakeSubsystem);
         addCommands(
-                Commands.deadline(
-                        new PreShootCommand(endeffectorSubsystem, intakeSubsystem, elevatorSubsystem),
-                        Commands.sequence(
-                                new WaitUntilCommand(() -> (driverController.rightTrigger().getAsBoolean() && endeffectorSubsystem.isShootReady())),
-                                new ShootCommand(endeffectorSubsystem)
-                        )
+                new PreShootCommand(endeffectorSubsystem, intakeSubsystem, elevatorSubsystem),
+                Commands.sequence(
+                        new WaitUntilCommand(() -> (driverController.rightTrigger().getAsBoolean() && endeffectorSubsystem.isShootReady())),
+                        new ShootCommand(endeffectorSubsystem)
                 )
         );
     }
 
     @Override
-    public InterruptionBehavior getInterruptionBehavior() {return InterruptionBehavior.kCancelIncoming;}
+    public InterruptionBehavior getInterruptionBehavior() {
+        return InterruptionBehavior.kCancelIncoming;
+    }
 }

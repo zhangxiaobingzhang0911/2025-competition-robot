@@ -23,10 +23,9 @@ public class GroundIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        if(elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())){
+        if (elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
-        }
-        else{
+        } else {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
         }
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE);
@@ -49,6 +48,6 @@ public class GroundIntakeCommand extends Command {
 
     @Override
     public InterruptionBehavior getInterruptionBehavior() {
-        return InterruptionBehavior.kCancelIncoming;
+        return InterruptionBehavior.kCancelSelf;
     }
 }

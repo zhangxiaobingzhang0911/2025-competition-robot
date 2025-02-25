@@ -2,12 +2,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.FieldConstants;
 import frc.robot.RobotConstants;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
@@ -73,9 +70,7 @@ public class ReefAimCommand extends Command {
 
         robotPose = swerve.getLocalizer().getCoarseFieldPose(0);
         rightReef = DestinationSupplier.getInstance().getCurrentBranch();
-        destinationPose = DestinationSupplier.getDriveTarget(robotPose,tagPose,rightReef);
-
-
+        destinationPose = DestinationSupplier.getDriveTarget(robotPose, tagPose, rightReef);
 
         xPID.setGoal(destinationPose.getTranslation().getX());
         yPID.setGoal(destinationPose.getTranslation().getY());
@@ -107,6 +102,7 @@ public class ReefAimCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        swerve.drive(new Translation2d(), 0.0, true, false);
         swerve.setLockHeading(false);
     }
 

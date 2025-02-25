@@ -17,11 +17,11 @@ public class ShootCommand extends Command {
 
     @Override
     public boolean isFinished() {
-            return endEffectorSubsystem.isShootFinished();
-        }
+        return endEffectorSubsystem.isShootFinished();
+    }
 
     @Override
-    public void end(boolean interrupted){
+    public void end(boolean interrupted) {
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
     }
 }

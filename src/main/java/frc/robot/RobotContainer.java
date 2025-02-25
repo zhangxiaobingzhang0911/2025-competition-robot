@@ -197,11 +197,12 @@ public class RobotContainer {
     private void configureStreamDeckBindings() {
         // Operator's controller
         streamDeckController.button(1).onTrue(new ReefAimCommand(() -> streamDeckController.button(17).getAsBoolean()));
+        streamDeckController.button(2).onTrue(new AutoAimShootCommand(endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, () -> streamDeckController.button(17).getAsBoolean()));
         streamDeckController.button(3).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateBranch(true)));
         streamDeckController.button(4).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateBranch(false)));
 
-        streamDeckController.button(13).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
-        streamDeckController.button(14).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
+        streamDeckController.button(13).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
+        streamDeckController.button(14).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
         streamDeckController.button(15).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
         streamDeckController.button(16).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
         streamDeckController.button(18).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));

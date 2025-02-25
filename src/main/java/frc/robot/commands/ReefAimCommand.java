@@ -84,7 +84,7 @@ public class ReefAimCommand extends Command {
         Display.getInstance().setAimingTarget(destinationPose);
         Logger.recordOutput("ReefAimCommand/tagPose", tagPose);
         Logger.recordOutput("ReefAimCommand/destinationPose", destinationPose);
-        Logger.recordOutput("ReefAimCommand/translationalVelocity", translationalVelocity.toString());
+        Logger.recordOutput("ReefAimCommand/translationalVelocity", translationalVelocity);
     }
 
     @Override

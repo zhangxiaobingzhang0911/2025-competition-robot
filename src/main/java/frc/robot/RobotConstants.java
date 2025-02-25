@@ -276,9 +276,9 @@ public final class RobotConstants {
          * Constants for the gains in the ReefAimCommand.
          */
         public static class AimGainsClass {
-            public static final TunableNumber AIM_KP = new TunableNumber("AIM/kp", 3);
+            public static final TunableNumber AIM_KP = new TunableNumber("AIM/kp", 2.8);
             public static final TunableNumber AIM_KI = new TunableNumber("AIM/ki", 0);
-            public static final TunableNumber AIM_KD = new TunableNumber("AIM/kd", 0);
+            public static final TunableNumber AIM_KD = new TunableNumber("AIM/kd", 0.1);
         }
 
     }
@@ -287,7 +287,7 @@ public final class RobotConstants {
      * Constants specific to the reef aim mechanism.
      */
     public static final class ReefAimConstants {
-        public static final TunableNumber MAX_DISTANCE_REEF_LINEUP = new TunableNumber("AIM/maxLineupDistance",1.5);
+        public static final TunableNumber MAX_DISTANCE_REEF_LINEUP = new TunableNumber("AIM/maxLineupDistance", 1.5);
         public static final Measure<DistanceUnit> PIPE_TO_TAG = Meters.of(0.164308503);
         public static final Measure<DistanceUnit> ROBOT_TO_PIPE = Meters.of(0.55);
         public static final Measure<DistanceUnit> X_TOLERANCE = Meters.of(0.02);
@@ -378,7 +378,7 @@ public final class RobotConstants {
          * Constants for the intake pivot motor gains in the intake subsystem.
          */
         public static class IntakePivotGainsClass {
-            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 30);
+            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 20);
             public static final TunableNumber INTAKE_PIVOT_KI = new TunableNumber("INTAKE_PIVOT PID/ki", 0);
             public static final TunableNumber INTAKE_PIVOT_KD = new TunableNumber("INTAKE_PIVOT PID/kd", 0);
         }
@@ -422,7 +422,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.46;
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
-                100);
+                120);
         public static final TunableNumber motionCruiseVelocity = new TunableNumber("Elevator/MotionCruiseVelocity",
                 60);
         public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk",

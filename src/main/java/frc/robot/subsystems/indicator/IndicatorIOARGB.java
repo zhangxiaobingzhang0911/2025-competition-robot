@@ -1,7 +1,7 @@
 package frc.robot.subsystems.indicator;
 
 import frc.robot.drivers.led.AddressableLEDWrapper;
-import frc.robot.drivers.led.patterns.SolidColorPattern;
+import frc.robot.drivers.led.patterns.RainbowingPattern;
 
 import static frc.robot.RobotConstants.IndicatorConstants.LED_BUFFER_LENGTH;
 import static frc.robot.RobotConstants.IndicatorConstants.LED_PORT;
@@ -15,7 +15,7 @@ public class IndicatorIOARGB implements IndicatorIO {
                 LED_PORT,
                 LED_BUFFER_LENGTH
         );
-        led.setIntensity(0.7);
+        led.setIntensity(1);
         led.start(0.05);
     }
 
@@ -29,8 +29,7 @@ public class IndicatorIOARGB implements IndicatorIO {
     public void setPattern(Patterns pattern) {
         currentPattern = pattern;
         if (pattern == Patterns.NORMAL) {
-            led.setPattern(new SolidColorPattern(allianceColor()));
-//            led.setPattern(new AlternatingColorPattern(Colo));
+            led.setPattern(new RainbowingPattern());
             return;
         }
         led.setPattern(pattern.pattern);

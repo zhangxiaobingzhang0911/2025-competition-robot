@@ -26,7 +26,7 @@ public class IndicatorSubsystem extends SubsystemBase {
         currentPattern = pattern;
         io.setPattern(pattern);
         switch (pattern) {
-//            case FINISH_INTAKE, FINISH_SHOOT, AIMING -> timer.restart();
+            case AFTER_INTAKE, SHOOT -> timer.restart();
             default -> {
             }
         }
@@ -35,7 +35,7 @@ public class IndicatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         switch (currentPattern) {
-//            case FINISH_INTAKE, FINISH_SHOOT, AIMING -> resetLed();
+            case AFTER_INTAKE, SHOOT -> resetLed();
             default -> {
             }
         }

@@ -3,7 +3,11 @@ package frc.robot.subsystems.indicator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.drivers.led.AddressableLEDPattern;
+import frc.robot.drivers.led.patterns.BlinkingPattern;
+import frc.robot.drivers.led.patterns.RisingPattern;
 import org.littletonrobotics.junction.AutoLog;
+
+import static edu.wpi.first.units.Units.Seconds;
 
 public interface IndicatorIO {
     default Color allianceColor() {
@@ -20,15 +24,11 @@ public interface IndicatorIO {
     void reset();
 
     enum Patterns {
-        NORMAL(null);
-//        FINISH_INTAKE(new BlinkingPattern(Color.kGreen, 0.05)),
-//        SHOOTING(new ScannerPattern(Color.kRed, 2)), // unused
-//        FINISH_SHOOT(new BlinkingPattern(Color.kRed, 0.5)),
-//        SHOULD_AMPLIFY(new RainbowPattern()),
-//        AIMING(new BlinkingPattern(Color.kYellow, 0.05)),
-//        AIMED(new SolidColorPattern(Color.kYellow)),
-//        CAN_CLIMB(new BlinkingPattern(Color.kPurple, 0.2)),
-//        CLIMBING(new BlinkingPattern(Color.kViolet, 0.7));
+        NORMAL(null),
+        INTAKE(new BlinkingPattern(Color.kRed, 0.2)),
+        AFTER_INTAKE(new BlinkingPattern(Color.kGreen, 0.02)),
+        PRE_SHOOT(new RisingPattern(Color.kRed, Seconds.of(1))),
+        SHOOT(new BlinkingPattern(Color.kYellow, 0.05));
 
         public final AddressableLEDPattern pattern;
 

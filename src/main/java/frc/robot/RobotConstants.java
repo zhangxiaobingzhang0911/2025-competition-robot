@@ -55,7 +55,6 @@ public final class RobotConstants {
      * Constants related to the robot's indicators, such as LEDs.
      */
     public static class IndicatorConstants {
-        // TODO:adapt when needed
         public static final int LED_PORT = 0;
         public static final int LED_BUFFER_LENGTH = 30;
     }
@@ -374,7 +373,7 @@ public final class RobotConstants {
          * Constants for the intake pivot motor gains in the intake subsystem.
          */
         public static class IntakePivotGainsClass {
-            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 30);
+            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 20);
             public static final TunableNumber INTAKE_PIVOT_KI = new TunableNumber("INTAKE_PIVOT PID/ki", 0);
             public static final TunableNumber INTAKE_PIVOT_KD = new TunableNumber("INTAKE_PIVOT PID/kd", 0);
         }
@@ -418,7 +417,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.46;
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
-                100);
+                140);
         public static final TunableNumber motionCruiseVelocity = new TunableNumber("Elevator/MotionCruiseVelocity",
                 60);
         public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk",

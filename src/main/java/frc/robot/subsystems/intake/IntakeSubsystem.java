@@ -3,20 +3,18 @@ package frc.robot.subsystems.intake;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
 import frc.robot.display.SuperstructureVisualizer;
 import frc.robot.subsystems.roller.RollerIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import org.littletonrobotics.junction.Logger;
-import edu.wpi.first.wpilibj.Timer;
-
 
 import static frc.robot.RobotConstants.IntakeConstants.*;
 
 public class IntakeSubsystem extends RollerSubsystem {
     public static final String NAME = "Intake/Roller";
-    private boolean shouldOuttake = false;
     private static double deployAngle = DEPLOY_ANGLE.get();
     private static double outtakeAngle = OUTTAKE_ANGLE.get();
     private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
@@ -24,20 +22,19 @@ public class IntakeSubsystem extends RollerSubsystem {
     private static double intakeVoltage = INTAKE_VOLTAGE.get();
     private static double outtakeVoltage = OUTTAKE_VOLTAGE.get();
     private static double rollerAmpsHasCoral = ROLLER_AMPS_HAS_CORAL.get();
-
     private static double intakeTime = INTAKE_TIME.get();
     private static double outtakeTime = OUTTAKE_TIME.get();
-
     private final IntakePivotIO intakePivotIO;
     private final IntakeRollerIO intakeRollerIO;
     private final IntakePivotIOInputsAutoLogged intakePivotIOInputs = new IntakePivotIOInputsAutoLogged();
     private final RollerIOInputsAutoLogged intakeRollerIOInputs = new RollerIOInputsAutoLogged();
+    private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
+    Timer timer = new Timer();
+    private boolean shouldOuttake = false;
     private WantedState wantedState = WantedState.HOME;
     private SystemState systemState = SystemState.HOMING;
     private boolean hasHomed = false;
     private double currentFilterValue = 0.0;
-    private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
-    Timer timer = new Timer();
     private boolean timerStarted = false;
 
     public IntakeSubsystem(
@@ -154,11 +151,11 @@ public class IntakeSubsystem extends RollerSubsystem {
     public void zeroIntakeGround() {
         intakeRollerIO.stop();
         if (!isNearAngle(100) && !hasHomed) {
-                intakePivotIO.setPivotAngle(100);
-                return;
+            intakePivotIO.setPivotAngle(100);
+            return;
         }
         hasHomed = true;
-        if(RobotBase.isReal()) {
+        if (RobotBase.isReal()) {
             if (currentFilterValue <= 15) {
                 intakePivotIO.setMotorVoltage(1);
                 setWantedState(WantedState.GROUNDZERO);
@@ -176,36 +173,33 @@ public class IntakeSubsystem extends RollerSubsystem {
         }
     }
 
-    private void rollerIntake(){
-        
-        //System.out.println(shouldOuttake);
-        if(inputs.statorCurrentAmps > rollerAmpsHasCoral && !timerStarted){
+    private void rollerIntake() {
+        if (inputs.statorCurrentAmps > rollerAmpsHasCoral && !timerStarted) {
             timer.start();
             timerStarted = true;
         }
-        if(inputs.statorCurrentAmps < rollerAmpsHasCoral && timerStarted&& !shouldOuttake){
+        if (inputs.statorCurrentAmps < rollerAmpsHasCoral && timerStarted && !shouldOuttake) {
             timer.stop();
             timer.reset();
             timerStarted = false;
         }
-        if(timerStarted && timer.hasElapsed(outtakeTime)){
+        if (timerStarted && timer.hasElapsed(outtakeTime)) {
             intakeRollerIO.setVoltage(outtakeVoltage);
             shouldOuttake = true;
-            if(timer.hasElapsed(intakeTime)){
+            if (timer.hasElapsed(intakeTime)) {
                 intakeRollerIO.setVoltage(intakeVoltage);
                 timer.stop();
                 timer.reset();
                 shouldOuttake = false;
                 timerStarted = false;
             }
-        }
-        else{
+        } else {
             intakeRollerIO.setVoltage(intakeVoltage);
         }
 
     }
 
-    public boolean hasCoral(){
+    public boolean hasCoral() {
         return timerStarted && timer.hasElapsed(0.1);
     }
 

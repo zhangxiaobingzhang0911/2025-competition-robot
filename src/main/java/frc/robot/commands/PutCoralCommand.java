@@ -17,13 +17,11 @@ public class PutCoralCommand extends ParallelCommandGroup {
                 Commands.deadline(
                         new PreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem),
                         Commands.sequence(
-                                new WaitUntilCommand(() -> (driverController.rightTrigger().getAsBoolean() && endeffectorSubsystem.isShootReady())),
+                                new WaitUntilCommand(() -> (
+                                        driverController.rightTrigger().getAsBoolean() &&
+                                                endeffectorSubsystem.isShootReady())),
                                 new ShootCommand(indicatorSubsystem, endeffectorSubsystem)
                         )
-                new PreShootCommand(endeffectorSubsystem, intakeSubsystem, elevatorSubsystem),
-                Commands.sequence(
-                        new WaitUntilCommand(() -> (driverController.rightTrigger().getAsBoolean() && endeffectorSubsystem.isShootReady())),
-                        new ShootCommand(endeffectorSubsystem)
                 )
         );
     }

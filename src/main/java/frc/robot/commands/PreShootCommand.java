@@ -7,7 +7,6 @@ import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.utils.DestinationSupplier;
 
 import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 

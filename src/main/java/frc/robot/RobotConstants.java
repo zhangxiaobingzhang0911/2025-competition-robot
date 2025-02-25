@@ -39,9 +39,8 @@ public final class RobotConstants {
     // Judge whether the team is 10541
     public static final String Serial10541 = "03415993";
     public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541) && Robot.isReal();
-    // canbus name
-    public static String CAN_BUS_NAME = "rio";
-    public static String CANIVORE_CAN_BUS_NAME = "10541Canivore0";
+    public static String CANIVORE_CAN_BUS_NAME = is10541 ? "10541Canivore0" : "6941Canivore0";
+    public static String CLIMBER_CAN_BUS = is10541 ? "rio" : "6941Canivore0";
     // serial baud rate
     public static int baudRate = 115200;
 
@@ -56,9 +55,8 @@ public final class RobotConstants {
      * Constants related to the robot's indicators, such as LEDs.
      */
     public static class IndicatorConstants {
-        // TODO:adapt when needed
         public static final int LED_PORT = 0;
-        public static final int LED_BUFFER_LENGTH = 17;
+        public static final int LED_BUFFER_LENGTH = 30;
     }
 
     /**
@@ -103,7 +101,7 @@ public final class RobotConstants {
         public static final KinematicLimits DRIVETRAIN_UNCAPPED = new KinematicLimits(maxSpeed.magnitude(),
                 11.0, 1000.0);
         public static final KinematicLimits DRIVETRAIN_SMOOTHED = new KinematicLimits(4.5, 30.0, 200.0);
-        public static final KinematicLimits DRIVETRAIN_LIMITED = new KinematicLimits(2.0, 10.0, 1200.0);
+        public static final KinematicLimits DRIVETRAIN_LIMITED = new KinematicLimits(1.5, 10.0, 1200.0);
         public static final KinematicLimits DRIVETRAIN_ROBOT_ORIENTED = new KinematicLimits(2.0, 5.0, 1500.0);
 
         public static final Measure<LinearVelocityUnit> speedAt12Volts = maxSpeed;
@@ -351,7 +349,7 @@ public final class RobotConstants {
         public static final double moi = 0;//inertia for simulation
         public static final double ROLLER_RATIO = 1;
         public static final double INTAKE_DANGER_ZONE = 90;
-        public static final TunableNumber ROLLER_AMPS_HAS_CORAL = new TunableNumber("INTAKE_ROLLER/rollerAmpsHasCoral",55);
+        public static final TunableNumber ROLLER_AMPS_HAS_CORAL = new TunableNumber("INTAKE_ROLLER/rollerAmpsHasCoral", 55);
         //Motion constants for intake pivot
         public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 100);
         public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 500);
@@ -359,13 +357,14 @@ public final class RobotConstants {
         public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 113);
         public static final TunableNumber OUTTAKE_ANGLE = new TunableNumber("INTAKE_PIVOT/outtakeAngle", 105);
         public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 5);
-        public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 90);
+        public static final TunableNumber AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/avoidAngle", 90);
+        public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 51);
         //Motion constants for intake roller
         public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 15.0);
         public static final TunableNumber OUTTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/outtakeVoltage", -6.0);
 
-        public static final TunableNumber OUTTAKE_TIME = new TunableNumber("INTAKE_ROLLER/outtake time",0.4);
-        public static final TunableNumber INTAKE_TIME = new TunableNumber("INTAKE_ROLLER/intake time",0.55);
+        public static final TunableNumber OUTTAKE_TIME = new TunableNumber("INTAKE_ROLLER/outtake time", 0.4);
+        public static final TunableNumber INTAKE_TIME = new TunableNumber("INTAKE_ROLLER/intake time", 0.55);
         // public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intake time",10);
 
         //Constants for intake pivot
@@ -375,7 +374,7 @@ public final class RobotConstants {
          * Constants for the intake pivot motor gains in the intake subsystem.
          */
         public static class IntakePivotGainsClass {
-            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 30);
+            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 20);
             public static final TunableNumber INTAKE_PIVOT_KI = new TunableNumber("INTAKE_PIVOT PID/ki", 0);
             public static final TunableNumber INTAKE_PIVOT_KD = new TunableNumber("INTAKE_PIVOT PID/kd", 0);
         }
@@ -419,7 +418,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.46;
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
-                100);
+                140);
         public static final TunableNumber motionCruiseVelocity = new TunableNumber("Elevator/MotionCruiseVelocity",
                 60);
         public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk",
@@ -427,7 +426,7 @@ public final class RobotConstants {
         public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
                 1.57);
         public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/idle",
-                0.7);
+                0.6);
         public static final TunableNumber HOME_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOME",
                 0.01);
         public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
@@ -446,7 +445,7 @@ public final class RobotConstants {
                 0.37);
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 20);
-        public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT = new TunableNumber("Elevator min safe height",0.46);
+        public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT = new TunableNumber("Elevator min safe height", 0.46);
 
     }
 

@@ -108,7 +108,7 @@ public class RobotContainer {
         updateManager.registerAll();
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", CustomAutoChooser.buildAutoChooser("New Auto"));
-        autoActions = new AutoActions(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
+        autoActions = new AutoActions(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
         autoFile = new AutoFile(autoActions);
 
         new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));

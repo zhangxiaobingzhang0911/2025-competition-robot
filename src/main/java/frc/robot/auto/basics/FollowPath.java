@@ -97,7 +97,7 @@ public class FollowPath extends Command {
                     continue;
                 }
                 Method cmd = event.getClass().getMethod("getEventName");
-                autoActions.invokeCommand((String) cmd.invoke(event));
+                autoActions.invokeCommand((String) cmd.invoke(event), () -> followTrajectoryCommand.isFinished());
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }

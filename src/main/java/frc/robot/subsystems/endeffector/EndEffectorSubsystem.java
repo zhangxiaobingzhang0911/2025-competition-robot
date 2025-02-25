@@ -52,7 +52,6 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         Logger.recordOutput("EndEffector/SystemState", newState.toString());
         Logger.recordOutput(NAME + "Velocity", inputs.velocityRotPerSec);
 
-        Logger.recordOutput("Flags/preShootIsDanger", isPreShootReady());
         Logger.recordOutput(NAME+"/isShootReady", isShootReady());
         Logger.recordOutput(NAME+"/ShootFinished", isShootFinished());
         Logger.recordOutput(NAME+"/isIntakeFinished", isIntakeFinished());

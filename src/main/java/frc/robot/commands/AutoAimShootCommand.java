@@ -18,19 +18,8 @@ public class AutoAimShootCommand extends ParallelCommandGroup {
                         new WaitUntilCommand(stop),
                         Commands.sequence(
                                 new ReefAimCommand(stop),
-                                Commands.sequence(
-                                        Commands.deadline(
-                                                Commands.sequence(
-                                                        Commands.waitSeconds(0.1),// wait to refresh the elevator target
-                                                        new WaitUntilCommand(() -> (
-                                                                elevatorSubsystem.elevatorReady(0.005) &&
-                                                                        endeffectorSubsystem.isShootReady())),
-                                                        Commands.waitSeconds(0.1)
-                                                ),
-                                                new PreShootCommand(endeffectorSubsystem, intakeSubsystem, elevatorSubsystem)
-                                        ),
-                                        new ShootCommand(endeffectorSubsystem)
-                                )
+                                new AutoPreShootCommand(endeffectorSubsystem, intakeSubsystem, elevatorSubsystem),
+                                new ShootCommand(endeffectorSubsystem)
                         )
                 )
         );

@@ -17,8 +17,9 @@ public class IntakeSubsystem extends RollerSubsystem {
     public static final String NAME = "Intake/Roller";
     private static double deployAngle = DEPLOY_ANGLE.get();
     private static double outtakeAngle = OUTTAKE_ANGLE.get();
-    private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
+    private static double avoidAngle = AVOID_ANGLE.get();
     private static double homeAngle = HOME_ANGLE.get();
+    private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
     private static double intakeVoltage = INTAKE_VOLTAGE.get();
     private static double outtakeVoltage = OUTTAKE_VOLTAGE.get();
     private static double rollerAmpsHasCoral = ROLLER_AMPS_HAS_CORAL.get();
@@ -87,9 +88,9 @@ public class IntakeSubsystem extends RollerSubsystem {
                 intakeRollerIO.setVoltage(outtakeVoltage);
                 intakePivotIO.setPivotAngle(outtakeAngle);
                 break;
-            case FUNNEL_AVOIDING:
+            case AVOIDING:
                 intakeRollerIO.stop();
-                intakePivotIO.setPivotAngle(funnelAvoidAngle);
+                intakePivotIO.setPivotAngle(avoidAngle);
                 break;
             case HOMING:
                 intakeRollerIO.stop();
@@ -98,11 +99,15 @@ public class IntakeSubsystem extends RollerSubsystem {
             case GROUNDZEROING:
                 zeroIntakeGround();
                 break;
+            case FUNNEL_AVOIDING:
+                intakeRollerIO.stop();
+                intakePivotIO.setPivotAngle(funnelAvoidAngle);
             case OFF:
         }
 
         if (RobotConstants.TUNING) {
             deployAngle = DEPLOY_ANGLE.get();
+            avoidAngle = AVOID_ANGLE.get();
             funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
             outtakeVoltage = OUTTAKE_VOLTAGE.get();
             outtakeAngle = OUTTAKE_ANGLE.get();
@@ -120,10 +125,11 @@ public class IntakeSubsystem extends RollerSubsystem {
             case DEPLOY_INTAKE -> SystemState.DEPLOY_INTAKING;
             case TREMBLE_INTAKE -> SystemState.TREMBLE_INTAKING;
             case OUTTAKE -> SystemState.OUTTAKING;
+            case AVOID -> SystemState.AVOIDING;
             case FUNNEL_AVOID -> SystemState.FUNNEL_AVOIDING;
             case HOME -> {
                 if (RobotContainer.elevatorIsDanger) {
-                    yield SystemState.FUNNEL_AVOIDING;
+                    yield SystemState.AVOIDING;
                 } else {
                     yield SystemState.HOMING;
                 }
@@ -174,8 +180,6 @@ public class IntakeSubsystem extends RollerSubsystem {
     }
 
     private void rollerIntake() {
-
-        //System.out.println(shouldOuttake);
         if (inputs.statorCurrentAmps > rollerAmpsHasCoral && !timerStarted) {
             timer.start();
             timerStarted = true;
@@ -224,6 +228,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         DEPLOY_INTAKE,
         TREMBLE_INTAKE,
         OUTTAKE,
+        AVOID,
         FUNNEL_AVOID,
         HOME,
         GROUNDZERO,
@@ -235,6 +240,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         DEPLOY_INTAKING,
         TREMBLE_INTAKING,
         OUTTAKING,
+        AVOIDING,
         FUNNEL_AVOIDING,
         HOMING,
         GROUNDZEROING,

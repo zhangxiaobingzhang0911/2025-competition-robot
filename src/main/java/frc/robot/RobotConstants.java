@@ -55,7 +55,6 @@ public final class RobotConstants {
      * Constants related to the robot's indicators, such as LEDs.
      */
     public static class IndicatorConstants {
-        // TODO:adapt when needed
         public static final int LED_PORT = 0;
         public static final int LED_BUFFER_LENGTH = 30;
     }

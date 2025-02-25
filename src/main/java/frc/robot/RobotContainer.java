@@ -33,6 +33,9 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorIOSim;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.indicator.IndicatorIOARGB;
+import frc.robot.subsystems.indicator.IndicatorIOSim;
+import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.DestinationSupplier;
@@ -78,6 +81,7 @@ public class RobotContainer {
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
+    private final IndicatorSubsystem indicatorSubsystem;
     @Getter
     private final LoggedDashboardChooser<String> autoChooser;
     private double lastResetTime = 0.0;
@@ -89,11 +93,13 @@ public class RobotContainer {
             endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOReal(), new IntakeRollerIOReal());
             climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
+            indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOARGB());
         } else {
             elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
             endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOSim(), new IntakeRollerIOSim());
             climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
+            indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOSim());
         }
         updateManager = new UpdateManager(swerve,
                 display);

@@ -144,7 +144,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     }
 
     public void trembleIntake() {
-        intakeRollerIO.setVoltage(intakeVoltage);
+        rollerIntake();
         intakePivotIO.setPivotAngle(deployAngle - 3);
         if (intakePivotIOInputs.currentAngleDeg > deployAngle + 2) {
             intakePivotIO.setPivotAngle(deployAngle - 3);

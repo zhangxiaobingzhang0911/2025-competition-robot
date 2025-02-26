@@ -211,7 +211,7 @@ public class RobotContainer {
 
     private void configureStreamDeckBindings() {
         // Operator's controller
-        streamDeckController.button(1).onTrue(new ReefAimCommand(() -> streamDeckController.button(17).getAsBoolean()));
+        streamDeckController.button(1).onTrue(new ReefAimCommand(() -> streamDeckController.button(17).getAsBoolean(), elevatorSubsystem));
         streamDeckController.button(2).onTrue(new AutoAimShootCommand(indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, () -> streamDeckController.button(17).getAsBoolean()));
         streamDeckController.button(3).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateBranch(true)));
         streamDeckController.button(4).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateBranch(false)));

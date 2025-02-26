@@ -18,8 +18,10 @@ public class AutoAimShootCommand extends ParallelCommandGroup {
                 Commands.race(
                         new WaitUntilCommand(stop),
                         Commands.sequence(
-                                new ReefAimCommand(stop),
-                                new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem),
+                                Commands.parallel(
+                                        new ReefAimCommand(stop, elevatorSubsystem),
+                                        new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem)
+                                ),
                                 new ShootCommand(indicatorSubsystem, endeffectorSubsystem)
                         )
                 )
@@ -30,4 +32,4 @@ public class AutoAimShootCommand extends ParallelCommandGroup {
     public InterruptionBehavior getInterruptionBehavior() {
         return InterruptionBehavior.kCancelIncoming;
     }
-}
+}

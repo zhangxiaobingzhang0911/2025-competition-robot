@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.Logger;
@@ -33,6 +34,7 @@ public class ReefAimCommand extends Command {
                     ReefAimConstants.MAX_AIMING_SPEED.magnitude(),
                     ReefAimConstants.MAX_AIMING_ACCELERATION.magnitude()));
     private final BooleanSupplier stop;
+    private final ElevatorSubsystem elevatorSubsystem;
 
     private boolean rightReef; // true if shooting right reef
     private boolean xFinished = false;
@@ -41,10 +43,10 @@ public class ReefAimCommand extends Command {
     private Pose2d robotPose, tagPose, destinationPose;
     private Translation2d translationalVelocity;
 
-
-    public ReefAimCommand(BooleanSupplier stop) {
+    public ReefAimCommand(BooleanSupplier stop, ElevatorSubsystem elevatorSubsystem) {
         addRequirements(this.swerve);
         this.stop = stop;
+        this.elevatorSubsystem = elevatorSubsystem;
     }
 
     @Override
@@ -59,6 +61,14 @@ public class ReefAimCommand extends Command {
 
     @Override
     public void execute() {
+        xPID.setConstraints(
+                new TrapezoidProfile.Constraints(
+                        ReefAimConstants.MAX_AIMING_SPEED.magnitude() * 0.6 / elevatorSubsystem.getIo().getElevatorHeight(),
+                        ReefAimConstants.MAX_AIMING_ACCELERATION.magnitude() * 0.6 / elevatorSubsystem.getIo().getElevatorHeight()));
+        yPID.setConstraints(
+                new TrapezoidProfile.Constraints(
+                        ReefAimConstants.MAX_AIMING_SPEED.magnitude() * 0.6 / elevatorSubsystem.getIo().getElevatorHeight(),
+                        ReefAimConstants.MAX_AIMING_ACCELERATION.magnitude() * 0.6 / elevatorSubsystem.getIo().getElevatorHeight()));
         if (RobotConstants.TUNING) {
             xPID.setPID(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
                     RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),

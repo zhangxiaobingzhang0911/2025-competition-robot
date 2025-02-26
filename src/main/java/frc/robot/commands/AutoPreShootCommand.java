@@ -42,10 +42,6 @@ public class AutoPreShootCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        System.out.print(timer.hasElapsed(0.1) + " ");
-        System.out.print(elevatorSubsystem.elevatorReady(0.005) + " ");
-        System.out.println(endEffectorSubsystem.isShootReady());
-
         return timer.hasElapsed(0.1) &&
                 elevatorSubsystem.elevatorReady(0.005) &&
                 endEffectorSubsystem.isShootReady();

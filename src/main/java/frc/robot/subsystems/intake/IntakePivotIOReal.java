@@ -23,13 +23,14 @@ public class IntakePivotIOReal implements IntakePivotIO {
 
     private final StatusSignal<AngularVelocity> velocityRotPerSec = motor.getVelocity();
     private final StatusSignal<Voltage> appliedVolts = motor.getSupplyVoltage();
+    private final StatusSignal<Voltage> motorVolts = motor.getMotorVoltage();
     private final StatusSignal<Current> statorCurrentAmps = motor.getStatorCurrent();
     private final StatusSignal<Current> supplyCurrentAmps = motor.getSupplyCurrent();
     private final StatusSignal<Temperature> tempCelsius = motor.getDeviceTemp();
     private final StatusSignal<Angle> currentPositionRot = motor.getPosition();
 
 
-    private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(true);
+    private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(false);
     private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0.0).withEnableFOC(true);
     private final MotionMagicConfigs motionMagicConfigs;
 
@@ -67,6 +68,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
                 velocityRotPerSec,
                 tempCelsius,
                 appliedVolts,
+                motorVolts,
                 supplyCurrentAmps,
                 statorCurrentAmps,
                 currentPositionRot);
@@ -80,6 +82,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
                 velocityRotPerSec,
                 tempCelsius,
                 appliedVolts,
+                motorVolts,
                 supplyCurrentAmps,
                 statorCurrentAmps,
                 currentPositionRot);
@@ -87,6 +90,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.velocityRotPerSec = velocityRotPerSec.getValueAsDouble();
         inputs.tempCelsius = tempCelsius.getValue().in(Units.Celsius);
         inputs.appliedVolts = appliedVolts.getValueAsDouble();
+        inputs.motorVolts = motorVolts.getValueAsDouble();
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
         inputs.currentAngleDeg = talonPosToAngle(currentPositionRot.getValueAsDouble());

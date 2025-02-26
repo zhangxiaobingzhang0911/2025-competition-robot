@@ -23,14 +23,14 @@ public class FieldView {
     }
 
     private void drawField() {
-        mField2d.getObject("Aiming Target").setPose(aimingTarget);
     }
 
-    public void update(Pose2d pose, Pose2d ghost) {
+    public void update(Pose2d pose, Pose2d ghost, Pose2d aimingTarget) {
         drawField();
 
         mField2d.setRobotPose(pose);
         mField2d.getObject("Ghost").setPose(ghost);
+        mField2d.getObject("Aiming Target").setPose(aimingTarget);
         if (doubleArray.exists()) {
             if (doubleArray.get().length > 3) {
                 System.out.println(new Pose2d(

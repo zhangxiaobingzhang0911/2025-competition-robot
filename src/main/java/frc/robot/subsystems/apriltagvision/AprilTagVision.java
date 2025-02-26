@@ -95,8 +95,6 @@ public class AprilTagVision extends SubsystemBase {
             Logger.processInputs("AprilTagVision/Inst" + i, inputs[i]);
         }
 
-//        serial.writeString("OK");
-//        serial.flush();
 
         // Loop over instances to process all frames and poses
         List<Pose2d> allRobotPoses = new ArrayList<>();
@@ -156,6 +154,8 @@ public class AprilTagVision extends SubsystemBase {
                                 cameraPose1.transformBy(cameraPoses[instanceIndex].toTransform3d().inverse());
 
                         Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/CameraPoseConstants", cameraPoses[instanceIndex]);
+                        Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/robotPose3d0", robotPose3d0);
+                        Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/robotPose3d1", robotPose3d1);
 
                         // Select the most likely pose based on the estimated rotation
                         if (error0 < error1 * ambiguityThreshold || error1 < error0 * ambiguityThreshold) {
@@ -240,7 +240,7 @@ public class AprilTagVision extends SubsystemBase {
                 Logger.recordOutput(
                         "AprilTagVision/Inst" + instanceIndex + "/TagPoses", tagPoses.toArray(Pose3d[]::new));
             }
-// Record demo tag pose if available
+            // Record demo tag pose if available
             if (inputs[instanceIndex].demoFrame.length > 0) {
                 var values = inputs[instanceIndex].demoFrame;
                 double error0 = values[0];
@@ -313,7 +313,6 @@ public class AprilTagVision extends SubsystemBase {
 
                 // Clear tag poses if no recent frames from instance
                 if (Timer.getFPGATimestamp() - lastFrameTimes.get(instanceIndex) > targetLogTimeSecs) {
-                    //noinspection RedundantArrayCreation
                     Logger.recordOutput("AprilTagVision/Inst" + instanceIndex + "/TagPoses", new Pose3d[]{});
                 }
             }
@@ -351,6 +350,7 @@ public class AprilTagVision extends SubsystemBase {
         }
         RobotState.getInstance().setDemoTagPose(demoTagPose);
 
+        //TODO combine this one with Line 210
         if (robotPose3d != null) {
             if (measuerCnt <= 3) {
                 measuerCnt++;

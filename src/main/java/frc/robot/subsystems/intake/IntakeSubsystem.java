@@ -212,6 +212,7 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     public boolean isNearAngle(double targetAngleDeg) {
         return MathUtil.isNear(targetAngleDeg, intakePivotIOInputs.currentAngleDeg, 1);
+        //TODO tolerance ++
     }
 
     public boolean intakeIsDanger() {

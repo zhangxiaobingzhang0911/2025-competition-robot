@@ -505,9 +505,6 @@ public class Swerve implements Updatable, Subsystem {
     public void telemetry() {
         if (RobotConstants.TUNING) {
             setHeadingControllerPID();
-            SmartDashboard.putString("swerve/localizer/latest_pose", getLocalizer().getLatestPose().toString());
-            SmartDashboard.putString("swerve/localizer/accel", getLocalizer().getMeasuredAcceleration().toString());
-            SmartDashboard.putString("swerve/localizer/velocity", getLocalizer().getSmoothedVelocity().toString());
         }
         Logger.recordOutput("swerve/localizer/CoarsedFieldPose", getLocalizer().getCoarseFieldPose(0));
         Logger.recordOutput("swerve/localizer/LatestPose", getLocalizer().getLatestPose());
@@ -539,11 +536,9 @@ public class Swerve implements Updatable, Subsystem {
     }
 
     // Check if the swerve drive is ready to aim based on heading target and angular speed.
-    public boolean aimingReady(double offset) {
-        var dtReady = Math.abs(gyro.getYaw().getDegrees() - headingTarget) < offset;
-        SmartDashboard.putBoolean("SwerveReady", dtReady);
-        boolean angularSpeedReady = this.getLocalizer().getSmoothedVelocity().getRotation().getDegrees() < 2.14;
-        SmartDashboard.putBoolean("SwerveAngularReady", angularSpeedReady);
+    public boolean aimingReady(double headingOffset, double angularSpeedOffset) {
+        var dtReady = Math.abs(gyro.getYaw().getDegrees() - headingTarget) < headingOffset;
+        boolean angularSpeedReady = this.getLocalizer().getSmoothedVelocity().getRotation().getDegrees() < angularSpeedOffset;
         return dtReady && angularSpeedReady;
     }
 

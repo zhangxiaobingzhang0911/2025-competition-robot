@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -8,23 +9,23 @@ import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
-
-public class PreShootCommand extends Command {
+public class AutoPreShootCommand extends Command {
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
+    Timer timer = new Timer();
 
-    public PreShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
+    public AutoPreShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.intakeSubsystem = intakeSubsystem;
-        this.indicatorSubsystem = indicatorSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
+        this.indicatorSubsystem = indicatorSubsystem;
     }
 
     @Override
     public void initialize() {
+        timer.start();
         indicatorSubsystem.setPattern(IndicatorIO.Patterns.PRE_SHOOT);
     }
 
@@ -37,11 +38,12 @@ public class PreShootCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return timer.hasElapsed(0.1) &&
+                elevatorSubsystem.elevatorReady(0.005) &&
+                endEffectorSubsystem.isShootReady();
     }
 }

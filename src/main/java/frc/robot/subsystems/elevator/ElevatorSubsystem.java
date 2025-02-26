@@ -11,7 +11,6 @@ import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT;
 import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
-import static frc.robot.RobotConstants.TUNING;
 import static frc.robot.RobotContainer.elevatorIsDanger;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -56,15 +55,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         SuperstructureVisualizer.getInstance().updateElevator(io.getElevatorHeight());
 
 
-
-
         // set movements based on state
         switch (systemState) {
             case POSITION_GOING:
                 //worked, but need clean up
                 if (wantedPosition < ELEVATOR_MIN_SAFE_HEIGHT.get() && RobotContainer.intakeIsAvoiding && RobotContainer.intakeIsDanger) {
-                    io.setElevatorTarget(Math.max(wantedPosition,0.4));
-                } else if (wantedPosition < RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT.get() && RobotContainer.intakeIsDanger){
+                    io.setElevatorTarget(Math.max(wantedPosition, 0.4));
+                } else if (wantedPosition < RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT.get() && RobotContainer.intakeIsDanger) {
                     io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get());
                 } else {
                     io.setElevatorTarget(wantedPosition);
@@ -106,6 +103,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         setElevatorState(WantedState.POSITION);
     }
 
+    public boolean elevatorReady(double offset) {
+        boolean elevatorReady = Math.abs(io.getElevatorHeight() - wantedPosition) < offset;
+        Logger.recordOutput("Elevator/elevatorReady", elevatorReady);
+        return elevatorReady;
+    }
+
     public void zeroElevator() {
         if (!io.isNearZeroExtension() && !hasReachedNearZero) {
             if (RobotContainer.intakeIsDanger) {
@@ -127,7 +130,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 wantedState = WantedState.IDLE;
                 hasReachedNearZero = false;
             }
-        }else{
+        } else {
             io.setElevatorTarget(0);
             wantedState = WantedState.IDLE;
             hasReachedNearZero = false;

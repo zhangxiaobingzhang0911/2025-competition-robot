@@ -40,7 +40,7 @@ public class ReefAimCommand extends Command {
     private boolean xFinished = false;
     private boolean yFinished = false;
     private boolean omegaFinished = false;
-    private Pose2d robotPose, tagPose, destinationPose;
+    private Pose2d robotPose, tagPose, destinationPose, finalDestinationPose;
     private Translation2d translationalVelocity;
 
     public ReefAimCommand(BooleanSupplier stop, ElevatorSubsystem elevatorSubsystem) {
@@ -57,6 +57,8 @@ public class ReefAimCommand extends Command {
         // PID init
         xPID.reset(robotPose.getX(), swerve.getLocalizer().getMeasuredVelocity().getX());
         yPID.reset(robotPose.getY(), swerve.getLocalizer().getMeasuredVelocity().getY());
+        rightReef = DestinationSupplier.getInstance().getCurrentBranch();
+        finalDestinationPose = DestinationSupplier.getInstance().getFinalDriveTarget(tagPose, rightReef);
     }
 
     @Override
@@ -79,7 +81,6 @@ public class ReefAimCommand extends Command {
         }
 
         robotPose = swerve.getLocalizer().getCoarseFieldPose(0);
-        rightReef = DestinationSupplier.getInstance().getCurrentBranch();
         destinationPose = DestinationSupplier.getDriveTarget(robotPose, tagPose, rightReef);
 
         xPID.setGoal(destinationPose.getTranslation().getX());
@@ -94,14 +95,15 @@ public class ReefAimCommand extends Command {
         Display.getInstance().setAimingTarget(destinationPose);
         Logger.recordOutput("ReefAimCommand/tagPose", tagPose);
         Logger.recordOutput("ReefAimCommand/destinationPose", destinationPose);
+        Logger.recordOutput("ReefAimCommand/finalDestinationPose", finalDestinationPose);
         Logger.recordOutput("ReefAimCommand/translationalVelocity", translationalVelocity);
     }
 
     @Override
     public boolean isFinished() {
-        xFinished = Math.abs(robotPose.getX() - destinationPose.getX()) < ReefAimConstants.X_TOLERANCE.magnitude();
-        yFinished = Math.abs(robotPose.getY() - destinationPose.getY()) < ReefAimConstants.Y_TOLERANCE.magnitude();
-        omegaFinished = Swerve.getInstance().aimingReady(0.5, 2.14);
+        xFinished = Math.abs(robotPose.getX() - finalDestinationPose.getX()) < ReefAimConstants.X_TOLERANCE_METERS.get();
+        yFinished = Math.abs(robotPose.getY() - finalDestinationPose.getY()) < ReefAimConstants.Y_TOLERANCE_METERS.get();
+        omegaFinished = Swerve.getInstance().aimingReady(ReefAimConstants.OMEGA_TOLERANCE_DEGREES.get(), 5);
         Logger.recordOutput("ReefAimCommand/xFinished", xFinished);
         Logger.recordOutput("ReefAimCommand/yFinished", yFinished);
         Logger.recordOutput("ReefAimCommand/omegaFinished", omegaFinished);

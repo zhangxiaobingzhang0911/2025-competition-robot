@@ -31,11 +31,13 @@ public class FieldConstants {
             Units.inchesToMeters(299.438); // Measured from the inside of starting line
     public static final double aprilTagWidth = Units.inchesToMeters(6.5);
     public static final AprilTagLayoutType defaultAprilTagType = AprilTagLayoutType.CUSTOM;
-    public static final AprilTagLayoutType officialAprilTagType = AprilTagLayoutType.OFFICIAL;
+    public static final AprilTagLayoutType officialAprilTagType = AprilTagLayoutType.ANDYMARK;
 
     @Getter
     public enum AprilTagLayoutType {
-        OFFICIAL("2025-official"),
+        OFFICIAL_OLD("2025-official"),
+        WELDED("2025-reefscape-welded"),
+        ANDYMARK("2025-reefscape-andymark"),
         CUSTOM("2025-custom");
 
         private final AprilTagFieldLayout layout;
@@ -81,6 +83,28 @@ public class FieldConstants {
         }
     }
 
+    public enum ReefLevel {
+        L1(Units.inchesToMeters(25.0), 0),
+        L2(Units.inchesToMeters(31.875 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
+        L3(Units.inchesToMeters(47.625 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
+        L4(Units.inchesToMeters(72), -90);
+
+        public final double height;
+        public final double pitch;
+
+        ReefLevel(double height, double pitch) {
+            this.height = height;
+            this.pitch = pitch; // Degrees
+        }
+
+        public static ReefLevel fromLevel(int level) {
+            return Arrays.stream(values())
+                    .filter(height -> height.ordinal() == level)
+                    .findFirst()
+                    .orElse(L4);
+        }
+    }
+
     public static class Processor {
         public static final Pose2d centerFace =
                 new Pose2d(Units.inchesToMeters(235.726), 0, Rotation2d.fromDegrees(90));
@@ -112,28 +136,6 @@ public class FieldConstants {
                         Rotation2d.fromDegrees(144.011 - 90));
     }
 
-    public enum ReefLevel {
-        L1(Units.inchesToMeters(25.0), 0),
-        L2(Units.inchesToMeters(31.875 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
-        L3(Units.inchesToMeters(47.625 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
-        L4(Units.inchesToMeters(72), -90);
-
-        ReefLevel(double height, double pitch) {
-            this.height = height;
-            this.pitch = pitch; // Degrees
-        }
-
-        public static ReefLevel fromLevel(int level) {
-            return Arrays.stream(values())
-                    .filter(height -> height.ordinal() == level)
-                    .findFirst()
-                    .orElse(L4);
-        }
-
-        public final double height;
-        public final double pitch;
-    }
-
     public static class Reef {
         public static final double faceLength = Units.inchesToMeters(36.792600);
         public static final Translation2d center =
@@ -149,7 +151,7 @@ public class FieldConstants {
 
         static {
             // Initialize faces
-            var aprilTagLayout = AprilTagLayoutType.OFFICIAL.getLayout();
+            var aprilTagLayout = AprilTagLayoutType.ANDYMARK.getLayout();
             centerFaces[0] = aprilTagLayout.getTagPose(18).get().toPose2d();
             centerFaces[1] = aprilTagLayout.getTagPose(19).get().toPose2d();
             centerFaces[2] = aprilTagLayout.getTagPose(20).get().toPose2d();

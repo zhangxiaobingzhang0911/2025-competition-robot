@@ -153,6 +153,8 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         return middleBBInputs.isBeambreakOn;
     }
 
+    public boolean containsCoral() {return middleBBInputs.isBeambreakOn || edgeBBInputs.isBeambreakOn;}
+
     public boolean isShootFinished() {
         return hasTransitionedToPreShoot && !edgeBBInputs.isBeambreakOn;
     }

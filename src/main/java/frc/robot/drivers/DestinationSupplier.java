@@ -33,13 +33,7 @@ public class DestinationSupplier implements Updatable {
     }
 
     public static Pose2d getDriveTarget(Pose2d robot, Pose2d goal, boolean rightReef) {
-        goal = goal.transformBy(new Transform2d(
-                new Translation2d(
-                        getInstance().currentElevSetpointCoral == elevatorSetpoint.L4 ?
-                                RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_L4.magnitude() :
-                                RobotConstants.ReefAimConstants.ROBOT_TO_PIPE.magnitude(),
-                        RobotConstants.ReefAimConstants.PIPE_TO_TAG.magnitude() * (rightReef ? 1 : -1)),
-                new Rotation2d()));
+        goal = getFinalDriveTarget(goal,rightReef);
         var offset = goal.relativeTo(robot);
         double yDistance = Math.abs(offset.getY());
         double xDistance = Math.abs(offset.getX());
@@ -63,8 +57,8 @@ public class DestinationSupplier implements Updatable {
         goal = goal.transformBy(new Transform2d(
                 new Translation2d(
                         getInstance().currentElevSetpointCoral == elevatorSetpoint.L4 ?
-                                RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_L4.magnitude() :
-                                RobotConstants.ReefAimConstants.ROBOT_TO_PIPE.magnitude(),
+                                RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_L4_METERS.get():
+                                RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_METERS.get(),
                         RobotConstants.ReefAimConstants.PIPE_TO_TAG.magnitude() * (rightReef ? 1 : -1)),
                 new Rotation2d()));
         return goal;

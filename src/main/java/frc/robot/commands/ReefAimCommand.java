@@ -57,7 +57,7 @@ public class ReefAimCommand extends Command {
         // PID init
         xPID.reset(robotPose.getX(), swerve.getLocalizer().getMeasuredVelocity().getX());
         yPID.reset(robotPose.getY(), swerve.getLocalizer().getMeasuredVelocity().getY());
-        finalDestinationPose = DestinationSupplier.getInstance().getNearestTag(tagPose);
+        finalDestinationPose = DestinationSupplier.getFinalDriveTarget(tagPose, rightReef);
     }
 
     @Override

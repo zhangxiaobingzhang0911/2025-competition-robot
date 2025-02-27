@@ -274,9 +274,9 @@ public final class RobotConstants {
          * Constants for the gains in the ReefAimCommand.
          */
         public static class AimGainsClass {
-            public static final TunableNumber AIM_KP = new TunableNumber("AIM/kp", 2.8);
-            public static final TunableNumber AIM_KI = new TunableNumber("AIM/ki", 0);
-            public static final TunableNumber AIM_KD = new TunableNumber("AIM/kd", 0.1);
+            public static final TunableNumber AIM_KP = new TunableNumber("AIM/kp", 2.5);
+            public static final TunableNumber AIM_KI = new TunableNumber("AIM/ki", 0.02);
+            public static final TunableNumber AIM_KD = new TunableNumber("AIM/kd", 0.2);
         }
 
     }
@@ -287,10 +287,10 @@ public final class RobotConstants {
     public static final class ReefAimConstants {
         public static final TunableNumber MAX_DISTANCE_REEF_LINEUP = new TunableNumber("AIM/maxLineupDistance", 1.5);
         public static final Measure<DistanceUnit> PIPE_TO_TAG = Meters.of(0.164308503);
-        public static final Measure<DistanceUnit> ROBOT_TO_PIPE_L4 = Meters.of(0.52);
-        public static final Measure<DistanceUnit> ROBOT_TO_PIPE = Meters.of(0.53);
-        public static final Measure<DistanceUnit> X_TOLERANCE = Meters.of(0.03);
-        public static final Measure<DistanceUnit> Y_TOLERANCE = Meters.of(0.03);
+        public static final Measure<DistanceUnit> ROBOT_TO_PIPE_L4 = Meters.of(0.515);
+        public static final Measure<DistanceUnit> ROBOT_TO_PIPE = Meters.of(0.515);
+        public static final Measure<DistanceUnit> X_TOLERANCE = Meters.of(0.02);
+        public static final Measure<DistanceUnit> Y_TOLERANCE = Meters.of(0.02);
         public static final Measure<LinearVelocityUnit> MAX_AIMING_SPEED = MetersPerSecond.of(4.5);
         public static final Measure<LinearAccelerationUnit> MAX_AIMING_ACCELERATION = MetersPerSecondPerSecond.of(11);
     }

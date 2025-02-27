@@ -18,11 +18,9 @@ public class AutoAimShootCommand extends ParallelCommandGroup {
         addCommands(
                 Commands.race(
                         Commands.sequence(
-                                new WaitUntilCommand(stop),
-                                Commands.sequence(
-                                        Commands.runOnce(() ->
-                                                elevatorSubsystem.setElevatorPosition(
-                                                        RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())))
+                                new WaitUntilCommand(() -> endeffectorSubsystem.isShootFinished() || stop.getAsBoolean()),
+                                Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(
+                                        RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get()))
                         ),
                         Commands.sequence(
                                 Commands.parallel(

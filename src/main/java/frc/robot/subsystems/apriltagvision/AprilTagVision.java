@@ -234,11 +234,11 @@ public class AprilTagVision extends SubsystemBase {
                         measuerCnt++;
                         deviationX = 0.01;
                         deviationY = 0.01;
-                        deviationOmega = Double.MAX_VALUE;
+                        deviationOmega = thetaStdDev;
                     } else {
                         deviationX = xyStdDev;
                         deviationY = xyStdDev;
-                        deviationOmega = Double.MAX_VALUE;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
+                        deviationOmega = thetaStdDev;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
                     }
                     Swerve.getInstance().getLocalizer().addMeasurement(
                             Timer.getFPGATimestamp(),

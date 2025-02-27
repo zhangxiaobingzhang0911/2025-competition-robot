@@ -117,6 +117,8 @@ public class RobotContainer {
         configureOperatorBindings();
         configureTesterBindings();
         configureStreamDeckBindings();
+
+        aprilTagVision.setMeasuerCnt(0);
     }
 
     //Configure all commands for driver
@@ -133,9 +135,9 @@ public class RobotContainer {
                 false), swerve));
 
         driverController.povRight().whileTrue(
-                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_LIMITED))
-        ).onFalse(
-                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_UNCAPPED))
+                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_LIMITED)).finallyDo(
+                        () -> swerve.setKinematicsLimit(DRIVETRAIN_UNCAPPED)
+                )
         );
 
         driverController.start().onTrue(
@@ -155,7 +157,7 @@ public class RobotContainer {
                     lastResetTime = Timer.getFPGATimestamp();
                     aprilTagVision.setMeasuerCnt(0);
                 }).ignoringDisable(true));
-        
+
 //        driverController.leftBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
 //        driverController.leftTrigger().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem));
 //        driverController.rightBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));

@@ -22,7 +22,7 @@ public class AprilTagVisionConstants {
     // Margin along the Z-axis for detecting targets in meters
     public static final double zMargin = 0.75;
     // Coefficient for calculating standard deviation in X and Y position estimates
-    public static final double xyStdDevCoefficient = 0.005;
+    public static final double xyStdDevCoefficient = 0.006;
     // Coefficient for calculating standard deviation in theta (rotation) estimate
     public static final double thetaStdDevCoefficient = 0.01;
 

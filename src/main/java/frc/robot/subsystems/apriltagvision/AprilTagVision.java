@@ -229,6 +229,26 @@ public class AprilTagVision extends SubsystemBase {
                                 robotPose, timestamp, VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev)));
                 allRobotPoses.add(robotPose);
                 allRobotPoses3d.add(robotPose3d);
+                if (robotPose3d != null) {
+                    if (measuerCnt <= 5) {
+                        measuerCnt++;
+                        deviationX = 0.01;
+                        deviationY = 0.01;
+                        deviationOmega = thetaStdDev;
+                    } else {
+                        deviationX = xyStdDev;
+                        deviationY = xyStdDev;
+                        deviationOmega = thetaStdDev;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
+                    }
+                    Swerve.getInstance().getLocalizer().addMeasurement(
+                            Timer.getFPGATimestamp(),
+                            robotPose3d.toPose2d(),
+                            new Pose2d(new Translation2d(deviationX, deviationY),
+                                    Rotation2d.fromDegrees(deviationOmega)));
+                    SmartDashboard.putBoolean("TargetUpdated", true);
+                } else {
+                    SmartDashboard.putBoolean("TargetUpdated", false);
+                }
                 frameUpdateCount += 1;
 
                 // Log the latency and robot pose information for the current instance
@@ -350,31 +370,6 @@ public class AprilTagVision extends SubsystemBase {
         }
         RobotState.getInstance().setDemoTagPose(demoTagPose);
 
-        //TODO combine this one with Line 210
-        if (robotPose3d != null) {
-            if (measuerCnt <= 3) {
-                measuerCnt++;
-                deviationX = 0.01;
-                deviationY = 0.01;
-                deviationOmega = Double.MAX_VALUE;
-            } else if (Swerve.getInstance().getState() == Swerve.State.PATH_FOLLOWING) {
-                deviationX = (0.0062 * robotPose3d.getX() + 0.0087) * 200;//140
-                deviationY = (0.0062 * robotPose3d.getY() + 0.0087) * 200;
-                deviationOmega = Double.MAX_VALUE;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
-            } else {
-                deviationX = (0.0062 * robotPose3d.getX() + 0.0087) * 40;//80
-                deviationY = (0.0062 * robotPose3d.getY() + 0.0087) * 40;
-                deviationOmega = Double.MAX_VALUE;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
-            }
-            Swerve.getInstance().getLocalizer().addMeasurement(
-                    Timer.getFPGATimestamp(),
-                    robotPose3d.toPose2d(),
-                    new Pose2d(new Translation2d(deviationX, deviationY),
-                            Rotation2d.fromDegrees(deviationOmega)));
-            SmartDashboard.putBoolean("TargetUpdated", true);
-        } else {
-            SmartDashboard.putBoolean("TargetUpdated", false);
-        }
     }
 
 

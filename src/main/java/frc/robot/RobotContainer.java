@@ -117,6 +117,8 @@ public class RobotContainer {
         configureOperatorBindings();
         configureTesterBindings();
         configureStreamDeckBindings();
+
+        aprilTagVision.setMeasuerCnt(0);
     }
 
     //Configure all commands for driver
@@ -133,9 +135,9 @@ public class RobotContainer {
                 false), swerve));
 
         driverController.povRight().whileTrue(
-                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_LIMITED))
-        ).onFalse(
-                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_UNCAPPED))
+                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_LIMITED)).finallyDo(
+                        () -> swerve.setKinematicsLimit(DRIVETRAIN_UNCAPPED)
+                )
         );
 
         driverController.start().onTrue(
@@ -156,8 +158,7 @@ public class RobotContainer {
                     aprilTagVision.setMeasuerCnt(0);
                 }).ignoringDisable(true));
 
-
-        //        driverController.leftBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+//        driverController.leftBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
 //        driverController.leftTrigger().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem));
 //        driverController.rightBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
 //        driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
@@ -211,8 +212,9 @@ public class RobotContainer {
 
     private void configureStreamDeckBindings() {
         // Operator's controller
-        streamDeckController.button(1).onTrue(new ReefAimCommand(() -> streamDeckController.button(17).getAsBoolean(), elevatorSubsystem));
-        streamDeckController.button(2).onTrue(new AutoAimShootCommand(indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, () -> streamDeckController.button(17).getAsBoolean()));
+        streamDeckController.button(1).onTrue(new ReefAimCommand(() -> (streamDeckController.button(17).getAsBoolean() || driverController.povLeft().getAsBoolean()), elevatorSubsystem));
+        streamDeckController.button(2).onTrue(new AutoAimShootCommand(indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,
+                () -> (streamDeckController.button(17).getAsBoolean() || driverController.povLeft().getAsBoolean())));
         streamDeckController.button(3).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateBranch(true)));
         streamDeckController.button(4).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateBranch(false)));
 

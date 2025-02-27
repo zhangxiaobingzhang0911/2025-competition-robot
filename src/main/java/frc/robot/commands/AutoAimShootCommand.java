@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.RobotConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
@@ -16,7 +17,13 @@ public class AutoAimShootCommand extends ParallelCommandGroup {
         addRequirements(endeffectorSubsystem, elevatorSubsystem, intakeSubsystem);
         addCommands(
                 Commands.race(
-                        new WaitUntilCommand(stop),
+                        Commands.sequence(
+                                new WaitUntilCommand(stop),
+                                Commands.sequence(
+                                        Commands.runOnce(() ->
+                                                elevatorSubsystem.setElevatorPosition(
+                                                        RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())))
+                        ),
                         Commands.sequence(
                                 Commands.parallel(
                                         new ReefAimCommand(stop, elevatorSubsystem),

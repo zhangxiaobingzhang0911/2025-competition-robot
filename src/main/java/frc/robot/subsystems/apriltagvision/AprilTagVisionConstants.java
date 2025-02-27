@@ -22,7 +22,7 @@ public class AprilTagVisionConstants {
     // Margin along the Z-axis for detecting targets in meters
     public static final double zMargin = 0.75;
     // Coefficient for calculating standard deviation in X and Y position estimates
-    public static final double xyStdDevCoefficient = 0.005;
+    public static final double xyStdDevCoefficient = 0.006;
     // Coefficient for calculating standard deviation in theta (rotation) estimate
     public static final double thetaStdDevCoefficient = 0.01;
 
@@ -30,31 +30,29 @@ public class AprilTagVisionConstants {
     public static final double[] stdDevFactors = new double[]{1.0, 1, 1.0, 1};
 
     // Array of camera poses relative to the robot's coordinate system
+    // forward as X+, leftward as Y+, upward as Z+, clockwise as yaw+
     public static final Pose3d[] cameraPoses =
             new Pose3d[]{
                     new Pose3d(
-                            0.2,
-                            -0.294,
-                            0.254,
+                            -0.298739,
+                            0.293440,
+                            0.198300,
+                            new Rotation3d(0.0, Units.degreesToRadians(-35), Units.degreesToRadians(160))),
+                    new Pose3d(
+                            -0.298739,
+                            -0.293440,
+                            0.198300,
+                            new Rotation3d(0.0, Units.degreesToRadians(-35), Units.degreesToRadians(200))),
+                    new Pose3d(
+                            0.20556,
+                            0.33419,
+                            0.31560,
+                            new Rotation3d(0.0, 0.0, Units.degreesToRadians(-21))),
+                    new Pose3d(
+                            0.19651,
+                            -0.29981,
+                            0.31560,
                             new Rotation3d(0.0, 0.0, Units.degreesToRadians(20))),
-                    new Pose3d(
-                            0.127,
-                            -0.247,
-                            0.209,
-                            new Rotation3d(0.0, Units.degreesToRadians(-20), 0.0)
-                                    .rotateBy(new Rotation3d(0.0, 0.0, Units.degreesToRadians(225)))),
-                    new Pose3d(
-                            Units.inchesToMeters(8.875),
-                            Units.inchesToMeters(-10.5),
-                            Units.inchesToMeters(8.25),
-                            new Rotation3d(0.0, Units.degreesToRadians(-28.125), 0.0)
-                                    .rotateBy(new Rotation3d(0.0, 0.0, Units.degreesToRadians(-30.0)))),
-                    new Pose3d(
-                            Units.inchesToMeters(-16.0),
-                            Units.inchesToMeters(-12.0),
-                            Units.inchesToMeters(8.5),
-                            new Rotation3d(0.0, Units.degreesToRadians(-33.75), 0.0)
-                                    .rotateBy(new Rotation3d(0.0, 0.0, Units.degreesToRadians(176.386))))
             };
 
     // Instance names for the installed AprilTag vision cameras
@@ -64,9 +62,9 @@ public class AprilTagVisionConstants {
     // Camera device IDs for the installed AprilTag vision cameras
     public static final String[] cameraIds =
             new String[]{
-                    "/dev/video_cam3",
+                    "/dev/video_cam1",
                     "/dev/video_cam2",
-                    "/dev/v4l/by-path/platform-fc800000.usb-usb-0:1:1.0-video-index0",
-                    "/dev/v4l/by-path/platform-fc880000.usb-usb-0:1:1.0-video-index0"
+                    "/dev/video_cam3",
+                    "/dev/video_cam4"
             };
 }

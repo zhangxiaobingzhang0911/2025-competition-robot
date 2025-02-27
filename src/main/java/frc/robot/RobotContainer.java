@@ -20,6 +20,7 @@ import frc.robot.auto.basics.AutoFile;
 import frc.robot.auto.basics.CustomAutoChooser;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
@@ -38,7 +39,6 @@ import frc.robot.subsystems.indicator.IndicatorIOSim;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.utils.DestinationSupplier;
 import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.AllianceFlipUtil;
@@ -74,9 +74,12 @@ public class RobotContainer {
     private final AprilTagVision aprilTagVision = new AprilTagVision(
             this::getAprilTagLayoutType,
             new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1));
+            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1),
+            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 2),
+            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 3));
     private final Swerve swerve = Swerve.getInstance();
     private final Display display = Display.getInstance();
+    private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();
     private final ElevatorSubsystem elevatorSubsystem;
     private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
@@ -104,7 +107,7 @@ public class RobotContainer {
             climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
         }
         updateManager = new UpdateManager(swerve,
-                display);
+                display, destinationSupplier);
         updateManager.registerAll();
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", CustomAutoChooser.buildAutoChooser("New Auto"));
@@ -117,6 +120,8 @@ public class RobotContainer {
         configureOperatorBindings();
         configureTesterBindings();
         configureStreamDeckBindings();
+
+        aprilTagVision.setMeasuerCnt(0);
     }
 
     //Configure all commands for driver
@@ -133,9 +138,9 @@ public class RobotContainer {
                 false), swerve));
 
         driverController.povRight().whileTrue(
-                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_LIMITED))
-        ).onFalse(
-                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_UNCAPPED))
+                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_LIMITED)).finallyDo(
+                        () -> swerve.setKinematicsLimit(DRIVETRAIN_UNCAPPED)
+                )
         );
 
         driverController.start().onTrue(
@@ -156,8 +161,7 @@ public class RobotContainer {
                     aprilTagVision.setMeasuerCnt(0);
                 }).ignoringDisable(true));
 
-
-        //        driverController.leftBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+//        driverController.leftBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
 //        driverController.leftTrigger().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem));
 //        driverController.rightBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
 //        driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
@@ -173,6 +177,7 @@ public class RobotContainer {
         driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
         driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+        driverController.x().whileTrue(new TrembleIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 
     private void configureOperatorBindings() {
@@ -209,7 +214,19 @@ public class RobotContainer {
     }
 
     private void configureStreamDeckBindings() {
-        streamDeckController.button(1).onTrue(new ReefAimCommand(8, false, () -> streamDeckController.button(17).getAsBoolean()));
+        // Operator's controller
+        streamDeckController.button(1).onTrue(new ReefAimCommand(() -> (streamDeckController.button(17).getAsBoolean() || driverController.povLeft().getAsBoolean()), elevatorSubsystem));
+        streamDeckController.button(2).onTrue(new AutoAimShootCommand(indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,
+                () -> (streamDeckController.button(17).getAsBoolean() || driverController.povLeft().getAsBoolean())));
+        streamDeckController.button(3).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateBranch(true)));
+        streamDeckController.button(4).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateBranch(false)));
+
+        streamDeckController.button(13).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
+        streamDeckController.button(14).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
+        streamDeckController.button(15).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
+        streamDeckController.button(16).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
+        streamDeckController.button(18).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
+        streamDeckController.button(19).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
     }
 
     public Command getAutonomousCommand() {

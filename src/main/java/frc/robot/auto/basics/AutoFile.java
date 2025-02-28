@@ -50,8 +50,9 @@ public class AutoFile {
 
     private Command build4CoralUp() {
         return new SequentialCommandGroup(
+                autoActions.initializeVision(),
                 autoActions.setL4(),
-                autoActions.followPath(getAutoPath("S1-P3-1"), true, true, true),
+                autoActions.followPath(getAutoPath("S1-P3-1"), true, true, false),
                 autoActions.putCoral()
 //                autoActions.followPath(getAutoPath("P3-I1"), true, true, false),
 //                autoActions.followPath(getAutoPath("I1-P2-1"), true, true, false),

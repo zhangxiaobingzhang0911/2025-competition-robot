@@ -81,7 +81,6 @@ public class DestinationSupplier implements Updatable {
             default:
                 System.out.println("Unknown elevator setpoint: " + setpoint);
         }
-
     }
 
     public double getElevatorSetpoint(boolean useCoral) {

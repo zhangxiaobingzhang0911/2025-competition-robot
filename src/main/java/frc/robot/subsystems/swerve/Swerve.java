@@ -16,7 +16,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.SwerveConstants;
@@ -60,8 +59,14 @@ public class Swerve implements Updatable, Subsystem {
             RobotConstants.SwerveConstants.headingController.HEADING_KD.get(),
             new TrapezoidProfile.Constraints(400, 720));
     // Path Following Controller TODO tuning
+    // TODO: headingController dui ma?
     private final HolonomicTrajectoryFollower trajectoryFollower = new HolonomicTrajectoryFollower(
-            new PIDController(3.5, 0.0, 0.0), new PIDController(3.5, 0.0, 0.0),
+            new PIDController(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
+                    RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
+                    RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get()),
+            new PIDController(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
+                    RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
+                    RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get()),
             this.headingController, RobotConstants.SwerveConstants.DRIVETRAIN_FEEDFORWARD);
     @Getter
     private final RobotConfig autoConfig;
@@ -130,6 +135,8 @@ public class Swerve implements Updatable, Subsystem {
         kinematicLimits = SwerveConstants.DRIVETRAIN_UNCAPPED;
 
         autoConfig = RobotConfig.fromGUISettings();
+
+        trajectoryFollower.setTolerance(0.02, 0.25);
     }
 
     // Calculate the drive base radius based on module locations.
@@ -450,6 +457,7 @@ public class Swerve implements Updatable, Subsystem {
     @Override
     public void update(double time, double dt) {
         Optional<HolonomicDriveSignal> trajectorySignal = trajectoryFollower.update(
+//                swerveLocalizer.getPredictedPose(0.9),
                 swerveLocalizer.getCoarseFieldPose(time),
                 swerveLocalizer.getMeasuredVelocity().getTranslation(),
                 swerveLocalizer.getMeasuredVelocity().getRotation().getDegrees(),

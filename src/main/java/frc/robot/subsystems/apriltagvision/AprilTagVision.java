@@ -37,7 +37,7 @@ import static org.littletonrobotics.RobotState.VisionObservation;
 public class AprilTagVision extends SubsystemBase {
     // Serial
     // public static final SerialPort serial = new SerialPort(RobotConstants.baudRate, RobotConstants.VisionConstants.serialPort);
-    // Others
+    
     private static final LoggedTunableNumber timestampOffset =
             new LoggedTunableNumber("AprilTagVision/TimestampOffset", -(1.0 / 50.0));
     private static final double demoTagPosePersistenceSecs = 0.5;
@@ -58,11 +58,8 @@ public class AprilTagVision extends SubsystemBase {
     @Getter
     private Pose3d robotPose3d;
 
-    private double deviationX;
-    private double deviationY;
-    private double deviationOmega;
     @Setter
-    private int measuerCnt = 0;
+    private int measureCnt = 0;
 
     /**
      * Constructs the AprilTagVision subsystem with a supplier for the AprilTag layout type and an array of IO instances.
@@ -230,21 +227,15 @@ public class AprilTagVision extends SubsystemBase {
                 allRobotPoses.add(robotPose);
                 allRobotPoses3d.add(robotPose3d);
                 if (robotPose3d != null) {
-                    if (measuerCnt <= 5) {
-                        measuerCnt++;
-                        deviationX = 0.01;
-                        deviationY = 0.01;
-                        deviationOmega = thetaStdDev;
-                    } else {
-                        deviationX = xyStdDev;
-                        deviationY = xyStdDev;
-                        deviationOmega = thetaStdDev;//(0.0062 * botEstimate.get().pose.getRotation().getDegrees() + 0.0087) * 0.2;
+                    if (measureCnt <= 5 && Swerve.getInstance().getState() == Swerve.State.PATH_FOLLOWING) {
+                        measureCnt++;
+                        xyStdDev = 0.01;
                     }
                     Swerve.getInstance().getLocalizer().addMeasurement(
                             Timer.getFPGATimestamp(),
                             robotPose3d.toPose2d(),
-                            new Pose2d(new Translation2d(deviationX, deviationY),
-                                    Rotation2d.fromDegrees(deviationOmega)));
+                            new Pose2d(new Translation2d(xyStdDev, xyStdDev),
+                                    Rotation2d.fromDegrees(thetaStdDev)));
                     SmartDashboard.putBoolean("TargetUpdated", true);
                 } else {
                     SmartDashboard.putBoolean("TargetUpdated", false);

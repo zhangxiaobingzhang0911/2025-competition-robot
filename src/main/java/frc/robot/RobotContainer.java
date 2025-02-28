@@ -115,8 +115,6 @@ public class RobotContainer {
         configureDriverBindings();
         configureStreamDeckBindings();
         configureTesterBindings();
-
-        aprilTagVision.setMeasuerCnt(0);
     }
 
     //Configure all commands for driver
@@ -153,7 +151,7 @@ public class RobotContainer {
                                         swerve.getLocalizer().getLatestPose().getRotation())));
                     }
                     lastResetTime = Timer.getFPGATimestamp();
-                    aprilTagVision.setMeasuerCnt(0);
+                    aprilTagVision.setMeasureCnt(0);
                 }).ignoringDisable(true));
 
         driverController.leftTrigger().toggleOnTrue(new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));

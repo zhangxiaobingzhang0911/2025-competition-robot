@@ -3,11 +3,13 @@ package frc.robot.subsystems.endeffector;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import org.littletonrobotics.junction.Logger;
 
+import static frc.robot.RobotConstants.ElevatorConstants.L1_EXTENSION_METERS;
 import static frc.robot.RobotConstants.EndEffectorConstants.EndEffectorGainsClass.*;
 import static frc.robot.RobotConstants.EndEffectorConstants.*;
 
@@ -17,6 +19,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     private static double intakeRPS = INTAKE_RPS.get();
     private static double preShootRPS = PRE_SHOOT_RPS.get();
     private static double shootRPS = SHOOT_RPS.get();
+    private static double l1RPS = L1_RPS.get();
     private final EndEffectorIO endEffectorIO;
     private final BeambreakIO middleBBIO, edgeBBIO;
     private final BeambreakIOInputsAutoLogged middleBBInputs = new BeambreakIOInputsAutoLogged();
@@ -87,7 +90,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
                 }
                 break;
             case SHOOTING:
-                io.setVelocity(-shootRPS);
+                io.setVelocity(DestinationSupplier.getInstance().getElevatorSetpoint(true) == L1_EXTENSION_METERS.get() ? -l1RPS : -shootRPS);
                 break;
             case POKING:
                 io.setVoltage(12);
@@ -99,6 +102,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             intakeRPS = INTAKE_RPS.get();
             preShootRPS = PRE_SHOOT_RPS.get();
             shootRPS = SHOOT_RPS.get();
+            l1RPS = L1_RPS.get();
 
             kp = ENDEFFECTOR_KP.get();
             ki = ENDEFFECTOR_KI.get();

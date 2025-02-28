@@ -319,7 +319,9 @@ public final class RobotConstants {
         public static final TunableNumber INTAKE_RPS = new TunableNumber("ENDEFFECTOR/indexRPS", -100);
         public static final TunableNumber HOLD_RPS = new TunableNumber("ENDEFFECTOR/holdRPS", 0.0);
         public static final TunableNumber PRE_SHOOT_RPS = new TunableNumber("ENDEFFECTOR/preShootRPS", -15);
+        //TODO may decrease shootRPS
         public static final TunableNumber SHOOT_RPS = new TunableNumber("ENDEFFECTOR/shootRPS", -80);
+        public static final TunableNumber L1_RPS = new TunableNumber("ENDEFFECTOR/l1RPS", -40);
         public static final TunableNumber IDLE_RPS = new TunableNumber("ENDEFFECTOR/idleRPS", -0);
 
         /**

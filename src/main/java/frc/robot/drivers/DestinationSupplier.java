@@ -110,7 +110,7 @@ public class DestinationSupplier implements Updatable {
 
     public void updateBranch(boolean coralRight) {
         this.coralRight = coralRight;
-        Logger.recordOutput("DestinationSupplier/RightCoral", coralRight);
+        Logger.recordOutput("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
     }
 
     public boolean getCurrentBranch() {

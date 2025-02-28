@@ -112,7 +112,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void zeroElevator() {
         if (!io.isNearZeroExtension() && !hasReachedNearZero) {
             if (RobotContainer.intakeIsDanger) {
-                io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get() + 0.06);//TODO: fixme
+                // safer
+                io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get() + 0.06);
             } else {
                 io.setElevatorTarget(0.05);
             }

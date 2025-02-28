@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -63,9 +64,8 @@ public class RobotContainer {
 
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);
-    private final CommandXboxController operatorController = new CommandXboxController(1);
+    private final CommandGenericHID streamDeckController = new CommandGenericHID(1);
     private final CommandXboxController testerController = new CommandXboxController(2);
-    private final CommandGenericHID streamDeckController = new CommandGenericHID(3);
     // Update Manager
     @Getter
     private final UpdateManager updateManager;
@@ -116,11 +116,8 @@ public class RobotContainer {
         new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
 
         configureDriverBindings();
-        configureOperatorBindings();
-        configureTesterBindings();
         configureStreamDeckBindings();
-
-        aprilTagVision.setMeasuerCnt(0);
+        configureTesterBindings();
     }
 
     //Configure all commands for driver
@@ -157,68 +154,46 @@ public class RobotContainer {
                                         swerve.getLocalizer().getLatestPose().getRotation())));
                     }
                     lastResetTime = Timer.getFPGATimestamp();
-                    aprilTagVision.setMeasuerCnt(0);
+                    aprilTagVision.setMeasureCnt(0);
                 }).ignoringDisable(true));
 
-//        driverController.leftBumper().whileTrue(new GroundIntakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-//        driverController.leftTrigger().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem));
-//        driverController.rightBumper().whileTrue(new FunnelIntakeCommand(elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
-//        driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-//        driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-//        driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
-//        driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-
-        //cyy's key binding
         driverController.leftTrigger().toggleOnTrue(new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.rightBumper().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem));
         driverController.leftBumper().toggleOnTrue(new FunnelIntakeCommand(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
         driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
         driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.x().whileTrue(new TrembleIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-    }
-
-    private void configureOperatorBindings() {
-
-        //Operator's triggers to change target reef heights
-        operatorController.a().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
-        operatorController.b().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
-        operatorController.x().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
-        operatorController.y().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
-        operatorController.leftBumper().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
-        operatorController.rightBumper().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
-    }
-
-    private void configureTesterBindings() {
-        //test of endeffector state machine
-        testerController.povLeft().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE)));
-        testerController.povRight().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE)));
-        testerController.povUp().onTrue(Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT)));
-
-        testerController.a().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
-        testerController.b().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
-        testerController.x().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
-        testerController.y().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
-        testerController.leftBumper().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
-        testerController.rightBumper().onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
-
+        driverController.rightBumper().whileTrue(switchAimingModeCommand());
     }
 
     private void configureStreamDeckBindings() {
         // Operator's controller
-        streamDeckController.button(1).onTrue(new ReefAimCommand(() -> (streamDeckController.button(17).getAsBoolean() || driverController.povLeft().getAsBoolean()), elevatorSubsystem));
-        streamDeckController.button(2).onTrue(new AutoAimShootCommand(indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,
-                () -> (streamDeckController.button(17).getAsBoolean() || driverController.povLeft().getAsBoolean())));
-        streamDeckController.button(3).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateBranch(true)));
-        streamDeckController.button(4).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateBranch(false)));
+        streamDeckController.button(1).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.MANUAL)).ignoringDisable(true));
+        streamDeckController.button(2).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.SEMI)).ignoringDisable(true));
+        streamDeckController.button(3).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.AUTO)).ignoringDisable(true));
+        streamDeckController.button(4).onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
+        streamDeckController.button(5).onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
+        streamDeckController.button(13).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)).ignoringDisable(true));
+        streamDeckController.button(14).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)).ignoringDisable(true));
+        streamDeckController.button(15).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)).ignoringDisable(true));
+        streamDeckController.button(16).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)).ignoringDisable(true));
+        streamDeckController.button(18).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)).ignoringDisable(true));
+        streamDeckController.button(19).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)).ignoringDisable(true));
+    }
 
-        streamDeckController.button(13).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
-        streamDeckController.button(14).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
-        streamDeckController.button(15).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
-        streamDeckController.button(16).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
-        streamDeckController.button(18).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
-        streamDeckController.button(19).onTrue(Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
+    public void configureTesterBindings() {
+        testerController.x().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.MANUAL)).ignoringDisable(true));
+        testerController.b().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.SEMI)).ignoringDisable(true));
+        testerController.a().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.AUTO)).ignoringDisable(true));
+        testerController.leftBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
+        testerController.rightBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
+        testerController.povUp().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)).ignoringDisable(true));
+        testerController.povLeft().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)).ignoringDisable(true));
+        testerController.povRight().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)).ignoringDisable(true));
+        testerController.povDown().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)).ignoringDisable(true));
+        testerController.leftTrigger().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)).ignoringDisable(true));
+        testerController.rightTrigger().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)).ignoringDisable(true));
     }
 
     public Command getAutonomousCommand() {
@@ -230,4 +205,20 @@ public class RobotContainer {
         return FieldConstants.defaultAprilTagType;
     }
 
+    public Command switchAimingModeCommand() {
+        return new ConditionalCommand(
+                //AUTO
+                new AutoAimShootCommand(
+                        indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,
+                        () -> streamDeckController.button(17).getAsBoolean(), driverController),
+                new ConditionalCommand(
+                        //SEMI
+                        Commands.parallel(
+                                new ReefAimCommand(() -> streamDeckController.button(17).getAsBoolean(), elevatorSubsystem, driverController),
+                                new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem)),
+                        //MANUAL
+                        new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                        () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.SEMI
+                ), () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO);
+    }
 }

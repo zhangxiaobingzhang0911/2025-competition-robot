@@ -32,6 +32,9 @@ public class GroundIntakeCommand extends Command {
 
     @Override
     public void execute() {
+        if (endEffectorSubsystem.containsCoral()){
+            return;
+        }
         if (elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE);
         } else {

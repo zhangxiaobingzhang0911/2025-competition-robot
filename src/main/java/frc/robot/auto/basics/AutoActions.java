@@ -1,71 +1,78 @@
 package frc.robot.auto.basics;
 
-import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.AutoShootCoralCommand;
+import frc.robot.commands.GroundIntakeCommand;
+import frc.robot.commands.PreShootCommand;
+import frc.robot.commands.ShootCommand;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import lombok.Synchronized;
+import frc.robot.subsystems.swerve.Swerve;
 
-import java.util.Map;
-
-import static frc.robot.RobotConstants.ElevatorConstants.*;
+import java.util.function.BooleanSupplier;
 
 public class AutoActions {
-    public static boolean initialized = false;
+    private final EndEffectorSubsystem endEffectorSubsystem;
+    private final IntakeSubsystem intakeSubsystem;
+    private final ElevatorSubsystem elevatorSubsystem;
+    private final IndicatorSubsystem indicatorSubsystem;
+    private final Swerve swerve;
 
-    public static void initializeAutoCommands(ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, EndEffectorSubsystem endEffectorSubsystem) {
-        if (initialized) {
-            throw new IllegalStateException("AutoActions already initialized");
-        }
-        Map<String, Command> autoCommands = Map.ofEntries(
-                Map.entry(
-                        "EE-GROUND-INTAKE", Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.GROUND_INTAKE))
-                ),
-                Map.entry(
-                        "EE-PRE-SHOOT", Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT))
-                ),
-                Map.entry(
-                        "EE-IDLE", Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE))
-                ),
-                Map.entry(
-                        "EE-SHOOT", Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT))
-                ),
-                Map.entry(
-                        "ELE-ZERO", Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO))
-                ),
-                Map.entry(
-                        "ELE-L1", Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L1_EXTENSION_METERS.get()))
-                ),
-                Map.entry(
-                        "ELE-L2", Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L2_EXTENSION_METERS.get()))
-                ),
-                Map.entry(
-                        "ELE-L3", Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L3_EXTENSION_METERS.get()))
-                ),
-                Map.entry(
-                        "ELE-L4", Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L4_EXTENSION_METERS.get()))
-                ),
-                Map.entry(
-                        "ELE-HOME", Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get()))
-                ),
-                Map.entry(
-                        "INTAKE-DEPLOY", Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_INTAKE))
-                ),
-                Map.entry(
-                        "INTAKE-HOME", Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME))
-                ),
-                Map.entry(
-                        "INTAKE-ZERO", Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO))
-                )
-        );
-        NamedCommands.registerCommands(autoCommands);
+    public AutoActions(IndicatorSubsystem indicatorSubsystem, ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem) {
+        this.intakeSubsystem = intakeSubsystem;
+        this.endEffectorSubsystem = endEffectorSubsystem;
+        this.elevatorSubsystem = elevatorSubsystem;
+        this.indicatorSubsystem = indicatorSubsystem;
+        this.swerve = Swerve.getInstance();
     }
 
-    @Synchronized
-    public static Command waitFor(double seconds) {
+    public Command shootCoralAtSetpoint() {
+        return new AutoShootCoralCommand(elevatorSubsystem, endEffectorSubsystem);
+    }
+
+    // invoke event marker
+    public void invokeCommand(String name, BooleanSupplier stopSupplier) {
+        switch (name) {
+            case "DEPLOY-INTAKE":
+                deployIntake().until(stopSupplier).schedule();
+                break;
+            case "PRESHOOT":
+                preShoot().until(stopSupplier).schedule();
+                break;
+        }
+    }
+
+    public Command followPath(PathPlannerPath path, boolean angleLock, boolean requiredOnTarget, boolean resetOdometry) {
+        return new FollowPath(this, swerve, path, angleLock, requiredOnTarget, resetOdometry);
+    }
+
+    public Command waitFor(double seconds) {
         return new WaitCommand(seconds);
+    }
+
+    public Command setL4() {
+        return Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4));
+    }
+
+    public Command deployIntake() {
+        return new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem);
+    }
+
+    public Command preShoot() {
+        return new PreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem);
+    }
+
+    public Command shootCoral() {
+        return new ShootCommand(indicatorSubsystem, endEffectorSubsystem);
+    }
+
+    public Command putCoral() {
+        return Commands.race(preShoot(), shootCoralAtSetpoint());
     }
 }

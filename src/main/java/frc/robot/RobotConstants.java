@@ -262,12 +262,12 @@ public final class RobotConstants {
          * IF YOU WANT TO ADJUST SWERVE PID, GO TO src/main/java/org/frcteam6941/swerve/CTRESwerveModule.java AND FOLLOW THE INSTRUCTION
          */
         public static class driveGainsClass {
-            public static final TunableNumber DRIVE_KP = new TunableNumber("DRIVE PID/kp", 0.03);
+            public static final TunableNumber DRIVE_KP = new TunableNumber("DRIVE PID/kp", 0.025);
             public static final TunableNumber DRIVE_KI = new TunableNumber("DRIVE PID/ki", 0);
-            public static final TunableNumber DRIVE_KD = new TunableNumber("DRIVE PID/kd", 0.0001);
+            public static final TunableNumber DRIVE_KD = new TunableNumber("DRIVE PID/kd", 0.0);
             public static final TunableNumber DRIVE_KA = new TunableNumber("DRIVE PID/ka", 0);
-            public static final TunableNumber DRIVE_KV = new TunableNumber("DRIVE PID/kv", 0.12);
-            public static final TunableNumber DRIVE_KS = new TunableNumber("DRIVE PID/ks", 0.045);
+            public static final TunableNumber DRIVE_KV = new TunableNumber("DRIVE PID/kv", 0.125);
+            public static final TunableNumber DRIVE_KS = new TunableNumber("DRIVE PID/ks", 0.28);
         }
 
         /**
@@ -319,7 +319,7 @@ public final class RobotConstants {
         public static final TunableNumber HOLD_RPS = new TunableNumber("ENDEFFECTOR/holdRPS", 0.0);
         public static final TunableNumber PRE_SHOOT_RPS = new TunableNumber("ENDEFFECTOR/preShootRPS", -15);
         //TODO may decrease shootRPS
-        public static final TunableNumber SHOOT_RPS = new TunableNumber("ENDEFFECTOR/shootRPS", -80);
+        public static final TunableNumber SHOOT_RPS = new TunableNumber("ENDEFFECTOR/shootRPS", -60);
         public static final TunableNumber L1_RPS = new TunableNumber("ENDEFFECTOR/l1RPS", -40);
         public static final TunableNumber IDLE_RPS = new TunableNumber("ENDEFFECTOR/idleRPS", -0);
 

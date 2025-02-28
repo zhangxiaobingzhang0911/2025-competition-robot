@@ -14,9 +14,11 @@ Configure it in *Configure vJoy*, monitor it in *vJoy Monitor*
 
 ### Keyboard layout
 
-- ID 1-12: Start from the left branch of the two nearest branch(ID1), then go counter-clockwise.
+- ID 1: Auto aim(swerve only)
+- ID 2: Auto aim & shoot
 - ID 13-16: L1-4
 - ID 17: Stop button for aiming
+- ID 18-19: P1-2
 
 ## Calib
 

@@ -144,7 +144,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     }
 
     public void trembleIntake() {
-        intakeRollerIO.setVoltage(intakeVoltage);
+        rollerIntake();
         intakePivotIO.setPivotAngle(deployAngle - 3);
         if (intakePivotIOInputs.currentAngleDeg > deployAngle + 2) {
             intakePivotIO.setPivotAngle(deployAngle - 3);
@@ -156,17 +156,17 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     public void zeroIntakeGround() {
         intakeRollerIO.stop();
-        if (!isNearAngle(100) && !hasHomed) {
+        if (!isNearAngle(101) && !hasHomed) {
             intakePivotIO.setPivotAngle(100);
             return;
         }
         hasHomed = true;
         if (RobotBase.isReal()) {
-            if (currentFilterValue <= 15) {
+            if (currentFilterValue <= 18) {
                 intakePivotIO.setMotorVoltage(1);
                 setWantedState(WantedState.GROUNDZERO);
             }
-            if (currentFilterValue > 15) {
+            if (currentFilterValue > 18) {
                 intakePivotIO.setMotorVoltage(0);
                 intakePivotIO.resetAngle(120);
                 setWantedState(WantedState.HOME);
@@ -212,6 +212,7 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     public boolean isNearAngle(double targetAngleDeg) {
         return MathUtil.isNear(targetAngleDeg, intakePivotIOInputs.currentAngleDeg, 1);
+        //TODO tolerance ++
     }
 
     public boolean intakeIsDanger() {

@@ -104,10 +104,17 @@ public class ElevatorSubsystem extends SubsystemBase {
         setElevatorState(WantedState.POSITION);
     }
 
+    public boolean elevatorReady(double offset) {
+        boolean elevatorReady = Math.abs(io.getElevatorHeight() - wantedPosition) < offset;
+        Logger.recordOutput("Elevator/elevatorReady", elevatorReady);
+        return elevatorReady;
+    }
+
     public void zeroElevator() {
         if (!io.isNearZeroExtension() && !hasReachedNearZero) {
             if (RobotContainer.intakeIsDanger) {
-                io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get());
+                // safer
+                io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get() + 0.13);
             } else {
                 io.setElevatorTarget(0.05);
             }

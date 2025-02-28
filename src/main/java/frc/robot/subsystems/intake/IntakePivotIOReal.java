@@ -61,7 +61,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
         motor.getConfigurator().apply(config);
 
         motor.clearStickyFaults();
-        
+
         BaseStatusSignal.setUpdateFrequencyForAll(
                 50.0,
                 velocityRotPerSec,

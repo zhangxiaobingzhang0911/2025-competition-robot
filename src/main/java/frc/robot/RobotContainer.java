@@ -35,6 +35,7 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorIOReal;
 import frc.robot.subsystems.endeffector.EndEffectorIOSim;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorIOARGB;
 import frc.robot.subsystems.indicator.IndicatorIOSim;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
@@ -152,6 +153,7 @@ public class RobotContainer {
                     }
                     lastResetTime = Timer.getFPGATimestamp();
                     aprilTagVision.setMeasureCnt(0);
+                    indicatorSubsystem.setPattern(IndicatorIO.Patterns.RESET_ODOM);
                 }).ignoringDisable(true));
 
         driverController.leftTrigger().toggleOnTrue(new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
@@ -195,7 +197,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // FIXME: set resetOdometry to false when vision is completed and usable
-        return AutoFile.runAuto(autoChooser.get(), false, true, true);
+        return AutoFile.runAuto(autoChooser.get(), true, true, false);
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

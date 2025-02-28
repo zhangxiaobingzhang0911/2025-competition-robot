@@ -28,7 +28,8 @@ public interface IndicatorIO {
         INTAKE(new BlinkingPattern(Color.kRed, 0.2)),
         AFTER_INTAKE(new BlinkingPattern(Color.kGreen, 0.02)),
         PRE_SHOOT(new RisingPattern(Color.kRed, Seconds.of(1))),
-        SHOOT(new BlinkingPattern(Color.kYellow, 0.05));
+        SHOOT(new BlinkingPattern(Color.kYellow, 0.05)),
+        RESET_ODOM(new BlinkingPattern(Color.kWhite, 0.25));
 
         public final AddressableLEDPattern pattern;
 

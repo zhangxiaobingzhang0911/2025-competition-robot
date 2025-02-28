@@ -3,23 +3,16 @@ package frc.robot.auto.basics;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.AutoAimShootCommand;
-import frc.robot.commands.GroundIntakeCommand;
-import frc.robot.commands.PreShootCommand;
-import frc.robot.commands.ShootCommand;
+import frc.robot.commands.*;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.drivers.DestinationSupplier;
 
 import java.util.function.BooleanSupplier;
-
-import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
-import static frc.robot.RobotConstants.ElevatorConstants.L4_EXTENSION_METERS;
 
 public class AutoActions {
     private final EndEffectorSubsystem endEffectorSubsystem;
@@ -27,7 +20,6 @@ public class AutoActions {
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
     private final Swerve swerve;
-
     public AutoActions(IndicatorSubsystem indicatorSubsystem, ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
@@ -36,6 +28,11 @@ public class AutoActions {
         this.swerve = Swerve.getInstance();
     }
 
+    public Command shootCoralAtSetpoint() {
+        return new AutoShootCoralCommand(elevatorSubsystem,endEffectorSubsystem);
+    }
+
+    // invoke event marker
     public void invokeCommand(String name, BooleanSupplier stopSupplier) {
         switch (name) {
             case "DEPLOY-INTAKE":
@@ -43,8 +40,10 @@ public class AutoActions {
                 break;
             case "PRESHOOT":
                 preShoot().until(stopSupplier).schedule();
+                break;
             case "AIMSHOOT":
                 autoAimShoot().until(stopSupplier).schedule();
+                break;
         }
     }
 
@@ -56,8 +55,8 @@ public class AutoActions {
         return new WaitCommand(seconds);
     }
 
-    public Command raiseElevator() {
-        return Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(L4_EXTENSION_METERS.get()));
+    public Command setL4() {
+        return Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4));
     }
 
     public Command deployIntake() {
@@ -76,10 +75,7 @@ public class AutoActions {
         return new ShootCommand(indicatorSubsystem, endEffectorSubsystem);
     }
 
-    public Command shootCoralAtSetpoint() {
-        return shootCoral().onlyIf(() -> elevatorSubsystem.getIo().isNearExtension(elevatorSubsystem.getWantedPosition()))
-                .andThen(
-                        new InstantCommand(() -> preShoot().cancel())
-                );
+    public Command putCoral() {
+        return Commands.race(preShoot(), shootCoralAtSetpoint());
     }
 }

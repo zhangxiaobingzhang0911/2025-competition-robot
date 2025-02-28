@@ -50,13 +50,15 @@ public class AutoFile {
 
     private Command build4CoralUp() {
         return new SequentialCommandGroup(
+                autoActions.setL4(),
                 autoActions.followPath(getAutoPath("S1-P3-1"), true, true, true),
-                autoActions.followPath(getAutoPath("P3-I1"), true, true, false),
-                autoActions.followPath(getAutoPath("I1-P2-1"), true, true, false),
-                autoActions.followPath(getAutoPath("P2-1-I2"), true, true, false),
-                autoActions.followPath(getAutoPath("I2-P1-2"), true, true, false),
-                autoActions.followPath(getAutoPath("P1-2-I3"), true, true, false),
-                autoActions.followPath(getAutoPath("I3-P1-1"), true, true, false)
+                autoActions.putCoral()
+//                autoActions.followPath(getAutoPath("P3-I1"), true, true, false),
+//                autoActions.followPath(getAutoPath("I1-P2-1"), true, true, false),
+//                autoActions.followPath(getAutoPath("P2-1-I2"), true, true, false),
+//                autoActions.followPath(getAutoPath("I2-P1-2"), true, true, false),
+//                autoActions.followPath(getAutoPath("P1-2-I3"), true, true, false),
+//                autoActions.followPath(getAutoPath("I3-P1-1"), true, true, false)
         );
     }
 }

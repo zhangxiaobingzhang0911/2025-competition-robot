@@ -4,10 +4,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.AutoShootCoralCommand;
-import frc.robot.commands.GroundIntakeCommand;
-import frc.robot.commands.PreShootCommand;
-import frc.robot.commands.ShootCommand;
+import frc.robot.commands.*;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
@@ -45,6 +42,9 @@ public class AutoActions {
             case "PRESHOOT":
                 preShoot().until(stopSupplier).schedule();
                 break;
+            case "ZEROELEVATOR":
+                zeroElevator().until(stopSupplier).schedule();
+                break;
         }
     }
 
@@ -58,6 +58,10 @@ public class AutoActions {
 
     public Command setL4() {
         return Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4));
+    }
+
+    public Command zeroElevator() {
+        return new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem);
     }
 
     public Command deployIntake() {

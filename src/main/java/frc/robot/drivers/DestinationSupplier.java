@@ -62,9 +62,7 @@ public class DestinationSupplier implements Updatable {
     public static Pose2d getFinalDriveTarget(Pose2d goal, boolean rightReef) {
         goal = goal.transformBy(new Transform2d(
                 new Translation2d(
-                        getInstance().currentElevSetpointCoral == elevatorSetpoint.L4 ?
-                                RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_L4_METERS.get() :
-                                RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_METERS.get(),
+                        RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_METERS.get(),
                         RobotConstants.ReefAimConstants.PIPE_TO_TAG.magnitude() * (rightReef ? 1 : -1)),
                 new Rotation2d()));
         return goal;

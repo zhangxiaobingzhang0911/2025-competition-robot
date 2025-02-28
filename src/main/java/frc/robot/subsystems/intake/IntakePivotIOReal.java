@@ -62,7 +62,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
         motor.getConfigurator().apply(config);
 
         motor.clearStickyFaults();
-        
+
         BaseStatusSignal.setUpdateFrequencyForAll(
                 50.0,
                 velocityRotPerSec,
@@ -95,6 +95,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
         inputs.currentAngleDeg = talonPosToAngle(currentPositionRot.getValueAsDouble());
         inputs.targetAngleDeg = targetAngleDeg;
+        inputs.motorVolts = motorVolts.getValueAsDouble();
 
         if (RobotConstants.TUNING) {
             inputs.intakePivotKP = IntakePivotGainsClass.INTAKE_PIVOT_KP.get();

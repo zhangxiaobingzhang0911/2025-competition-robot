@@ -9,12 +9,18 @@ import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.swerve.Swerve;
+import lombok.Getter;
+import lombok.Setter;
 import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.junction.Logger;
 
 public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
     Swerve swerve;
+    @Getter
+    private controlMode currentControlMode = controlMode.MANUAL;
+    @Getter
+    @Setter
     private int targetTagID = 0;
     private boolean coralRight = false;
     private boolean useCoral = false;
@@ -33,7 +39,7 @@ public class DestinationSupplier implements Updatable {
     }
 
     public static Pose2d getDriveTarget(Pose2d robot, Pose2d goal, boolean rightReef) {
-        goal = getFinalDriveTarget(goal,rightReef);
+        goal = getFinalDriveTarget(goal, rightReef);
         var offset = goal.relativeTo(robot);
         double yDistance = Math.abs(offset.getY());
         double xDistance = Math.abs(offset.getX());
@@ -56,9 +62,7 @@ public class DestinationSupplier implements Updatable {
     public static Pose2d getFinalDriveTarget(Pose2d goal, boolean rightReef) {
         goal = goal.transformBy(new Transform2d(
                 new Translation2d(
-                        getInstance().currentElevSetpointCoral == elevatorSetpoint.L4 ?
-                                RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_L4_METERS.get():
-                                RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_METERS.get(),
+                        RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_METERS.get(),
                         RobotConstants.ReefAimConstants.PIPE_TO_TAG.magnitude() * (rightReef ? 1 : -1)),
                 new Rotation2d()));
         return goal;
@@ -77,7 +81,6 @@ public class DestinationSupplier implements Updatable {
             default:
                 System.out.println("Unknown elevator setpoint: " + setpoint);
         }
-
     }
 
     public double getElevatorSetpoint(boolean useCoral) {
@@ -106,19 +109,16 @@ public class DestinationSupplier implements Updatable {
 
     public void updateBranch(boolean coralRight) {
         this.coralRight = coralRight;
-        Logger.recordOutput("DestinationSupplier/RightCoral", coralRight);
-    }
-
-    public void updateTagID(int tagID) {
-        this.targetTagID = tagID;
-    }
-
-    public int getTargetTagID() {
-        return targetTagID;
+        Logger.recordOutput("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
     }
 
     public boolean getCurrentBranch() {
         return coralRight;
+    }
+
+    public void setCurrentControlMode(controlMode mode) {
+        this.currentControlMode = mode;
+        Logger.recordOutput("DestinationSupplier/CurrentControlMode", mode);
     }
 
     public Pose2d getNearestTag(Pose2d robotPose) {
@@ -157,6 +157,7 @@ public class DestinationSupplier implements Updatable {
         L1, L2, L3, L4, P1, P2
     }
 
-
+    public enum controlMode {
+        MANUAL, SEMI, AUTO
+    }
 }
-

@@ -27,6 +27,7 @@ public interface IntakePivotIO {
         public double statorCurrentAmps = 0.0;
         public double supplyCurrentAmps = 0.0;
         public double tempCelsius = 0.0;
+        public double motorVolts = 0.0;
 
         public double intakePivotKP = INTAKE_PIVOT_KP.get();
         public double intakePivotKI = INTAKE_PIVOT_KI.get();

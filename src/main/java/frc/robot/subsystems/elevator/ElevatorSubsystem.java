@@ -21,6 +21,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double currentFilterValue = 0.0;
     private WantedState wantedState = WantedState.POSITION;
     private SystemState systemState = SystemState.POSITION_GOING;
+    @Getter
     private double wantedPosition = IDLE_EXTENSION_METERS.get();
     private boolean hasReachedNearZero = false;
 
@@ -113,7 +114,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         if (!io.isNearZeroExtension() && !hasReachedNearZero) {
             if (RobotContainer.intakeIsDanger) {
                 // safer
-                io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get() + 0.06);
+                io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get() + 0.13);
             } else {
                 io.setElevatorTarget(0.05);
             }

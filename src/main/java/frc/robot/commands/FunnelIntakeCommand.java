@@ -32,6 +32,9 @@ public class FunnelIntakeCommand extends Command {
 
     @Override
     public void execute() {
+        if (endEffectorSubsystem.containsCoral()){
+            return;
+        }
         intakeSubsystem.setWantedState(WantedState.FUNNEL_AVOID);
         endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.FUNNEL_INTAKE);
         elevatorSubsystem.setElevatorPosition(FUNNEL_INTAKE_EXTENSION_METERS.get());
@@ -39,7 +42,7 @@ public class FunnelIntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return endEffectorSubsystem.hasCoral();
+        return endEffectorSubsystem.containsCoral();
     }
 
     @Override

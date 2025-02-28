@@ -14,8 +14,11 @@ Configure it in *Configure vJoy*, monitor it in *vJoy Monitor*
 
 ### Keyboard layout
 
-- ID 1: Auto aim(swerve only)
-- ID 2: Auto aim & shoot
+- ID 1: Manual (elevator only)
+- ID 2: Semi (swerve & elevator)
+- ID 3: Auto (swerve & elevator & endeffector)
+- ID 4: Left coral
+- ID 5: Right coral
 - ID 13-16: L1-4
 - ID 17: Stop button for aiming
 - ID 18-19: P1-2

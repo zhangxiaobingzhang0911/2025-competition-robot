@@ -4,7 +4,10 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.*;
+import frc.robot.commands.AutoShootCoralCommand;
+import frc.robot.commands.GroundIntakeCommand;
+import frc.robot.commands.PreShootCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
@@ -20,6 +23,7 @@ public class AutoActions {
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
     private final Swerve swerve;
+
     public AutoActions(IndicatorSubsystem indicatorSubsystem, ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
@@ -29,7 +33,7 @@ public class AutoActions {
     }
 
     public Command shootCoralAtSetpoint() {
-        return new AutoShootCoralCommand(elevatorSubsystem,endEffectorSubsystem);
+        return new AutoShootCoralCommand(elevatorSubsystem, endEffectorSubsystem);
     }
 
     // invoke event marker
@@ -40,9 +44,6 @@ public class AutoActions {
                 break;
             case "PRESHOOT":
                 preShoot().until(stopSupplier).schedule();
-                break;
-            case "AIMSHOOT":
-                autoAimShoot().until(stopSupplier).schedule();
                 break;
         }
     }
@@ -65,10 +66,6 @@ public class AutoActions {
 
     public Command preShoot() {
         return new PreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem);
-    }
-
-    public Command autoAimShoot() {
-        return new AutoAimShootCommand(indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, () -> false);
     }
 
     public Command shootCoral() {

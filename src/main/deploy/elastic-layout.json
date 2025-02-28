@@ -342,12 +342,11 @@
             "y": 128.0,
             "width": 128.0,
             "height": 128.0,
-            "type": "Text Display",
+            "type": "Large Text Display",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/currentElevSetpointCoral",
               "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
+              "data_type": "string"
             }
           },
           {
@@ -356,19 +355,18 @@
             "y": 128.0,
             "width": 128.0,
             "height": 128.0,
-            "type": "Text Display",
+            "type": "Large Text Display",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/currentElevSetpointPoke",
               "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
+              "data_type": "string"
             }
           },
           {
             "title": "RightCoral",
             "x": 0.0,
             "y": 256.0,
-            "width": 256.0,
+            "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
             "properties": {
@@ -379,6 +377,19 @@
               "false_color": 4294198070,
               "true_icon": "None",
               "false_icon": "None"
+            }
+          },
+          {
+            "title": "CurrentControlMode",
+            "x": 128.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/DestinationSupplier/CurrentControlMode",
+              "period": 0.06,
+              "data_type": "string"
             }
           }
         ]
@@ -1064,12 +1075,11 @@
             "y": 768.0,
             "width": 128.0,
             "height": 128.0,
-            "type": "Text Display",
+            "type": "Large Text Display",
             "properties": {
               "topic": "/northstar_0/output/fps",
               "period": 0.06,
-              "data_type": "int",
-              "show_submit_button": false
+              "data_type": "int"
             }
           },
           {
@@ -1092,12 +1102,11 @@
             "y": 768.0,
             "width": 128.0,
             "height": 128.0,
-            "type": "Text Display",
+            "type": "Large Text Display",
             "properties": {
               "topic": "/northstar_1/output/fps",
               "period": 0.06,
-              "data_type": "int",
-              "show_submit_button": false
+              "data_type": "int"
             }
           },
           {
@@ -1185,12 +1194,11 @@
             "y": 768.0,
             "width": 128.0,
             "height": 128.0,
-            "type": "Text Display",
+            "type": "Large Text Display",
             "properties": {
               "topic": "/northstar_2/output/fps",
               "period": 0.06,
-              "data_type": "int",
-              "show_submit_button": false
+              "data_type": "int"
             }
           },
           {
@@ -1199,12 +1207,11 @@
             "y": 768.0,
             "width": 128.0,
             "height": 128.0,
-            "type": "Text Display",
+            "type": "Large Text Display",
             "properties": {
               "topic": "/northstar_3/output/fps",
               "period": 0.06,
-              "data_type": "int",
-              "show_submit_button": false
+              "data_type": "int"
             }
           },
           {

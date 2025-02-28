@@ -22,7 +22,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
             RobotConstants.CANIVORE_CAN_BUS_NAME);
 
     private final StatusSignal<AngularVelocity> velocityRotPerSec = motor.getVelocity();
-    private final StatusSignal<Voltage> appliedVolts = motor.getSupplyVoltage();
+    private final StatusSignal<Voltage> appliedVolts = motor.getMotorVoltage();
     private final StatusSignal<Current> statorCurrentAmps = motor.getStatorCurrent();
     private final StatusSignal<Current> supplyCurrentAmps = motor.getSupplyCurrent();
     private final StatusSignal<Temperature> tempCelsius = motor.getDeviceTemp();
@@ -61,7 +61,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
         motor.getConfigurator().apply(config);
 
         motor.clearStickyFaults();
-        
+
         BaseStatusSignal.setUpdateFrequencyForAll(
                 50.0,
                 velocityRotPerSec,

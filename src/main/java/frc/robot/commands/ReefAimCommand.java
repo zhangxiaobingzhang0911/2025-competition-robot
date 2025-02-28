@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotConstants;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
@@ -35,18 +36,19 @@ public class ReefAimCommand extends Command {
                     ReefAimConstants.MAX_AIMING_ACCELERATION.magnitude()));
     private final BooleanSupplier stop;
     private final ElevatorSubsystem elevatorSubsystem;
-
+    private final CommandXboxController driverController;
     private boolean rightReef; // true if shooting right reef
     private boolean xFinished = false;
     private boolean yFinished = false;
     private boolean omegaFinished = false;
     private Pose2d robotPose, tagPose, destinationPose, finalDestinationPose;
-    private Translation2d translationalVelocity;
+    private Translation2d translationalVelocity, controllerVelocity;
 
-    public ReefAimCommand(BooleanSupplier stop, ElevatorSubsystem elevatorSubsystem) {
-        addRequirements(this.swerve);
+    public ReefAimCommand(BooleanSupplier stop, ElevatorSubsystem elevatorSubsystem, CommandXboxController driverController) {
+        addRequirements(swerve);
         this.stop = stop;
         this.elevatorSubsystem = elevatorSubsystem;
+        this.driverController = driverController;
     }
 
     @Override
@@ -58,7 +60,8 @@ public class ReefAimCommand extends Command {
         xPID.reset(robotPose.getX(), swerve.getLocalizer().getMeasuredVelocity().getX());
         yPID.reset(robotPose.getY(), swerve.getLocalizer().getMeasuredVelocity().getY());
         rightReef = DestinationSupplier.getInstance().getCurrentBranch();
-        finalDestinationPose = DestinationSupplier.getInstance().getFinalDriveTarget(tagPose, rightReef);
+        DestinationSupplier.getInstance();
+        finalDestinationPose = DestinationSupplier.getFinalDriveTarget(tagPose, rightReef);
     }
 
     @Override
@@ -91,12 +94,18 @@ public class ReefAimCommand extends Command {
                 AllianceFlipUtil.shouldFlip() ?
                         new Translation2d(-xPID.calculate(robotPose.getX()), -yPID.calculate(robotPose.getY())) :
                         new Translation2d(xPID.calculate(robotPose.getX()), yPID.calculate(robotPose.getY()));
-        swerve.drive(translationalVelocity, 0.0, true, false);
+        controllerVelocity = new Translation2d(
+                Math.abs(driverController.getLeftY()) < RobotConstants.SwerveConstants.deadband ?
+                        0 : -driverController.getLeftY() * RobotConstants.SwerveConstants.maxSpeed.magnitude(),
+                Math.abs(driverController.getLeftX()) < RobotConstants.SwerveConstants.deadband ?
+                        0 : -driverController.getLeftX() * RobotConstants.SwerveConstants.maxSpeed.magnitude());
+        swerve.drive(translationalVelocity.plus(controllerVelocity), 0.0, true, false);
         Display.getInstance().setAimingTarget(destinationPose);
         Logger.recordOutput("ReefAimCommand/tagPose", tagPose);
         Logger.recordOutput("ReefAimCommand/destinationPose", destinationPose);
         Logger.recordOutput("ReefAimCommand/finalDestinationPose", finalDestinationPose);
         Logger.recordOutput("ReefAimCommand/translationalVelocity", translationalVelocity);
+        Logger.recordOutput("ReefAimCommand/controllerVelocity", controllerVelocity);
     }
 
     @Override
@@ -109,7 +118,6 @@ public class ReefAimCommand extends Command {
         Logger.recordOutput("ReefAimCommand/omegaFinished", omegaFinished);
         Logger.recordOutput("ReefAimCommand/emergencyStopped", stop.getAsBoolean());
         return (xFinished && yFinished && omegaFinished) || stop.getAsBoolean();
-
     }
 
     @Override

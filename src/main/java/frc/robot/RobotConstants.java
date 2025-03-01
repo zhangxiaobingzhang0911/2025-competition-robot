@@ -90,7 +90,7 @@ public final class RobotConstants {
         /**
          * The max speed of the swerve (should not larger than speedAt12Volts)
          */
-        public static final Measure<LinearVelocityUnit> maxSpeed = MetersPerSecond.of(4);//4.5
+        public static final Measure<LinearVelocityUnit> maxSpeed = MetersPerSecond.of(3.5);//4.5
         /**
          * The max angular speed of the swerve.
          */

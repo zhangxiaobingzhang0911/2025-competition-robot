@@ -3,42 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.004575892857142,
-        "y": 4.173838495575222
+        "x": 1.2065625,
+        "y": 2.148125
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.542121248533899,
-        "y": 4.173838495575222
+        "x": 1.60875,
+        "y": 3.2937499999999993
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "I3"
     },
     {
       "anchor": {
-        "x": 5.842538265306123,
-        "y": 4.173838495575222
+        "x": 3.67453125,
+        "y": 5.1096875
       },
       "prevControl": {
-        "x": 6.092537884534445,
-        "y": 4.1742748276666966
+        "x": 2.6934375,
+        "y": 5.03046875
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "P3-1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "ELE-L4",
-      "waypointRelativePos": 0.8537735849056596,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 1.0,
     "maxAcceleration": 3.0,
@@ -49,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.07595464722732
+    "rotation": -62.0490309721098
   },
   "reversed": false,
-  "folder": null,
+  "folder": "New Folder",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -91.52752544221293
   },
   "useDefaultConstraints": true
 }

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.004575892857142,
-        "y": 4.173838495575222
+        "x": 5.895703125,
+        "y": 5.859654017857142
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.542121248533899,
-        "y": 4.173838495575222
+        "x": 4.822891558040021,
+        "y": 5.859654017857142
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "2"
     },
     {
       "anchor": {
-        "x": 5.842538265306123,
-        "y": 4.173838495575222
+        "x": 1.1295200892857142,
+        "y": 5.859654017857142
       },
       "prevControl": {
-        "x": 6.092537884534445,
-        "y": 4.1742748276666966
+        "x": 1.8436618751476608,
+        "y": 5.859654017857142
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "P3-1"
+      "linkedName": "3"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,14 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "ELE-L4",
-      "waypointRelativePos": 0.8537735849056596,
+      "name": "ZEROELEVATOR",
+      "waypointRelativePos": 0.15157480314960609,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "DEPLOY-INTAKE",
+      "waypointRelativePos": 0.7017716535433062,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -49,10 +55,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.07595464722732
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "New Folder",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

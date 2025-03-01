@@ -34,7 +34,7 @@ public final class RobotConstants {
     public static final boolean disableHAL = false;
     public static final double LOOPER_DT = 1 / 50.0;
     public static final boolean TUNING = true;
-    public static final boolean DriverCamera = true;
+    public static final boolean DriverCamera = false;
     // Judge whether the team is 10541
     public static final String Serial10541 = "03415993";
     public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541) && Robot.isReal();
@@ -274,9 +274,9 @@ public final class RobotConstants {
          * Constants for the gains in the ReefAimCommand.
          */
         public static class AimGainsClass {
-            public static final TunableNumber AIM_KP = new TunableNumber("AIM/kp", 2.5);
-            public static final TunableNumber AIM_KI = new TunableNumber("AIM/ki", 0.02);
-            public static final TunableNumber AIM_KD = new TunableNumber("AIM/kd", 0.2);
+            public static final TunableNumber AIM_KP = new TunableNumber("AIM/kp", 2.8);
+            public static final TunableNumber AIM_KI = new TunableNumber("AIM/ki", 0);
+            public static final TunableNumber AIM_KD = new TunableNumber("AIM/kd", 0.1);
         }
 
     }

@@ -4,6 +4,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.json.simple.parser.ParseException;
 
 import java.io.File;
@@ -50,10 +51,17 @@ public class AutoFile {
 
     private Command build4CoralUp() {
         return new SequentialCommandGroup(
-                autoActions.initializeVision(),
+
+                //autoActions.initializeVision(),
                 autoActions.setL4(),
-                autoActions.followPath(getAutoPath("S1-P3-1"), true, true, false),
-                autoActions.putCoral()
+                autoActions.followPath(getAutoPath("left1"), true, true, true),
+                autoActions.putCoral(),
+                autoActions.followPath(getAutoPath("left2"), true, true, false),
+                autoActions.followPath(getAutoPath("left3"), true, true, false),
+                autoActions.followPath(getAutoPath("left4"), true, true, false),
+                autoActions.followPath(getAutoPath("left5"), true, true, false),
+                new WaitCommand(0.2),
+                autoActions.shootCoral()
 //                autoActions.followPath(getAutoPath("P3-I1"), true, true, false),
 //                autoActions.followPath(getAutoPath("I1-P2-1"), true, true, false),
 //                autoActions.followPath(getAutoPath("P2-1-I2"), true, true, false),

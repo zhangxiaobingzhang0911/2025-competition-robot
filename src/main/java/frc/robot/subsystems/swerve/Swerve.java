@@ -7,6 +7,7 @@ import com.team254.lib.util.MovingAverage;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.SwerveConstants;
@@ -59,15 +61,7 @@ public class Swerve implements Updatable, Subsystem {
             RobotConstants.SwerveConstants.headingController.HEADING_KD.get(),
             new TrapezoidProfile.Constraints(400, 720));
     // Path Following Controller TODO tuning
-    // TODO: headingController dui ma?
-    private final HolonomicTrajectoryFollower trajectoryFollower = new HolonomicTrajectoryFollower(
-            new PIDController(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
-                    RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
-                    RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get()),
-            new PIDController(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
-                    RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
-                    RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get()),
-            this.headingController, RobotConstants.SwerveConstants.DRIVETRAIN_FEEDFORWARD);
+    private final HolonomicTrajectoryFollower trajectoryFollower;
     @Getter
     private final RobotConfig autoConfig;
     private boolean isLockHeading;
@@ -116,7 +110,16 @@ public class Swerve implements Updatable, Subsystem {
 
         }
         headingController.setIntegratorRange(-0.5, 0.5);
-        headingController.enableContinuousInput(0, 360.0);
+        headingController.enableContinuousInput(0, 360);
+        trajectoryFollower = new HolonomicTrajectoryFollower(
+                new PIDController(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
+                        RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
+                        RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get()),
+                new PIDController(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
+                        RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
+                        RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get()),
+                this.headingController, new SimpleMotorFeedforward(0,0,0));
+
         swerveKinematics = new SwerveDriveKinematics(
                 RobotConstants.SwerveConstants.modulePlacements);
         swerveLocalizer = new SwerveDeltaCoarseLocalizer(swerveKinematics, 50,
@@ -132,7 +135,7 @@ public class Swerve implements Updatable, Subsystem {
         setpoint = new SwerveSetpoint(new edu.wpi.first.math.kinematics.ChassisSpeeds(), getModuleStates());
         previousSetpoint = new SwerveSetpoint(new edu.wpi.first.math.kinematics.ChassisSpeeds(), getModuleStates());
         generator = new SwerveSetpointGenerator(RobotConstants.SwerveConstants.modulePlacements);
-        kinematicLimits = SwerveConstants.DRIVETRAIN_UNCAPPED;
+        kinematicLimits = SwerveConstants.DRIVETRAIN_UNCAPPED; // FIXME: change to uncapped
 
         autoConfig = RobotConfig.fromGUISettings();
 
@@ -457,7 +460,6 @@ public class Swerve implements Updatable, Subsystem {
     @Override
     public void update(double time, double dt) {
         Optional<HolonomicDriveSignal> trajectorySignal = trajectoryFollower.update(
-//                swerveLocalizer.getPredictedPose(0.9),
                 swerveLocalizer.getCoarseFieldPose(time),
                 swerveLocalizer.getMeasuredVelocity().getTranslation(),
                 swerveLocalizer.getMeasuredVelocity().getRotation().getDegrees(),

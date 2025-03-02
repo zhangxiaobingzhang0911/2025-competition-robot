@@ -12,6 +12,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
 import lombok.Setter;
 import org.frcteam6941.looper.Updatable;
+import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.Logger;
 
 public class DestinationSupplier implements Updatable {
@@ -123,9 +124,10 @@ public class DestinationSupplier implements Updatable {
 
     public Pose2d getNearestTag(Pose2d robotPose) {
         double minDistance = Double.MAX_VALUE;
-        int minDistanceID = 0;
-        // Loop from 6 to 11
-        for (int i = 6; i <= 11; i++) {
+        int ReefTagMin = AllianceFlipUtil.shouldFlip() ? 6 : 17;
+        int ReefTagMax = AllianceFlipUtil.shouldFlip() ? 11 : 22;
+        int minDistanceID = ReefTagMin;
+        for (int i = ReefTagMin; i <= ReefTagMax; i++) {
             if (minDistance > FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
                     toPose2d().getTranslation().getDistance(robotPose.getTranslation())) {
                 minDistanceID = i;
@@ -133,19 +135,7 @@ public class DestinationSupplier implements Updatable {
                         toPose2d().getTranslation().getDistance(robotPose.getTranslation());
             }
         }
-
-        // Loop from 17 to 22
-        for (int i = 17; i <= 22; i++) {
-            if (minDistance > FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                    toPose2d().getTranslation().getDistance(robotPose.getTranslation())) {
-                minDistanceID = i;
-                minDistance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                        toPose2d().getTranslation().getDistance(robotPose.getTranslation());
-            }
-        }
-        minDistance = Double.MAX_VALUE;
         Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
-
         return goal;
     }
 

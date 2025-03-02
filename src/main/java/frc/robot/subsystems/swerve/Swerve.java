@@ -17,7 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.SwerveConstants;
@@ -118,7 +117,7 @@ public class Swerve implements Updatable, Subsystem {
                 new PIDController(RobotConstants.SwerveConstants.AimGainsClass.AIM_KP.get(),
                         RobotConstants.SwerveConstants.AimGainsClass.AIM_KI.get(),
                         RobotConstants.SwerveConstants.AimGainsClass.AIM_KD.get()),
-                this.headingController, new SimpleMotorFeedforward(0,0,0));
+                headingController, new SimpleMotorFeedforward(0, 0, 0));
 
         swerveKinematics = new SwerveDriveKinematics(
                 RobotConstants.SwerveConstants.modulePlacements);

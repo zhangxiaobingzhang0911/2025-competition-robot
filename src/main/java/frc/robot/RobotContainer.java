@@ -134,11 +134,11 @@ public class RobotContainer {
                 true,
                 false), swerve));
 
-        driverController.povRight().whileTrue(
-                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_LIMITED)).finallyDo(
-                        () -> swerve.setKinematicsLimit(DRIVETRAIN_UNCAPPED)
-                )
-        );
+//        driverController.povRight().whileTrue(
+//                new InstantCommand(() -> swerve.setKinematicsLimit(DRIVETRAIN_LIMITED)).finallyDo(
+//                        () -> swerve.setKinematicsLimit(DRIVETRAIN_UNCAPPED)
+//                )
+//        );
 
         driverController.start().onTrue(
                 Commands.runOnce(() -> {
@@ -165,8 +165,9 @@ public class RobotContainer {
         driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
         driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.x().whileTrue(new TrembleIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.rightBumper().whileTrue(switchAimingModeCommand());
+        driverController.x().toggleOnTrue(new TrembleIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+        driverController.povRight().whileTrue(new AutoAimShootCommand(indicatorSubsystem,endEffectorSubsystem,elevatorSubsystem,intakeSubsystem,()->false,driverController));
+        driverController.rightBumper().whileTrue(new PutCoralCommand(driverController,endEffectorSubsystem,elevatorSubsystem,intakeSubsystem,indicatorSubsystem));
     }
 
     private void configureStreamDeckBindings() {

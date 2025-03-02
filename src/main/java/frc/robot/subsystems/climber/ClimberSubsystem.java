@@ -9,8 +9,8 @@ import org.littletonrobotics.junction.Logger;
 public class ClimberSubsystem extends SubsystemBase {
     private final ClimberIO io;
     private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
-    private final TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 0);
-    private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -1350);
+    private final TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 800);
+    private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -370);
     private WantedState wantedState = WantedState.DEPLOY;
     private SystemState systemState = SystemState.DEPLOYING;
 

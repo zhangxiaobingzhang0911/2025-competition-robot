@@ -181,7 +181,7 @@ public final class RobotConstants {
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
         private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
         private static final int FRONT_LEFT_ENCODER_ID = 10;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = is10541 ? -0.1481936719 : -0.458007;
+        private static final double FRONT_LEFT_ENCODER_OFFSET = is10541 ? -0.1503903594 : -0.458007;
         private static final Measure<DistanceUnit> frontLeftXPos = Meters.of(0.29);
         private static final Measure<DistanceUnit> frontLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
@@ -191,7 +191,7 @@ public final class RobotConstants {
         private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 6;
         private static final int FRONT_RIGHT_STEER_MOTOR_ID = 5;
         private static final int FRONT_RIGHT_ENCODER_ID = 11;
-        private static final double FRONT_RIGHT_ENCODER_OFFSET = is10541 ? -0.310058875 : -0.420166;
+        private static final double FRONT_RIGHT_ENCODER_OFFSET = is10541 ? -0.3104965938 : -0.420166;
         private static final Measure<DistanceUnit> frontRightXPos = Meters.of(0.29);
         private static final Measure<DistanceUnit> frontRightYPos = Meters.of(-0.29);
         public static final LegacySwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
@@ -202,7 +202,7 @@ public final class RobotConstants {
         private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
         private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
         private static final int BACK_LEFT_ENCODER_ID = 0;
-        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1186526563 : -0.354248046875;
+        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1180423438 : -0.354248046875;
         private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.29);
         private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(
@@ -212,7 +212,7 @@ public final class RobotConstants {
         private static final int BACK_RIGHT_DRIVE_MOTOR_ID = 8;
         private static final int BACK_RIGHT_STEER_MOTOR_ID = 7;
         private static final int BACK_RIGHT_ENCODER_ID = 20;
-        private static final double BACK_RIGHT_ENCODER_OFFSET = is10541 ? 0.6188965 : 0.46240234375;
+        private static final double BACK_RIGHT_ENCODER_OFFSET = is10541 ? 0.6206053438 : 0.46240234375;
         private static final Measure<DistanceUnit> backRightXPos = Meters.of(-0.29);
         private static final Measure<DistanceUnit> backRightYPos = Meters.of(-0.29);
         public static final LegacySwerveModuleConstants BackRight = ConstantCreator.createModuleConstants(
@@ -421,7 +421,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
         public static final double ELEVATOR_DANGER_ZONE = 0.4180619200456253;
-        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = is10541 ? 0.46 : 0.46;//TODO: fixme
+        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.46;//TODO: fixme
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                 140);

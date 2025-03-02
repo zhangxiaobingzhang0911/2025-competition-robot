@@ -157,10 +157,12 @@ public class RobotContainer {
                     aprilTagVision.setMeasureCnt(0);
                 }).ignoringDisable(true));
 
+        driverController.povUp().whileTrue(new PreClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
+        driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.leftTrigger().toggleOnTrue(new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.leftBumper().toggleOnTrue(new FunnelIntakeCommand(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem));
-        driverController.y().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-        driverController.povDown().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
+        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
+        driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
         driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.x().toggleOnTrue(new TrembleIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));

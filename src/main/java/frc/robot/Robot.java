@@ -8,12 +8,14 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.swerve.Swerve;
+import org.json.simple.JSONObject;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import static frc.robot.RobotConstants.DriverCamera;
+import static frc.robot.RobotConstants.VisionCamera;
 
 public class Robot extends LoggedRobot {
     private final Swerve swerve = Swerve.getInstance();
@@ -40,6 +42,12 @@ public class Robot extends LoggedRobot {
         // If network is bad or rio is in high cpu usage, disable it
         if (DriverCamera) {
             CameraServer.startAutomaticCapture("Driver Camera", "/dev/video0");
+            JSONObject config = new JSONObject();
+            config.put("camera", DriverCamera);
+            CameraServer.getServer("Driver Camera").setConfigJson(config.toJSONString());
+        }
+        if (VisionCamera) {
+            CameraServer.startAutomaticCapture("NorthStar_0", "10。105.41.44:8000");
         }
 
         robotContainer = new RobotContainer();

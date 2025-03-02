@@ -41,17 +41,15 @@ public class AutoFile {
     }
 
     public Command runAuto(String autoName) {
-        switch (autoName) {
-            case "4CoralUp":
-                return build4CoralUp();
-            default:
-                throw new IllegalArgumentException("No corresponding auto named " + autoName);
-        }
+        return switch (autoName) {
+            case "4CoralUp" -> build4CoralUp();
+            case "AutoAimingTest" -> buildAutoAimingTest();
+            default -> throw new IllegalArgumentException("No corresponding auto named " + autoName);
+        };
     }
 
     private Command build4CoralUp() {
         return new SequentialCommandGroup(
-
                 //autoActions.initializeVision(),
                 autoActions.setL4(),
                 autoActions.followPath(getAutoPath("left1"), true, true, true),
@@ -68,6 +66,15 @@ public class AutoFile {
 //                autoActions.followPath(getAutoPath("I2-P1-2"), true, true, false),
 //                autoActions.followPath(getAutoPath("P1-2-I3"), true, true, false),
 //                autoActions.followPath(getAutoPath("I3-P1-1"), true, true, false)
+        );
+    }
+
+    private Command buildAutoAimingTest() {
+        return new SequentialCommandGroup(
+                //autoActions.initializeVision(),
+                autoActions.followPath(getAutoPath("S1-H"), true, true, false),
+                autoActions.AutoAimShoot(),
+                autoActions.followPath(getAutoPath("H-I1"), true, true, false)
         );
     }
 }

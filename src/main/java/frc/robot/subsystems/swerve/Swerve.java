@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotConstants;
 import frc.robot.RobotConstants.SwerveConstants;
@@ -515,7 +516,7 @@ public class Swerve implements Updatable, Subsystem {
         if (RobotConstants.TUNING) {
             setHeadingControllerPID();
         }
-        Logger.recordOutput("swerve/localizer/CoarsedFieldPose", getLocalizer().getCoarseFieldPose(0));
+        Logger.recordOutput("swerve/localizer/CoarsedFieldPose", getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp()));
         Logger.recordOutput("swerve/localizer/LatestPose", getLocalizer().getLatestPose());
         Logger.recordOutput("swerve/isLockHeading", isLockHeading);
         Logger.recordOutput("swerve/DriveSignalRotation", driveSignal.getRotation());

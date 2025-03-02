@@ -4,6 +4,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.RobotConstants;
 import frc.robot.commands.*;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
@@ -85,5 +87,16 @@ public class AutoActions {
 
     public Command putCoral() {
         return Commands.race(preShoot(), shootCoralAtSetpoint());
+    }
+
+    public Command AutoAimShoot() {
+        return Commands.sequence(
+                Commands.parallel(
+                        new ReefAimAutoCommand(() -> false, elevatorSubsystem, new CommandXboxController(0)),
+                        new AutoPreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem)
+                ),
+                new ShootCommand(indicatorSubsystem, endEffectorSubsystem),
+                Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(
+                        RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())));
     }
 }

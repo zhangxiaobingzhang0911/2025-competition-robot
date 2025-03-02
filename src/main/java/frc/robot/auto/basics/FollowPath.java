@@ -46,7 +46,7 @@ public class FollowPath extends Command {
     }
 
     private void initializeTrajectory() {
-        Pose2d currentPose = this.swerve.getLocalizer().getCoarseFieldPose(0);
+        Pose2d currentPose = this.swerve.getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp());
         ChassisSpeeds currentSpeeds = this.swerve.getChassisSpeeds();
         double linearVel = Math.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);
         if (this.path.getIdealStartingState() != null) {

@@ -69,6 +69,29 @@ public class DestinationSupplier implements Updatable {
         return goal;
     }
 
+    public static boolean isSafeToRaise(Pose2d robotPose, boolean rightReef) {
+        Pose2d tag = getNearestTag(robotPose);
+        Pose2d goal = getFinalDriveTarget(tag, rightReef);
+        return goal.getTranslation().getDistance(robotPose.getTranslation()) < RobotConstants.ReefAimConstants.RAISE_LIMIT_METERS.get();
+    }
+
+    public static Pose2d getNearestTag(Pose2d robotPose) {
+        double minDistance = Double.MAX_VALUE;
+        int ReefTagMin = AllianceFlipUtil.shouldFlip() ? 6 : 17;
+        int ReefTagMax = AllianceFlipUtil.shouldFlip() ? 11 : 22;
+        int minDistanceID = ReefTagMin;
+        for (int i = ReefTagMin; i <= ReefTagMax; i++) {
+            if (minDistance > FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                    toPose2d().getTranslation().getDistance(robotPose.getTranslation())) {
+                minDistanceID = i;
+                minDistance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                        toPose2d().getTranslation().getDistance(robotPose.getTranslation());
+            }
+        }
+        Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
+        return goal;
+    }
+
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {
         switch (setpoint) {
             case L1, L2, L3, L4:
@@ -120,27 +143,6 @@ public class DestinationSupplier implements Updatable {
     public void setCurrentControlMode(controlMode mode) {
         this.currentControlMode = mode;
         Logger.recordOutput("DestinationSupplier/CurrentControlMode", mode);
-    }
-
-    public Pose2d getNearestTag(Pose2d robotPose) {
-        double minDistance = Double.MAX_VALUE;
-        int ReefTagMin = AllianceFlipUtil.shouldFlip() ? 6 : 17;
-        int ReefTagMax = AllianceFlipUtil.shouldFlip() ? 11 : 22;
-        int minDistanceID = ReefTagMin;
-        for (int i = ReefTagMin; i <= ReefTagMax; i++) {
-            if (minDistance > FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                    toPose2d().getTranslation().getDistance(robotPose.getTranslation())) {
-                minDistanceID = i;
-                minDistance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                        toPose2d().getTranslation().getDistance(robotPose.getTranslation());
-            }
-        }
-        Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
-        return goal;
-    }
-
-    @Override
-    public void update(double time, double dt) {
     }
 
     public enum elevatorSetpoint {

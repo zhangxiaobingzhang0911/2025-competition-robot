@@ -31,16 +31,16 @@ public class AutoShootCoralCommand extends Command {
         if(elevatorSubsystem.getIo().isNearExtension(DestinationSupplier.getInstance().getElevatorSetpoint(true))){
             endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);
         }
-        if (endEffectorSubsystem.isShootFinished()) {
-            timer.reset();
-            isShootFinished = true;
-        }
+//        if (endEffectorSubsystem.isShootFinished()) {
+//            timer.reset();
+//            isShootFinished = true;
+//        }
     }
 
     @Override
     public boolean isFinished(){
         //FIXME: only for sim
-        return isShootFinished && timer.hasElapsed(0.5);
+        return endEffectorSubsystem.isShootFinished();
         //return false;
     }
 

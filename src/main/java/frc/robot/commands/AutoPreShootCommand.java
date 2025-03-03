@@ -8,6 +8,7 @@ import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.swerve.Swerve;
 
 public class AutoPreShootCommand extends Command {
     private final EndEffectorSubsystem endEffectorSubsystem;
@@ -15,6 +16,7 @@ public class AutoPreShootCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
     Timer timer = new Timer();
+    private boolean safeToRaise = false;
 
     public AutoPreShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.endEffectorSubsystem = endEffectorSubsystem;
@@ -31,9 +33,12 @@ public class AutoPreShootCommand extends Command {
 
     @Override
     public void execute() {
-        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-        elevatorSubsystem.setElevatorPosition(DestinationSupplier.getInstance().getElevatorSetpoint(true));
-        endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT);
+        safeToRaise = DestinationSupplier.isSafeToRaise(Swerve.getInstance().getLocalizer().getCoarseFieldPose(0), DestinationSupplier.getInstance().getCurrentBranch());
+        if (safeToRaise) {
+            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
+            elevatorSubsystem.setElevatorPosition(DestinationSupplier.getInstance().getElevatorSetpoint(true));
+            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT);
+        }
     }
 
     @Override
@@ -44,6 +49,7 @@ public class AutoPreShootCommand extends Command {
     public boolean isFinished() {
         return timer.hasElapsed(0.1) &&
                 elevatorSubsystem.elevatorReady(0.005) &&
-                endEffectorSubsystem.isShootReady();
+                //endEffectorSubsystem.isShootReady() &&
+                safeToRaise;
     }
 }

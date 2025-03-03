@@ -9,10 +9,11 @@ import org.littletonrobotics.junction.Logger;
 public class ClimberSubsystem extends SubsystemBase {
     private final ClimberIO io;
     private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
-    private final TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 0);
-    private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -550);
-    private WantedState wantedState = WantedState.DEPLOY;
-    private SystemState systemState = SystemState.DEPLOYING;
+    private final TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 900);
+    private final TunableNumber idleAngle = new TunableNumber("CLIMBER/idleAngle", 600);
+    private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -370);
+    private WantedState wantedState = WantedState.IDLE;
+    private SystemState systemState = SystemState.IDLING;
 
     public ClimberSubsystem(ClimberIO io) {
         this.io = io;
@@ -31,6 +32,9 @@ public class ClimberSubsystem extends SubsystemBase {
         }
 
         switch (systemState) {
+            case IDLING:
+                io.setTargetPosition(idleAngle.get());
+                break;
             case DEPLOYING:
                 io.setTargetPosition(deployAngle.get());
                 break;
@@ -44,6 +48,7 @@ public class ClimberSubsystem extends SubsystemBase {
         return switch (wantedState) {
             case DEPLOY -> SystemState.DEPLOYING;
             case CLIMB -> SystemState.CLIMBING;
+            case IDLE -> SystemState.IDLING;
         };
     }
 
@@ -65,12 +70,14 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public enum WantedState {
         DEPLOY,
-        CLIMB
+        CLIMB,
+        IDLE
     }
 
     public enum SystemState {
         DEPLOYING,
-        CLIMBING
+        CLIMBING,
+        IDLING
     }
 
 

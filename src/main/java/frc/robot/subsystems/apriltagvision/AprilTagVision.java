@@ -37,7 +37,7 @@ import static org.littletonrobotics.RobotState.VisionObservation;
 public class AprilTagVision extends SubsystemBase {
     // Serial
     // public static final SerialPort serial = new SerialPort(RobotConstants.baudRate, RobotConstants.VisionConstants.serialPort);
-    
+
     private static final LoggedTunableNumber timestampOffset =
             new LoggedTunableNumber("AprilTagVision/TimestampOffset", -(1.0 / 50.0));
     private static final double demoTagPosePersistenceSecs = 0.5;
@@ -232,7 +232,7 @@ public class AprilTagVision extends SubsystemBase {
                         xyStdDev = 0.01;
                     }
                     Swerve.getInstance().getLocalizer().addMeasurement(
-                            Timer.getFPGATimestamp(),
+                            timestamp,
                             robotPose3d.toPose2d(),
                             new Pose2d(new Translation2d(xyStdDev, xyStdDev),
                                     Rotation2d.fromDegrees(thetaStdDev)));

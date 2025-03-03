@@ -90,6 +90,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.velocityRotPerSec = velocityRotPerSec.getValueAsDouble();
         inputs.tempCelsius = tempCelsius.getValue().in(Units.Celsius);
         inputs.appliedVolts = appliedVolts.getValueAsDouble();
+        inputs.motorVolts = motorVolts.getValueAsDouble();
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
         inputs.currentAngleDeg = talonPosToAngle(currentPositionRot.getValueAsDouble());

@@ -7,6 +7,7 @@ import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerSubsystem;
+import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.ElevatorConstants.L1_EXTENSION_METERS;
@@ -20,6 +21,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     private static double preShootRPS = PRE_SHOOT_RPS.get();
     private static double shootRPS = SHOOT_RPS.get();
     private static double l1RPS = L1_RPS.get();
+    private static double reverseRPS = REVERSE_RPS.get();
     private final EndEffectorIO endEffectorIO;
     private final BeambreakIO middleBBIO, edgeBBIO;
     private final BeambreakIOInputsAutoLogged middleBBInputs = new BeambreakIOInputsAutoLogged();
@@ -55,9 +57,9 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         Logger.recordOutput("EndEffector/SystemState", newState.toString());
         Logger.recordOutput(NAME + "Velocity", inputs.velocityRotPerSec);
 
-        Logger.recordOutput(NAME+"/isShootReady", isShootReady());
-        Logger.recordOutput(NAME+"/ShootFinished", isShootFinished());
-        Logger.recordOutput(NAME+"/isIntakeFinished", isIntakeFinished());
+        Logger.recordOutput(NAME + "/isShootReady", isShootReady());
+        Logger.recordOutput(NAME + "/ShootFinished", isShootFinished());
+        Logger.recordOutput(NAME + "/isIntakeFinished", isIntakeFinished());
 
         if (newState != systemState) {
             systemState = newState;
@@ -95,6 +97,9 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             case POKING:
                 io.setVoltage(12);
                 break;
+            case REVERSING:
+                io.setVelocity(-reverseRPS);
+                break;
             case OFF:
         }
 
@@ -103,6 +108,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             preShootRPS = PRE_SHOOT_RPS.get();
             shootRPS = SHOOT_RPS.get();
             l1RPS = L1_RPS.get();
+            reverseRPS = REVERSE_RPS.get();
 
             kp = ENDEFFECTOR_KP.get();
             ki = ENDEFFECTOR_KI.get();
@@ -146,10 +152,9 @@ public class EndEffectorSubsystem extends RollerSubsystem {
                 }
                 yield SystemState.SHOOTING;
             }
-            case POKE -> {
-                yield SystemState.POKING;
-            }
+            case POKE -> SystemState.POKING;
             case OFF -> SystemState.OFF;
+            case REVERSE -> SystemState.REVERSING;
         };
     }
 
@@ -157,10 +162,12 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         return middleBBInputs.isBeambreakOn;
     }
 
-    public boolean containsCoral() {return middleBBInputs.isBeambreakOn || edgeBBInputs.isBeambreakOn;}
+    public boolean containsCoral() {
+        return middleBBInputs.isBeambreakOn || edgeBBInputs.isBeambreakOn;
+    }
 
     public boolean isShootFinished() {
-        return hasTransitionedToPreShoot && !edgeBBInputs.isBeambreakOn;
+        return (Swerve.getInstance().getState() == Swerve.State.PATH_FOLLOWING || hasTransitionedToPreShoot) && !edgeBBInputs.isBeambreakOn;
     }
 
     public boolean isIntakeFinished() {
@@ -186,6 +193,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         PRE_SHOOT,
         SHOOT,
         POKE,
+        REVERSE,
         OFF
     }
 
@@ -196,6 +204,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         PRE_SHOOTING,
         SHOOTING,
         POKING,
+        REVERSING,
         OFF
     }
 }

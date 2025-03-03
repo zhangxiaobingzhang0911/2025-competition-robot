@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static frc.robot.drivers.DestinationSupplier.elevatorSetpoint.L4;
+
 public class AutoFile {
     private final AutoActions autoActions;
     private final Map<String, PathPlannerPath> autoPaths = new HashMap<>();
@@ -40,25 +42,36 @@ public class AutoFile {
     }
 
     public Command runAuto(String autoName) {
-        switch (autoName) {
-            case "4CoralUp":
-                return build4CoralUp();
-            default:
-                throw new IllegalArgumentException("No corresponding auto named " + autoName);
-        }
+        return switch (autoName) {
+            case "4CoralLeft" -> build4CoralLeft();
+            case "4CoralRight" -> build4CoralRight();
+            default -> throw new IllegalArgumentException("No corresponding auto named " + autoName);
+        };
     }
 
-    private Command build4CoralUp() {
+    private Command build4CoralLeft() {
         return new SequentialCommandGroup(
-                autoActions.setL4(),
-                autoActions.followPath(getAutoPath("S1-P3-1"), true, true, true),
-                autoActions.putCoral()
-//                autoActions.followPath(getAutoPath("P3-I1"), true, true, false),
-//                autoActions.followPath(getAutoPath("I1-P2-1"), true, true, false),
-//                autoActions.followPath(getAutoPath("P2-1-I2"), true, true, false),
-//                autoActions.followPath(getAutoPath("I2-P1-2"), true, true, false),
-//                autoActions.followPath(getAutoPath("P1-2-I3"), true, true, false),
-//                autoActions.followPath(getAutoPath("I3-P1-1"), true, true, false)
+                autoActions.ReverseEndEffector(),
+                autoActions.AutoAimShoot(L4, 'I'),
+                autoActions.followPath(getAutoPath("IJ-L1"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'L'),
+                autoActions.followPath(getAutoPath("L-I2"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'B'),
+                autoActions.followPath(getAutoPath("B-I3"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'C')
+        );
+    }
+
+    private Command build4CoralRight() {
+        return new SequentialCommandGroup(
+                autoActions.ReverseEndEffector(),
+                autoActions.AutoAimShoot(L4, 'F'),
+                autoActions.followPath(getAutoPath("EF-I3"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'C'),
+                autoActions.followPath(getAutoPath("C-I2"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'A'),
+                autoActions.followPath(getAutoPath("A-I1"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'L')
         );
     }
 }

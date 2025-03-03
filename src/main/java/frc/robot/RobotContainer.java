@@ -164,7 +164,7 @@ public class RobotContainer {
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
         driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.x().toggleOnTrue(new TrembleIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.povRight().whileTrue(new AutoAimShootCommand(indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, () -> false, driverController));
+        driverController.povRight().whileTrue(new ReefAimCommand(() -> false, elevatorSubsystem, driverController));
         driverController.rightBumper().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem));
     }
 
@@ -199,7 +199,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // FIXME: set resetOdometry to false when vision is completed and usable
-        return autoFile.runAuto("AutoAimingTest");
+        return autoFile.runAuto("4CoralLeft");
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

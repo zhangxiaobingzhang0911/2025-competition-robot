@@ -41,7 +41,7 @@ public class DestinationSupplier implements Updatable {
 
     public static Pose2d getDriveTarget(Pose2d robot, Pose2d goal, boolean rightReef) {
         goal = getFinalDriveTarget(goal, rightReef);
-        var offset = goal.relativeTo(robot);
+        Transform2d offset = new Transform2d(goal, new Pose2d(robot.getTranslation(), goal.getRotation()));
         double yDistance = Math.abs(offset.getY());
         double xDistance = Math.abs(offset.getX());
         double shiftXT =
@@ -49,8 +49,7 @@ public class DestinationSupplier implements Updatable {
                         (yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
                         0.0,
                         1.0);
-        double shiftYT =
-                MathUtil.clamp(yDistance <= 0.2 ? 0.0 : -offset.getX() / Reef.faceLength, 0.0, 1.0);
+        double shiftYT = MathUtil.clamp(yDistance <= 0.2 ? 0.0 : -offset.getX() / Reef.faceLength, 0.0, 1.0);
         goal = goal.transformBy(
                 new Transform2d(
                         shiftXT * RobotConstants.ReefAimConstants.MAX_DISTANCE_REEF_LINEUP.get(),

@@ -21,6 +21,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     private static double preShootRPS = PRE_SHOOT_RPS.get();
     private static double shootRPS = SHOOT_RPS.get();
     private static double l1RPS = L1_RPS.get();
+    private static double reverseRPS = REVERSE_RPS.get();
     private final EndEffectorIO endEffectorIO;
     private final BeambreakIO middleBBIO, edgeBBIO;
     private final BeambreakIOInputsAutoLogged middleBBInputs = new BeambreakIOInputsAutoLogged();
@@ -96,6 +97,9 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             case POKING:
                 io.setVoltage(12);
                 break;
+            case REVERSING:
+                io.setVelocity(-reverseRPS);
+                break;
             case OFF:
         }
 
@@ -104,6 +108,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             preShootRPS = PRE_SHOOT_RPS.get();
             shootRPS = SHOOT_RPS.get();
             l1RPS = L1_RPS.get();
+            reverseRPS = REVERSE_RPS.get();
 
             kp = ENDEFFECTOR_KP.get();
             ki = ENDEFFECTOR_KI.get();
@@ -149,6 +154,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
             }
             case POKE -> SystemState.POKING;
             case OFF -> SystemState.OFF;
+            case REVERSE -> SystemState.REVERSING;
         };
     }
 
@@ -187,6 +193,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         PRE_SHOOT,
         SHOOT,
         POKE,
+        REVERSE,
         OFF
     }
 
@@ -197,6 +204,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         PRE_SHOOTING,
         SHOOTING,
         POKING,
+        REVERSING,
         OFF
     }
 }

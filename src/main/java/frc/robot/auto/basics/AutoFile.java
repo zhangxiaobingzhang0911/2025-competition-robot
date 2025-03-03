@@ -4,7 +4,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.json.simple.parser.ParseException;
 
 import java.io.File;
@@ -44,40 +43,34 @@ public class AutoFile {
 
     public Command runAuto(String autoName) {
         return switch (autoName) {
-            case "4CoralUp" -> build4CoralUp();
-            case "AutoAimingTest" -> buildAutoAimingTest();
+            case "4CoralLeft" -> build4CoralLeft();
+            case "4CoralRight" -> build4CoralRight();
             default -> throw new IllegalArgumentException("No corresponding auto named " + autoName);
         };
     }
 
-    private Command build4CoralUp() {
+    private Command build4CoralLeft() {
         return new SequentialCommandGroup(
-                //autoActions.initializeVision(),
-                autoActions.setL4(),
-                autoActions.followPath(getAutoPath("left1"), true, true, true),
-                autoActions.putCoral(),
-                autoActions.followPath(getAutoPath("left2"), true, true, false),
-                autoActions.followPath(getAutoPath("left3"), true, true, false),
-                autoActions.followPath(getAutoPath("left4"), true, true, false),
-                autoActions.followPath(getAutoPath("left5"), true, true, false),
-                new WaitCommand(0.2),
-                autoActions.shootCoral()
-//                autoActions.followPath(getAutoPath("P3-I1"), true, true, false),
-//                autoActions.followPath(getAutoPath("I1-P2-1"), true, true, false),
-//                autoActions.followPath(getAutoPath("P2-1-I2"), true, true, false),
-//                autoActions.followPath(getAutoPath("I2-P1-2"), true, true, false),
-//                autoActions.followPath(getAutoPath("P1-2-I3"), true, true, false),
-//                autoActions.followPath(getAutoPath("I3-P1-1"), true, true, false)
+                autoActions.ReverseEndEffector(),
+                autoActions.AutoAimShoot(L4, 'I'),
+                autoActions.followPath(getAutoPath("IJ-L1"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'L'),
+                autoActions.followPath(getAutoPath("L-I2"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'B'),
+                autoActions.followPath(getAutoPath("B-I3"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'C')
         );
     }
 
-    private Command buildAutoAimingTest() {
+    private Command build4CoralRight() {
         return new SequentialCommandGroup(
-                //autoActions.initializeVision(),
-                autoActions.followPath(getAutoPath("S1-H"), true, true, false),
-                autoActions.AutoAimShoot(L4, 'J'),
-                autoActions.followPath(getAutoPath("J-I1"), true, true, false),
-                autoActions.followPath(getAutoPath("I1-A"), true, true, false),
+                autoActions.ReverseEndEffector(),
+                autoActions.AutoAimShoot(L4, 'F'),
+                autoActions.followPath(getAutoPath("EF-I3"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'C'),
+                autoActions.followPath(getAutoPath("C-I2"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'A'),
+                autoActions.followPath(getAutoPath("A-I1"), true, true, false),
                 autoActions.AutoAimShoot(L4, 'L')
         );
     }

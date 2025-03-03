@@ -103,4 +103,8 @@ public class AutoActions {
                 Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(
                         RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())));
     }
+
+    public Command ReverseEndEffector() {
+        return new ReverseEndEffectorCommand(endEffectorSubsystem);
+    }
 }

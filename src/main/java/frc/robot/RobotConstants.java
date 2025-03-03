@@ -34,7 +34,8 @@ public final class RobotConstants {
     public static final boolean disableHAL = false;
     public static final double LOOPER_DT = 1 / 50.0;
     public static final boolean TUNING = true;
-    public static final boolean DriverCamera = false;
+    public static final boolean DriverCamera = true;
+    public static final boolean VisionCamera = false;
     // Judge whether the team is 10541
     public static final String Serial10541 = "03415993";
     public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541) && Robot.isReal();
@@ -290,9 +291,10 @@ public final class RobotConstants {
         public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.515);
         public static final TunableNumber X_TOLERANCE_METERS = new TunableNumber("AIM/X_TOLERANCE_METERS", 0.02);
         public static final TunableNumber Y_TOLERANCE_METERS = new TunableNumber("AIM/Y_TOLERANCE_METERS", 0.02);
+        public static final TunableNumber RAISE_LIMIT_METERS = new TunableNumber("AIM/RAISE_LIMIT_METERS", 0.5);
         public static final TunableNumber OMEGA_TOLERANCE_DEGREES = new TunableNumber("AIM/OMEGA_TOLERANCE_DEGREES", 1);
         public static final Measure<LinearVelocityUnit> MAX_AIMING_SPEED = MetersPerSecond.of(4.5);
-        public static final Measure<LinearAccelerationUnit> MAX_AIMING_ACCELERATION = MetersPerSecondPerSecond.of(11);
+        public static final Measure<LinearAccelerationUnit> MAX_AIMING_ACCELERATION = MetersPerSecondPerSecond.of(9);
     }
 
     /**
@@ -322,6 +324,7 @@ public final class RobotConstants {
         public static final TunableNumber SHOOT_RPS = new TunableNumber("ENDEFFECTOR/shootRPS", -60);
         public static final TunableNumber L1_RPS = new TunableNumber("ENDEFFECTOR/l1RPS", -40);
         public static final TunableNumber IDLE_RPS = new TunableNumber("ENDEFFECTOR/idleRPS", -0);
+        public static final TunableNumber REVERSE_RPS = new TunableNumber("ENDEFFECTOR/reverseRPS", 40);
 
         /**
          * Constants for the endeffector motor gains.
@@ -360,7 +363,7 @@ public final class RobotConstants {
         public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 100);
         public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 500);
         public static final TunableNumber INTAKE_PIVOT_JERK = new TunableNumber("INTAKE_PIVOT/jerk", 0);
-        public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 113);
+        public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 112);
         public static final TunableNumber OUTTAKE_ANGLE = new TunableNumber("INTAKE_PIVOT/outtakeAngle", 105);
         public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 5);
         public static final TunableNumber AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/avoidAngle", 90);
@@ -374,7 +377,7 @@ public final class RobotConstants {
         // public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intake time",10);
 
         //Constants for intake pivot
-        public static double PIVOT_RATIO = 36 * 50 / 11;
+        public static double PIVOT_RATIO = (double) (36 * 50) / 11;
 
         /**
          * Constants for the intake pivot motor gains in the intake subsystem.
@@ -421,7 +424,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
         public static final double ELEVATOR_DANGER_ZONE = 0.4180619200456253;
-        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.46;//TODO: fixme
+        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.40;//TODO: fixme
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                 140);

@@ -7,6 +7,7 @@ import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerSubsystem;
+import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.ElevatorConstants.L1_EXTENSION_METERS;
@@ -55,9 +56,9 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         Logger.recordOutput("EndEffector/SystemState", newState.toString());
         Logger.recordOutput(NAME + "Velocity", inputs.velocityRotPerSec);
 
-        Logger.recordOutput(NAME+"/isShootReady", isShootReady());
-        Logger.recordOutput(NAME+"/ShootFinished", isShootFinished());
-        Logger.recordOutput(NAME+"/isIntakeFinished", isIntakeFinished());
+        Logger.recordOutput(NAME + "/isShootReady", isShootReady());
+        Logger.recordOutput(NAME + "/ShootFinished", isShootFinished());
+        Logger.recordOutput(NAME + "/isIntakeFinished", isIntakeFinished());
 
         if (newState != systemState) {
             systemState = newState;
@@ -146,9 +147,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
                 }
                 yield SystemState.SHOOTING;
             }
-            case POKE -> {
-                yield SystemState.POKING;
-            }
+            case POKE -> SystemState.POKING;
             case OFF -> SystemState.OFF;
         };
     }
@@ -157,10 +156,12 @@ public class EndEffectorSubsystem extends RollerSubsystem {
         return middleBBInputs.isBeambreakOn;
     }
 
-    public boolean containsCoral() {return middleBBInputs.isBeambreakOn || edgeBBInputs.isBeambreakOn;}
+    public boolean containsCoral() {
+        return middleBBInputs.isBeambreakOn || edgeBBInputs.isBeambreakOn;
+    }
 
     public boolean isShootFinished() {
-        return hasTransitionedToPreShoot && !edgeBBInputs.isBeambreakOn;
+        return (Swerve.getInstance().getState() == Swerve.State.PATH_FOLLOWING || hasTransitionedToPreShoot) && !edgeBBInputs.isBeambreakOn;
     }
 
     public boolean isIntakeFinished() {

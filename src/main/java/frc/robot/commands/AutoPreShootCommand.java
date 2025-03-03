@@ -49,6 +49,7 @@ public class AutoPreShootCommand extends Command {
     public boolean isFinished() {
         return timer.hasElapsed(0.1) &&
                 elevatorSubsystem.elevatorReady(0.005) &&
-                endEffectorSubsystem.isShootReady() && safeToRaise;
+                //endEffectorSubsystem.isShootReady() &&
+                safeToRaise;
     }
 }

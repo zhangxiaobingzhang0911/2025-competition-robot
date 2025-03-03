@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static frc.robot.drivers.DestinationSupplier.elevatorSetpoint.L4;
+
 public class AutoFile {
     private final AutoActions autoActions;
     private final Map<String, PathPlannerPath> autoPaths = new HashMap<>();
@@ -73,8 +75,10 @@ public class AutoFile {
         return new SequentialCommandGroup(
                 //autoActions.initializeVision(),
                 autoActions.followPath(getAutoPath("S1-H"), true, true, false),
-                autoActions.AutoAimShoot(),
-                autoActions.followPath(getAutoPath("H-I1"), true, true, false)
+                autoActions.AutoAimShoot(L4, 'J'),
+                autoActions.followPath(getAutoPath("J-I1"), true, true, false),
+                autoActions.followPath(getAutoPath("I1-A"), true, true, false),
+                autoActions.AutoAimShoot(L4, 'L')
         );
     }
 }

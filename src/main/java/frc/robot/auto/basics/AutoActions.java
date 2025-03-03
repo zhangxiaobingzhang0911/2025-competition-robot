@@ -4,7 +4,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotConstants;
 import frc.robot.commands.*;
 import frc.robot.drivers.DestinationSupplier;
@@ -89,10 +88,15 @@ public class AutoActions {
         return Commands.race(preShoot(), shootCoralAtSetpoint());
     }
 
-    public Command AutoAimShoot() {
+    public Command setLevel(DestinationSupplier.elevatorSetpoint setpoint) {
+        return Commands.runOnce(() -> DestinationSupplier.getInstance().updateElevatorSetpoint(setpoint));
+    }
+
+    public Command AutoAimShoot(DestinationSupplier.elevatorSetpoint setpoint, char tagChar) {
         return Commands.sequence(
                 Commands.parallel(
-                        new ReefAimAutoCommand(() -> false, elevatorSubsystem, new CommandXboxController(0)),
+                        setLevel(setpoint),
+                        new ReefAimAutoCommand(elevatorSubsystem, tagChar),
                         new AutoPreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem)
                 ),
                 new ShootCommand(indicatorSubsystem, endEffectorSubsystem),

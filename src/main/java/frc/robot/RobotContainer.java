@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -45,9 +44,6 @@ import lombok.Getter;
 import org.frcteam6941.looper.UpdateManager;
 import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import static frc.robot.RobotConstants.SwerveConstants.DRIVETRAIN_LIMITED;
-import static frc.robot.RobotConstants.SwerveConstants.DRIVETRAIN_UNCAPPED;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -168,8 +164,8 @@ public class RobotContainer {
         driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
         driverController.b().whileTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
         driverController.x().toggleOnTrue(new TrembleIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
-        driverController.povRight().whileTrue(new AutoAimShootCommand(indicatorSubsystem,endEffectorSubsystem,elevatorSubsystem,intakeSubsystem,()->false,driverController));
-        driverController.rightBumper().whileTrue(new PutCoralCommand(driverController,endEffectorSubsystem,elevatorSubsystem,intakeSubsystem,indicatorSubsystem));
+        driverController.povRight().whileTrue(new AutoAimShootCommand(indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, () -> false, driverController));
+        driverController.rightBumper().whileTrue(new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem));
     }
 
     private void configureStreamDeckBindings() {
@@ -203,7 +199,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // FIXME: set resetOdometry to false when vision is completed and usable
-        return autoFile.runAuto("4CoralUp");
+        return autoFile.runAuto("AutoAimingTest");
     }
 
     public FieldConstants.AprilTagLayoutType getAprilTagLayoutType() {

@@ -11,13 +11,21 @@ public class ZeroElevatorCommand extends SequentialCommandGroup {
         addRequirements(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem);
         addCommands(
                 Commands.parallel(
-                        Commands.runOnce(() -> { endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);}),
-                        Commands.runOnce(() -> { intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL); }),
-                        Commands.runOnce(() -> { elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO); })
+                        Commands.runOnce(() -> {
+                            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
+                        }),
+                        Commands.runOnce(() -> {
+                            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
+                        }),
+                        Commands.runOnce(() -> {
+                            elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO);
+                        })
                 )
         );
     }
 
     @Override
-    public InterruptionBehavior getInterruptionBehavior() {return InterruptionBehavior.kCancelIncoming;}
+    public InterruptionBehavior getInterruptionBehavior() {
+        return InterruptionBehavior.kCancelIncoming;
+    }
 }

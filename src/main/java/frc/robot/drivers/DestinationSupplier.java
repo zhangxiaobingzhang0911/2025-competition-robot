@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.RobotConstants;
@@ -19,10 +21,16 @@ public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
     Swerve swerve;
     @Getter
-    private controlMode currentControlMode = controlMode.MANUAL;
+    private L1Mode l1Mode = L1Mode.ELEVATOR;
+    @Getter
+    private IntakeMode intakeMode = IntakeMode.NORMAL;
+    @Getter
+    private controlMode currentControlMode = controlMode.AUTO;
     @Getter
     @Setter
     private int targetTagID = 0;
+    @Getter
+    private boolean useVision = true;
     private boolean coralRight = false;
     private boolean useCoral = false;
     private elevatorSetpoint currentElevSetpointCoral = elevatorSetpoint.L2;
@@ -75,31 +83,104 @@ public class DestinationSupplier implements Updatable {
     }
 
     public static Pose2d getNearestTag(Pose2d robotPose) {
+        XboxController driverController = new XboxController(0);
+        double ControllerX = driverController.getLeftX();
+        double ControllerY = driverController.getLeftY();
         double minDistance = Double.MAX_VALUE;
+        double secondMinDistance = Double.MAX_VALUE;
         int ReefTagMin = AllianceFlipUtil.shouldFlip() ? 6 : 17;
         int ReefTagMax = AllianceFlipUtil.shouldFlip() ? 11 : 22;
         int minDistanceID = ReefTagMin;
+        int secondMinDistanceID = ReefTagMin;
         for (int i = ReefTagMin; i <= ReefTagMax; i++) {
-            if (minDistance > FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                    toPose2d().getTranslation().getDistance(robotPose.getTranslation())) {
+            double distance =FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                    toPose2d().getTranslation().getDistance(robotPose.getTranslation());
+            if (distance < secondMinDistance){
+                secondMinDistanceID = i;
+                secondMinDistance = distance;
+            }
+            if (distance < minDistance) {
+                secondMinDistanceID = minDistanceID;
+                secondMinDistance = minDistance;
                 minDistanceID = i;
-                minDistance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
-                        toPose2d().getTranslation().getDistance(robotPose.getTranslation());
+                minDistance = distance;
             }
         }
+        Logger.recordOutput("EdgeCase/DeltaDistance",secondMinDistance - minDistance);
+        Logger.recordOutput("EdgeCase/ControllerX", ControllerX);
+        Logger.recordOutput("EdgeCase/ControllerY", ControllerY);
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX!=0 && ControllerY!=0){
+            Logger.recordOutput("EdgeCase/IsEdgeCase",true);
+            if(AllianceFlipUtil.shouldFlip()){
+                if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
+                    minDistanceID = ControllerY>0?6:11;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 8,9)){
+                    minDistanceID = ControllerY>0?8:9;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 6,7)){
+                    minDistanceID = ControllerX>0?7:6;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 7,8)){
+                    minDistanceID = ControllerX>0?8:7;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 9,10)){
+                    minDistanceID = ControllerX>0?9:10;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 10,11)){
+                    minDistanceID = ControllerX>0?10:11;
+                }
+            }
+            else {
+                if (correctTagPair(secondMinDistanceID, minDistanceID, 20,19)){
+                    minDistanceID = ControllerY>0?19:20;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,22)){
+                    minDistanceID = ControllerY>0?17:22;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,18)){
+                    minDistanceID = ControllerX>0?17:18;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 18,19)){
+                    minDistanceID = ControllerX>0?18:19;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 21,22)){
+                    minDistanceID = ControllerX>0?22:21;
+                }
+                else if (correctTagPair(secondMinDistanceID, minDistanceID, 20,21)){
+                    minDistanceID = ControllerX>0?21:20;
+                }
+            }
+        }
+        else{
+            Logger.recordOutput("EdgeCase/IsEdgeCase",false);
+        }
+        Logger.recordOutput("EdgeCase/ChangedTarget", minDistanceID == secondMinDistanceID);
         Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
         return goal;
+    }
+
+    private static boolean correctTagPair(double tag1, double tag2, double wantedTag1, double wantedTag2) {
+        if(tag1 == wantedTag1 && tag2 == wantedTag2){
+            return true;
+        }
+        else if(tag1 == wantedTag2 && tag2 == wantedTag1){
+            return true;
+        }
+        return false;
     }
 
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {
         switch (setpoint) {
             case L1, L2, L3, L4:
                 currentElevSetpointCoral = setpoint;
-                Logger.recordOutput("DestinationSupplier/currentElevSetpointCoral", setpoint);
+                //Logger.recordOutput("DestinationSupplier/currentElevSetpointCoral", setpoint);
+                SmartDashboard.putString("DestinationSupplier/currentElevSetpointCoral", setpoint.toString());
                 break;
             case P1, P2:
                 currentElevSetpointPoke = setpoint;
-                Logger.recordOutput("DestinationSupplier/currentElevSetpointPoke", setpoint);
+                //Logger.recordOutput("DestinationSupplier/currentElevSetpointPoke", setpoint);
+                SmartDashboard.putString("DestinationSupplier/currentElevSetpointPoke", setpoint.toString());
                 break;
             default:
                 System.out.println("Unknown elevator setpoint: " + setpoint);
@@ -132,7 +213,8 @@ public class DestinationSupplier implements Updatable {
 
     public void updateBranch(boolean coralRight) {
         this.coralRight = coralRight;
-        Logger.recordOutput("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
+        //Logger.recordOutput("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
+        SmartDashboard.putString("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
     }
 
     public boolean getCurrentBranch() {
@@ -141,7 +223,23 @@ public class DestinationSupplier implements Updatable {
 
     public void setCurrentControlMode(controlMode mode) {
         this.currentControlMode = mode;
-        Logger.recordOutput("DestinationSupplier/CurrentControlMode", mode);
+        //Logger.recordOutput("DestinationSupplier/CurrentControlMode", mode);
+        SmartDashboard.putString("DestinationSupplier/CurrentControlMode", mode.name());
+    }
+
+    public void setCurrentL1Mode(L1Mode mode) {
+        this.l1Mode = mode;
+        SmartDashboard.putString("DestinationSupplier/CurrentL1Mode", mode.name());
+    }
+
+    public void setCurrentIntakeMode(IntakeMode mode) {
+        this.intakeMode = mode;
+        SmartDashboard.putString("DestinationSupplier/CurrentIntakeMode", mode.name());
+    }
+
+    public void setUseVision(boolean useVision) {
+        this.useVision = useVision;
+        SmartDashboard.putBoolean("DestinationSupplier/UseVision", useVision);
     }
 
     public enum elevatorSetpoint {
@@ -150,5 +248,15 @@ public class DestinationSupplier implements Updatable {
 
     public enum controlMode {
         MANUAL, SEMI, AUTO
+    }
+
+    public enum L1Mode {
+        ELEVATOR,
+        INTAKE
+    }
+
+    public enum IntakeMode {
+        TREMBLE,
+        NORMAL
     }
 }

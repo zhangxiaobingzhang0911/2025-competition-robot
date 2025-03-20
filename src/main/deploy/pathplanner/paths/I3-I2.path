@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.3,
-        "y": 2.95
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 5.227809174959541,
-        "y": 1.8971394967459803
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
         "x": 1.0157830739299611,
         "y": 2.1854936770428015
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.242536160471012,
+        "y": 2.4051632584726987
+      },
+      "isLocked": false,
+      "linkedName": "i3"
+    },
+    {
+      "anchor": {
+        "x": 1.1938775510204083,
+        "y": 4.371970663265305
+      },
       "prevControl": {
-        "x": 4.669187743190661,
-        "y": 1.033134727626459
+        "x": 1.1864158163265306,
+        "y": 4.118271683673468
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "i3"
+      "linkedName": "i2-fromi3"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.17278617710583105,
+      "rotationDegrees": 86.03148248556704
     }
   ],
   "constraintZones": [
     {
-      "name": "Intake",
-      "minWaypointRelativePos": 0.8671875000000009,
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.5729166666666664,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.0,
@@ -52,8 +52,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "DEPLOY-INTAKE-INIT",
-      "waypointRelativePos": 0.23,
+      "name": "DEPLOY-INTAKE",
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -68,13 +68,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 159.54385162523278
+    "rotation": 89.23610153907002
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 159.54385162523278
   },
   "useDefaultConstraints": true
 }

@@ -508,21 +508,21 @@ public final class RobotConstants {
         public static final double ROLLER_RATIO = 1;
         
         // Pivot angles for different positions (in degrees)
-        public static final TunableNumber HOME_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/homeAngle", 5.0);
-        public static final TunableNumber INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/intakeAngle", 110.0);
-        public static final TunableNumber OUTTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/outtakeAngle", 100.0);
-        public static final TunableNumber HOLDING_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/holdingAngle", 20.0);
-        public static final TunableNumber SHOOTING_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/shootingAngle", 45.0);
+        public static final TunableNumber HOME_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/homeAngle", 135);
+        public static final TunableNumber CORAL_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralIntakeAngle", 0);
+        public static final TunableNumber CORAL_OUTTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralOuttakeAngle", 0);
+        public static final TunableNumber CORAL_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralPreShootAngle", 220);
         public static final TunableNumber ALGAE_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeIntakeAngle", 115.0);
-        public static final TunableNumber ALGAE_SHOOTING_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeShootingAngle", 40.0);
+        public static final TunableNumber ALGAE_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaePreShootAngle", 40.0);
         
         // Roller voltages for different operations
-        public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/intakeVoltage", 12.0);
-        public static final TunableNumber OUTTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/outtakeVoltage", -6.0);
-        public static final TunableNumber HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/holdVoltage", 2.0);
-        public static final TunableNumber SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/shootVoltage", -10.0);
+        public static final TunableNumber CORAL_INTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralIntakeVoltage", 12.0);
+        public static final TunableNumber CORAL_OUTTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralOuttakeVoltage", -6.0);
+        public static final TunableNumber CORAL_PRESHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralPreShootVoltage", -10.0);
         public static final TunableNumber ALGAE_INTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeIntakeVoltage", 8.0);
-        public static final TunableNumber ALGAE_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeShootVoltage", -12.0);
+        public static final TunableNumber ALGAE_PRESHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaePreShootVoltage", -12.0);
+        public static final TunableNumber CORAL_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralHoldVoltage", 2.0);
+        public static final TunableNumber ALGAE_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeHoldVoltage", 1.5);
         
         // Game piece detection
         public static final TunableNumber ROLLER_AMPS_HAS_GAME_PIECE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/rollerAmpsHasGamePiece", 40.0);

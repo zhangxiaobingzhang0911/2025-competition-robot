@@ -61,7 +61,7 @@ public class SuperstructureVisualizer {
     // Current state tracking
     private double currentElevatorHeight = 0.0;
     private double currentIntakeAngleDeg = 0.0;
-    private double currentEndEffectorAngleDeg = 310;
+    private double currentEndEffectorAngleDeg = 0;
 
     public static SuperstructureVisualizer getInstance() {
         if (instance == null) {
@@ -92,7 +92,7 @@ public class SuperstructureVisualizer {
         endEffectorMountArm = new LoggedMechanismLigament2d(
                 "endEffectorMountArm",
                 END_EFFECTOR_MOUNT_ARM_LENGTH,
-                90,
+                0,
                 8,
                 new Color8Bit(Color.kPurple));
 
@@ -170,7 +170,7 @@ public class SuperstructureVisualizer {
         intakeArm.setAngle(Rotation2d.fromRadians(Math.toRadians(-currentIntakeAngleDeg+90)));
 
         // Update end effector components
-        endEffectorMountArm.setAngle(Rotation2d.fromRadians(Math.toRadians(currentEndEffectorAngleDeg)));
+        endEffectorMountArm.setAngle(Rotation2d.fromRadians(Math.toRadians(currentEndEffectorAngleDeg+180)));
 
 
         // Log 2D mechanisms

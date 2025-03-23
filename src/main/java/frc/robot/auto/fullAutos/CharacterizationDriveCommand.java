@@ -1,4 +1,4 @@
-package frc.robot.auto.basics;
+package frc.robot.auto.fullAutos;
  
 import com.team254.lib.util.PolynomialRegression;
  

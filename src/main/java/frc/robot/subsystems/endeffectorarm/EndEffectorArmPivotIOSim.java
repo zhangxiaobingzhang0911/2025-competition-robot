@@ -99,7 +99,7 @@ public class EndEffectorArmPivotIOSim implements EndEffectorArmPivotIO {
                                 A.times(x)
                                         .plus(B.times(u)),
                         simState,
-                        VecBuilder.fill(inputTorqueCurrent*15),
+                        VecBuilder.fill(inputTorqueCurrent*5),
                         dt);
         simState = VecBuilder.fill(updatedState.get(0, 0), updatedState.get(1, 0));
     }

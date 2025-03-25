@@ -183,6 +183,9 @@ public class RobotContainer {
         driverController.back().whileTrue(switchAimingModeCommand());
         driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
+        if(Robot.isSimulation()){
+            driverController.rightTrigger().whileTrue(switchAimingModeCommand());
+        }
     }
 
     private void configureStreamDeckBindings() {

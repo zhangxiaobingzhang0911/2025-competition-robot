@@ -475,12 +475,10 @@ public final class RobotConstants {
         public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 2.5);
         public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
         public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0);
-        public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka",
-                0);
-        public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0);// 0.107853495
-        public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
-                0);
-        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.3);//0.3
+        public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka", 0);
+        public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.08);// 0.107853495
+        public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.1);
+        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.2);//0.3
     }
 
     public static class LimelightConstants {

@@ -433,9 +433,9 @@ public final class RobotConstants {
         public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.40;//TODO: fixme
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
-                140);
+                300);
         public static final TunableNumber motionCruiseVelocity = new TunableNumber("Elevator/MotionCruiseVelocity",
-                60);
+                100);
         public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk",
                 0.0);
         public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
@@ -472,7 +472,7 @@ public final class RobotConstants {
      * Constants for the elevator motor gains.
      */
     public static class ElevatorGainsClass {
-        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 15);
+        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 2.5);
         public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
         public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0);
         public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka",

@@ -82,7 +82,7 @@ public class DestinationSupplier implements Updatable {
         return goal.getTranslation().getDistance(robotPose.getTranslation()) < RobotConstants.ReefAimConstants.RAISE_LIMIT_METERS.get();
     }
 
-    public static Pose2d getNearestTag(Pose2d robotPose) {
+    public static void isEdgeCase(Pose2d robotPose) {
         XboxController driverController = new XboxController(0);
         double ControllerX = driverController.getLeftX();
         double ControllerY = driverController.getLeftY();
@@ -109,55 +109,90 @@ public class DestinationSupplier implements Updatable {
         Logger.recordOutput("EdgeCase/DeltaDistance",secondMinDistance - minDistance);
         Logger.recordOutput("EdgeCase/ControllerX", ControllerX);
         Logger.recordOutput("EdgeCase/ControllerY", ControllerY);
-        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX!=0 && ControllerY!=0){
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get()){
             Logger.recordOutput("EdgeCase/IsEdgeCase",true);
-            if(AllianceFlipUtil.shouldFlip()){
-                if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
-                    minDistanceID = ControllerY>0?6:11;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 8,9)){
-                    minDistanceID = ControllerY>0?8:9;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 6,7)){
-                    minDistanceID = ControllerX>0?7:6;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 7,8)){
-                    minDistanceID = ControllerX>0?8:7;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 9,10)){
-                    minDistanceID = ControllerX>0?9:10;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 10,11)){
-                    minDistanceID = ControllerX>0?10:11;
-                }
-            }
-            else {
-                if (correctTagPair(secondMinDistanceID, minDistanceID, 20,19)){
-                    minDistanceID = ControllerY>0?19:20;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,22)){
-                    minDistanceID = ControllerY>0?17:22;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,18)){
-                    minDistanceID = ControllerX>0?17:18;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 18,19)){
-                    minDistanceID = ControllerX>0?18:19;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 21,22)){
-                    minDistanceID = ControllerX>0?22:21;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 20,21)){
-                    minDistanceID = ControllerX>0?21:20;
-                }
+            if(ControllerX != 0 && ControllerY !=0){
+                minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
             }
         }
         else{
             Logger.recordOutput("EdgeCase/IsEdgeCase",false);
         }
         Logger.recordOutput("EdgeCase/ChangedTarget", minDistanceID == secondMinDistanceID);
-        Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
-        return goal;
+    }
+
+    public static Pose2d getNearestTag(Pose2d robotPose) {
+        XboxController driverController = new XboxController(0);
+        double ControllerX = driverController.getLeftX();
+        double ControllerY = driverController.getLeftY();
+        double minDistance = Double.MAX_VALUE;
+        double secondMinDistance = Double.MAX_VALUE;
+        int ReefTagMin = AllianceFlipUtil.shouldFlip() ? 6 : 17;
+        int ReefTagMax = AllianceFlipUtil.shouldFlip() ? 11 : 22;
+        int minDistanceID = ReefTagMin;
+        int secondMinDistanceID = ReefTagMin;
+        for (int i = ReefTagMin; i <= ReefTagMax; i++) {
+            double distance =FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                    toPose2d().getTranslation().getDistance(robotPose.getTranslation());
+            if (distance < secondMinDistance){
+                secondMinDistanceID = i;
+                secondMinDistance = distance;
+            }
+            if (distance < minDistance) {
+                secondMinDistanceID = minDistanceID;
+                secondMinDistance = minDistance;
+                minDistanceID = i;
+                minDistance = distance;
+            }
+        }
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX!=0 && ControllerY!=0){
+            minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
+        }
+        return FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
+    }
+
+    private static int solveEdgeCase(double controllerX, double controllerY, int minDistanceID, int secondMinDistanceID) {
+        if(AllianceFlipUtil.shouldFlip()){
+            if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
+                minDistanceID = controllerY >0?6:11;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 8,9)){
+                minDistanceID = controllerY >0?8:9;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 6,7)){
+                minDistanceID = controllerX >0?7:6;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 7,8)){
+                minDistanceID = controllerX >0?8:7;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 9,10)){
+                minDistanceID = controllerX >0?9:10;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 10,11)){
+                minDistanceID = controllerX >0?10:11;
+            }
+        }
+        else {
+            if (correctTagPair(secondMinDistanceID, minDistanceID, 20,19)){
+                minDistanceID = controllerY >0?19:20;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,22)){
+                minDistanceID = controllerY >0?17:22;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,18)){
+                minDistanceID = controllerX >0?17:18;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 18,19)){
+                minDistanceID = controllerX >0?18:19;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 21,22)){
+                minDistanceID = controllerX >0?22:21;
+            }
+            else if (correctTagPair(secondMinDistanceID, minDistanceID, 20,21)){
+                minDistanceID = controllerX >0?21:20;
+            }
+        }
+        return minDistanceID;
     }
 
     private static boolean correctTagPair(double tag1, double tag2, double wantedTag1, double wantedTag2) {

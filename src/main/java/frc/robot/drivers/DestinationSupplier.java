@@ -16,6 +16,7 @@ import lombok.Setter;
 import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.Logger;
+
 import java.util.List;
 
 public class DestinationSupplier implements Updatable {
@@ -94,9 +95,9 @@ public class DestinationSupplier implements Updatable {
         int minDistanceID = ReefTagMin;
         int secondMinDistanceID = ReefTagMin;
         for (int i = ReefTagMin; i <= ReefTagMax; i++) {
-            double distance =FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+            double distance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
                     toPose2d().getTranslation().getDistance(robotPose.getTranslation());
-            if (distance < secondMinDistance){
+            if (distance < secondMinDistance) {
                 secondMinDistanceID = i;
                 secondMinDistance = distance;
             }
@@ -107,17 +108,16 @@ public class DestinationSupplier implements Updatable {
                 minDistance = distance;
             }
         }
-        Logger.recordOutput("EdgeCase/DeltaDistance",secondMinDistance - minDistance);
+        Logger.recordOutput("EdgeCase/DeltaDistance", secondMinDistance - minDistance);
         Logger.recordOutput("EdgeCase/ControllerX", ControllerX);
         Logger.recordOutput("EdgeCase/ControllerY", ControllerY);
-        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get()){
-            Logger.recordOutput("EdgeCase/IsEdgeCase",true);
-            if(ControllerX != 0 && ControllerY !=0){
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get()) {
+            Logger.recordOutput("EdgeCase/IsEdgeCase", true);
+            if (ControllerX != 0 && ControllerY != 0) {
                 minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
             }
-        }
-        else{
-            Logger.recordOutput("EdgeCase/IsEdgeCase",false);
+        } else {
+            Logger.recordOutput("EdgeCase/IsEdgeCase", false);
         }
         Logger.recordOutput("EdgeCase/ChangedTarget", minDistanceID == secondMinDistanceID);
     }
@@ -133,9 +133,9 @@ public class DestinationSupplier implements Updatable {
         int minDistanceID = ReefTagMin;
         int secondMinDistanceID = ReefTagMin;
         for (int i = ReefTagMin; i <= ReefTagMax; i++) {
-            double distance =FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+            double distance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
                     toPose2d().getTranslation().getDistance(robotPose.getTranslation());
-            if (distance < secondMinDistance){
+            if (distance < secondMinDistance) {
                 secondMinDistanceID = i;
                 secondMinDistance = distance;
             }
@@ -146,31 +146,32 @@ public class DestinationSupplier implements Updatable {
                 minDistance = distance;
             }
         }
-        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX!=0 && ControllerY!=0){
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX != 0 && ControllerY != 0) {
             minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
         }
         return FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
     }
 
     private static int solveEdgeCase(double controllerX, double controllerY, int minDistanceID, int secondMinDistanceID) {
-        record TagCondition(int tagA, int tagB, char axis, int positiveResult, int negativeResult) {}
+        record TagCondition(int tagA, int tagB, char axis, int positiveResult, int negativeResult) {
+        }
         List<TagCondition> conditions = AllianceFlipUtil.shouldFlip() ?
-        List.of(
-            new TagCondition(6, 11, 'Y', 6, 11),
-            new TagCondition(8, 9, 'Y', 8, 9),
-            new TagCondition(6, 7, 'X', 7, 6),
-            new TagCondition(7, 8, 'X', 8, 7),
-            new TagCondition(9, 10, 'X', 9, 10),
-            new TagCondition(10, 11, 'X', 10, 11)
-        ) : 
-        List.of(
-            new TagCondition(20, 19, 'Y', 19, 20),
-            new TagCondition(17, 22, 'Y', 17, 22),
-            new TagCondition(17, 18, 'X', 17, 18),
-            new TagCondition(18, 19, 'X', 18, 19),
-            new TagCondition(21, 22, 'X', 22, 21),
-            new TagCondition(20, 21, 'X', 21, 20)
-        );
+                List.of(
+                        new TagCondition(6, 11, 'Y', 6, 11),
+                        new TagCondition(8, 9, 'Y', 8, 9),
+                        new TagCondition(6, 7, 'X', 7, 6),
+                        new TagCondition(7, 8, 'X', 8, 7),
+                        new TagCondition(9, 10, 'X', 9, 10),
+                        new TagCondition(10, 11, 'X', 10, 11)
+                ) :
+                List.of(
+                        new TagCondition(20, 19, 'Y', 19, 20),
+                        new TagCondition(17, 22, 'Y', 17, 22),
+                        new TagCondition(17, 18, 'X', 17, 18),
+                        new TagCondition(18, 19, 'X', 18, 19),
+                        new TagCondition(21, 22, 'X', 22, 21),
+                        new TagCondition(20, 21, 'X', 21, 20)
+                );
         for (TagCondition condition : conditions) {
             if (correctTagPair(secondMinDistanceID, minDistanceID, condition.tagA(), condition.tagB())) {
                 double value = condition.axis() == 'X' ? controllerX : controllerY;

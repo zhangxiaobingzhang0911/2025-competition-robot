@@ -152,57 +152,36 @@ public class DestinationSupplier implements Updatable {
     }
 
     private static int solveEdgeCase(double controllerX, double controllerY, int minDistanceID, int secondMinDistanceID) {
-        if(AllianceFlipUtil.shouldFlip()){
-            if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
-                minDistanceID = controllerY >0?6:11;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 8,9)){
-                minDistanceID = controllerY >0?8:9;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 6,7)){
-                minDistanceID = controllerX >0?7:6;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 7,8)){
-                minDistanceID = controllerX >0?8:7;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 9,10)){
-                minDistanceID = controllerX >0?9:10;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 10,11)){
-                minDistanceID = controllerX >0?10:11;
-            }
-        }
-        else {
-            if (correctTagPair(secondMinDistanceID, minDistanceID, 20,19)){
-                minDistanceID = controllerY >0?19:20;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,22)){
-                minDistanceID = controllerY >0?17:22;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,18)){
-                minDistanceID = controllerX >0?17:18;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 18,19)){
-                minDistanceID = controllerX >0?18:19;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 21,22)){
-                minDistanceID = controllerX >0?22:21;
-            }
-            else if (correctTagPair(secondMinDistanceID, minDistanceID, 20,21)){
-                minDistanceID = controllerX >0?21:20;
+        record TagCondition(int tagA, int tagB, char axis, int positiveResult, int negativeResult) {}
+        List<TagCondition> conditions = AllianceFlipUtil.shouldFlip() ?
+        List.of(
+            new TagCondition(6, 11, 'Y', 6, 11),
+            new TagCondition(8, 9, 'Y', 8, 9),
+            new TagCondition(6, 7, 'X', 7, 6),
+            new TagCondition(7, 8, 'X', 8, 7),
+            new TagCondition(9, 10, 'X', 9, 10),
+            new TagCondition(10, 11, 'X', 10, 11)
+        ) : 
+        List.of(
+            new TagCondition(20, 19, 'Y', 19, 20),
+            new TagCondition(17, 22, 'Y', 17, 22),
+            new TagCondition(17, 18, 'X', 17, 18),
+            new TagCondition(18, 19, 'X', 18, 19),
+            new TagCondition(21, 22, 'X', 22, 21),
+            new TagCondition(20, 21, 'X', 21, 20)
+        );
+        for (TagCondition condition : conditions) {
+            if (correctTagPair(secondMinDistanceID, minDistanceID, condition.tagA(), condition.tagB())) {
+                double value = condition.axis() == 'X' ? controllerX : controllerY;
+                minDistanceID = value > 0 ? condition.positiveResult() : condition.negativeResult();
+                break;
             }
         }
         return minDistanceID;
     }
 
     private static boolean correctTagPair(double tag1, double tag2, double wantedTag1, double wantedTag2) {
-        if(tag1 == wantedTag1 && tag2 == wantedTag2){
-            return true;
-        }
-        else if(tag1 == wantedTag2 && tag2 == wantedTag1){
-            return true;
-        }
-        return false;
+        return (tag1 == wantedTag1 && tag2 == wantedTag2) || (tag1 == wantedTag2 && tag2 == wantedTag1);
     }
 
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {

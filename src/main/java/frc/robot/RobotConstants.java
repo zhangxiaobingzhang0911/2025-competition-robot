@@ -543,5 +543,18 @@ public final class RobotConstants {
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KI = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ki", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0);
         }
+
+        /**
+         * Constants for the EndEffectorArm roller motor gains.
+         */
+        //TODO: pid number
+        public static class EndEffectorArmRollerGainsClass {
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KP = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/kp", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KI = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/ki", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KD = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/kd", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KA = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/ka", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KV = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/kv", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KS = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/ks", 0);
+        }
     }
 }

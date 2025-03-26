@@ -26,7 +26,7 @@ public class Robot extends LoggedRobot {
     public void robotInit() {
         // logger initialization
         Logger.addDataReceiver(new NT4Publisher());
-        //Logger.addDataReceiver(new WPILOGWriter());
+        Logger.addDataReceiver(new WPILOGWriter());
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.start();
         WebServer.start(5800, Filesystem.getDeployDirectory().getPath());

@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
@@ -27,7 +28,7 @@ public class AutoAimShootCommand extends ParallelCommandGroup {
                                 new ShootCommand(indicatorSubsystem, endeffectorSubsystem)
                         ),
                         Commands.sequence(
-                                new WaitUntilCommand(() -> driverController.rightTrigger().getAsBoolean()),
+                                new WaitUntilCommand(() -> (driverController.rightTrigger().getAsBoolean() && Robot.isReal())),
                                 new ShootCommand(indicatorSubsystem, endeffectorSubsystem)
                         )
 

@@ -17,6 +17,8 @@ import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.Logger;
 
+import java.util.List;
+
 public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
     Swerve swerve;
@@ -82,6 +84,44 @@ public class DestinationSupplier implements Updatable {
         return goal.getTranslation().getDistance(robotPose.getTranslation()) < RobotConstants.ReefAimConstants.RAISE_LIMIT_METERS.get();
     }
 
+    public static void isEdgeCase(Pose2d robotPose) {
+        XboxController driverController = new XboxController(0);
+        double ControllerX = driverController.getLeftX();
+        double ControllerY = driverController.getLeftY();
+        double minDistance = Double.MAX_VALUE;
+        double secondMinDistance = Double.MAX_VALUE;
+        int ReefTagMin = AllianceFlipUtil.shouldFlip() ? 6 : 17;
+        int ReefTagMax = AllianceFlipUtil.shouldFlip() ? 11 : 22;
+        int minDistanceID = ReefTagMin;
+        int secondMinDistanceID = ReefTagMin;
+        for (int i = ReefTagMin; i <= ReefTagMax; i++) {
+            double distance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+                    toPose2d().getTranslation().getDistance(robotPose.getTranslation());
+            if (distance < secondMinDistance) {
+                secondMinDistanceID = i;
+                secondMinDistance = distance;
+            }
+            if (distance < minDistance) {
+                secondMinDistanceID = minDistanceID;
+                secondMinDistance = minDistance;
+                minDistanceID = i;
+                minDistance = distance;
+            }
+        }
+        Logger.recordOutput("EdgeCase/DeltaDistance", secondMinDistance - minDistance);
+        Logger.recordOutput("EdgeCase/ControllerX", ControllerX);
+        Logger.recordOutput("EdgeCase/ControllerY", ControllerY);
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get()) {
+            Logger.recordOutput("EdgeCase/IsEdgeCase", true);
+            if (ControllerX != 0 && ControllerY != 0) {
+                minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
+            }
+        } else {
+            Logger.recordOutput("EdgeCase/IsEdgeCase", false);
+        }
+        Logger.recordOutput("EdgeCase/ChangedTarget", minDistanceID == secondMinDistanceID);
+    }
+
     public static Pose2d getNearestTag(Pose2d robotPose) {
         XboxController driverController = new XboxController(0);
         double ControllerX = driverController.getLeftX();
@@ -93,9 +133,9 @@ public class DestinationSupplier implements Updatable {
         int minDistanceID = ReefTagMin;
         int secondMinDistanceID = ReefTagMin;
         for (int i = ReefTagMin; i <= ReefTagMax; i++) {
-            double distance =FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
+            double distance = FieldConstants.officialAprilTagType.getLayout().getTagPose(i).get().
                     toPose2d().getTranslation().getDistance(robotPose.getTranslation());
-            if (distance < secondMinDistance){
+            if (distance < secondMinDistance) {
                 secondMinDistanceID = i;
                 secondMinDistance = distance;
             }
@@ -106,68 +146,44 @@ public class DestinationSupplier implements Updatable {
                 minDistance = distance;
             }
         }
-        Logger.recordOutput("EdgeCase/DeltaDistance",secondMinDistance - minDistance);
-        Logger.recordOutput("EdgeCase/ControllerX", ControllerX);
-        Logger.recordOutput("EdgeCase/ControllerY", ControllerY);
-        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX!=0 && ControllerY!=0){
-            Logger.recordOutput("EdgeCase/IsEdgeCase",true);
-            if(AllianceFlipUtil.shouldFlip()){
-                if (correctTagPair(secondMinDistanceID, minDistanceID, 6,11)){
-                    minDistanceID = ControllerY>0?6:11;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 8,9)){
-                    minDistanceID = ControllerY>0?8:9;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 6,7)){
-                    minDistanceID = ControllerX>0?7:6;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 7,8)){
-                    minDistanceID = ControllerX>0?8:7;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 9,10)){
-                    minDistanceID = ControllerX>0?9:10;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 10,11)){
-                    minDistanceID = ControllerX>0?10:11;
-                }
-            }
-            else {
-                if (correctTagPair(secondMinDistanceID, minDistanceID, 20,19)){
-                    minDistanceID = ControllerY>0?19:20;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,22)){
-                    minDistanceID = ControllerY>0?17:22;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 17,18)){
-                    minDistanceID = ControllerX>0?17:18;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 18,19)){
-                    minDistanceID = ControllerX>0?18:19;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 21,22)){
-                    minDistanceID = ControllerX>0?22:21;
-                }
-                else if (correctTagPair(secondMinDistanceID, minDistanceID, 20,21)){
-                    minDistanceID = ControllerX>0?21:20;
-                }
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX != 0 && ControllerY != 0) {
+            minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
+        }
+        return FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
+    }
+
+    private static int solveEdgeCase(double controllerX, double controllerY, int minDistanceID, int secondMinDistanceID) {
+        record TagCondition(int tagA, int tagB, char axis, int positiveResult, int negativeResult) {
+        }
+        List<TagCondition> conditions = AllianceFlipUtil.shouldFlip() ?
+                List.of(
+                        new TagCondition(6, 11, 'Y', 6, 11),
+                        new TagCondition(8, 9, 'Y', 8, 9),
+                        new TagCondition(6, 7, 'X', 7, 6),
+                        new TagCondition(7, 8, 'X', 8, 7),
+                        new TagCondition(9, 10, 'X', 9, 10),
+                        new TagCondition(10, 11, 'X', 10, 11)
+                ) :
+                List.of(
+                        new TagCondition(20, 19, 'Y', 19, 20),
+                        new TagCondition(17, 22, 'Y', 17, 22),
+                        new TagCondition(17, 18, 'X', 17, 18),
+                        new TagCondition(18, 19, 'X', 18, 19),
+                        new TagCondition(21, 22, 'X', 22, 21),
+                        new TagCondition(20, 21, 'X', 21, 20)
+                );
+        for (TagCondition condition : conditions) {
+            if (correctTagPair(secondMinDistanceID, minDistanceID, condition.tagA(), condition.tagB())) {
+                double value = condition.axis() == 'X' ? controllerX : controllerY;
+                minDistanceID = value > 0 ? condition.positiveResult() : condition.negativeResult();
+                break;
             }
         }
-        else{
-            Logger.recordOutput("EdgeCase/IsEdgeCase",false);
-        }
-        Logger.recordOutput("EdgeCase/ChangedTarget", minDistanceID == secondMinDistanceID);
-        Pose2d goal = FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
-        return goal;
+        return minDistanceID;
     }
 
     private static boolean correctTagPair(double tag1, double tag2, double wantedTag1, double wantedTag2) {
-        if(tag1 == wantedTag1 && tag2 == wantedTag2){
-            return true;
-        }
-        else if(tag1 == wantedTag2 && tag2 == wantedTag1){
-            return true;
-        }
-        return false;
+        return (tag1 == wantedTag1 && tag2 == wantedTag2) || (tag1 == wantedTag2 && tag2 == wantedTag1);
     }
 
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {

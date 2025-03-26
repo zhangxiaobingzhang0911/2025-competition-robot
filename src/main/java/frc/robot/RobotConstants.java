@@ -55,8 +55,8 @@ public final class RobotConstants {
      * Constants related to the robot's indicators, such as LEDs.
      */
     public static class IndicatorConstants {
-        public static final int LED_PORT = is10541?0:9;
-        public static final int LED_BUFFER_LENGTH = is10541?30:92;
+        public static final int LED_PORT = is10541 ? 0 : 9;
+        public static final int LED_BUFFER_LENGTH = is10541 ? 30 : 92;
     }
 
     /**
@@ -295,7 +295,7 @@ public final class RobotConstants {
         public static final TunableNumber OMEGA_TOLERANCE_DEGREES = new TunableNumber("AIM/OMEGA_TOLERANCE_DEGREES", 1);
         public static final Measure<LinearVelocityUnit> MAX_AIMING_SPEED = MetersPerSecond.of(4.5);
         public static final Measure<LinearAccelerationUnit> MAX_AIMING_ACCELERATION = MetersPerSecondPerSecond.of(9);
-        public static final TunableNumber Edge_Case_Max_Delta = new TunableNumber("AIM/MAX DELTA", 0.1);
+        public static final TunableNumber Edge_Case_Max_Delta = new TunableNumber("AIM/MAX DELTA", 0.5);
     }
 
     /**

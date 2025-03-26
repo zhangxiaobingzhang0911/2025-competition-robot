@@ -16,6 +16,7 @@ import lombok.Setter;
 import org.frcteam6941.looper.Updatable;
 import org.littletonrobotics.AllianceFlipUtil;
 import org.littletonrobotics.junction.Logger;
+import java.util.List;
 
 public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;

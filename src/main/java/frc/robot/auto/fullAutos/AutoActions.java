@@ -1,4 +1,4 @@
-package frc.robot.auto.basics;
+package frc.robot.auto.fullAutos;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotConstants;
+import frc.robot.auto.basics.FollowPath;
 import frc.robot.commands.*;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.apriltagvision.AprilTagVision;
@@ -54,9 +55,6 @@ public class AutoActions {
             case "DEPLOY-INTAKE-INIT":
                 zeroAndIntake().until(stopSupplier).schedule();
                 //deployIntake().until(stopSupplier).schedule();
-                break;
-            case "FUNNEL-INTAKE":
-                funnelIntake().until(stopSupplier).schedule();
                 break;
         }
     }
@@ -142,9 +140,6 @@ public class AutoActions {
                 Commands.runOnce(() ->elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.IDLE)));
     }
 
-    public Command funnelIntake() {
-        return new FunnelIntakeCommand(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
-    }
     public boolean intakerHasCoral(){
         return intakeSubsystem.hasCoralBB();
     }

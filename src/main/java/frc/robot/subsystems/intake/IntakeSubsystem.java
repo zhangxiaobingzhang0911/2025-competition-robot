@@ -27,7 +27,6 @@ public class IntakeSubsystem extends RollerSubsystem {
     private static double outtakeHoldVoltage = OUT_TAKE_HOLD.get();
     private static double avoidAngle = AVOID_ANGLE.get();
     private static double homeAngle = HOME_ANGLE.get();
-    private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
     private static double intakeVoltage = INTAKE_VOLTAGE.get();
     private static double intakeHoldVoltage = INTAKE_HOLD_VOLTAGE.get();
     private static double outtakeVoltage = OUTTAKE_VOLTAGE.get();
@@ -128,10 +127,6 @@ public class IntakeSubsystem extends RollerSubsystem {
             case GROUNDZEROING:
                 zeroIntakeGround();
                 break;
-            case FUNNEL_AVOIDING:
-                intakeRollerIO.stop();
-                intakePivotIO.setPivotAngle(funnelAvoidAngle);
-                break;
             case DEPLOY_INTAKE_HOLDING:
                 rollerHoldIntake();
                 intakePivotIO.setPivotAngle(deployAngle);
@@ -142,7 +137,6 @@ public class IntakeSubsystem extends RollerSubsystem {
         if (RobotConstants.TUNING) {
             deployAngle = DEPLOY_ANGLE.get();
             avoidAngle = AVOID_ANGLE.get();
-            funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
             outtakeVoltage = OUTTAKE_VOLTAGE.get();
             shootVoltage = SHOOT_VOLTAGE.get();
             outtakeAngle = OUTTAKE_ANGLE.get();
@@ -172,7 +166,6 @@ public class IntakeSubsystem extends RollerSubsystem {
             case OUTTAKE -> SystemState.OUTTAKING;
             case HOLD_OUTTAKE -> SystemState.HOLD_OUTTAKING;
             case AVOID -> SystemState.AVOIDING;
-            case FUNNEL_AVOID -> SystemState.FUNNEL_AVOIDING;
             case HOME -> {
                 if (RobotContainer.elevatorIsDanger) {
                     yield SystemState.AVOIDING;
@@ -302,8 +295,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         OUTTAKE,
         HOLD_OUTTAKE,
         AVOID,
-        FUNNEL_AVOID,
-        HOME,
+         HOME,
         GROUNDZERO,
         DEPLOY_SHOOT,
         SHOOT,
@@ -318,7 +310,6 @@ public class IntakeSubsystem extends RollerSubsystem {
         OUTTAKING,
         HOLD_OUTTAKING,
         AVOIDING,
-        FUNNEL_AVOIDING,
         HOMING,
         GROUNDZEROING,
         DEPLOY_SHOOTING,

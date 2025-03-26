@@ -486,4 +486,60 @@ public final class RobotConstants {
         public static final String LIMELIGHT_RIGHT = "limelight-rightf";
         public static final double AREA_THRESHOLD = 0.1;
     }
+
+    /**
+     * Constants related to the EndEffectorArm subsystem.
+     */
+    public static class EndEffectorArmConstants {
+        // Motor IDs
+        public static final int END_EFFECTOR_ARM_PIVOT_MOTOR_ID = 21; // Choose an available CAN ID
+        public static final int END_EFFECTOR_ARM_ROLLER_MOTOR_ID = 22; // Choose an available CAN ID
+        
+        // Current limits
+        public static final int STATOR_CURRENT_LIMIT_AMPS = 80;
+        public static final int SUPPLY_CURRENT_LIMIT_AMPS = 40;
+        
+        // Motor configuration
+        public static final boolean IS_BRAKE = true;
+        public static final boolean IS_INVERT = false;
+        public static final double REDUCTION = 1;
+        public static final double ROLLER_RATIO = 1;
+        
+        // Pivot angles for different positions (in degrees)
+        public static final TunableNumber HOME_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/homeAngle", 135);
+        public static final TunableNumber CORAL_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralIntakeAngle", 0);
+        public static final TunableNumber CORAL_OUTTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralOuttakeAngle", 0);
+        public static final TunableNumber CORAL_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralPreShootAngle", 220);
+        public static final TunableNumber ALGAE_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeIntakeAngle", 115.0);
+        public static final TunableNumber ALGAE_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaePreShootAngle", 40.0);
+        
+        // Roller voltages for different operations
+        public static final TunableNumber CORAL_INTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralIntakeVoltage", 12.0);
+        public static final TunableNumber CORAL_OUTTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralOuttakeVoltage", -6.0);
+        public static final TunableNumber CORAL_PRESHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralPreShootVoltage", -10.0);
+        public static final TunableNumber ALGAE_INTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeIntakeVoltage", 8.0);
+        public static final TunableNumber ALGAE_PRESHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaePreShootVoltage", -12.0);
+        public static final TunableNumber CORAL_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralHoldVoltage", 2.0);
+        public static final TunableNumber ALGAE_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeHoldVoltage", 1.5);
+        
+        // Game piece detection
+        public static final TunableNumber ROLLER_AMPS_HAS_GAME_PIECE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/rollerAmpsHasGamePiece", 40.0);
+        
+        // Motion magic parameters for pivot control
+        public static final TunableNumber ARM_PIVOT_CRUISE_VELOCITY = new TunableNumber("END_EFFECTOR_ARM_PIVOT/cruiseVelocity", 250);
+        public static final TunableNumber ARM_PIVOT_ACCELERATION = new TunableNumber("END_EFFECTOR_ARM_PIVOT/acceleration", 250);
+        public static final TunableNumber ARM_PIVOT_JERK = new TunableNumber("END_EFFECTOR_ARM_PIVOT/jerk", 0);
+        
+        // Pivot gear ratio
+        public static double END_EFFECTOR_ARM_PIVOT_RATIO = 50.0;
+        
+        /**
+         * Constants for the EndEffectorArm pivot motor gains.
+         */
+        public static class EndEffectorArmPivotGainsClass {
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KP = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kp", 2.5);
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KI = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ki", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0);
+        }
+    }
 }

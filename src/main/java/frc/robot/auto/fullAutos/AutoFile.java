@@ -1,4 +1,4 @@
-package frc.robot.auto.basics;
+package frc.robot.auto.fullAutos;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.Filesystem;

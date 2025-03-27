@@ -96,8 +96,8 @@ public class Limelight extends SubsystemBase {
      *                 indicating new estimates are available.
      */
     public void setCurrentEstimates(AngularVelocity gyroRate) {
-        PoseEstimate currentEstimateRight = new PoseEstimate();
-        PoseEstimate currentEstimateLeft = new PoseEstimate();
+        PoseEstimate currentEstimateRight;
+        PoseEstimate currentEstimateLeft;
 
         if (useMegaTag2) {
             currentEstimateRight = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LIMELIGHT_RIGHT);

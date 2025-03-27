@@ -62,7 +62,7 @@ public class RobotContainer {
     public static boolean intakeIsDanger;
     public static boolean intakeIsAvoiding;
     public static boolean intakeHasCoral = false;
-
+ 
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);
     private final CommandGenericHID streamDeckController = new CommandGenericHID(1);

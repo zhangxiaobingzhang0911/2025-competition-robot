@@ -221,8 +221,8 @@ public class DestinationSupplier implements Updatable {
     }
 
     /**
-     * @param coralRight: It always means the right reef RELATIVE TO TAG
-     *                    (i.e when you are facing the tag, rightReef = true means the tag on your right is the target)
+     * @param coralRight It always means the right reef RELATIVE TO TAG
+     *                   (i.e. when you are facing the tag, rightReef = true means the tag on your right is the target)
      */
 
     public void updateBranch(boolean coralRight) {

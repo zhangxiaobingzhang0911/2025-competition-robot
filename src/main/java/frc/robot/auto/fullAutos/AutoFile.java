@@ -52,12 +52,12 @@ public class AutoFile {
     }
 
     private Command buildTest() {
-        //return autoActions.zeroAndIntake();
-        //return autoActions.AutoAimShoot(L4, 'C');
+        // return autoActions.zeroAndIntake();
+        // return autoActions.AutoAimShoot(L4, 'C');
         return new SequentialCommandGroup(
                 autoActions.ReverseEndEffector());
-        //autoActions.disableVision(),5
-        //autoActions.followPath(getAutoPath("Test"), true, true, true));
+        // autoActions.disableVision(),5
+        // autoActions.followPath(getAutoPath("Test"), true, true, true));
     }
 
     private Command build4CoralLeft() {
@@ -65,10 +65,7 @@ public class AutoFile {
                 autoActions.ReverseEndEffector(),
                 autoActions.AutoAimShoot(L4, 'I'),
                 autoActions.followPath(getAutoPath("IJ-I1"), true, true, false),
-                autoActions.waitFor(0.5).until(() -> {
-                    boolean intakeDone = autoActions.isIntakeFinished();
-                    return intakeDone;
-                }),
+                autoActions.waitFor(0.5).until(autoActions::isIntakeFinished),
                 Commands.either(
                         Commands.sequence(
                                 autoActions.homeEverything(),
@@ -78,10 +75,7 @@ public class AutoFile {
                         autoActions.followPath(getAutoPath("I1-I2"), true, true, false),
                         autoActions::isIntakeFinished
                 ),
-                autoActions.waitFor(0.5).until(() -> {
-                    boolean intakeDone = autoActions.isIntakeFinished();
-                    return intakeDone;
-                }),
+                autoActions.waitFor(0.5).until(autoActions::isIntakeFinished),
                 Commands.either(
                         Commands.sequence(
                                 autoActions.homeEverything(),
@@ -101,10 +95,7 @@ public class AutoFile {
                 autoActions.ReverseEndEffector(),
                 autoActions.AutoAimShoot(L4, 'F'),
                 autoActions.followPath(getAutoPath("EF-I3"), true, true, false),
-                autoActions.waitFor(0.5).until(() -> {
-                    boolean intakeDone = autoActions.isIntakeFinished();
-                    return intakeDone;
-                }),
+                autoActions.waitFor(0.5).until(autoActions::isIntakeFinished),
                 Commands.either(
                         Commands.sequence(
                                 autoActions.homeEverything(),
@@ -114,10 +105,7 @@ public class AutoFile {
                         autoActions.followPath(getAutoPath("I3-I2"), true, true, false),
                         autoActions::isIntakeFinished
                 ),
-                autoActions.waitFor(0.5).until(() -> {
-                    boolean intakeDone = autoActions.isIntakeFinished();
-                    return intakeDone;
-                }),
+                autoActions.waitFor(0.5).until(autoActions::isIntakeFinished),
                 Commands.either(
                         Commands.sequence(
                                 autoActions.homeEverything(),

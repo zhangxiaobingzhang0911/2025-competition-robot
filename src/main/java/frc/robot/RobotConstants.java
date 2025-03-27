@@ -496,6 +496,7 @@ public final class RobotConstants {
         // Motor IDs
         public static final int END_EFFECTOR_ARM_PIVOT_MOTOR_ID = 21; // Choose an available CAN ID
         public static final int END_EFFECTOR_ARM_ROLLER_MOTOR_ID = 22; // Choose an available CAN ID
+        public static final int END_EFFECTOR_ARM_ENCODER_ID = 23; //Choose an available CAN ID
         
         // Current limits
         public static final int STATOR_CURRENT_LIMIT_AMPS = 80;
@@ -506,7 +507,10 @@ public final class RobotConstants {
         public static final boolean IS_INVERT = false;
         public static final double REDUCTION = 1;
         public static final double ROLLER_RATIO = 1;
-        
+
+        //Offset of the encoder
+        public static final double END_EFFECTOR_ARM_ENCODER_OFFSET = 0; //TODO: change the offset to a right number
+
         // Pivot angles for different positions (in degrees)
         public static final TunableNumber HOME_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/homeAngle", 135);
         public static final TunableNumber CORAL_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralIntakeAngle", 0);

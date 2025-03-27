@@ -1,10 +1,24 @@
 package frc.robot.subsystems.climber;
 
+import frc.robot.RobotConstants.ClimberConstants.ClimberGainsClass;
 import org.littletonrobotics.junction.AutoLog;
 
-import frc.robot.RobotConstants.ClimberConstants.ClimberGainsClass;
-
 public interface ClimberIO {
+    default void updateInputs(ClimberIOInputs inputs) {
+    }
+
+    default void setTargetPosition(double targetPositionDeg) {
+    }
+
+    default void resetPosition() {
+    }
+
+    default void setCoast() {
+    }
+
+    default void setBrake() {
+    }
+
     @AutoLog
     class ClimberIOInputs {
         public double currentPositionDeg = 0.0;
@@ -22,14 +36,4 @@ public interface ClimberIO {
         public double ClimberKV = ClimberGainsClass.CLIMBER_KV.get();
         public double ClimberKS = ClimberGainsClass.CLIMBER_KS.get();
     }
-
-    default void updateInputs(ClimberIOInputs inputs) {}
-
-    default void setTargetPosition(double targetPositionDeg) {}
-
-    default void resetPosition() {}
-
-    default void setCoast() {}
-
-    default void setBrake() {}
 }

@@ -28,20 +28,20 @@ public class ElevatorIOSim implements ElevatorIO {
                     0,
                     -elevatorTalonsim.KtNMPerAmp
                             / (elevatorTalonsim.rOhms
-                            * Math.pow(ELEVATOR_SPOOL_DIAMETER/2, 2)
+                            * Math.pow(ELEVATOR_SPOOL_DIAMETER / 2, 2)
                             * (carriaeMass)
                             * elevatorTalonsim.KvRadPerSecPerVolt));
 
     public static final Vector<N2> B =
             VecBuilder.fill(
-                    0.0, elevatorTalonsim.KtNMPerAmp / ((ELEVATOR_SPOOL_DIAMETER/2) * carriaeMass));
+                    0.0, elevatorTalonsim.KtNMPerAmp / ((ELEVATOR_SPOOL_DIAMETER / 2) * carriaeMass));
     private final ProfiledPIDController controller =
             new ProfiledPIDController(
-                    ElevatorGainsClass.ELEVATOR_KP.get()*10,
+                    ElevatorGainsClass.ELEVATOR_KP.get() * 10,
                     ElevatorGainsClass.ELEVATOR_KI.get(),
                     ElevatorGainsClass.ELEVATOR_KD.get(),
                     new Constraints(5.0, 10.0));
-    private double feedforward = 0.0;
+    private final double feedforward = 0.0;
     private Measure<VoltageUnit> appliedVolts = Volts.zero();
     private double targetPositionMeters = 0.0;
     private Vector<N2> simState;
@@ -56,7 +56,7 @@ public class ElevatorIOSim implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         for (int i = 0; i < RobotConstants.LOOPER_DT / (1.0 / 1000.0); i++) {
             setInputTorqueCurrent(
-                    controller.calculate(simState.get(0) ) + feedforward);
+                    controller.calculate(simState.get(0)) + feedforward);
             update(1.0 / 1000.0);
         }
 
@@ -80,7 +80,7 @@ public class ElevatorIOSim implements ElevatorIO {
                                                         0.0,
                                                         -9.8)),
                         simState,
-                        MatBuilder.fill(Nat.N1(), Nat.N1(), inputTorqueCurrent*15),
+                        MatBuilder.fill(Nat.N1(), Nat.N1(), inputTorqueCurrent * 15),
                         dt);
         // Apply limits
         simState = VecBuilder.fill(updatedState.get(0, 0), updatedState.get(1, 0));
@@ -99,7 +99,7 @@ public class ElevatorIOSim implements ElevatorIO {
         appliedVolts =
                 Volts.of(elevatorTalonsim.getVoltage(
                         elevatorTalonsim.getTorque(inputTorqueCurrent),
-                        simState.get(1, 0) ));
+                        simState.get(1, 0)));
         appliedVolts = Volts.of(MathUtil.clamp(appliedVolts.magnitude(), -12.0, 12.0));
     }
 

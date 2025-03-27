@@ -9,7 +9,6 @@ import frc.robot.RobotConstants;
 import frc.robot.auto.basics.FollowPath;
 import frc.robot.commands.*;
 import frc.robot.drivers.DestinationSupplier;
-import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
@@ -23,16 +22,14 @@ public class AutoActions {
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
-    private final AprilTagVision aprilTagVision;
     private final Swerve swerve;
     private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();
 
-    public AutoActions(IndicatorSubsystem indicatorSubsystem, ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, AprilTagVision aprilTagVision) {
+    public AutoActions(IndicatorSubsystem indicatorSubsystem, ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
-        this.aprilTagVision = aprilTagVision;
         this.swerve = Swerve.getInstance();
     }
 
@@ -59,10 +56,6 @@ public class AutoActions {
         }
     }
 
-    public Command initializeVision() {
-        return Commands.runOnce(() -> aprilTagVision.setMeasureCnt(0));
-    }
-
     public Command followPath(PathPlannerPath path, boolean angleLock, boolean requiredOnTarget, boolean resetOdometry) {
         return new FollowPath(this, swerve, path, angleLock, requiredOnTarget, resetOdometry);
     }
@@ -84,8 +77,6 @@ public class AutoActions {
                 new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
                 new WaitUntilCommand(() -> (elevatorSubsystem.getSystemState() != ElevatorSubsystem.SystemState.ZEROING &&
                         intakeSubsystem.getSystemState() == IntakeSubsystem.SystemState.AVOIDING)),
-//                new WaitUntilCommand(() -> elevatorSubsystem.hasReachedNearZero && intakeSubsystem.hasHomed),
-//                new WaitUntilCommand(() -> !elevatorSubsystem.hasReachedNearZero && !intakeSubsystem.hasHomed),
                 new AutoGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 
@@ -127,22 +118,15 @@ public class AutoActions {
         return new ReverseEndEffectorCommand(endEffectorSubsystem);
     }
 
-    public Command disableVision() {
-        return Commands.runOnce(() -> destinationSupplier.setUseVision(false));
-    }
-
-    public Command enableVision() {
-        return Commands.runOnce(() -> destinationSupplier.setUseVision(true));
-    }
-
     public Command homeEverything() {
         return Commands.parallel(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME)),
-                Commands.runOnce(() ->elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.IDLE)));
+                Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.IDLE)));
     }
 
-    public boolean intakerHasCoral(){
+    public boolean intakerHasCoral() {
         return intakeSubsystem.hasCoralBB();
     }
+
     public EndEffectorSubsystem.SystemState getEESystemState() {
         return endEffectorSubsystem.getSystemState();
     }

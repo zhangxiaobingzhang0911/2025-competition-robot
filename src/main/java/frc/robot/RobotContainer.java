@@ -15,14 +15,12 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.auto.basics.CustomAutoChooser;
 import frc.robot.auto.fullAutos.AutoActions;
 import frc.robot.auto.fullAutos.AutoFile;
-import frc.robot.auto.basics.CustomAutoChooser;
 import frc.robot.commands.*;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
-import frc.robot.subsystems.apriltagvision.AprilTagVision;
-import frc.robot.subsystems.apriltagvision.AprilTagVisionIONorthstar;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.beambreak.BeambreakIOSim;
 import frc.robot.subsystems.climber.ClimberIOReal;
@@ -37,7 +35,6 @@ import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmPivotIOSim;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmRollerIOSim;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
-import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem.SystemState;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem.WantedState;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorIOARGB;
@@ -65,7 +62,7 @@ public class RobotContainer {
     public static boolean intakeIsDanger;
     public static boolean intakeIsAvoiding;
     public static boolean intakeHasCoral = false;
-
+ 
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);
     private final CommandGenericHID streamDeckController = new CommandGenericHID(1);
@@ -74,12 +71,6 @@ public class RobotContainer {
     @Getter
     private final UpdateManager updateManager;
     // Subsystems
-    private final AprilTagVision aprilTagVision = new AprilTagVision(
-            this::getAprilTagLayoutType,
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 0),
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 1),
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 2),
-            new AprilTagVisionIONorthstar(this::getAprilTagLayoutType, 3));
     private final Swerve swerve = Swerve.getInstance();
     private final Display display = Display.getInstance();
     private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();
@@ -120,7 +111,7 @@ public class RobotContainer {
         updateManager.registerAll();
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", CustomAutoChooser.buildAutoChooser("New Auto"));
-        autoActions = new AutoActions(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem, aprilTagVision);
+        autoActions = new AutoActions(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
         autoFile = new AutoFile(autoActions);
 
         new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
@@ -134,8 +125,6 @@ public class RobotContainer {
     private void configureAutoChooser() {
         autoChooser.addOption("4CoralLeft", "4CoralLeft");
         autoChooser.addOption("4CoralRight", "4CoralRight");
-        autoChooser.addOption("FunnelRight", "FunnelRight");
-        autoChooser.addOption("FunnelLeft", "FunnelLeft");
         autoChooser.addOption("Test", "Test");
         autoChooser.addOption("None", "None");
     }
@@ -174,7 +163,6 @@ public class RobotContainer {
                                         swerve.getLocalizer().getLatestPose().getRotation())));
                     }
                     lastResetTime = Timer.getFPGATimestamp();
-                    aprilTagVision.setMeasureCnt(0);
                     indicatorSubsystem.setPattern(IndicatorIO.Patterns.RESET_ODOM);
                 }).ignoringDisable(true));
 
@@ -190,7 +178,7 @@ public class RobotContainer {
         driverController.back().whileTrue(switchAimingModeCommand());
         driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
-        if(Robot.isSimulation()){
+        if (Robot.isSimulation()) {
             driverController.rightTrigger().whileTrue(switchAimingModeCommand());
         }
     }
@@ -226,8 +214,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // FIXME: set resetOdometry to false when vision is completed and usable
-        //return autoFile.runAuto("4CoralLeft");
         return autoFile.runAuto(autoChooser.get());
     }
 
@@ -262,7 +248,7 @@ public class RobotContainer {
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
     }
 
-    public void setMegaTag2 (boolean setMegaTag2) {
+    public void setMegaTag2(boolean setMegaTag2) {
         limelight.setMegaTag2(setMegaTag2);
     }
 

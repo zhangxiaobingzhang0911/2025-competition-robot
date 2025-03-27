@@ -11,15 +11,9 @@ public class ZeroCommand extends SequentialCommandGroup {
         addRequirements(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem);
         addCommands(
                 Commands.parallel(
-                        Commands.runOnce(() -> {
-                            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
-                        }),
-                        Commands.runOnce(() -> {
-                            intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO);
-                        }),
-                        Commands.runOnce(() -> {
-                            elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO);
-                        })
+                        Commands.runOnce(() -> endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE)),
+                        Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.GROUNDZERO)),
+                        Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO))
                 )
         );
     }

@@ -2,6 +2,7 @@ package frc.robot.subsystems.climber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.TunableNumber;
+import lombok.Setter;
 import org.littletonrobotics.junction.Logger;
 
 //TODO: change motion logic and reset command afterwards
@@ -12,6 +13,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private final TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 900);
     private final TunableNumber idleAngle = new TunableNumber("CLIMBER/idleAngle", 600);
     private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -300);
+    @Setter
     private WantedState wantedState = WantedState.IDLE;
     private SystemState systemState = SystemState.IDLING;
 
@@ -50,10 +52,6 @@ public class ClimberSubsystem extends SubsystemBase {
             case CLIMB -> SystemState.CLIMBING;
             case IDLE -> SystemState.IDLING;
         };
-    }
-
-    public void setWantedState(WantedState wantedState) {
-        this.wantedState = wantedState;
     }
 
     public void resetPosition() {

@@ -55,8 +55,8 @@ public final class RobotConstants {
      * Constants related to the robot's indicators, such as LEDs.
      */
     public static class IndicatorConstants {
-        public static final int LED_PORT = is10541?0:9;
-        public static final int LED_BUFFER_LENGTH = is10541?30:92;
+        public static final int LED_PORT = is10541 ? 0 : 9;
+        public static final int LED_BUFFER_LENGTH = is10541 ? 30 : 92;
     }
 
     /**
@@ -295,7 +295,7 @@ public final class RobotConstants {
         public static final TunableNumber OMEGA_TOLERANCE_DEGREES = new TunableNumber("AIM/OMEGA_TOLERANCE_DEGREES", 1);
         public static final Measure<LinearVelocityUnit> MAX_AIMING_SPEED = MetersPerSecond.of(4.5);
         public static final Measure<LinearAccelerationUnit> MAX_AIMING_ACCELERATION = MetersPerSecondPerSecond.of(9);
-        public static final TunableNumber Edge_Case_Max_Delta = new TunableNumber("AIM/MAX DELTA", 0.1);
+        public static final TunableNumber Edge_Case_Max_Delta = new TunableNumber("AIM/MAX DELTA", 0.5);
     }
 
     /**
@@ -433,9 +433,9 @@ public final class RobotConstants {
         public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.40;//TODO: fixme
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
-                140);
+                300);
         public static final TunableNumber motionCruiseVelocity = new TunableNumber("Elevator/MotionCruiseVelocity",
-                60);
+                100);
         public static final TunableNumber motionJerk = new TunableNumber("Elevator/MotionJerk",
                 0.0);
         public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
@@ -472,15 +472,13 @@ public final class RobotConstants {
      * Constants for the elevator motor gains.
      */
     public static class ElevatorGainsClass {
-        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 15);
+        public static final TunableNumber ELEVATOR_KP = new TunableNumber("ELEVATOR PID/kp", 2.5);
         public static final TunableNumber ELEVATOR_KI = new TunableNumber("ELEVATOR PID/ki", 0);
         public static final TunableNumber ELEVATOR_KD = new TunableNumber("ELEVATOR PID/kd", 0);
-        public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka",
-                0);
-        public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0);// 0.107853495
-        public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks",
-                0);
-        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.3);//0.3
+        public static final TunableNumber ELEVATOR_KA = new TunableNumber("ELEVATOR PID/ka", 0);
+        public static final TunableNumber ELEVATOR_KV = new TunableNumber("ELEVATOR PID/kv", 0.08);// 0.107853495
+        public static final TunableNumber ELEVATOR_KS = new TunableNumber("ELEVATOR PID/ks", 0.1);
+        public static final TunableNumber ELEVATOR_KG = new TunableNumber("ELEVATOR PID/kg", 0.2);//0.3
     }
 
     public static class LimelightConstants {
@@ -498,10 +496,11 @@ public final class RobotConstants {
         public static final int END_EFFECTOR_ARM_ROLLER_MOTOR_ID = 22; // Choose an available CAN ID
         public static final int END_EFFECTOR_ARM_ENCODER_ID = 23; //Choose an available CAN ID
         
+
         // Current limits
         public static final int STATOR_CURRENT_LIMIT_AMPS = 80;
         public static final int SUPPLY_CURRENT_LIMIT_AMPS = 40;
-        
+
         // Motor configuration
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERT = false;
@@ -518,7 +517,7 @@ public final class RobotConstants {
         public static final TunableNumber CORAL_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralPreShootAngle", 220);
         public static final TunableNumber ALGAE_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeIntakeAngle", 115.0);
         public static final TunableNumber ALGAE_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaePreShootAngle", 40.0);
-        
+
         // Roller voltages for different operations
         public static final TunableNumber CORAL_INTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralIntakeVoltage", 12.0);
         public static final TunableNumber CORAL_OUTTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralOuttakeVoltage", -6.0);
@@ -527,18 +526,18 @@ public final class RobotConstants {
         public static final TunableNumber ALGAE_PRESHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaePreShootVoltage", -12.0);
         public static final TunableNumber CORAL_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralHoldVoltage", 2.0);
         public static final TunableNumber ALGAE_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeHoldVoltage", 1.5);
-        
+
         // Game piece detection
         public static final TunableNumber ROLLER_AMPS_HAS_GAME_PIECE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/rollerAmpsHasGamePiece", 40.0);
-        
+
         // Motion magic parameters for pivot control
         public static final TunableNumber ARM_PIVOT_CRUISE_VELOCITY = new TunableNumber("END_EFFECTOR_ARM_PIVOT/cruiseVelocity", 250);
         public static final TunableNumber ARM_PIVOT_ACCELERATION = new TunableNumber("END_EFFECTOR_ARM_PIVOT/acceleration", 250);
         public static final TunableNumber ARM_PIVOT_JERK = new TunableNumber("END_EFFECTOR_ARM_PIVOT/jerk", 0);
-        
+
         // Pivot gear ratio
         public static double END_EFFECTOR_ARM_PIVOT_RATIO = 50.0;
-        
+
         /**
          * Constants for the EndEffectorArm pivot motor gains.
          */

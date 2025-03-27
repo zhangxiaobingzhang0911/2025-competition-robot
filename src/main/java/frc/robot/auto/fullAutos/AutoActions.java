@@ -9,7 +9,6 @@ import frc.robot.RobotConstants;
 import frc.robot.auto.basics.FollowPath;
 import frc.robot.commands.*;
 import frc.robot.drivers.DestinationSupplier;
-import frc.robot.subsystems.apriltagvision.AprilTagVision;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
@@ -23,16 +22,14 @@ public class AutoActions {
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
-    private final AprilTagVision aprilTagVision;
     private final Swerve swerve;
     private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();
 
-    public AutoActions(IndicatorSubsystem indicatorSubsystem, ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, AprilTagVision aprilTagVision) {
+    public AutoActions(IndicatorSubsystem indicatorSubsystem, ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         this.endEffectorSubsystem = endEffectorSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
-        this.aprilTagVision = aprilTagVision;
         this.swerve = Swerve.getInstance();
     }
 
@@ -57,10 +54,6 @@ public class AutoActions {
                 //deployIntake().until(stopSupplier).schedule();
                 break;
         }
-    }
-
-    public Command initializeVision() {
-        return Commands.runOnce(() -> aprilTagVision.setMeasureCnt(0));
     }
 
     public Command followPath(PathPlannerPath path, boolean angleLock, boolean requiredOnTarget, boolean resetOdometry) {
@@ -123,14 +116,6 @@ public class AutoActions {
 
     public Command ReverseEndEffector() {
         return new ReverseEndEffectorCommand(endEffectorSubsystem);
-    }
-
-    public Command disableVision() {
-        return Commands.runOnce(() -> destinationSupplier.setUseVision(false));
-    }
-
-    public Command enableVision() {
-        return Commands.runOnce(() -> destinationSupplier.setUseVision(true));
     }
 
     public Command homeEverything() {

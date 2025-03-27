@@ -42,9 +42,6 @@ public class Robot extends LoggedRobot {
         // If network is bad or rio is in high cpu usage, disable it
         if (DriverCamera) {
             CameraServer.startAutomaticCapture("Driver Camera", "/dev/video0");
-            //JSONObject config = new JSONObject();
-            //config.put("absolute_exposure", 100);
-            //CameraServer.getServer("Driver Camera").setConfigJson(config.toJSONString());
         }
         if (VisionCamera) {
             //TODO add vision camera
@@ -129,7 +126,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testPeriodic() {
-
     }
 
     @Override

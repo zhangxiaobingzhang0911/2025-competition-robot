@@ -134,8 +134,6 @@ public class RobotContainer {
     private void configureAutoChooser() {
         autoChooser.addOption("4CoralLeft", "4CoralLeft");
         autoChooser.addOption("4CoralRight", "4CoralRight");
-        autoChooser.addOption("FunnelRight", "FunnelRight");
-        autoChooser.addOption("FunnelLeft", "FunnelLeft");
         autoChooser.addOption("Test", "Test");
         autoChooser.addOption("None", "None");
     }
@@ -226,8 +224,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // FIXME: set resetOdometry to false when vision is completed and usable
-        //return autoFile.runAuto("4CoralLeft");
         return autoFile.runAuto(autoChooser.get());
     }
 
@@ -262,7 +258,7 @@ public class RobotContainer {
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
     }
 
-    public void setMegaTag2 (boolean setMegaTag2) {
+    public void setMegaTag2(boolean setMegaTag2) {
         limelight.setMegaTag2(setMegaTag2);
     }
 

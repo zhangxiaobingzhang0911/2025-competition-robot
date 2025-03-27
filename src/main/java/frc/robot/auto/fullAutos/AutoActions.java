@@ -84,8 +84,6 @@ public class AutoActions {
                 new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
                 new WaitUntilCommand(() -> (elevatorSubsystem.getSystemState() != ElevatorSubsystem.SystemState.ZEROING &&
                         intakeSubsystem.getSystemState() == IntakeSubsystem.SystemState.AVOIDING)),
-//                new WaitUntilCommand(() -> elevatorSubsystem.hasReachedNearZero && intakeSubsystem.hasHomed),
-//                new WaitUntilCommand(() -> !elevatorSubsystem.hasReachedNearZero && !intakeSubsystem.hasHomed),
                 new AutoGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 
@@ -137,12 +135,13 @@ public class AutoActions {
 
     public Command homeEverything() {
         return Commands.parallel(Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME)),
-                Commands.runOnce(() ->elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.IDLE)));
+                Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.IDLE)));
     }
 
-    public boolean intakerHasCoral(){
+    public boolean intakerHasCoral() {
         return intakeSubsystem.hasCoralBB();
     }
+
     public EndEffectorSubsystem.SystemState getEESystemState() {
         return endEffectorSubsystem.getSystemState();
     }

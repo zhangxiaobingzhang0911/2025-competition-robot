@@ -9,7 +9,6 @@ import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
 public class AutoGroundIntakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
@@ -32,7 +31,7 @@ public class AutoGroundIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        if (endEffectorSubsystem.containsCoral()){
+        if (endEffectorSubsystem.containsCoral()) {
             return;
         }
         if (elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())) {

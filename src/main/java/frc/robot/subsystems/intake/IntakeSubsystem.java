@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
 import frc.robot.display.SuperstructureVisualizer;
-import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerIOInputsAutoLogged;
@@ -43,6 +42,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     public boolean hasHomed = false;
     Timer timer = new Timer();
     private boolean shouldOuttake = false;
+    @Setter
     private WantedState wantedState = WantedState.HOME;
     @Getter
     private SystemState systemState = SystemState.HOMING;
@@ -180,10 +180,6 @@ public class IntakeSubsystem extends RollerSubsystem {
         };
     }
 
-    public void setWantedState(WantedState wantedState) {
-        this.wantedState = wantedState;
-    }
-
     public void trembleIntake() {
         intakeRollerIO.setVoltage(intakeVoltage);
         intakePivotIO.setPivotAngle(deployAngle + 2);
@@ -295,7 +291,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         OUTTAKE,
         HOLD_OUTTAKE,
         AVOID,
-         HOME,
+        HOME,
         GROUNDZERO,
         DEPLOY_SHOOT,
         SHOOT,

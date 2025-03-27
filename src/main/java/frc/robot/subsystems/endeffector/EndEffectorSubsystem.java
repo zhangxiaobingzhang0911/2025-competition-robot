@@ -9,6 +9,7 @@ import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import lombok.Getter;
+import lombok.Setter;
 import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.ElevatorConstants.L1_EXTENSION_METERS;
@@ -33,6 +34,7 @@ public class EndEffectorSubsystem extends RollerSubsystem {
     public double ka = ENDEFFECTOR_KA.get();
     public double kv = ENDEFFECTOR_KV.get();
     public double ks = ENDEFFECTOR_KS.get();
+    @Setter
     private WantedState wantedState = WantedState.IDLE;
 
     @Getter
@@ -183,10 +185,6 @@ public class EndEffectorSubsystem extends RollerSubsystem {
 
     public boolean isPreShootReady() {
         return hasTransitionedToPreShoot;
-    }
-
-    public void setWantedState(WantedState wantedState) {
-        this.wantedState = wantedState;
     }
 
     public enum WantedState {

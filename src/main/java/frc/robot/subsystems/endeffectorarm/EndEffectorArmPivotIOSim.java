@@ -2,13 +2,11 @@ package frc.robot.subsystems.endeffectorarm;
 
 import edu.wpi.first.math.*;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.NumericalIntegration;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.units.VoltageUnit;
 import frc.robot.RobotConstants;
 
@@ -19,10 +17,10 @@ public class EndEffectorArmPivotIOSim implements EndEffectorArmPivotIO {
     private static final double moi = 1.0; // Moment of inertia
     private static final double cgRadius = 0.2; // Center of gravity radius
     private static final double PIVOT_RATIO = 50.0; // Default gear ratio
-    
+
     private static final DCMotor gearbox =
             DCMotor.getKrakenX60Foc(1).withReduction(PIVOT_RATIO);
-            
+
     private static final Matrix<N2, N2> A =
             MatBuilder.fill(
                     Nat.N2(),
@@ -99,7 +97,7 @@ public class EndEffectorArmPivotIOSim implements EndEffectorArmPivotIO {
                                 A.times(x)
                                         .plus(B.times(u)),
                         simState,
-                        VecBuilder.fill(inputTorqueCurrent*5),
+                        VecBuilder.fill(inputTorqueCurrent * 5),
                         dt);
         simState = VecBuilder.fill(updatedState.get(0, 0), updatedState.get(1, 0));
     }

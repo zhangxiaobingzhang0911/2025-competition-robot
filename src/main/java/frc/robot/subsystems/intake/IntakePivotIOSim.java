@@ -2,21 +2,15 @@ package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.*;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.NumericalIntegration;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.units.VoltageUnit;
 import frc.robot.RobotConstants;
 
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_SPOOL_DIAMETER;
-import static frc.robot.RobotConstants.ElevatorConstants.MAX_EXTENSION_METERS;
 
 public class IntakePivotIOSim implements IntakePivotIO {
     private static final double moi = 1.0;
@@ -105,13 +99,9 @@ public class IntakePivotIOSim implements IntakePivotIO {
 //                                                        * Rotation2d.fromRadians(simState.get(0)).getCos()
 //                                                        / moi),
                         simState,
-                        VecBuilder.fill(inputTorqueCurrent*15),
-                        //magic constant of DOOM from (6328), dont change it unless you know what you are doing
+                        VecBuilder.fill(inputTorqueCurrent * 15),
+                        //magic constant of DOOM from (6328), don't change it unless you know what you are doing
                         dt);
         simState = VecBuilder.fill(updatedState.get(0, 0), updatedState.get(1, 0));
-
-
-
-
     }
 }

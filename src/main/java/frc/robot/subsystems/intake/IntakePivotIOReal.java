@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -45,8 +46,8 @@ public class IntakePivotIOReal implements IntakePivotIO {
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
         config.CurrentLimits.StatorCurrentLimit = 40.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
-
-        motor.setPosition(angleToTalonPos(0));
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        config.Feedback.FeedbackRemoteSensorID = INTAKE_PIVOT_ENCODER_ID;
 
         config.withSlot0(new Slot0Configs()
                 .withKP(IntakePivotGainsClass.INTAKE_PIVOT_KP.get())
@@ -121,7 +122,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
     @Override
     public void setPivotAngle(double targetAngleDeg) {
         this.targetAngleDeg = targetAngleDeg;
-        motor.setControl(motionMagic.withPosition(angleToTalonPos(targetAngleDeg)));
+        motor.setControl(motionMagic.withPosition(angleToTalonPos(targetAngleDeg) + INTAKE_PIVOT_ENCODER_OFFSET));
     }
 
     @Override

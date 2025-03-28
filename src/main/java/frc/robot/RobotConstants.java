@@ -351,6 +351,8 @@ public final class RobotConstants {
     public static class IntakeConstants {
         public static final int INTAKE_MOTOR_ID = 15;
         public static final int INTAKE_PIVOT_MOTOR_ID = 16;
+        public static final int INTAKE_PIVOT_ENCODER_ID = 17; //change to a usable value
+
         //Constants for intake roller
         public static final int STATOR_CURRENT_LIMIT_AMPS = 80;
         public static final int SUPPLY_CURRENT_LIMIT_AMPS = 40;
@@ -371,6 +373,7 @@ public final class RobotConstants {
         public static final TunableNumber AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/avoidAngle", 90);
         public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 51);
         public static final TunableNumber SHOOT_ANGLE = new TunableNumber("INTAKE_PIVOT/shootAngle", 45);
+        public static final int INTAKE_PIVOT_ENCODER_OFFSET = 0; //TODO: change
         //Motion constants for intake roller
         public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 15.0);
         public static final TunableNumber OUTTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/outtakeVoltage", -6.0);

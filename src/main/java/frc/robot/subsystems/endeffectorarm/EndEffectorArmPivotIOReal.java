@@ -124,7 +124,7 @@ public class EndEffectorArmPivotIOReal implements EndEffectorArmPivotIO {
     @Override
     public void setPivotAngle(double targetAngleDeg) {
         this.targetAngleDeg = targetAngleDeg;
-        motor.setControl(new PositionDutyCycle(angleToTalonPos(targetAngleDeg) + END_EFFECTOR_ARM_ENCODER_OFFSET).withVelocity(END_EFFECTOR_PIVOT_VELOCITY));
+        motor.setControl(new PositionDutyCycle(angleToTalonPos(targetAngleDeg) + END_EFFECTOR_ARM_ENCODER_OFFSET));
     }
 
     private double angleToTalonPos(double angleDeg) {

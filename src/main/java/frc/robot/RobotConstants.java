@@ -508,7 +508,9 @@ public final class RobotConstants {
         public static final double ROLLER_RATIO = 1;
 
         //Offset of the encoder
-        public static final double END_EFFECTOR_ARM_ENCODER_OFFSET = 0; //TODO: change the offset to a right number
+        public static final double END_EFFECTOR_ARM_ENCODER_OFFSET = 0; //TODO: change the offset into a right number
+
+        public static final double END_EFFECTOR_PIVOT_VELOCITY = 100; //TODO: change the velocity into a right value
 
         // Pivot angles for different positions (in degrees)
         public static final TunableNumber HOME_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/homeAngle", 135);

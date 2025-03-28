@@ -6,6 +6,8 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -39,7 +41,7 @@ public class EndEffectorArmPivotIOReal implements EndEffectorArmPivotIO {
     public EndEffectorArmPivotIOReal() {
         var config = new TalonFXConfiguration();
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;//TODO: set to the right direction
         config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
         config.CurrentLimits.SupplyCurrentLimit = 40.0;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -122,7 +124,7 @@ public class EndEffectorArmPivotIOReal implements EndEffectorArmPivotIO {
     @Override
     public void setPivotAngle(double targetAngleDeg) {
         this.targetAngleDeg = targetAngleDeg;
-        motor.setControl(motionMagic.withPosition(angleToTalonPos(targetAngleDeg) + END_EFFECTOR_ARM_ENCODER_OFFSET));
+        motor.setControl(new PositionDutyCycle(angleToTalonPos(targetAngleDeg) + END_EFFECTOR_ARM_ENCODER_OFFSET).withVelocity(END_EFFECTOR_PIVOT_VELOCITY));
     }
 
     private double angleToTalonPos(double angleDeg) {

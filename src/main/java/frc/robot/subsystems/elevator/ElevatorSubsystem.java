@@ -60,9 +60,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         switch (systemState) {
             case POSITION_GOING:
                 //worked, but need clean up
-                if (wantedPosition < (RobotContainer.intakeHasCoral ? ELEVATOR_MIN_SAFE_HEIGHT_HOLDING.get() : ELEVATOR_MIN_SAFE_HEIGHT.get()) && RobotContainer.intakeIsAvoiding && RobotContainer.intakeIsDanger) {
+                if (wantedPosition < (RobotContainer.intakeHasCoral ? ELEVATOR_MIN_SAFE_HEIGHT_HOLDING.get() : ELEVATOR_MIN_SAFE_HEIGHT.get())) {
                     io.setElevatorTarget(Math.max(wantedPosition, 0.35));
-                } else if (wantedPosition < (RobotContainer.intakeHasCoral ? ELEVATOR_MIN_SAFE_HEIGHT_HOLDING.get() : ELEVATOR_MIN_SAFE_HEIGHT.get()) && RobotContainer.intakeIsDanger) {
+                } else if (wantedPosition < (RobotContainer.intakeHasCoral ? ELEVATOR_MIN_SAFE_HEIGHT_HOLDING.get() : ELEVATOR_MIN_SAFE_HEIGHT.get())) {
                     io.setElevatorTarget(RobotContainer.intakeHasCoral ? ELEVATOR_MIN_SAFE_HEIGHT_HOLDING.get() : ELEVATOR_MIN_SAFE_HEIGHT.get());
                 } else {
                     io.setElevatorTarget(wantedPosition);
@@ -106,7 +106,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void zeroElevator() {
         if (!io.isNearZeroExtension() && !hasReachedNearZero) {
-            if (RobotContainer.intakeIsDanger) {
+            if (false /* RobotContainer.intakeIsDanger */) {
                 // safer
                 io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get() + 0.13);
             } else {

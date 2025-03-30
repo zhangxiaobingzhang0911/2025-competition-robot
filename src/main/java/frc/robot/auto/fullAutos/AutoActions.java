@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotConstants;
+import frc.robot.auto.basics.AutoGroundIntakeCommand;
 import frc.robot.auto.basics.FollowPath;
 import frc.robot.commands.*;
 import frc.robot.drivers.DestinationSupplier;
@@ -31,10 +32,6 @@ public class AutoActions {
         this.elevatorSubsystem = elevatorSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
         this.swerve = Swerve.getInstance();
-    }
-
-    public Command shootCoralAtSetpoint() {
-        return new AutoShootCoralCommand(elevatorSubsystem, endEffectorSubsystem);
     }
 
     // invoke event marker
@@ -75,8 +72,7 @@ public class AutoActions {
     public Command zeroAndIntake() {
         return Commands.sequence(
                 new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
-                new WaitUntilCommand(() -> (elevatorSubsystem.getSystemState() != ElevatorSubsystem.SystemState.ZEROING &&
-                        intakeSubsystem.getSystemState() == IntakeSubsystem.SystemState.AVOIDING)),
+                new WaitUntilCommand(() -> (elevatorSubsystem.getSystemState() != ElevatorSubsystem.SystemState.ZEROING)),
                 new AutoGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
     }
 
@@ -86,14 +82,6 @@ public class AutoActions {
 
     public Command preShoot() {
         return new PreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem);
-    }
-
-    public Command shootCoral() {
-        return new ShootCommand(indicatorSubsystem, endEffectorSubsystem);
-    }
-
-    public Command putCoral() {
-        return Commands.race(preShoot(), shootCoralAtSetpoint());
     }
 
     public Command setLevel(DestinationSupplier.elevatorSetpoint setpoint) {
@@ -112,10 +100,6 @@ public class AutoActions {
                 new WaitCommand(0.05),
                 Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(
                         RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())));
-    }
-
-    public Command ReverseEndEffector() {
-        return new ReverseEndEffectorCommand(endEffectorSubsystem);
     }
 
     public Command homeEverything() {

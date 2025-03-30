@@ -19,6 +19,9 @@ import frc.robot.auto.basics.CustomAutoChooser;
 import frc.robot.auto.fullAutos.AutoActions;
 import frc.robot.auto.fullAutos.AutoFile;
 import frc.robot.commands.*;
+import frc.robot.commands.climb.ClimbCommand;
+import frc.robot.commands.climb.ClimbResetCommand;
+import frc.robot.commands.climb.PreClimbCommand;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
@@ -60,8 +63,6 @@ public class RobotContainer {
 
     // flag states
     public static boolean elevatorIsDanger;
-    public static boolean intakeIsDanger;
-    public static boolean intakeIsAvoiding;
     public static boolean intakeHasCoral = false;
  
     // Controllers

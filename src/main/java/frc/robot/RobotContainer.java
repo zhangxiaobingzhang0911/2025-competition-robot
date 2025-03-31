@@ -166,7 +166,6 @@ public class RobotContainer {
 
         driverController.povUp().whileTrue(new PreClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
-        driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
         driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
         driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
@@ -176,6 +175,12 @@ public class RobotContainer {
         driverController.povRight().whileTrue(switchAimingModeCommand());
         driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
+        if (endEffectorArmSubsystem.hasAlgae()){
+            driverController.leftTrigger().toggleOnTrue(new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, elevatorSubsystem));
+        }
+        else{
+            driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
+        }
         if (Robot.isSimulation()) {
             driverController.rightTrigger().whileTrue(switchAimingModeCommand());
         }

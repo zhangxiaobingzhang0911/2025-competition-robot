@@ -2,6 +2,7 @@ package frc.robot.subsystems.endeffectorarm;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.RobotConstants;
+import frc.robot.RobotContainer;
 import frc.robot.display.SuperstructureVisualizer;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
@@ -82,6 +83,9 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         armPivotIO.updateInputs(armPivotIOInputs);
         coralBeambreakIO.updateInputs(coralBeambreakInputs);
         algaeBeambreakIO.updateInputs(algaeBeambreakInputs);
+
+        // Update danger flag based on arm position
+        RobotContainer.endeffectorIsDanger = !isNearAngle(coralIntakeAngle);
 
         // Calculate current state transition
         SystemState newState = handleStateTransition();
@@ -174,6 +178,19 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      * @return The new system state
      */
     private SystemState handleStateTransition() {
+        // If elevator is in danger zone, only allow CORAL_INTAKING and CORAL_OUTTAKING
+        if (RobotContainer.elevatorIsDanger) {
+            if (wantedState == WantedState.CORAL_INTAKE) {
+                return SystemState.CORAL_INTAKING;
+            } else if (wantedState == WantedState.CORAL_OUTTAKE) {
+                return SystemState.CORAL_OUTTAKING;
+            } else {
+                setWantedState(WantedState.CORAL_INTAKE);
+                return SystemState.CORAL_INTAKING;
+            }
+        }
+
+        // Normal state transitions when elevator is safe
         return switch (wantedState) {
             case CORAL_INTAKE -> {
                 if (hasCoral()) {

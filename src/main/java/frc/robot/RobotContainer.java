@@ -64,6 +64,7 @@ public class RobotContainer {
     // flag states
     public static boolean elevatorIsDanger;
     public static boolean intakeHasCoral = false;
+    public static boolean endeffectorIsDanger = false;
  
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);

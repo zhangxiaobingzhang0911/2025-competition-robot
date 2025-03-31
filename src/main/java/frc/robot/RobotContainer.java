@@ -180,7 +180,7 @@ public class RobotContainer {
             driverController.rightTrigger().whileTrue(switchAimingModeCommand());
         }
         if (endEffectorArmSubsystem.hasAlgae()){
-            driverController.rightTrigger().whileTrue(new AlgaeShootCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem));
+            driverController.rightTrigger().whileTrue(new AlgaeShootCommand());
         }
     }
 
@@ -194,8 +194,6 @@ public class RobotContainer {
         streamDeckController.button(14).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)).ignoringDisable(true));
         streamDeckController.button(15).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)).ignoringDisable(true));
         streamDeckController.button(16).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)).ignoringDisable(true));
-        streamDeckController.button(18).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)).ignoringDisable(true));
-        streamDeckController.button(19).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)).ignoringDisable(true));
         streamDeckController.button(8).whileTrue(Commands.run(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.INTAKE))
                 .finallyDo(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.ELEVATOR)).ignoringDisable(true));
         streamDeckController.button(10).whileTrue(Commands.run(() -> intakeSubsystem.setLowerAngle(true))).onFalse(Commands.runOnce(() -> intakeSubsystem.setLowerAngle(false)));
@@ -242,7 +240,7 @@ public class RobotContainer {
     public Command switchIntakeManualModeCommand() {
         return new ConditionalCommand(
                 switchIntakeAutoModeCommand(),
-                new AlgaeIntakeCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem),
+                new AlgaeIntakeCommand(),
                 () -> destinationSupplier.getGamePiece() == DestinationSupplier.GamePiece.ALGAE
         );
     }

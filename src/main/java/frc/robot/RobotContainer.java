@@ -171,16 +171,11 @@ public class RobotContainer {
         driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
         driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
-        driverController.x().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentGamePiece(DestinationSupplier.GamePiece.CORAL)).ignoringDisable(true));
-        driverController.a().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentGamePiece(DestinationSupplier.GamePiece.ALGAE)).ignoringDisable(true));
         driverController.povRight().whileTrue(switchAimingModeCommand());
         driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
         if (Robot.isSimulation()) {
             driverController.rightTrigger().whileTrue(switchAimingModeCommand());
-        }
-        if (endEffectorArmSubsystem.hasAlgae()){
-            driverController.rightTrigger().whileTrue(new AlgaeShootCommand());
         }
     }
 
@@ -230,29 +225,11 @@ public class RobotContainer {
                 () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO);
     }
 
-    public Command switchIntakeAutoModeCommand() {
+    public Command switchIntakeModeCommand() {
         return new ConditionalCommand(
                 new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem),
                 new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, elevatorSubsystem),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.ELEVATOR);
-    }
-
-    public Command switchIntakeManualModeCommand() {
-        return new ConditionalCommand(
-                switchIntakeAutoModeCommand(),
-                new AlgaeIntakeCommand(),
-                () -> destinationSupplier.getGamePiece() == DestinationSupplier.GamePiece.ALGAE
-        );
-    }
-
-    public Command switchIntakeModeCommand() {
-        return new ConditionalCommand(
-                //AUTO
-                switchIntakeAutoModeCommand(),
-                //MANUAL
-                switchIntakeManualModeCommand(),
-                () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.MANUAL
-        );
     }
 
     public Command switchPreMoveModeCommand() {

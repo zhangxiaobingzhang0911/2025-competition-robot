@@ -23,8 +23,6 @@ public class DestinationSupplier implements Updatable {
     private static DestinationSupplier instance;
     Swerve swerve;
     @Getter
-    private GamePiece gamePiece = GamePiece.CORAL;
-    @Getter
     private L1Mode l1Mode = L1Mode.ELEVATOR;
     @Getter
     private IntakeMode intakeMode = IntakeMode.NORMAL;
@@ -253,11 +251,6 @@ public class DestinationSupplier implements Updatable {
         SmartDashboard.putString("DestinationSupplier/CurrentIntakeMode", mode.name());
     }
 
-    public void setCurrentGamePiece(GamePiece piece) {
-        this.gamePiece = piece;
-        SmartDashboard.putString("DestinationSupplier/CurrentGamePiece", piece.name());
-    }
-
     public enum elevatorSetpoint {
         L1, L2, L3, L4, P1, P2
     }
@@ -274,10 +267,5 @@ public class DestinationSupplier implements Updatable {
     public enum IntakeMode {
         TREMBLE,
         NORMAL
-    }
-
-    public enum GamePiece{
-        CORAL,
-        ALGAE
     }
 }

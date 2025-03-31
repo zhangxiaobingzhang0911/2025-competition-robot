@@ -236,7 +236,7 @@ public class RobotContainer {
         return new ConditionalCommand(
                 new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem),
                 new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, elevatorSubsystem),
-                () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.ELEVATOR);
+                () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.ELEVATOR || endEffectorArmSubsystem.hasAlgae());
     }
 
     public Command switchIntakeManualModeCommand() {

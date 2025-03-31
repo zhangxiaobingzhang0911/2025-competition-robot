@@ -351,6 +351,9 @@ public final class RobotConstants {
     public static class IntakeConstants {
         public static final int INTAKE_MOTOR_ID = 15;
         public static final int INTAKE_PIVOT_MOTOR_ID = 16;
+        public static final int INTAKE_PIVOT_ENCODER_ID = 17; //TODO:change to a usable value
+        public static final double INTAKE_PIVOT_ROTOR_ENCODER_RATIO = 1;
+
         //Constants for intake roller
         public static final int STATOR_CURRENT_LIMIT_AMPS = 80;
         public static final int SUPPLY_CURRENT_LIMIT_AMPS = 40;
@@ -371,6 +374,7 @@ public final class RobotConstants {
         public static final TunableNumber AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/avoidAngle", 90);
         public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 51);
         public static final TunableNumber SHOOT_ANGLE = new TunableNumber("INTAKE_PIVOT/shootAngle", 45);
+        public static final int INTAKE_PIVOT_ENCODER_OFFSET = 0; //TODO: change
         //Motion constants for intake roller
         public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 15.0);
         public static final TunableNumber OUTTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/outtakeVoltage", -6.0);
@@ -494,6 +498,8 @@ public final class RobotConstants {
         // Motor IDs
         public static final int END_EFFECTOR_ARM_PIVOT_MOTOR_ID = 21; // Choose an available CAN ID
         public static final int END_EFFECTOR_ARM_ROLLER_MOTOR_ID = 22; // Choose an available CAN ID
+        public static final int END_EFFECTOR_ARM_ENCODER_ID = 23; //Choose an available CAN ID
+        
 
         // Current limits
         public static final int STATOR_CURRENT_LIMIT_AMPS = 80;
@@ -505,13 +511,21 @@ public final class RobotConstants {
         public static final double REDUCTION = 1;
         public static final double ROLLER_RATIO = 1;
 
+        //Rotor to sensor Ratio
+        public static final double ROTOR_SENSOR_RATO = 1;
+
+        //Offset of the encoder
+        public static final double END_EFFECTOR_ARM_ENCODER_OFFSET = 0; //TODO: change the offset into a right number
+
+        public static final double END_EFFECTOR_PIVOT_VELOCITY = 100; //TODO: change the velocity into a right value
+
         // Pivot angles for different positions (in degrees)
         public static final TunableNumber HOME_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/homeAngle", 135);
         public static final TunableNumber CORAL_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralIntakeAngle", 0);
         public static final TunableNumber CORAL_OUTTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralOuttakeAngle", 0);
         public static final TunableNumber CORAL_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralPreShootAngle", 220);
-        public static final TunableNumber ALGAE_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeIntakeAngle", 115.0);
-        public static final TunableNumber ALGAE_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaePreShootAngle", 40.0);
+        public static final TunableNumber ALGAE_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeIntakeAngle", -30);
+        public static final TunableNumber ALGAE_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaePreShootAngle", 240.0);
 
         // Roller voltages for different operations
         public static final TunableNumber CORAL_INTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralIntakeVoltage", 12.0);
@@ -521,9 +535,9 @@ public final class RobotConstants {
         public static final TunableNumber ALGAE_PRESHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaePreShootVoltage", -12.0);
         public static final TunableNumber CORAL_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralHoldVoltage", 2.0);
         public static final TunableNumber ALGAE_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeHoldVoltage", 1.5);
+        public static final TunableNumber CORAL_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralShootVoltage", -12.0);
+        public static final TunableNumber ALGAE_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeShootVoltage", -12.0);
 
-        // Game piece detection
-        public static final TunableNumber ROLLER_AMPS_HAS_GAME_PIECE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/rollerAmpsHasGamePiece", 40.0);
 
         // Motion magic parameters for pivot control
         public static final TunableNumber ARM_PIVOT_CRUISE_VELOCITY = new TunableNumber("END_EFFECTOR_ARM_PIVOT/cruiseVelocity", 250);
@@ -540,6 +554,23 @@ public final class RobotConstants {
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KP = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kp", 2.5);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KI = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ki", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KA = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ka", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KV = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kv", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KS = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ks", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KG = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kg", 0);        
+        }
+
+        /**
+         * Constants for the EndEffectorArm roller motor gains.
+         */
+        //TODO: pid number
+        public static class EndEffectorArmRollerGainsClass {
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KP = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/kp", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KI = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/ki", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KD = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/kd", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KA = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/ka", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KV = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/kv", 0);
+            public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KS = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/ks", 0);
         }
     }
 }

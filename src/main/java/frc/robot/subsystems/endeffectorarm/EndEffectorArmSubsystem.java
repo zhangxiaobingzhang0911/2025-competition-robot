@@ -2,6 +2,7 @@ package frc.robot.subsystems.endeffectorarm;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.RobotConstants;
+import frc.robot.RobotContainer;
 import frc.robot.display.SuperstructureVisualizer;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
@@ -14,7 +15,7 @@ import org.littletonrobotics.junction.Logger;
 import static frc.robot.RobotConstants.EndEffectorArmConstants.*;
 
 public class EndEffectorArmSubsystem extends RollerSubsystem {
-    public static final String NAME = "EndEffectorArm/Roller";
+    public static final String NAME = "EndEffectorArm";
 
     // Static variables to hold the current values from TunableNumbers
     private static double homeAngle = HOME_ANGLE.get();
@@ -31,6 +32,10 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     private static double algaePreShootVoltage = ALGAE_PRESHOOT_VOLTAGE.get();
     private static double coralHoldVoltage = CORAL_HOLD_VOLTAGE.get();
     private static double algaeHoldVoltage = ALGAE_HOLD_VOLTAGE.get();
+
+    // Add these constants near the other static variables
+    private static double coralShootVoltage = CORAL_SHOOT_VOLTAGE.get();
+    private static double algaeShootVoltage = ALGAE_SHOOT_VOLTAGE.get();
 
     // IO devices and their inputs
     private final EndEffectorArmPivotIO armPivotIO;
@@ -79,8 +84,22 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         coralBeambreakIO.updateInputs(coralBeambreakInputs);
         algaeBeambreakIO.updateInputs(algaeBeambreakInputs);
 
+        // Update danger flag based on arm position
+        RobotContainer.endeffectorIsDanger = !isNearAngle(coralIntakeAngle);
+
         // Calculate current state transition
-        SystemState newState = handleStateTransition();
+        SystemState newState;
+        if (RobotContainer.elevatorIsDanger) {
+            // Force CORAL_INTAKING or CORAL_OUTTAKING while elevator is in danger
+            if (systemState == SystemState.CORAL_OUTTAKING) {
+                newState = SystemState.CORAL_OUTTAKING;
+            } else {
+                newState = SystemState.CORAL_INTAKING;
+            }
+        } else {
+            // Normal state transitions when elevator is safe
+            newState = handleStateTransition();
+        }
 
         // Process and log inputs
         Logger.processInputs(NAME + "/Pivot", armPivotIOInputs);
@@ -110,7 +129,6 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 break;
 
             case CORAL_PRESHOOTING:
-                armRollerIO.setVoltage(coralPreShootVoltage);
                 armPivotIO.setPivotAngle(coralPreShootAngle);
                 break;
 
@@ -120,7 +138,6 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 break;
 
             case ALGAE_PRESHOOTING:
-                armRollerIO.setVoltage(algaePreShootVoltage);
                 armPivotIO.setPivotAngle(algaePreShootAngle);
                 break;
 
@@ -133,6 +150,14 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 } else {
                     armRollerIO.stop();
                 }
+                break;
+
+            case CORAL_SHOOTING:
+                armRollerIO.setVoltage(coralShootVoltage);
+                break;
+
+            case ALGAE_SHOOTING:
+                armRollerIO.setVoltage(algaeShootVoltage);
                 break;
         }
 
@@ -152,6 +177,9 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             algaePreShootVoltage = ALGAE_PRESHOOT_VOLTAGE.get();
             coralHoldVoltage = CORAL_HOLD_VOLTAGE.get();
             algaeHoldVoltage = ALGAE_HOLD_VOLTAGE.get();
+
+            coralShootVoltage = CORAL_SHOOT_VOLTAGE.get();
+            algaeShootVoltage = ALGAE_SHOOT_VOLTAGE.get();
         }
     }
 
@@ -180,6 +208,20 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             }
             case ALGAE_PRESHOOT -> SystemState.ALGAE_PRESHOOTING;
             case HOME -> SystemState.HOMING;
+            case CORAL_SHOOT -> {
+                if (isShootFinished()) {
+                    setWantedState(WantedState.HOME);
+                    yield SystemState.HOMING;
+                }
+                yield SystemState.CORAL_SHOOTING;
+            }
+            case ALGAE_SHOOT -> {
+                if (isShootFinished()) {
+                    setWantedState(WantedState.HOME);
+                    yield SystemState.HOMING;
+                }
+                yield SystemState.ALGAE_SHOOTING;
+            }
         };
     }
 
@@ -212,14 +254,34 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     }
 
     /**
+     * Checks if the shoot is finished
+     *
+     * @return True if neither coral nor algae is detected
+     */
+    public boolean isShootFinished() {
+        return !hasCoral() && !hasAlgae();
+    }
+
+    /**
+     * Checks if is ready to shoot, i.e. angle is ready and has a coral
+     *
+     * @return True if both angle is near the preshoot angle and contains a coral
+     */
+    public boolean isShootReady(){
+        return hasCoral() && isNearAngle(coralPreShootAngle);
+    }
+
+    /**
      * The wanted state for the EndEffectorArm subsystem
      */
     public enum WantedState {
         CORAL_INTAKE,
         CORAL_OUTTAKE,
         CORAL_PRESHOOT,
+        CORAL_SHOOT,
         ALGAE_INTAKE,
         ALGAE_PRESHOOT,
+        ALGAE_SHOOT,
         HOME
     }
 
@@ -230,8 +292,10 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         CORAL_INTAKING,
         CORAL_OUTTAKING,
         CORAL_PRESHOOTING,
+        CORAL_SHOOTING,
         ALGAE_INTAKING,
         ALGAE_PRESHOOTING,
+        ALGAE_SHOOTING,
         HOMING
     }
 } 

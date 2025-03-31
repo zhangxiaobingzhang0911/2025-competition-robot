@@ -47,22 +47,16 @@ public class AutoFile {
             case "4CoralLeft" -> build4CoralLeft();
             case "4CoralRight" -> build4CoralRight();
             case "Test" -> buildTest();
-            default -> autoActions.ReverseEndEffector();
+            default -> Commands.none();
         };
     }
 
     private Command buildTest() {
-        // return autoActions.zeroAndIntake();
-        // return autoActions.AutoAimShoot(L4, 'C');
-        return new SequentialCommandGroup(
-                autoActions.ReverseEndEffector());
-        // autoActions.disableVision(),5
-        // autoActions.followPath(getAutoPath("Test"), true, true, true));
+        return Commands.none();
     }
 
     private Command build4CoralLeft() {
         return new SequentialCommandGroup(
-                autoActions.ReverseEndEffector(),
                 autoActions.AutoAimShoot(L4, 'I'),
                 autoActions.followPath(getAutoPath("IJ-I1"), true, true, false),
                 autoActions.waitFor(0.5).until(autoActions::isIntakeFinished),
@@ -92,7 +86,6 @@ public class AutoFile {
 
     private Command build4CoralRight() {
         return new SequentialCommandGroup(
-                autoActions.ReverseEndEffector(),
                 autoActions.AutoAimShoot(L4, 'F'),
                 autoActions.followPath(getAutoPath("EF-I3"), true, true, false),
                 autoActions.waitFor(0.5).until(autoActions::isIntakeFinished),

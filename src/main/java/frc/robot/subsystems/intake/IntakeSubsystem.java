@@ -24,7 +24,6 @@ public class IntakeSubsystem extends RollerSubsystem {
     private static double outtakeAngle = OUTTAKE_ANGLE.get();
     private static double shootVoltage = SHOOT_VOLTAGE.get();
     private static double outtakeHoldVoltage = OUT_TAKE_HOLD.get();
-    private static double avoidAngle = AVOID_ANGLE.get();
     private static double homeAngle = HOME_ANGLE.get();
     private static double intakeVoltage = INTAKE_VOLTAGE.get();
     private static double intakeHoldVoltage = INTAKE_HOLD_VOLTAGE.get();
@@ -75,9 +74,6 @@ public class IntakeSubsystem extends RollerSubsystem {
         Logger.processInputs(NAME + "/Beambreak", BBInputs);
         Logger.recordOutput("Intake/SystemState", systemState.toString());
 
-        RobotContainer.intakeIsDanger = intakeIsDanger();
-        RobotContainer.intakeIsAvoiding = intakeIsAvoiding();
-        Logger.recordOutput("Flags/intakeIsDanger", intakeIsDanger());
 
         SuperstructureVisualizer.getInstance().updateIntake(intakePivotIOInputs.currentAngleDeg);
 
@@ -116,10 +112,6 @@ public class IntakeSubsystem extends RollerSubsystem {
                 intakeRollerIO.setVoltage(0);
                 intakePivotIO.setPivotAngle(shootAngle);
                 break;
-            case AVOIDING:
-                intakeRollerIO.stop();
-                intakePivotIO.setPivotAngle(avoidAngle);
-                break;
             case HOMING:
                 intakeRollerIO.stop();
                 intakePivotIO.setPivotAngle(homeAngle);
@@ -136,7 +128,6 @@ public class IntakeSubsystem extends RollerSubsystem {
 
         if (RobotConstants.TUNING) {
             deployAngle = DEPLOY_ANGLE.get();
-            avoidAngle = AVOID_ANGLE.get();
             outtakeVoltage = OUTTAKE_VOLTAGE.get();
             shootVoltage = SHOOT_VOLTAGE.get();
             outtakeAngle = OUTTAKE_ANGLE.get();
@@ -165,14 +156,7 @@ public class IntakeSubsystem extends RollerSubsystem {
             case TREMBLE_INTAKE -> SystemState.TREMBLE_INTAKING;
             case OUTTAKE -> SystemState.OUTTAKING;
             case HOLD_OUTTAKE -> SystemState.HOLD_OUTTAKING;
-            case AVOID -> SystemState.AVOIDING;
-            case HOME -> {
-                if (RobotContainer.elevatorIsDanger) {
-                    yield SystemState.AVOIDING;
-                } else {
-                    yield SystemState.HOMING;
-                }
-            }
+            case HOME -> SystemState.HOMING;
             case SHOOT -> SystemState.SHOOTING;
             case DEPLOY_SHOOT -> SystemState.DEPLOY_SHOOTING;
             case GROUNDZERO -> SystemState.GROUNDZEROING;
@@ -280,17 +264,12 @@ public class IntakeSubsystem extends RollerSubsystem {
         return intakePivotIOInputs.currentAngleDeg < INTAKE_DANGER_ZONE - 2;
     }
 
-    private boolean intakeIsAvoiding() {
-        return intakePivotIOInputs.currentAngleDeg > 50;
-    }
-
     public enum WantedState {
         DEPLOY_WITHOUT_ROLL,
         DEPLOY_INTAKE,
         TREMBLE_INTAKE,
         OUTTAKE,
         HOLD_OUTTAKE,
-        AVOID,
         HOME,
         GROUNDZERO,
         DEPLOY_SHOOT,
@@ -305,7 +284,6 @@ public class IntakeSubsystem extends RollerSubsystem {
         TREMBLE_INTAKING,
         OUTTAKING,
         HOLD_OUTTAKING,
-        AVOIDING,
         HOMING,
         GROUNDZEROING,
         DEPLOY_SHOOTING,

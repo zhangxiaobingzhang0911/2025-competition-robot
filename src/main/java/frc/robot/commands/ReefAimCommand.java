@@ -62,14 +62,12 @@ public class ReefAimCommand extends Command {
     public void initialize() {
         // Calculate destination
         robotPose = swerve.getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp());
-        DestinationSupplier.getInstance();
         tagPose = DestinationSupplier.getNearestTag(robotPose);
         // PID init
         xPID.reset(robotPose.getX(), swerve.getLocalizer().getMeasuredVelocity().getX());
         yPID.reset(robotPose.getY(), swerve.getLocalizer().getMeasuredVelocity().getY());
         rightReef = DestinationSupplier.getInstance().getCurrentBranch();
-        DestinationSupplier.getInstance();
-        finalDestinationPose = DestinationSupplier.getFinalDriveTarget(tagPose, rightReef);
+        finalDestinationPose = DestinationSupplier.getFinalCoralTarget(tagPose, rightReef);
         indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMING);
 
     }
@@ -94,12 +92,12 @@ public class ReefAimCommand extends Command {
         }
 
         robotPose = swerve.getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp());
-        destinationPose = DestinationSupplier.getDriveTarget(robotPose, tagPose, rightReef);
+        destinationPose = DestinationSupplier.getDriveTarget(robotPose, finalDestinationPose);
 
         xPID.setGoal(destinationPose.getTranslation().getX());
         yPID.setGoal(destinationPose.getTranslation().getY());
         swerve.setLockHeading(true);
-        swerve.setHeadingTarget(destinationPose.getRotation().getDegrees() - 180.0);
+        swerve.setHeadingTarget(destinationPose.getRotation().getDegrees());
         translationalVelocity = AllianceFlipUtil.shouldFlip() ?
                 new Translation2d(-xPID.calculate(robotPose.getX()), -yPID.calculate(robotPose.getY())) :
                 new Translation2d(xPID.calculate(robotPose.getX()), yPID.calculate(robotPose.getY()));

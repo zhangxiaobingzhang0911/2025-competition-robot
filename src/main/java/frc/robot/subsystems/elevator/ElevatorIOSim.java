@@ -37,11 +37,11 @@ public class ElevatorIOSim implements ElevatorIO {
                     0.0, elevatorTalonsim.KtNMPerAmp / ((ELEVATOR_SPOOL_DIAMETER / 2) * carriaeMass));
     private final ProfiledPIDController controller =
             new ProfiledPIDController(
-                    ElevatorGainsClass.ELEVATOR_KP.get() * 10,
+                    ElevatorGainsClass.ELEVATOR_KP.get(),
                     ElevatorGainsClass.ELEVATOR_KI.get(),
                     ElevatorGainsClass.ELEVATOR_KD.get(),
-                    new Constraints(5.0, 10.0));
-    private final double feedforward = 0.0;
+                    new Constraints(100, 300));
+    private final double feedforward = 5;
     private Measure<VoltageUnit> appliedVolts = Volts.zero();
     private double targetPositionMeters = 0.0;
     private Vector<N2> simState;
@@ -56,7 +56,7 @@ public class ElevatorIOSim implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         for (int i = 0; i < RobotConstants.LOOPER_DT / (1.0 / 1000.0); i++) {
             setInputTorqueCurrent(
-                    controller.calculate(simState.get(0)) + feedforward);
+                    controller.calculate(simState.get(0))*15 + feedforward);
             update(1.0 / 1000.0);
         }
 

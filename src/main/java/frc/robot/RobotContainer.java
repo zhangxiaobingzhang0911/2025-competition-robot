@@ -21,6 +21,7 @@ import frc.robot.auto.fullAutos.AutoFile;
 import frc.robot.commands.*;
 import frc.robot.commands.climb.ClimbCommand;
 import frc.robot.commands.climb.ClimbResetCommand;
+import frc.robot.commands.climb.IdleClimbCommand;
 import frc.robot.commands.climb.PreClimbCommand;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;

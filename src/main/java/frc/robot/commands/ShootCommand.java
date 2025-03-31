@@ -2,31 +2,31 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 
 public class ShootCommand extends Command {
-    private final EndEffectorSubsystem endEffectorSubsystem;
+    private final EndEffectorArmSubsystem endEffectorArmSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
 
-    public ShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem) {
-        this.endEffectorSubsystem = endEffectorSubsystem;
+    public ShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorArmSubsystem endEffectorArmSubsystem) {
+        this.endEffectorArmSubsystem = endEffectorArmSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
     }
 
     @Override
     public void execute() {
-        endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.SHOOT);
+        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.CORAL_SHOOT);
     }
 
     @Override
     public boolean isFinished() {
-        return Robot.isSimulation() || endEffectorSubsystem.isShootFinished();
+        return Robot.isSimulation() || endEffectorArmSubsystem.isShootFinished();
     }
 
     @Override
     public void end(boolean interrupted) {
-        endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.IDLE);
+        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOME);
 //        indicatorSubsystem.setPattern(IndicatorIO.Patterns.SHOOT);
     }
 }

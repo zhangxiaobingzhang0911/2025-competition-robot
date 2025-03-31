@@ -8,10 +8,11 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotConstants;
 import frc.robot.auto.basics.AutoGroundIntakeCommand;
 import frc.robot.auto.basics.FollowPath;
+import frc.robot.auto.basics.ReefAimAutoCommand;
 import frc.robot.commands.*;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endeffectorarm.*;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
@@ -19,16 +20,16 @@ import frc.robot.subsystems.swerve.Swerve;
 import java.util.function.BooleanSupplier;
 
 public class AutoActions {
-    private final EndEffectorSubsystem endEffectorSubsystem;
+    private final EndEffectorArmSubsystem endEffectorArmSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
     private final Swerve swerve;
     private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();
 
-    public AutoActions(IndicatorSubsystem indicatorSubsystem, ElevatorSubsystem elevatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem) {
+    public AutoActions(IndicatorSubsystem indicatorSubsystem, ElevatorSubsystem elevatorSubsystem, EndEffectorArmSubsystem endEffectorArmSubsystem, IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
-        this.endEffectorSubsystem = endEffectorSubsystem;
+        this.endEffectorArmSubsystem = endEffectorArmSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
         this.swerve = Swerve.getInstance();
@@ -46,10 +47,6 @@ public class AutoActions {
             case "ZEROELEVATOR":
                 zeroElevator().until(stopSupplier).schedule();
                 break;
-            case "DEPLOY-INTAKE-INIT":
-                zeroAndIntake().until(stopSupplier).schedule();
-                //deployIntake().until(stopSupplier).schedule();
-                break;
         }
     }
 
@@ -66,22 +63,15 @@ public class AutoActions {
     }
 
     public Command zeroElevator() {
-        return new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem);
-    }
-
-    public Command zeroAndIntake() {
-        return Commands.sequence(
-                new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem),
-                new WaitUntilCommand(() -> (elevatorSubsystem.getSystemState() != ElevatorSubsystem.SystemState.ZEROING)),
-                new AutoGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+        return new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem);
     }
 
     public Command deployIntake() {
-        return new AutoGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem);
+        return new AutoGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem);
     }
 
     public Command preShoot() {
-        return new PreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem);
+        return new PreShootCommand(indicatorSubsystem, endEffectorArmSubsystem, intakeSubsystem, elevatorSubsystem);
     }
 
     public Command setLevel(DestinationSupplier.elevatorSetpoint setpoint) {
@@ -93,10 +83,10 @@ public class AutoActions {
                 Commands.parallel(
                         setLevel(setpoint),
                         new ReefAimAutoCommand(elevatorSubsystem, tagChar),
-                        new AutoPreShootCommand(indicatorSubsystem, endEffectorSubsystem, intakeSubsystem, elevatorSubsystem)
+                        new AutoPreShootCommand(indicatorSubsystem, endEffectorArmSubsystem, intakeSubsystem, elevatorSubsystem)
                 ),
                 new WaitCommand(0.05),
-                new ShootCommand(indicatorSubsystem, endEffectorSubsystem),
+                new ShootCommand(indicatorSubsystem, endEffectorArmSubsystem),
                 new WaitCommand(0.05),
                 Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(
                         RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())));
@@ -111,11 +101,11 @@ public class AutoActions {
         return intakeSubsystem.hasCoralBB();
     }
 
-    public EndEffectorSubsystem.SystemState getEESystemState() {
-        return endEffectorSubsystem.getSystemState();
+    public EndEffectorArmSubsystem.SystemState getEESystemState() {
+        return endEffectorArmSubsystem.getSystemState();
     }
 
     public boolean isIntakeFinished() {
-        return endEffectorSubsystem.isIntakeFinished();
+        return endEffectorArmSubsystem.hasCoral();
     }
 }

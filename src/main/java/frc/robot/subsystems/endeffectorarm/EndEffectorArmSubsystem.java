@@ -88,7 +88,18 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         RobotContainer.endeffectorIsDanger = !isNearAngle(coralIntakeAngle);
 
         // Calculate current state transition
-        SystemState newState = handleStateTransition();
+        SystemState newState;
+        if (RobotContainer.elevatorIsDanger) {
+            // Force CORAL_INTAKING or CORAL_OUTTAKING while elevator is in danger
+            if (systemState == SystemState.CORAL_OUTTAKING) {
+                newState = SystemState.CORAL_OUTTAKING;
+            } else {
+                newState = SystemState.CORAL_INTAKING;
+            }
+        } else {
+            // Normal state transitions when elevator is safe
+            newState = handleStateTransition();
+        }
 
         // Process and log inputs
         Logger.processInputs(NAME + "/Pivot", armPivotIOInputs);
@@ -178,19 +189,6 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      * @return The new system state
      */
     private SystemState handleStateTransition() {
-        // If elevator is in danger zone, only allow CORAL_INTAKING and CORAL_OUTTAKING
-        if (RobotContainer.elevatorIsDanger) {
-            if (wantedState == WantedState.CORAL_INTAKE) {
-                return SystemState.CORAL_INTAKING;
-            } else if (wantedState == WantedState.CORAL_OUTTAKE) {
-                return SystemState.CORAL_OUTTAKING;
-            } else {
-                setWantedState(WantedState.CORAL_INTAKE);
-                return SystemState.CORAL_INTAKING;
-            }
-        }
-
-        // Normal state transitions when elevator is safe
         return switch (wantedState) {
             case CORAL_INTAKE -> {
                 if (hasCoral()) {
@@ -262,6 +260,15 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      */
     public boolean isShootFinished() {
         return !hasCoral() && !hasAlgae();
+    }
+
+    /**
+     * Checks if is ready to shoot, ie. angle is ready and has a coral
+     *
+     * @return True if both angle is near the preshoot angle and contains a coral
+     */
+    public boolean isShootReady(){
+        return hasCoral() && isNearAngle(coralPreShootAngle);
     }
 
     /**

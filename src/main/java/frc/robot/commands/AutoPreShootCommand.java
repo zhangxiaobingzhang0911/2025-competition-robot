@@ -4,21 +4,21 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 
 public class AutoPreShootCommand extends Command {
-    private final EndEffectorSubsystem endEffectorSubsystem;
+    private final EndEffectorArmSubsystem endEffectorArmSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
     Timer timer = new Timer();
     private boolean safeToRaise = false;
 
-    public AutoPreShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endEffectorSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
-        this.endEffectorSubsystem = endEffectorSubsystem;
+    public AutoPreShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorArmSubsystem endEffectorArmSubsystem, IntakeSubsystem intakeSubsystem, ElevatorSubsystem elevatorSubsystem) {
+        this.endEffectorArmSubsystem = endEffectorArmSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.indicatorSubsystem = indicatorSubsystem;
@@ -36,7 +36,7 @@ public class AutoPreShootCommand extends Command {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         if (safeToRaise) {
             elevatorSubsystem.setElevatorPosition(DestinationSupplier.getInstance().getElevatorSetpoint(true));
-            endEffectorSubsystem.setWantedState(EndEffectorSubsystem.WantedState.PRE_SHOOT);
+            endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.CORAL_PRESHOOT);
         }
     }
 

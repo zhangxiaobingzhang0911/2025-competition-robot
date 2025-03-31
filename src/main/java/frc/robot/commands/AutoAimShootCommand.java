@@ -7,29 +7,29 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
+import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import java.util.function.BooleanSupplier;
 
 public class AutoAimShootCommand extends ParallelCommandGroup {
-    public AutoAimShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorSubsystem endeffectorSubsystem,
+    public AutoAimShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorArmSubsystem endeffectorArmSubsystem,
                                ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, BooleanSupplier stop, CommandXboxController driverController) {
-        addRequirements(endeffectorSubsystem, elevatorSubsystem, intakeSubsystem);
+        addRequirements(endeffectorArmSubsystem, elevatorSubsystem, intakeSubsystem);
         addCommands(
                 Commands.race(
                         new WaitUntilCommand(stop),
                         Commands.sequence(
                                 Commands.parallel(
                                         new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem),
-                                        new AutoPreShootCommand(indicatorSubsystem, endeffectorSubsystem, intakeSubsystem, elevatorSubsystem)
+                                        new AutoPreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem)
                                 ),
-                                new ShootCommand(indicatorSubsystem, endeffectorSubsystem)
+                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)
                         ),
                         Commands.sequence(
                                 new WaitUntilCommand(() -> (driverController.rightTrigger().getAsBoolean() && Robot.isReal())),
-                                new ShootCommand(indicatorSubsystem, endeffectorSubsystem)
+                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)
                         )
 
                 ).finallyDo(() -> elevatorSubsystem.setElevatorPosition(

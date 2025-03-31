@@ -32,9 +32,6 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.endeffector.EndEffectorIOReal;
-import frc.robot.subsystems.endeffector.EndEffectorIOSim;
-import frc.robot.subsystems.endeffector.EndEffectorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmPivotIOSim;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmRollerIOReal;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmRollerIOSim;
@@ -78,7 +75,6 @@ public class RobotContainer {
     private final Display display = Display.getInstance();
     private final DestinationSupplier destinationSupplier = DestinationSupplier.getInstance();
     private final ElevatorSubsystem elevatorSubsystem;
-    private final EndEffectorSubsystem endEffectorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final ClimberSubsystem climberSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
@@ -95,7 +91,6 @@ public class RobotContainer {
         if (RobotBase.isReal()) {
             indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOARGB());
             elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
-            endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOReal(), new IntakeRollerIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.INTAKE_BEAMBREAK_ID));
             climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
             endEffectorArmSubsystem = new EndEffectorArmSubsystem(new EndEffectorArmPivotIOSim(), new EndEffectorArmRollerIOReal(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
@@ -103,7 +98,6 @@ public class RobotContainer {
         } else {
             indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOSim());
             elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
-            endEffectorSubsystem = new EndEffectorSubsystem(new EndEffectorIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOSim(), new IntakeRollerIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.INTAKE_BEAMBREAK_ID));
             climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
             limelight = new Limelight();
@@ -114,7 +108,7 @@ public class RobotContainer {
         updateManager.registerAll();
 
         autoChooser = new LoggedDashboardChooser<>("Chooser", CustomAutoChooser.buildAutoChooser("New Auto"));
-        autoActions = new AutoActions(indicatorSubsystem, elevatorSubsystem, endEffectorSubsystem, intakeSubsystem);
+        autoActions = new AutoActions(indicatorSubsystem, elevatorSubsystem, endEffectorArmSubsystem, intakeSubsystem);
         autoFile = new AutoFile(autoActions);
 
         new Trigger(RobotController::getUserButton).whileTrue(new ClimbResetCommand(climberSubsystem));
@@ -169,15 +163,14 @@ public class RobotContainer {
                     indicatorSubsystem.setPattern(IndicatorIO.Patterns.RESET_ODOM);
                 }).ignoringDisable(true));
 
-        driverController.povUp().whileTrue(new PreClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-        driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
+        driverController.povUp().whileTrue(new PreClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
+        driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
         driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
-        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
-        driverController.a().whileTrue(new PokeCommand(endEffectorSubsystem, intakeSubsystem, elevatorSubsystem));
-        driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorSubsystem, elevatorSubsystem));
+        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
+        driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
         driverController.x().onTrue(Commands.runOnce(() -> intakeSubsystem.setLowerAngle(true))).onFalse(Commands.runOnce(() -> intakeSubsystem.setLowerAngle(false)));
-        driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorSubsystem));
+        driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.back().whileTrue(switchAimingModeCommand());
         driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
@@ -205,10 +198,10 @@ public class RobotContainer {
     }
 
     public void configureTesterBindings() {
-        testerController.a().onTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(WantedState.CORAL_INTAKE)));
-        testerController.b().onTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(WantedState.HOME)));
-        testerController.x().onTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(WantedState.ALGAE_INTAKE)));
-        testerController.y().onTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(WantedState.CORAL_PRESHOOT)));
+        testerController.a().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
+        testerController.b().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
+        testerController.x().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
+        testerController.y().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
         testerController.leftBumper().onTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(WantedState.ALGAE_PRESHOOT)));
 
 
@@ -228,7 +221,7 @@ public class RobotContainer {
         return new ConditionalCommand(
                 // AUTO
                 new AutoAimShootCommand(
-                        indicatorSubsystem, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem,
+                        indicatorSubsystem, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem,
                         () -> false, driverController),
                 // MANUAL
                 new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
@@ -237,7 +230,7 @@ public class RobotContainer {
 
     public Command switchIntakeModeCommand() {
         return new ConditionalCommand(
-                new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorSubsystem, elevatorSubsystem),
+                new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem),
                 new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, elevatorSubsystem),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.ELEVATOR);
     }
@@ -247,7 +240,7 @@ public class RobotContainer {
                 // Intake L1
                 new ShootHoldCommand(intakeSubsystem, () -> driverController.rightTrigger().getAsBoolean()),
                 // Elevator
-                new PutCoralCommand(driverController, endEffectorSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                new PutCoralCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
     }
 

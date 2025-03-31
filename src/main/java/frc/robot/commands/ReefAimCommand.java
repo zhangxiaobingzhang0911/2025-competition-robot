@@ -99,7 +99,7 @@ public class ReefAimCommand extends Command {
         xPID.setGoal(destinationPose.getTranslation().getX());
         yPID.setGoal(destinationPose.getTranslation().getY());
         swerve.setLockHeading(true);
-        swerve.setHeadingTarget(destinationPose.getRotation().getDegrees() - 180.0);
+        swerve.setHeadingTarget(destinationPose.getRotation().getDegrees());
         translationalVelocity = AllianceFlipUtil.shouldFlip() ?
                 new Translation2d(-xPID.calculate(robotPose.getX()), -yPID.calculate(robotPose.getY())) :
                 new Translation2d(xPID.calculate(robotPose.getX()), yPID.calculate(robotPose.getY()));

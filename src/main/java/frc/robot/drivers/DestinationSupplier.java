@@ -47,8 +47,14 @@ public class DestinationSupplier implements Updatable {
         return instance;
     }
 
-    public static Pose2d getDriveTarget(Pose2d robot, Pose2d goal, boolean rightReef) {
-        goal = getFinalDriveTarget(goal, rightReef);
+    /**
+     * Calculates the optimal drive target position based on the robot's current position and goal position
+     * 
+     * @param robot The current pose (position and rotation) of the robot
+     * @param goal The target pose to drive towards
+     * @return A modified goal pose that accounts for optimal approach positioning
+     */
+    public static Pose2d getDriveTarget(Pose2d robot, Pose2d goal) {
         Transform2d offset = new Transform2d(goal, new Pose2d(robot.getTranslation(), goal.getRotation()));
         double yDistance = Math.abs(offset.getY());
         double xDistance = Math.abs(offset.getX());
@@ -67,7 +73,14 @@ public class DestinationSupplier implements Updatable {
         return goal;
     }
 
-    public static Pose2d getFinalDriveTarget(Pose2d goal, boolean rightReef) {
+    /**
+     * Calculates the final target position for coral scoring based on the tag pose
+     * 
+     * @param goal The initial goal pose
+     * @param rightReef Whether to target the right reef relative to the AprilTag
+     * @return Modified goal pose to tag pose accounting for coral scoring position
+     */
+    public static Pose2d getFinalCoralTarget(Pose2d goal, boolean rightReef) {
         goal = goal.transformBy(new Transform2d(
                 new Translation2d(
                         RobotConstants.ReefAimConstants.ROBOT_TO_PIPE_METERS.get(),
@@ -76,9 +89,16 @@ public class DestinationSupplier implements Updatable {
         return goal;
     }
 
+    /**
+     * Determines if it's safe to raise the elevator based on robot position
+     * 
+     * @param robotPose Current pose of the robot
+     * @param rightReef Whether targeting the right reef relative to the AprilTag
+     * @return true if the robot is within safe distance to raise elevator, false otherwise
+     */
     public static boolean isSafeToRaise(Pose2d robotPose, boolean rightReef) {
         Pose2d tag = getNearestTag(robotPose);
-        Pose2d goal = getFinalDriveTarget(tag, rightReef);
+        Pose2d goal = getFinalCoralTarget(tag, rightReef);
         return goal.getTranslation().getDistance(robotPose.getTranslation()) < RobotConstants.ReefAimConstants.RAISE_LIMIT_METERS.get();
     }
 
@@ -120,6 +140,12 @@ public class DestinationSupplier implements Updatable {
         Logger.recordOutput("EdgeCase/ChangedTarget", minDistanceID == secondMinDistanceID);
     }
 
+    /**
+     * Gets the nearest AprilTag pose to the robot's current position
+     * 
+     * @param robotPose Current pose of the robot
+     * @return Pose2d of the nearest AprilTag, accounting for edge cases and controller input
+     */
     public static Pose2d getNearestTag(Pose2d robotPose) {
         XboxController driverController = new XboxController(0);
         double ControllerX = driverController.getLeftX();
@@ -184,6 +210,11 @@ public class DestinationSupplier implements Updatable {
         return (tag1 == wantedTag1 && tag2 == wantedTag2) || (tag1 == wantedTag2 && tag2 == wantedTag1);
     }
 
+    /**
+     * Updates the elevator setpoint for either coral or poke positions
+     * 
+     * @param setpoint The desired elevator setpoint (L1-L4 for coral, P1-P2 for poke)
+     */
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {
         switch (setpoint) {
             case L1, L2, L3, L4:
@@ -201,6 +232,12 @@ public class DestinationSupplier implements Updatable {
         }
     }
 
+    /**
+     * Gets the current elevator setpoint value in meters
+     * 
+     * @param useCoral Whether to use coral scoring position (true) or poke position (false)
+     * @return The elevator extension distance in meters
+     */
     public double getElevatorSetpoint(boolean useCoral) {
         this.useCoral = useCoral;
         if (useCoral) {
@@ -221,31 +258,52 @@ public class DestinationSupplier implements Updatable {
     }
 
     /**
-     * @param coralRight It always means the right reef RELATIVE TO TAG
-     *                   (i.e. when you are facing the tag, rightReef = true means the tag on your right is the target)
+     * Updates which reef branch to target
+     * 
+     * @param coralRight When true, targets the right reef relative to the AprilTag when facing it
+     * (i.e. when you are facing the tag, rightReef = true means the tag on your right is the target)
      */
-
     public void updateBranch(boolean coralRight) {
         this.coralRight = coralRight;
         //Logger.recordOutput("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
         SmartDashboard.putString("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
     }
 
+    /**
+     * Gets the current branch setting
+     * 
+     * @return true if targeting right reef, false if targeting left reef
+     */
     public boolean getCurrentBranch() {
         return coralRight;
     }
 
+    /**
+     * Sets the current control mode for the robot
+     * 
+     * @param mode The desired control mode (MANUAL, SEMI, or AUTO)
+     */
     public void setCurrentControlMode(controlMode mode) {
         this.currentControlMode = mode;
         //Logger.recordOutput("DestinationSupplier/CurrentControlMode", mode);
         SmartDashboard.putString("DestinationSupplier/CurrentControlMode", mode.name());
     }
 
+    /**
+     * Sets the current L1 operation mode
+     * 
+     * @param mode The desired L1 mode (ELEVATOR or INTAKE)
+     */
     public void setCurrentL1Mode(L1Mode mode) {
         this.l1Mode = mode;
         SmartDashboard.putString("DestinationSupplier/CurrentL1Mode", mode.name());
     }
 
+    /**
+     * Sets the current intake operation mode
+     * 
+     * @param mode The desired intake mode (TREMBLE or NORMAL)
+     */
     public void setCurrentIntakeMode(IntakeMode mode) {
         this.intakeMode = mode;
         SmartDashboard.putString("DestinationSupplier/CurrentIntakeMode", mode.name());

@@ -61,7 +61,7 @@ public class ReefAimAutoCommand extends Command {
         // PID init
         xPID.reset(robotPose.getX(), swerve.getLocalizer().getMeasuredVelocity().getX());
         yPID.reset(robotPose.getY(), swerve.getLocalizer().getMeasuredVelocity().getY());
-        finalDestinationPose = DestinationSupplier.getFinalDriveTarget(tagPose, rightReef);
+        finalDestinationPose = DestinationSupplier.getFinalCoralTarget(tagPose, rightReef);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ReefAimAutoCommand extends Command {
         }
 
         robotPose = swerve.getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp());
-        destinationPose = DestinationSupplier.getDriveTarget(robotPose, tagPose, rightReef);
+        destinationPose = DestinationSupplier.getDriveTarget(robotPose,finalDestinationPose);
 
         xPID.setGoal(destinationPose.getTranslation().getX());
         yPID.setGoal(destinationPose.getTranslation().getY());

@@ -15,7 +15,7 @@ import org.littletonrobotics.junction.Logger;
 import static frc.robot.RobotConstants.EndEffectorArmConstants.*;
 
 public class EndEffectorArmSubsystem extends RollerSubsystem {
-    public static final String NAME = "EndEffectorArm/Roller";
+    public static final String NAME = "EndEffectorArm";
 
     // Static variables to hold the current values from TunableNumbers
     private static double homeAngle = HOME_ANGLE.get();
@@ -263,7 +263,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     }
 
     /**
-     * Checks if is ready to shoot, ie. angle is ready and has a coral
+     * Checks if is ready to shoot, i.e. angle is ready and has a coral
      *
      * @return True if both angle is near the preshoot angle and contains a coral
      */

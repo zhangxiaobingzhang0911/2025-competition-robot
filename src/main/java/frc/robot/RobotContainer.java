@@ -179,9 +179,13 @@ public class RobotContainer {
         if (Robot.isSimulation()) {
             driverController.rightTrigger().whileTrue(switchAimingModeCommand());
         }
-        if (endEffectorArmSubsystem.hasAlgae()){
-            driverController.rightTrigger().whileTrue(new AlgaeShootCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem));
-        }
+        driverController.rightTrigger().whileTrue(
+                new ConditionalCommand(
+                        Commands.none(),
+                        new AlgaeShootCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem),
+                        endEffectorArmSubsystem::hasAlgae
+                )
+        );
     }
 
     private void configureStreamDeckBindings() {

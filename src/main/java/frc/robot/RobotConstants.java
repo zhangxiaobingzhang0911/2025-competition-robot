@@ -398,7 +398,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
         public static final double ELEVATOR_DANGER_ZONE = 0.4180619200456253;
-        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.40;//TODO: fixme
+        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.0;//TODO: fixme
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                 300);
@@ -435,7 +435,6 @@ public final class RobotConstants {
 
     }
 
-
     /**
      * Constants for the elevator motor gains.
      */
@@ -460,28 +459,19 @@ public final class RobotConstants {
      */
     public static class EndEffectorArmConstants {
         // Motor IDs
-        public static final int END_EFFECTOR_ARM_PIVOT_MOTOR_ID = 21; // Choose an available CAN ID
-        public static final int END_EFFECTOR_ARM_ROLLER_MOTOR_ID = 22; // Choose an available CAN ID
-        public static final int END_EFFECTOR_ARM_ENCODER_ID = 23; //Choose an available CAN ID
-        
+        public static final int END_EFFECTOR_ARM_PIVOT_MOTOR_ID = 21;
+        public static final int END_EFFECTOR_ARM_ROLLER_MOTOR_ID = 22;
+        public static final int END_EFFECTOR_ARM_ENCODER_ID = 23;
 
-        // Current limits
+        // Roller motor configuration
         public static final int STATOR_CURRENT_LIMIT_AMPS = 80;
         public static final int SUPPLY_CURRENT_LIMIT_AMPS = 40;
-
-        // Motor configuration
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERT = false;
-        public static final double REDUCTION = 1;
-        public static final double ROLLER_RATIO = 1;
 
-        //Rotor to sensor Ratio
-        public static final double ROTOR_SENSOR_RATO = 1;
-
-        //Offset of the encoder
-        public static final double END_EFFECTOR_ARM_ENCODER_OFFSET = 0; //TODO: change the offset into a right number
-
-        public static final double END_EFFECTOR_PIVOT_VELOCITY = 100; //TODO: change the velocity into a right value
+        // Pivot motor configuration
+        public static final double ROTOR_SENSOR_RATIO = 1.0 / 8 * 64 / 18 * 60;
+        public static final double END_EFFECTOR_ARM_ENCODER_OFFSET = -0.368408;
 
         // Pivot angles for different positions (in degrees)
         public static final TunableNumber HOME_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/homeAngle", 135);
@@ -502,15 +492,6 @@ public final class RobotConstants {
         public static final TunableNumber CORAL_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralShootVoltage", -12.0);
         public static final TunableNumber ALGAE_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeShootVoltage", -12.0);
 
-
-        // Motion magic parameters for pivot control
-        public static final TunableNumber ARM_PIVOT_CRUISE_VELOCITY = new TunableNumber("END_EFFECTOR_ARM_PIVOT/cruiseVelocity", 250);
-        public static final TunableNumber ARM_PIVOT_ACCELERATION = new TunableNumber("END_EFFECTOR_ARM_PIVOT/acceleration", 250);
-        public static final TunableNumber ARM_PIVOT_JERK = new TunableNumber("END_EFFECTOR_ARM_PIVOT/jerk", 0);
-
-        // Pivot gear ratio
-        public static double END_EFFECTOR_ARM_PIVOT_RATIO = 50.0;
-
         /**
          * Constants for the EndEffectorArm pivot motor gains.
          */
@@ -521,13 +502,13 @@ public final class RobotConstants {
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KA = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ka", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KV = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kv", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KS = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ks", 0);
-            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KG = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kg", 0);        
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KG = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kg", -0.0378);
         }
 
         /**
          * Constants for the EndEffectorArm roller motor gains.
          */
-        //TODO: pid number
+        // EndEffector roller is currently open loop
         public static class EndEffectorArmRollerGainsClass {
             public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KP = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/kp", 0);
             public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KI = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/ki", 0);

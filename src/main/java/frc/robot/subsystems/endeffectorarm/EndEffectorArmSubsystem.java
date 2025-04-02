@@ -111,6 +111,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         // Log the system state
         Logger.recordOutput("EndEffectorArm/SystemState", systemState.toString());
 
+        Logger.recordOutput("Flags/eeIsDanger", !isNearAngle(coralIntakeAngle));
+
         SuperstructureVisualizer.getInstance().updateEndEffector(armPivotIOInputs.currentAngleDeg);
 
         // Apply the new state if it has changed
@@ -247,7 +249,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      * @return True if the arm is within 1 degree of the target
      */
     public boolean isNearAngle(double targetAngleDeg) {
-        return MathUtil.isNear(targetAngleDeg, armPivotIOInputs.currentAngleDeg, 1);
+        return MathUtil.isNear(targetAngleDeg, armPivotIOInputs.currentAngleDeg, 5);
+        //TODO：isNear angle value
     }
 
     /**

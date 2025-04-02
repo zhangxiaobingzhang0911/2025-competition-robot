@@ -310,44 +310,6 @@ public final class RobotConstants {
     }
 
     /**
-     * Constants related to the endeffector subsystem.
-     */
-    public static class EndEffectorConstants {
-        public static final int ENDEFFECTOR_MOTOR_ID = 31;
-
-        public static final int STATOR_CURRENT_LIMIT_AMPS = 60;
-        public static final int SUPPLY_CURRENT_LIMIT_AMPS = 20;
-        public static final boolean IS_BRAKE = true;
-        public static final boolean IS_INVERT = false;
-        public static final double REDUCTION = 1;
-
-        public static final TunableNumber INTAKE_RPS = new TunableNumber("ENDEFFECTOR/indexRPS", -100);
-        public static final TunableNumber HOLD_RPS = new TunableNumber("ENDEFFECTOR/holdRPS", 0.0);
-        public static final TunableNumber PRE_SHOOT_RPS = new TunableNumber("ENDEFFECTOR/preShootRPS", -15);
-        //TODO may decrease shootRPS
-        public static final TunableNumber SHOOT_RPS = new TunableNumber("ENDEFFECTOR/shootRPS", -60);
-        public static final TunableNumber L1_RPS = new TunableNumber("ENDEFFECTOR/l1RPS", -40);
-        public static final TunableNumber IDLE_RPS = new TunableNumber("ENDEFFECTOR/idleRPS", -0);
-        public static final TunableNumber REVERSE_RPS = new TunableNumber("ENDEFFECTOR/reverseRPS", 40);
-
-        /**
-         * Constants for the endeffector motor gains.
-         */
-        public static class EndEffectorGainsClass {
-            public static final TunableNumber ENDEFFECTOR_KP = new TunableNumber("ENDEFFECTOR PID/kp", 0.2);
-            public static final TunableNumber ENDEFFECTOR_KI = new TunableNumber("ENDEFFECTOR PID/ki", 0);
-            public static final TunableNumber ENDEFFECTOR_KD = new TunableNumber("ENDEFFECTOR PID/kd",
-                    0.001);
-            public static final TunableNumber ENDEFFECTOR_KA = new TunableNumber("ENDEFFECTOR PID/ka",
-                    0.0037512677);
-            public static final TunableNumber ENDEFFECTOR_KV = new TunableNumber("ENDEFFECTOR PID/kv",
-                    0.113);// 0.107853495
-            public static final TunableNumber ENDEFFECTOR_KS = new TunableNumber("ENDEFFECTOR PID/ks",
-                    0.28475008);
-        }
-    }
-
-    /**
      * Constants related to the robot's intake subsystem.
      */
     public static class IntakeConstants {

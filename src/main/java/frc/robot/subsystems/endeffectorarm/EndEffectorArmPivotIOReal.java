@@ -13,6 +13,8 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
 import frc.robot.RobotConstants;
@@ -50,8 +52,10 @@ public class EndEffectorArmPivotIOReal implements EndEffectorArmPivotIO {
         //initialize CANcoder
         CANcoderConfiguration CANconfig = new CANcoderConfiguration();
         CANconfig.MagnetSensor.MagnetOffset = END_EFFECTOR_ARM_ENCODER_OFFSET;
+        CANconfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         caNcoder.getConfigurator().apply(CANconfig);
-        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        //try the fused cancoder, if it doesn't work, use remote sensor
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         config.Feedback.FeedbackRemoteSensorID = END_EFFECTOR_ARM_ENCODER_ID;
         config.Feedback.RotorToSensorRatio = ROTOR_SENSOR_RATO;
 

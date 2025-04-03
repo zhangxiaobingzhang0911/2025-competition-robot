@@ -19,6 +19,8 @@ import frc.robot.auto.basics.CustomAutoChooser;
 import frc.robot.auto.fullAutos.AutoActions;
 import frc.robot.auto.fullAutos.AutoFile;
 import frc.robot.commands.*;
+import frc.robot.commands.aimSequences.AutoAimShootCommand;
+import frc.robot.commands.aimSequences.ReefAimCommand;
 import frc.robot.commands.climb.ClimbCommand;
 import frc.robot.commands.climb.ClimbResetCommand;
 import frc.robot.commands.climb.IdleClimbCommand;

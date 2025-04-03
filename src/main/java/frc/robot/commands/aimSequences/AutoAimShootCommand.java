@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.aimSequences;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
+import frc.robot.commands.ShootCommand;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.drivers.DestinationSupplier.GamePiece;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;

@@ -58,7 +58,7 @@ public class EndEffectorArmPivotIOReal implements EndEffectorArmPivotIO {
                 .withKS(RobotConstants.EndEffectorArmConstants.EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KS.get())
                 .withKG(RobotConstants.EndEffectorArmConstants.EndEffectorArmPivotGainsClass.END_EFFECTOR_ARM_PIVOT_KG.get())
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
-                //TODO： KS no effect
+                //TODO:KS no effect
         );
 
         motor.getConfigurator().apply(config);

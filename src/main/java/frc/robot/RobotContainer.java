@@ -168,12 +168,21 @@ public class RobotContainer {
         driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
         driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
+        driverController.x().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentGamePiece(DestinationSupplier.GamePiece.CORAL)).ignoringDisable(true));
+        driverController.a().onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentGamePiece(DestinationSupplier.GamePiece.ALGAE)).ignoringDisable(true));
         driverController.povRight().whileTrue(switchAimingModeCommand());
         driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
         if (Robot.isSimulation()) {
             driverController.rightTrigger().whileTrue(switchAimingModeCommand());
         }
+        driverController.rightTrigger().whileTrue(
+                new ConditionalCommand(
+                        Commands.none(),
+                        new AlgaeShootCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem),
+                        endEffectorArmSubsystem::hasAlgae
+                )
+        );
     }
 
     private void configureStreamDeckBindings() {
@@ -186,6 +195,8 @@ public class RobotContainer {
         streamDeckController.button(14).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)).ignoringDisable(true));
         streamDeckController.button(15).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)).ignoringDisable(true));
         streamDeckController.button(16).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)).ignoringDisable(true));
+        streamDeckController.button(18).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)).ignoringDisable(true));
+        streamDeckController.button(19).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)).ignoringDisable(true));
         streamDeckController.button(8).whileTrue(Commands.run(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.INTAKE))
                 .finallyDo(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.ELEVATOR)).ignoringDisable(true));
         streamDeckController.button(10).whileTrue(Commands.run(() -> intakeSubsystem.setLowerAngle(true))).onFalse(Commands.runOnce(() -> intakeSubsystem.setLowerAngle(false)));
@@ -217,11 +228,29 @@ public class RobotContainer {
                 () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO);
     }
 
-    public Command switchIntakeModeCommand() {
+    public Command switchIntakeAutoModeCommand() {
         return new ConditionalCommand(
                 new GroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem),
                 new HoldIntakeCommand(indicatorSubsystem, intakeSubsystem, elevatorSubsystem),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.ELEVATOR || endEffectorArmSubsystem.hasAlgae());
+    }
+
+    public Command switchIntakeManualModeCommand() {
+        return new ConditionalCommand(
+                switchIntakeAutoModeCommand(),
+                new AlgaeIntakeCommand(indicatorSubsystem,endEffectorArmSubsystem,elevatorSubsystem),
+                () -> destinationSupplier.getGamePiece() == DestinationSupplier.GamePiece.ALGAE
+        );
+    }
+
+    public Command switchIntakeModeCommand() {
+        return new ConditionalCommand(
+                //AUTO
+                switchIntakeAutoModeCommand(),
+                //MANUAL
+                switchIntakeManualModeCommand(),
+                () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.MANUAL
+        );
     }
 
     public Command switchPreMoveModeCommand() {

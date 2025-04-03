@@ -422,9 +422,6 @@ public final class RobotConstants {
                 1.01);
         public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
                 1.625);
-        public static final TunableNumber NET_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/NET",
-                1.625);
-
         public static final TunableNumber P1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P1",
                 0.50);
         public static final TunableNumber P2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P2",

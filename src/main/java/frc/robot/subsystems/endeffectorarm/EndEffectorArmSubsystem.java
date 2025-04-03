@@ -11,6 +11,7 @@ import frc.robot.subsystems.roller.RollerSubsystem;
 import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.Logger;
+import frc.robot.drivers.DestinationSupplier;
 
 import static frc.robot.RobotConstants.EndEffectorArmConstants.*;
 
@@ -83,6 +84,10 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         armPivotIO.updateInputs(armPivotIOInputs);
         coralBeambreakIO.updateInputs(coralBeambreakInputs);
         algaeBeambreakIO.updateInputs(algaeBeambreakInputs);
+
+        // Update DestinationSupplier with current coral and algae states
+        DestinationSupplier.getInstance().setHasCoral(coralBeambreakInputs.isBeambreakOn);
+        DestinationSupplier.getInstance().setHasAlgae(algaeBeambreakInputs.isBeambreakOn);
 
         // Update danger flag based on arm position
         RobotContainer.endeffectorIsDanger = !isNearAngle(coralIntakeAngle);
@@ -259,7 +264,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      * @return True if coral is detected by the beambreak
      */
     public boolean hasCoral() {
-        return coralBeambreakInputs.isBeambreakOn;
+        return DestinationSupplier.getInstance().isHasCoral();
     }
 
     /**
@@ -268,7 +273,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      * @return True if algae is detected by the beambreak
      */
     public boolean hasAlgae() {
-        return algaeBeambreakInputs.isBeambreakOn;
+        return DestinationSupplier.getInstance().isHasAlgae();
     }
 
     /**

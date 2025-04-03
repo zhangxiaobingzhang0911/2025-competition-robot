@@ -37,6 +37,10 @@ public class DestinationSupplier implements Updatable {
     private elevatorSetpoint currentElevSetpointPoke = elevatorSetpoint.P1;
     @Getter
     private GamePiece currentGamePiece = GamePiece.CORAL_SCORING;
+    @Getter
+    private boolean hasCoral = false;
+    @Getter
+    private boolean hasAlgae = false;
 
     private DestinationSupplier() {
         swerve = Swerve.getInstance();
@@ -357,6 +361,26 @@ public class DestinationSupplier implements Updatable {
     public void setCurrentGamePiece(GamePiece gamePiece) {
         this.currentGamePiece = gamePiece;
         SmartDashboard.putString("DestinationSupplier/CurrentGamePiece", gamePiece.name());
+    }
+
+    /**
+     * Sets whether coral is detected
+     * 
+     * @param hasCoral true if coral is detected, false otherwise
+     */
+    public void setHasCoral(boolean hasCoral) {
+        this.hasCoral = hasCoral;
+        SmartDashboard.putBoolean("DestinationSupplier/HasCoral", hasCoral);
+    }
+
+    /**
+     * Sets whether algae is detected
+     * 
+     * @param hasAlgae true if algae is detected, false otherwise
+     */
+    public void setHasAlgae(boolean hasAlgae) {
+        this.hasAlgae = hasAlgae;
+        SmartDashboard.putBoolean("DestinationSupplier/HasAlgae", hasAlgae);
     }
 
     public enum elevatorSetpoint {

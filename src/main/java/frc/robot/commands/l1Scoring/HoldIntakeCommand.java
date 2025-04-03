@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.l1Scoring;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;

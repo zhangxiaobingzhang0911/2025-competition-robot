@@ -11,6 +11,7 @@ import frc.robot.auto.basics.FollowPath;
 import frc.robot.auto.basics.ReefAimAutoCommand;
 import frc.robot.commands.*;
 import frc.robot.commands.aimSequences.AutoPreShootCommand;
+import frc.robot.commands.manualSequence.PreShootCommand;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.*;

@@ -46,7 +46,7 @@ public class TrembleIntakeCommand extends Command {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
         if (interrupted) {
-            endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOME);
+            endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
         }
         indicatorSubsystem.setPattern(IndicatorIO.Patterns.AFTER_INTAKE);
     }

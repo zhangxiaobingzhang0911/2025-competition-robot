@@ -1,8 +1,10 @@
 package frc.robot.subsystems.endeffectorarm;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
+import frc.robot.drivers.GamepieceTracker;
 import frc.robot.display.SuperstructureVisualizer;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
@@ -11,7 +13,6 @@ import frc.robot.subsystems.roller.RollerSubsystem;
 import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.Logger;
-import frc.robot.drivers.DestinationSupplier;
 
 import static frc.robot.RobotConstants.EndEffectorArmConstants.*;
 
@@ -52,9 +53,9 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
 
     // State tracking
     @Setter
-    private WantedState wantedState = WantedState.HOME;
+    private WantedState wantedState = WantedState.HOLD;
     @Getter
-    private SystemState systemState = SystemState.HOMING;
+    private SystemState systemState = SystemState.HOLDING;
 
     /**
      * Creates a new EndEffectorArmSubsystem
@@ -85,9 +86,26 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         coralBeambreakIO.updateInputs(coralBeambreakInputs);
         algaeBeambreakIO.updateInputs(algaeBeambreakInputs);
 
-        // Update DestinationSupplier with current coral and algae states
-        DestinationSupplier.getInstance().setHasCoral(coralBeambreakInputs.isBeambreakOn);
-        DestinationSupplier.getInstance().setHasAlgae(algaeBeambreakInputs.isBeambreakOn);
+        if (RobotBase.isReal()) {
+            // If the robot is real, Update DestinationSupplier with current coral and algae states
+            GamepieceTracker.getInstance().setEndeffectorHasCoral(coralBeambreakInputs.isBeambreakOn);
+            GamepieceTracker.getInstance().setEndeffectorHasAlgae(algaeBeambreakInputs.isBeambreakOn);
+        } else {
+            //sim gamepiece tracking
+            if (systemState == SystemState.CORAL_INTAKING && GamepieceTracker.getInstance().isIntakeHasCoral() && isNearAngle(coralIntakeAngle)) {
+                GamepieceTracker.getInstance().setEndeffectorHasCoral(true);
+                GamepieceTracker.getInstance().setintakeHasCoral(false);
+            }
+            if (systemState == SystemState.CORAL_SHOOTING) {
+                GamepieceTracker.getInstance().setEndeffectorHasCoral(false);
+            }
+            if (systemState == SystemState.ALGAE_INTAKING && isNearAngle(algaeIntakeAngle)) {
+                GamepieceTracker.getInstance().setEndeffectorHasAlgae(true);
+            }
+            if (systemState == SystemState.ALGAE_SHOOTING) {
+                GamepieceTracker.getInstance().setEndeffectorHasAlgae(false);
+            }
+        }
 
         // Update danger flag based on arm position
         RobotContainer.endeffectorIsDanger = !isNearAngle(coralIntakeAngle);
@@ -150,10 +168,11 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 armPivotIO.setPivotAngle(algaePreShootAngle);
                 break;
 
-            case HOMING:
+            case HOLDING:
+                //TODO: worked but need cleanup
                 if (hasAlgae()) {
                     armRollerIO.setVoltage(algaeHoldVoltage);
-                    armPivotIO.setPivotAngle(algaeIntakeAngle);
+                    armPivotIO.setPivotAngle(coralIntakeAngle);
                 } else if (hasCoral()) {
                     armPivotIO.setPivotAngle(homeAngle);
                     armRollerIO.setVoltage(coralHoldVoltage);
@@ -208,8 +227,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         return switch (wantedState) {
             case CORAL_INTAKE -> {
                 if (hasCoral()) {
-                    setWantedState(WantedState.HOME);
-                    yield SystemState.HOMING;
+                    setWantedState(WantedState.HOLD);
+                    yield SystemState.HOLDING;
                 }
                 yield SystemState.CORAL_INTAKING;
             }
@@ -217,30 +236,30 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             case CORAL_PRESHOOT -> SystemState.CORAL_PRESHOOTING;
             case ALGAE_INTAKE -> {
                 if (hasAlgae()) {
-                    setWantedState(WantedState.HOME);
-                    yield SystemState.HOMING;
+                    setWantedState(WantedState.HOLD);
+                    yield SystemState.HOLDING;
                 }
                 yield SystemState.ALGAE_INTAKING;
             }
             case ALGAE_PRESHOOT -> SystemState.ALGAE_PRESHOOTING;
-            case HOME -> {
+            case HOLD -> {
                 if (!hasAlgae() && !hasCoral()) {
                     yield SystemState.NEUTRAL;
                 }
-                yield SystemState.HOMING;
+                yield SystemState.HOLDING;
             }
             case NEUTRAL -> SystemState.NEUTRAL;
             case CORAL_SHOOT -> {
                 if (isShootFinished()) {
-                    setWantedState(WantedState.HOME);
-                    yield SystemState.HOMING;
+                    setWantedState(WantedState.HOLD);
+                    yield SystemState.HOLDING;
                 }
                 yield SystemState.CORAL_SHOOTING;
             }
             case ALGAE_SHOOT -> {
                 if (isShootFinished()) {
-                    setWantedState(WantedState.HOME);
-                    yield SystemState.HOMING;
+                    setWantedState(WantedState.HOLD);
+                    yield SystemState.HOLDING;
                 }
                 yield SystemState.ALGAE_SHOOTING;
             }
@@ -264,7 +283,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      * @return True if coral is detected by the beambreak
      */
     public boolean hasCoral() {
-        return DestinationSupplier.getInstance().isHasCoral();
+        return GamepieceTracker.getInstance().isEndeffectorHasCoral();
     }
 
     /**
@@ -273,7 +292,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      * @return True if algae is detected by the beambreak
      */
     public boolean hasAlgae() {
-        return DestinationSupplier.getInstance().isHasAlgae();
+        return GamepieceTracker.getInstance().isEndeffectorHasAlgae();
     }
 
     /**
@@ -305,7 +324,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         ALGAE_INTAKE,
         ALGAE_PRESHOOT,
         ALGAE_SHOOT,
-        HOME,
+        HOLD,
         NEUTRAL
     }
 
@@ -320,7 +339,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         ALGAE_INTAKING,
         ALGAE_PRESHOOTING,
         ALGAE_SHOOTING,
-        HOMING,
+        HOLDING,
         NEUTRAL
     }
 } 

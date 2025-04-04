@@ -36,7 +36,7 @@ public class HoldIntakeCommand extends Command {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
         }
         elevatorSubsystem.setElevatorPosition(HOLD_INTAKE_METERS.get());
-        hasCoral = hasCoral || intakeSubsystem.hasCoralBB();
+        hasCoral = hasCoral || intakeSubsystem.hasCoral();
         if (hasCoral) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOLD_OUTTAKE);
         }
@@ -53,7 +53,7 @@ public class HoldIntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return !intakeSubsystem.hasCoralBB() && hasCoral;
+        return !intakeSubsystem.hasCoral() && hasCoral;
     }
 
     @Override

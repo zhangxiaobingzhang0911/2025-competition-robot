@@ -1,12 +1,15 @@
 package frc.robot.display;
 
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
+import frc.robot.drivers.GamepieceTracker;
+import frc.robot.subsystems.swerve.Swerve;
 
 public class SuperstructureVisualizer {
     private static SuperstructureVisualizer instance;
@@ -32,9 +35,9 @@ public class SuperstructureVisualizer {
 
     // Intake constants
     private static final Translation3d INTAKE_PIVOT_START = new Translation3d(
-            mmToM(-280), mmToM(-181), mmToM(250));
+            mmToM(280), mmToM(-181), mmToM(250));
     private static final Translation3d INTAKE_PIVOT_END = new Translation3d(
-            mmToM(-280), mmToM(181), mmToM(250));
+            mmToM(280), mmToM(181), mmToM(250));
     private static final Translation3d INTAKE_CENTER = INTAKE_PIVOT_START.interpolate(INTAKE_PIVOT_END, 0.5);
     private static final double INTAKE_LENGTH = mmToM(452);
 
@@ -63,6 +66,10 @@ public class SuperstructureVisualizer {
     private double currentElevatorHeight = 0.0;
     private double currentIntakeAngleDeg = 0.0;
     private double currentEndEffectorAngleDeg = 0;
+
+    // Coral diameter in meters
+    private static final double CORAL_DIAMETER = mmToM(100); // Adjust this value based on actual coral size
+
 
     public static SuperstructureVisualizer getInstance() {
         if (instance == null) {
@@ -104,7 +111,7 @@ public class SuperstructureVisualizer {
                 8,
                 new Color8Bit(Color.kPurple));
 
-        endEffectorArmCoral = new LoggedMechanismLigament2d(
+            endEffectorArmCoral = new LoggedMechanismLigament2d(
                 "endEffectorArmCoral",
                 END_EFFECTOR_LENGTH_CORAL,
                 90,
@@ -171,6 +178,35 @@ public class SuperstructureVisualizer {
         updateVisuals();
     }
 
+    /**
+     * Logs the Coral pose 3D if coral is detected in the intake
+     */
+    private void logCoralPose3D() {
+        // Get the GamepieceTracker instance
+        GamepieceTracker gamepieceTracker = GamepieceTracker.getInstance();
+        
+        // Check if coral is detected in the intake
+        if (gamepieceTracker.isIntakeHasCoral()) {
+                Pose3d robotPose = new Pose3d(Swerve.getInstance().getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp()));
+            // Calculate the position of the coral at the middle of the intake arm
+            // The coral is positioned at the end of the intake arm
+            double intakeAngleRad = Math.toRadians(-currentIntakeAngleDeg + 90);
+            
+            // Create a rotation matrix for the intake angle
+            Rotation3d intakeRotation = new Rotation3d(0, intakeAngleRad, 0);
+            
+            // Calculate the position of the coral at the end of the intake arm
+            Pose3d coralPosition = robotPose.transformBy(new Transform3d(INTAKE_CENTER, intakeRotation));
+            
+            // Log the Coral pose 3D
+            Logger.recordOutput("Superstructure/Coral/InakeCoral", 
+                    coralPosition);
+        } else {
+            // If no coral is detected, log an empty array
+            Logger.recordOutput("Superstructure/Coral/InakeCoral", new Pose3d());
+        }
+    }
+
     private void updateVisuals() {
         // Update elevator components
         elevatorHeight.setLength(currentElevatorHeight); // Stage 1 extends
@@ -181,6 +217,8 @@ public class SuperstructureVisualizer {
         // Update end effector components
         endEffectorMountArm.setAngle(Rotation2d.fromRadians(Math.toRadians(currentEndEffectorAngleDeg+180)));
 
+        // Log Coral pose 3D
+        logCoralPose3D();
 
         // Log 2D mechanisms
         Logger.recordOutput("Superstructure/Elevator/Mechanism2d", elevatorMechanism);

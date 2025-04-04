@@ -104,4 +104,9 @@ public class IntakePivotIOSim implements IntakePivotIO {
                         dt);
         simState = VecBuilder.fill(updatedState.get(0, 0), updatedState.get(1, 0));
     }
+
+    @Override
+    public boolean isNearAngle(double targetAngleDeg, double toleranceDeg) {
+        return Math.abs(Math.toDegrees(simState.get(0)) - targetAngleDeg) <= toleranceDeg;
+    }
 }

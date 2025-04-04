@@ -67,9 +67,9 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                     new AutoPreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem),
                     new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem)
                 ),
-                () -> !endeffectorArmSubsystem.hasCoral()
+                () -> endeffectorArmSubsystem.hasCoral()
             ).finallyDo(() -> {
-                    endeffectorArmSubsystem.setWantedState(WantedState.HOME);
+                    endeffectorArmSubsystem.setWantedState(WantedState.HOLD);
                     elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get());
                 })
         );

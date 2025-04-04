@@ -153,4 +153,9 @@ public class IntakePivotIOReal implements IntakePivotIO {
     private double talonPosToAngle(double rotations) {
         return rotations * 360 / PIVOT_RATIO;
     }
+
+    @Override
+    public boolean isNearAngle(double targetAngleDeg, double toleranceDeg) {
+        return Math.abs(currentPositionRot.getValueAsDouble() - angleToTalonPos(targetAngleDeg)) <= angleToTalonPos(toleranceDeg);
+    }
 }

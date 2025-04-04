@@ -4,7 +4,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotConstants;
 import frc.robot.auto.basics.AutoGroundIntakeCommand;
 import frc.robot.auto.basics.FollowPath;
@@ -100,7 +99,7 @@ public class AutoActions {
     }
 
     public boolean intakerHasCoral() {
-        return intakeSubsystem.hasCoralBB();
+        return intakeSubsystem.hasCoral();
     }
 
     public EndEffectorArmSubsystem.SystemState getEESystemState() {

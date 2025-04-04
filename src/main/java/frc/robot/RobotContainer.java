@@ -164,21 +164,22 @@ public class RobotContainer {
                     lastResetTime = Timer.getFPGATimestamp();
                     indicatorSubsystem.setPattern(IndicatorIO.Patterns.RESET_ODOM);
                 }).ignoringDisable(true));
-
+        //climbing
         driverController.povUp().whileTrue(new PreClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
-        driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
-        driverController.leftBumper().toggleOnTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)));
-        driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
-        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
-        driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
         driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
+        //intake and outtake
+        driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
+        driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
+        driverController.leftBumper().toggleOnTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)));
+        driverController.back().toggleOnTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_SHOOT)));
+        //scoring
         driverController.povRight().whileTrue(switchAimingModeCommand());
+        driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
         driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
-        if (Robot.isSimulation()) {
-            driverController.rightTrigger().whileTrue(switchAimingModeCommand());
-        }
+
+        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
     }
 
     private void configureStreamDeckBindings() {

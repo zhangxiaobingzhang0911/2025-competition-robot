@@ -19,7 +19,6 @@ import static frc.robot.RobotConstants.IntakeConstants.*;
 
 public class IntakeSubsystem extends RollerSubsystem {
     public static final String NAME = "Intake/Roller";
-    private Timer simGamepieceTimer = new Timer();
     private static double shootAngle = SHOOT_ANGLE.get();
     private static double deployAngle = DEPLOY_ANGLE.get();
     private static double outtakeAngle = OUTTAKE_ANGLE.get();
@@ -84,7 +83,7 @@ public class IntakeSubsystem extends RollerSubsystem {
         if (RobotBase.isReal()){
             GamepieceTracker.getInstance().setintakeHasCoral(BBInputs.isBeambreakOn);
         }else{
-            if (systemState == SystemState.DEPLOY_INTAKING && intakePivotIO.isNearAngle(deployAngle, 1)){
+            if (systemState == SystemState.DEPLOY_INTAKING && intakePivotIO.isNearAngle(deployAngle, 1) ){
                 GamepieceTracker.getInstance().setintakeHasCoral(true);
             }
             if (systemState == SystemState.SHOOTING){

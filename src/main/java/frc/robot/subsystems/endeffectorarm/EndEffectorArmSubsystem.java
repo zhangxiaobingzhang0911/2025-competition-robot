@@ -2,6 +2,7 @@ package frc.robot.subsystems.endeffectorarm;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
 import frc.robot.drivers.GamepieceTracker;
@@ -18,6 +19,7 @@ import static frc.robot.RobotConstants.EndEffectorArmConstants.*;
 
 public class EndEffectorArmSubsystem extends RollerSubsystem {
     public static final String NAME = "EndEffectorArm";
+    private Timer simGamepieceTimer = new Timer();
 
     // Static variables to hold the current values from TunableNumbers
     private static double homeAngle = HOME_ANGLE.get();

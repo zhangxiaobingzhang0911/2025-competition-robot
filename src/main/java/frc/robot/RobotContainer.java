@@ -175,7 +175,8 @@ public class RobotContainer {
         driverController.leftBumper().toggleOnTrue(
             Commands.parallel(
                 Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)),
-                Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(destinationSupplier.getElevatorSetpoint(false)))
+                Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(destinationSupplier.getElevatorSetpoint(false))),
+                Commands.waitUntil(() -> GamepieceTracker.getInstance().isEndeffectorHasAlgae())
             ).finallyDo(() -> {
                 if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
                     elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get());

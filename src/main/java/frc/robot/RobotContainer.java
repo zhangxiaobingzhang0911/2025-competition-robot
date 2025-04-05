@@ -30,6 +30,7 @@ import frc.robot.commands.l1Scoring.ShootHoldCommand;
 import frc.robot.commands.manualSequence.PutCoralCommand;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
+import frc.robot.drivers.GamepieceTracker;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.beambreak.BeambreakIOSim;
 import frc.robot.subsystems.climber.ClimberIOReal;
@@ -171,7 +172,17 @@ public class RobotContainer {
         //intake and outtake
         driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
         driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
-        driverController.leftBumper().toggleOnTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)));
+        driverController.leftBumper().toggleOnTrue(
+            Commands.parallel(
+                Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)),
+                Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(destinationSupplier.getElevatorSetpoint(false)))
+            ).finallyDo(() -> {
+                if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
+                    elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get());
+                } else {
+                    elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get());
+                }
+            }));
         driverController.back().toggleOnTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_SHOOT)));
         //scoring
         driverController.povRight().whileTrue(switchAimingModeCommand());
@@ -202,6 +213,8 @@ public class RobotContainer {
         testerController.b().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
         testerController.x().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
         testerController.y().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
+        testerController.leftBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
+        testerController.rightBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
     }
 
     public Command getAutonomousCommand() {

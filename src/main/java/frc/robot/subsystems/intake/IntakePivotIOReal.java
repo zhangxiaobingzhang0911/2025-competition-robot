@@ -55,15 +55,15 @@ public class IntakePivotIOReal implements IntakePivotIO {
         config.CurrentLimits.StatorCurrentLimit = 40.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        //initialize CANcoder 
-        CANcoderConfiguration CANconfig = new CANcoderConfiguration();
-        CANconfig.MagnetSensor.MagnetOffset =INTAKE_PIVOT_ENCODER_OFFSET;
-        CANconfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        caNcoder.getConfigurator().apply(CANconfig);
-        // try the fused cancoder option, if it doesn't work, use the remote
-        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        config.Feedback.FeedbackRemoteSensorID = INTAKE_PIVOT_ENCODER_ID;
-        config.Feedback.RotorToSensorRatio = INTAKE_PIVOT_ROTOR_ENCODER_RATIO;
+        // //initialize CANcoder 
+        // CANcoderConfiguration CANconfig = new CANcoderConfiguration();
+        // CANconfig.MagnetSensor.MagnetOffset =INTAKE_PIVOT_ENCODER_OFFSET;
+        // CANconfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        // caNcoder.getConfigurator().apply(CANconfig);
+        // // try the fused cancoder option, if it doesn't work, use the remote
+        // config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        // config.Feedback.FeedbackRemoteSensorID = INTAKE_PIVOT_ENCODER_ID;
+        // config.Feedback.RotorToSensorRatio = INTAKE_PIVOT_ROTOR_ENCODER_RATIO;
 
         config.withSlot0(new Slot0Configs()
                 .withKP(IntakePivotGainsClass.INTAKE_PIVOT_KP.get())

@@ -408,7 +408,7 @@ public final class RobotConstants {
                 0.0);
         public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
                 1.63);
-        public static final TunableNumber IDLE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/idle",
+        public static final TunableNumber HOLD_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/idle",
                 0.7);
         public static final TunableNumber HOME_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOME",
                 0.01);
@@ -426,13 +426,11 @@ public final class RobotConstants {
                 0.50);
         public static final TunableNumber P2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P2",
                 0.70);
-        public static final TunableNumber FUNNEL_INTAKE_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/FunnelIntake",
-                0.34);
+
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 40);
         public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT = new TunableNumber("Elevator min safe height", 0.47);
-        public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT_HOLDING = new TunableNumber("Elevator min safe height holding", 0.55);
-
+        
     }
 
     /**

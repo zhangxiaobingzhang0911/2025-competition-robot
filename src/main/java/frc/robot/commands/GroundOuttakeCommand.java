@@ -2,12 +2,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
+import frc.robot.drivers.GamepieceTracker;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
 
 public class GroundOuttakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
@@ -38,7 +39,8 @@ public class GroundOuttakeCommand extends Command {
     public void end(boolean interrupted) {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
+
     }
 
     @Override

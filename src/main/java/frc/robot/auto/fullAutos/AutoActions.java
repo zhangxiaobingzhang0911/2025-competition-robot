@@ -90,7 +90,7 @@ public class AutoActions {
                 new ShootCommand(indicatorSubsystem, endEffectorArmSubsystem),
                 new WaitCommand(0.05),
                 Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(
-                        RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())));
+                        RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get())));
     }
 
     public Command homeEverything() {

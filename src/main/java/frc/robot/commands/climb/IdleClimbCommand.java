@@ -7,7 +7,7 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
 
 public class IdleClimbCommand extends Command{
     private final ClimberSubsystem climberSubsystem;
@@ -25,7 +25,7 @@ public class IdleClimbCommand extends Command{
 
     @Override
     public void initialize() {
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
         climberSubsystem.setWantedState(WantedState.IDLE);
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.NEUTRAL);

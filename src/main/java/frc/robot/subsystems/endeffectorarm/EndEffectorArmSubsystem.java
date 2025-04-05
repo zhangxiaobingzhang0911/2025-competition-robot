@@ -116,9 +116,9 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         SystemState newState;
         if (RobotContainer.elevatorIsDanger) {
             // Force CORAL_INTAKING or CORAL_OUTTAKING while elevator is in danger
-            if (systemState == SystemState.CORAL_OUTTAKING) {
+            if (wantedState == WantedState.CORAL_OUTTAKE) {
                 newState = SystemState.CORAL_OUTTAKING;
-            } else if (systemState == SystemState.CORAL_INTAKING) {
+            } else if (wantedState == WantedState.CORAL_INTAKE) {
                 newState = SystemState.CORAL_INTAKING;
             } else {
                 newState = SystemState.NEUTRAL;
@@ -190,11 +190,19 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 break;
 
             case CORAL_SHOOTING:
-                armRollerIO.setVoltage(coralShootVoltage);
+                if(hasCoral()){
+                    armRollerIO.setVoltage(coralShootVoltage);
+                }else{
+                    setWantedState(WantedState.NEUTRAL);
+                }
                 break;
 
             case ALGAE_SHOOTING:
-                armRollerIO.setVoltage(algaeShootVoltage);
+                if(hasAlgae()){
+                    armRollerIO.setVoltage(algaeShootVoltage);
+                }else{
+                    setWantedState(WantedState.NEUTRAL);
+                }
                 break;
         }
 

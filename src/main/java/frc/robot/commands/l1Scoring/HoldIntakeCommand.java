@@ -8,7 +8,7 @@ import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import static frc.robot.RobotConstants.ElevatorConstants.HOLD_INTAKE_METERS;
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
 
 public class HoldIntakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
@@ -45,7 +45,7 @@ public class HoldIntakeCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
         indicatorSubsystem.setPattern(IndicatorIO.Patterns.AFTER_INTAKE);
         hasCoral = false;
         if (!interrupted) RobotContainer.intakeHasCoral = true;

@@ -12,7 +12,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.utils.TunableNumber;
 import org.frcteam6941.swerve.SwerveSetpointGenerator.KinematicLimits;
 
@@ -37,19 +36,11 @@ public final class RobotConstants {
     public static final boolean DriverCamera = true;
     public static final boolean VisionCamera = false;
     // Judge whether the team is 10541
+    // During Huston, is10541 should always be TRUE
     public static final String Serial10541 = "03415993";
     public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541) && Robot.isReal();
     public static String CANIVORE_CAN_BUS_NAME = is10541 ? "10541Canivore0" : "6941Canivore0";
     public static String CLIMBER_CAN_BUS = is10541 ? "rio" : "6941Canivore0";
-    // serial baud rate
-    public static int baudRate = 115200;
-
-    /**
-     * Constants related to the robot's vision subsystem.
-     */
-    public static class VisionConstants {
-        public static final SerialPort.Port serialPort = SerialPort.Port.kMXP;
-    }
 
     /**
      * Constants related to the robot's indicators, such as LEDs.
@@ -432,7 +423,7 @@ public final class RobotConstants {
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 40);
         public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT = new TunableNumber("Elevator min safe height", 0.45);
-        
+
     }
 
     /**

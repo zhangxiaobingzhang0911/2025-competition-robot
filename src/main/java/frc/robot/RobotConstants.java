@@ -478,7 +478,7 @@ public final class RobotConstants {
         public static final TunableNumber CORAL_PRESHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralPreShootVoltage", -10.0);
         public static final TunableNumber ALGAE_INTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeIntakeVoltage", 8.0);
         public static final TunableNumber ALGAE_PRESHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaePreShootVoltage", -12.0);
-        public static final TunableNumber CORAL_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralHoldVoltage", 2.0);
+        public static final TunableNumber CORAL_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralHoldVoltage", 0.5);
         public static final TunableNumber ALGAE_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeHoldVoltage", 1.5);
         public static final TunableNumber CORAL_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralShootVoltage", -12.0);
         public static final TunableNumber ALGAE_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeShootVoltage", -12.0);

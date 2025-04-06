@@ -173,7 +173,7 @@ public final class RobotConstants {
         private static final int FRONT_LEFT_DRIVE_MOTOR_ID = 4;
         private static final int FRONT_LEFT_STEER_MOTOR_ID = 3;
         private static final int FRONT_LEFT_ENCODER_ID = 10;
-        private static final double FRONT_LEFT_ENCODER_OFFSET = is10541 ? -0.1503903594 : -0.4532636;
+        private static final double FRONT_LEFT_ENCODER_OFFSET = is10541 ? -0.1533204844 : -0.4532636;
         private static final Measure<DistanceUnit> frontLeftXPos = Meters.of(0.29);
         private static final Measure<DistanceUnit> frontLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants FrontLeft = ConstantCreator.createModuleConstants(
@@ -183,7 +183,7 @@ public final class RobotConstants {
         private static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 6;
         private static final int FRONT_RIGHT_STEER_MOTOR_ID = 5;
         private static final int FRONT_RIGHT_ENCODER_ID = 11;
-        private static final double FRONT_RIGHT_ENCODER_OFFSET = is10541 ? -0.3104965938 : -0.420898875;
+        private static final double FRONT_RIGHT_ENCODER_OFFSET = is10541 ? -0.3049317344 : -0.420898875;
         private static final Measure<DistanceUnit> frontRightXPos = Meters.of(0.29);
         private static final Measure<DistanceUnit> frontRightYPos = Meters.of(-0.29);
         public static final LegacySwerveModuleConstants FrontRight = ConstantCreator.createModuleConstants(
@@ -279,13 +279,13 @@ public final class RobotConstants {
     public static final class ReefAimConstants {
         public static final TunableNumber MAX_DISTANCE_REEF_LINEUP = new TunableNumber("AIM/maxLineupDistance", 1.5);
         public static final Measure<DistanceUnit> PIPE_TO_TAG = Meters.of(0.164308503);
-        public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.5);
+        public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.55);
         public static final TunableNumber X_TOLERANCE_METERS = new TunableNumber("AIM/X_TOLERANCE_METERS", 0.01);
         public static final TunableNumber Y_TOLERANCE_METERS = new TunableNumber("AIM/Y_TOLERANCE_METERS", 0.01);
         public static final TunableNumber RAISE_LIMIT_METERS = new TunableNumber("AIM/RAISE_LIMIT_METERS", 1);
         public static final TunableNumber OMEGA_TOLERANCE_DEGREES = new TunableNumber("AIM/OMEGA_TOLERANCE_DEGREES", 1);
-        public static final Measure<LinearVelocityUnit> MAX_AIMING_SPEED = MetersPerSecond.of(4.5);
-        public static final Measure<LinearAccelerationUnit> MAX_AIMING_ACCELERATION = MetersPerSecondPerSecond.of(9);
+        public static final Measure<LinearVelocityUnit> MAX_AIMING_SPEED = MetersPerSecond.of(3.5);
+        public static final Measure<LinearAccelerationUnit> MAX_AIMING_ACCELERATION = MetersPerSecondPerSecond.of(7);
         public static final TunableNumber Edge_Case_Max_Delta = new TunableNumber("AIM/MAX DELTA", 0.5);
         public static final TunableNumber ROBOT_TO_ALGAE_METERS = new TunableNumber("AIM/ROBOT_TO_ALGAE_METERS", 0.48);
         public static final TunableNumber ALGAE_TO_TAG_METERS = new TunableNumber("AIM/ALGAE_TO_TAG_METERS", 0);
@@ -402,7 +402,7 @@ public final class RobotConstants {
         public static final TunableNumber HOLD_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/idle",
                 0.5);
         public static final TunableNumber HOME_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOME",
-                0.08);
+                0.12);
         public static final TunableNumber HOLD_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOLD INTAKE",
                 0.16);
         public static final TunableNumber ALGAE_SCORE_EXTENSION_METER = new TunableNumber("ELEVATOR SETPOINTS/ALGAE_SCORE",

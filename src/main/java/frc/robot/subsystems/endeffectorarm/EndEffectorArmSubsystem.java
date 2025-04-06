@@ -20,6 +20,9 @@ import static frc.robot.RobotConstants.EndEffectorArmConstants.*;
 public class EndEffectorArmSubsystem extends RollerSubsystem {
     public static final String NAME = "EndEffectorArm";
     private Timer simGamepieceTimer = new Timer();
+    
+    private final Timer algaeShootTimer = new Timer();
+    private boolean algaeShootTimerStarted = false;
 
     // Static variables to hold the current values from TunableNumbers
     private static double homeAngle = HOME_ANGLE.get();
@@ -59,8 +62,6 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     @Getter
     private SystemState systemState = SystemState.HOLDING;
 
-    Timer timer = new Timer();
-    boolean timerStarted = false;
 
     /**
      * Creates a new EndEffectorArmSubsystem
@@ -163,10 +164,13 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             case CORAL_PRESHOOTING:
                 armPivotIO.setPivotAngle(coralPreShootAngle);
                 break;
-
             case ALGAE_INTAKING:
-                armRollerIO.setVoltage(algaeIntakeVoltage);
-                armPivotIO.setPivotAngle(algaeIntakeAngle);
+                if (!hasAlgae()) {
+                    armRollerIO.setVoltage(algaeIntakeVoltage);
+                    armPivotIO.setPivotAngle(algaeIntakeAngle);
+                } else {
+                    armRollerIO.setVoltage(algaeHoldVoltage);
+                }
                 break;
 
             case ALGAE_PRESHOOTING:
@@ -174,7 +178,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 break;
 
             case HOLDING:
-                //TODO: worked but need cleanup
+                //TODO: cant allow both algae and coral to be held at the same time
                 if (hasAlgae()) {
                     armRollerIO.setVoltage(algaeHoldVoltage);
                     armPivotIO.setPivotAngle(coralIntakeAngle);
@@ -204,14 +208,14 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 if(hasAlgae()){
                     armRollerIO.setVoltage(algaeShootVoltage);
                 }else{
-                    if(!timerStarted){
-                       timer.start();
-                       timerStarted = true;
-                    } else if (timer.hasElapsed(0.5)) {
+                    if(!algaeShootTimerStarted){
+                       algaeShootTimer.start();
+                       algaeShootTimerStarted = true;
+                    } else if (algaeShootTimer.hasElapsed(0.3)) {
                         setWantedState(WantedState.NEUTRAL);
-                        timer.stop();
-                        timer.reset();
-                        timerStarted = false;
+                        algaeShootTimer.stop();
+                        algaeShootTimer.reset();
+                        algaeShootTimerStarted = false;
                     }
                 }
                 break;
@@ -278,10 +282,6 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 yield SystemState.CORAL_SHOOTING;
             }
             case ALGAE_SHOOT -> {
-                if (isShootFinished()) {
-                    setWantedState(WantedState.HOLD);
-                    yield SystemState.HOLDING;
-                }
                 yield SystemState.ALGAE_SHOOTING;
             }
         };

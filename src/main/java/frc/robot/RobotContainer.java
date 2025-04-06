@@ -29,6 +29,7 @@ import frc.robot.commands.climb.IdleClimbCommand;
 import frc.robot.commands.climb.PreClimbCommand;
 import frc.robot.commands.l1Scoring.HoldIntakeCommand;
 import frc.robot.commands.l1Scoring.ShootHoldCommand;
+import frc.robot.commands.manualSequence.PutAlgaeCommand;
 import frc.robot.commands.manualSequence.PutCoralCommand;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
@@ -190,23 +191,6 @@ public class RobotContainer {
                     }
                     endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
                 }));
-        driverController.back().whileTrue(
-                Commands.parallel(
-                        Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_PRESHOOT)),
-                        Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.ALGAE_SCORE_EXTENSION_METER.get())),
-                        Commands.sequence(
-                                Commands.waitUntil(() -> driverController.rightTrigger().getAsBoolean()),
-                                Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_SHOOT)),
-                                Commands.waitSeconds(100)
-                        )
-                ).finallyDo(() -> {
-                    if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
-                        elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get());
-                    } else {
-                        elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get());
-                    }
-                    endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
-                }));
         //scoring
         driverController.povRight().whileTrue(switchAimingModeCommand());
         driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
@@ -257,7 +241,9 @@ public class RobotContainer {
                         indicatorSubsystem, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem,
                         () -> false, driverController),
                 // MANUAL
-                new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
+                Commands.sequence(
+                        Commands.runOnce(() -> DestinationSupplier.getInstance().setCurrentGamePiece(DestinationSupplier.GamePiece.CORAL_SCORING)),
+                        new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem)),
                 () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO);
     }
 
@@ -272,8 +258,13 @@ public class RobotContainer {
         return new ConditionalCommand(
                 // Intake L1
                 new ShootHoldCommand(intakeSubsystem, () -> driverController.rightTrigger().getAsBoolean()),
-                // Elevator
-                new PutCoralCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                new ConditionalCommand(
+                        // Elevator Coral
+                        new PutCoralCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                        // Elevator Algae
+                        new PutAlgaeCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                        () -> destinationSupplier.getCurrentGamePiece() == DestinationSupplier.GamePiece.CORAL_SCORING
+                ),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
     }
 

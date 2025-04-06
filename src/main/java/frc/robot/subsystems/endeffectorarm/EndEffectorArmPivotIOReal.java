@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
@@ -19,7 +18,7 @@ import static frc.robot.RobotConstants.EndEffectorArmConstants.*;
 public class EndEffectorArmPivotIOReal implements EndEffectorArmPivotIO {
     private final TalonFX motor = new TalonFX(RobotConstants.EndEffectorArmConstants.END_EFFECTOR_ARM_PIVOT_MOTOR_ID,
             RobotConstants.CANIVORE_CAN_BUS_NAME);
-    private final CANcoder CANcoder = new CANcoder(END_EFFECTOR_ARM_ENCODER_ID,RobotConstants.CANIVORE_CAN_BUS_NAME);
+    private final CANcoder CANcoder = new CANcoder(END_EFFECTOR_ARM_ENCODER_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
     private final StatusSignal<AngularVelocity> velocityRotPerSec = motor.getVelocity();
     private final StatusSignal<Voltage> appliedVolts = motor.getSupplyVoltage();
     private final StatusSignal<Voltage> motorVolts = motor.getMotorVoltage();
@@ -136,6 +135,6 @@ public class EndEffectorArmPivotIOReal implements EndEffectorArmPivotIO {
     }
 
     private double talonPosToAngle(double rotations) {
-        return rotations * 360 / 1;
+        return rotations * 360;
     }
 }

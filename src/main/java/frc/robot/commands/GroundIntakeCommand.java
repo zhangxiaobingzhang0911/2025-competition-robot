@@ -9,8 +9,8 @@ import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
 import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
 
 public class GroundIntakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;

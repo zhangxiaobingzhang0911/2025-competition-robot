@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
-import frc.robot.drivers.GamepieceTracker;
 import frc.robot.display.SuperstructureVisualizer;
+import frc.robot.drivers.GamepieceTracker;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerIOInputsAutoLogged;
@@ -19,11 +19,6 @@ import static frc.robot.RobotConstants.EndEffectorArmConstants.*;
 
 public class EndEffectorArmSubsystem extends RollerSubsystem {
     public static final String NAME = "EndEffectorArm";
-    private Timer simGamepieceTimer = new Timer();
-    
-    private final Timer algaeShootTimer = new Timer();
-    private boolean algaeShootTimerStarted = false;
-
     // Static variables to hold the current values from TunableNumbers
     private static double homeAngle = HOME_ANGLE.get();
     private static double coralIntakeAngle = CORAL_INTAKE_ANGLE.get();
@@ -31,7 +26,6 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     private static double coralPreShootAngle = CORAL_PRESHOOT_ANGLE.get();
     private static double algaeIntakeAngle = ALGAE_INTAKE_ANGLE.get();
     private static double algaePreShootAngle = ALGAE_PRESHOOT_ANGLE.get();
-
     private static double coralIntakeVoltage = CORAL_INTAKE_VOLTAGE.get();
     private static double coralOuttakeVoltage = CORAL_OUTTAKE_VOLTAGE.get();
     private static double coralPreShootVoltage = CORAL_PRESHOOT_VOLTAGE.get();
@@ -39,23 +33,22 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     private static double algaePreShootVoltage = ALGAE_PRESHOOT_VOLTAGE.get();
     private static double coralHoldVoltage = CORAL_HOLD_VOLTAGE.get();
     private static double algaeHoldVoltage = ALGAE_HOLD_VOLTAGE.get();
-
     // Add these constants near the other static variables
     private static double coralShootVoltage = CORAL_SHOOT_VOLTAGE.get();
     private static double algaeShootVoltage = ALGAE_SHOOT_VOLTAGE.get();
-
+    private final Timer algaeShootTimer = new Timer();
     // IO devices and their inputs
     private final EndEffectorArmPivotIO armPivotIO;
     private final EndEffectorArmRollerIO armRollerIO;
     private final EndEffectorArmPivotIOInputsAutoLogged armPivotIOInputs = new EndEffectorArmPivotIOInputsAutoLogged();
     private final RollerIOInputsAutoLogged armRollerIOInputs = new RollerIOInputsAutoLogged();
-
     // Beambreak sensors for coral and algae detection
     private final BeambreakIO coralBeambreakIO;
     private final BeambreakIO algaeBeambreakIO;
     private final BeambreakIOInputsAutoLogged coralBeambreakInputs = new BeambreakIOInputsAutoLogged();
     private final BeambreakIOInputsAutoLogged algaeBeambreakInputs = new BeambreakIOInputsAutoLogged();
-
+    private final Timer simGamepieceTimer = new Timer();
+    private boolean algaeShootTimerStarted = false;
     // State tracking
     @Setter
     private WantedState wantedState = WantedState.HOLD;
@@ -197,20 +190,20 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 break;
 
             case CORAL_SHOOTING:
-                if(hasCoral()){
+                if (hasCoral()) {
                     armRollerIO.setVoltage(coralShootVoltage);
-                }else{
+                } else {
                     setWantedState(WantedState.NEUTRAL);
                 }
                 break;
 
             case ALGAE_SHOOTING:
-                if(hasAlgae()){
+                if (hasAlgae()) {
                     armRollerIO.setVoltage(algaeShootVoltage);
-                }else{
-                    if(!algaeShootTimerStarted){
-                       algaeShootTimer.start();
-                       algaeShootTimerStarted = true;
+                } else {
+                    if (!algaeShootTimerStarted) {
+                        algaeShootTimer.start();
+                        algaeShootTimerStarted = true;
                     } else if (algaeShootTimer.hasElapsed(0.3)) {
                         setWantedState(WantedState.NEUTRAL);
                         algaeShootTimer.stop();
@@ -330,7 +323,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      *
      * @return True if both angle is near the preshoot angle and contains a coral
      */
-    public boolean isShootReady(){
+    public boolean isShootReady() {
         return isNearAngle(coralPreShootAngle);
     }
 

@@ -9,13 +9,14 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
 
-public class ClimbCommand extends Command{
+public class ClimbCommand extends Command {
     private final ClimberSubsystem climberSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final EndEffectorArmSubsystem endEffectorArmSubsystem;
-    public ClimbCommand(ClimberSubsystem climberSubsystem,ElevatorSubsystem elevatorSubsystem,
-    IntakeSubsystem intakeSubsystem,EndEffectorArmSubsystem endEffectorArmSubsystem){
+
+    public ClimbCommand(ClimberSubsystem climberSubsystem, ElevatorSubsystem elevatorSubsystem,
+                        IntakeSubsystem intakeSubsystem, EndEffectorArmSubsystem endEffectorArmSubsystem) {
         this.climberSubsystem = climberSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.endEffectorArmSubsystem = endEffectorArmSubsystem;

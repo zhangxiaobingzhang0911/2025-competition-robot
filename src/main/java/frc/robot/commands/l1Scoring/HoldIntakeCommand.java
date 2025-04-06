@@ -7,8 +7,8 @@ import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-import static frc.robot.RobotConstants.ElevatorConstants.HOLD_INTAKE_METERS;
 import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.HOLD_INTAKE_METERS;
 
 public class HoldIntakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;

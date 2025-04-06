@@ -9,7 +9,8 @@ import frc.robot.display.SuperstructureVisualizer;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.RobotConstants.ElevatorConstants.*;
+import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT;
+import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
 import static frc.robot.RobotContainer.elevatorIsDanger;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -131,7 +132,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean elevatorIsDanger() {
-        return (inputs.positionMeters <  ELEVATOR_MIN_SAFE_HEIGHT.get() - 0.01);
+        return (inputs.positionMeters < ELEVATOR_MIN_SAFE_HEIGHT.get() - 0.01);
     }
 
 

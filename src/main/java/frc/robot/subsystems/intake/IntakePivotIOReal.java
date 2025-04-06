@@ -2,7 +2,6 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -10,18 +9,13 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
 import frc.robot.RobotConstants;
 
-import static frc.robot.RobotConstants.EndEffectorArmConstants.END_EFFECTOR_ARM_ENCODER_ID;
-import static frc.robot.RobotConstants.EndEffectorArmConstants.END_EFFECTOR_ARM_ENCODER_OFFSET;
 import static frc.robot.RobotConstants.IntakeConstants.*;
 
 public class IntakePivotIOReal implements IntakePivotIO {
@@ -36,7 +30,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
     private final StatusSignal<Temperature> tempCelsius = motor.getDeviceTemp();
     private final StatusSignal<Angle> currentPositionRot = motor.getPosition();
 
-    private final CANcoder caNcoder = new CANcoder(INTAKE_PIVOT_ENCODER_ID,RobotConstants.CANIVORE_CAN_BUS_NAME);
+    private final CANcoder caNcoder = new CANcoder(INTAKE_PIVOT_ENCODER_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
 
 
     private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(false);

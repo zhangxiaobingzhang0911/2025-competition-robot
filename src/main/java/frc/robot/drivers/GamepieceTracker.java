@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import lombok.Getter;
 import org.frcteam6941.looper.Updatable;
 
-public class GamepieceTracker implements Updatable{
+public class GamepieceTracker implements Updatable {
     public static GamepieceTracker instance;
     //Current Gamepiece tracking
     @Getter
@@ -20,6 +20,7 @@ public class GamepieceTracker implements Updatable{
         }
         return instance;
     }
+
     /**
      * Sets whether coral is detected EE
      *
@@ -39,6 +40,7 @@ public class GamepieceTracker implements Updatable{
         this.endeffectorHasAlgae = endeffectorHasAlgae;
         SmartDashboard.putBoolean("GamePiece/EEHasAlgae", endeffectorHasAlgae);
     }
+
     /**
      * Sets whether coral is detected intake
      *

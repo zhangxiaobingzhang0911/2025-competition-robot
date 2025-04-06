@@ -51,9 +51,9 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Calculates the optimal drive target position based on the robot's current position and goal position
-     * 
+     *
      * @param robot The current pose (position and rotation) of the robot
-     * @param goal The target pose to drive towards
+     * @param goal  The target pose to drive towards
      * @return A modified goal pose that accounts for optimal approach positioning
      */
     public static Pose2d getDriveTarget(Pose2d robot, Pose2d goal) {
@@ -77,8 +77,8 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Calculates the final target position for coral scoring based on the tag pose
-     * 
-     * @param goal The initial goal pose
+     *
+     * @param goal      The initial goal pose
      * @param rightReef Whether to target the right reef relative to the AprilTag
      * @return Modified goal pose to tag pose accounting for coral scoring position
      */
@@ -93,7 +93,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Calculates the final target position for algae scoring based on the tag pose
-     * 
+     *
      * @param goal The initial goal pose
      * @return Modified goal pose to tag pose accounting for algae scoring position
      */
@@ -108,7 +108,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Determines if it's safe to raise the elevator based on robot position
-     * 
+     *
      * @param robotPose Current pose of the robot
      * @param rightReef Whether targeting the right reef relative to the AprilTag
      * @return true if the robot is within safe distance to raise elevator, false otherwise
@@ -159,7 +159,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Gets the nearest AprilTag pose to the robot's current position
-     * 
+     *
      * @param robotPose Current pose of the robot
      * @return Pose2d of the nearest AprilTag, accounting for edge cases and controller input
      */
@@ -169,7 +169,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Gets the ID of the nearest AprilTag to the robot's current position
-     * 
+     *
      * @param robotPose Current pose of the robot
      * @return ID of the nearest AprilTag, accounting for edge cases and controller input
      */
@@ -239,7 +239,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Updates the elevator setpoint for either coral or poke positions
-     * 
+     *
      * @param setpoint The desired elevator setpoint (L1-L4 for coral, P1-P2 for poke)
      */
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {
@@ -261,7 +261,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Gets the current elevator setpoint value in meters
-     * 
+     *
      * @param useCoral Whether to use coral scoring position (true) or poke position (false)
      * @return The elevator extension distance in meters
      */
@@ -286,9 +286,9 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Updates which reef branch to target
-     * 
+     *
      * @param coralRight When true, targets the right reef relative to the AprilTag when facing it
-     * (i.e. when you are facing the tag, rightReef = true means the tag on your right is the target)
+     *                   (i.e. when you are facing the tag, rightReef = true means the tag on your right is the target)
      */
     public void updateBranch(boolean coralRight) {
         this.coralRight = coralRight;
@@ -298,7 +298,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Gets the current branch setting
-     * 
+     *
      * @return true if targeting right reef, false if targeting left reef
      */
     public boolean getCurrentBranch() {
@@ -307,7 +307,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Sets the current control mode for the robot
-     * 
+     *
      * @param mode The desired control mode (MANUAL, SEMI, or AUTO)
      */
     public void setCurrentControlMode(controlMode mode) {
@@ -318,7 +318,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Sets the current L1 operation mode
-     * 
+     *
      * @param mode The desired L1 mode (ELEVATOR or INTAKE)
      */
     public void setCurrentL1Mode(L1Mode mode) {
@@ -328,7 +328,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Sets the current intake operation mode
-     * 
+     *
      * @param mode The desired intake mode (TREMBLE or NORMAL)
      */
     public void setCurrentIntakeMode(IntakeMode mode) {
@@ -351,7 +351,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Sets the current game piece type
-     * 
+     *
      * @param gamePiece The desired game piece (CORAL_SCORING or ALGAE_INTAKING)
      */
     public void setCurrentGamePiece(GamePiece gamePiece) {

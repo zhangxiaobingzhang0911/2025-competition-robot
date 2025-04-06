@@ -56,7 +56,7 @@ public class ElevatorIOSim implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         for (int i = 0; i < RobotConstants.LOOPER_DT / (1.0 / 1000.0); i++) {
             setInputTorqueCurrent(
-                    controller.calculate(simState.get(0))*15 + feedforward);
+                    controller.calculate(simState.get(0)) * 15 + feedforward);
             update(1.0 / 1000.0);
         }
 

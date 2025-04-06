@@ -5,15 +5,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.drivers.DestinationSupplier.GamePiece;
-import frc.robot.drivers.GamepieceTracker;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
-
-import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
-import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
 
 public class AutoPreShootCommand extends Command {
     // Subsystems
@@ -70,19 +66,13 @@ public class AutoPreShootCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         // No cleanup needed
-        if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
-            elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
-        } else {
-            elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
-        }
-        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
     }
 
     @Override
     public boolean isFinished() {
         if (DestinationSupplier.getInstance().getCurrentGamePiece() == GamePiece.CORAL_SCORING) {
             return timer.hasElapsed(0.1)
-                    && elevatorSubsystem.elevatorReady(0.005)
+                    && elevatorSubsystem.elevatorReady(0.005) ///???????
                     && endEffectorArmSubsystem.isShootReady()
                     && safeToRaise;
         } else {

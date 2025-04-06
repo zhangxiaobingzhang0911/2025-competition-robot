@@ -172,11 +172,14 @@ public class RobotContainer {
         //intake and outtake
         driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
         driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
-        driverController.leftBumper().toggleOnTrue(
-            Commands.parallel(
-                Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)),
+        driverController.leftBumper().whileTrue(
+            Commands.sequence(
                 Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(destinationSupplier.getElevatorSetpoint(false))),
-                Commands.waitUntil(() -> GamepieceTracker.getInstance().isEndeffectorHasAlgae())
+                Commands.waitUntil(()->elevatorSubsystem.elevatorReady(0.03)),
+                Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)),
+                
+                Commands.waitSeconds(100)
+                
             ).finallyDo(() -> {
                 if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
                     elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get());

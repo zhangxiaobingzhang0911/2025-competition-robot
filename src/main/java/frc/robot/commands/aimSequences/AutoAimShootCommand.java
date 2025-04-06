@@ -8,6 +8,7 @@ import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.commands.ShootCommand;
 import frc.robot.drivers.DestinationSupplier;
+import frc.robot.drivers.GamepieceTracker;
 import frc.robot.drivers.DestinationSupplier.GamePiece;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
@@ -67,7 +68,11 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                 () -> endeffectorArmSubsystem.hasCoral()
             ).finallyDo(() -> {
                     endeffectorArmSubsystem.setWantedState(WantedState.HOLD);
-                    elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get());
+                    if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
+                        elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get());
+                    } else {
+                        elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get());
+                    }
                 })
         );
     }

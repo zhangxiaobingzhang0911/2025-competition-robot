@@ -80,7 +80,7 @@ public class ElevatorIOSim implements ElevatorIO {
                                                         0.0,
                                                         -9.8)),
                         simState,
-                        MatBuilder.fill(Nat.N1(), Nat.N1(), inputTorqueCurrent * 15),
+                        MatBuilder.fill(Nat.N1(), Nat.N1(), inputTorqueCurrent * 30),
                         dt);
         // Apply limits
         simState = VecBuilder.fill(updatedState.get(0, 0), updatedState.get(1, 0));

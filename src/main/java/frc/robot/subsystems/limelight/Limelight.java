@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.limelight.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.swerve.Swerve;
+import org.frcteam6941.localization.Localizer;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.Optional;
@@ -15,17 +16,14 @@ import java.util.Optional;
 import static frc.robot.RobotConstants.LimelightConstants.*;
 
 public class Limelight extends SubsystemBase {
+    private final Localizer swerveLocalizer = Swerve.getInstance().getLocalizer();
     PoseEstimate lastEstimateRight = new PoseEstimate();
     PoseEstimate lastEstimateLeft = new PoseEstimate();
-
     boolean newRightEstimate = false;
     boolean newLeftEstimate = false;
-
     Pose2d rightPose = new Pose2d();
     Pose2d leftPose = new Pose2d();
-
     private boolean useMegaTag2 = false;
-
     private boolean rejectEstimate = false;
 
     public Limelight() {
@@ -146,27 +144,31 @@ public class Limelight extends SubsystemBase {
 
     private void addVisionMeasurement() {
         LimelightHelpers.SetRobotOrientation(LIMELIGHT_LEFT,
-                Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+                swerveLocalizer.getLatestPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         LimelightHelpers.SetRobotOrientation(LIMELIGHT_RIGHT,
-                Swerve.getInstance().getLocalizer().getLatestPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        AngularVelocity gyroRate = Units.DegreesPerSecond.of(Swerve.getInstance().getLocalizer().getSmoothedVelocity().getRotation().getDegrees());
+                swerveLocalizer.getLatestPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        AngularVelocity gyroRate = Units.DegreesPerSecond.of(swerveLocalizer.getSmoothedVelocity().getRotation().getDegrees());
 
         Optional<PoseEstimate[]> estimatedPose = determinePoseEstimate(gyroRate);
+
+        Logger.recordOutput("LimelightL/useMegaTag2", useMegaTag2);
+        Logger.recordOutput("LimelightR/useMegaTag2", useMegaTag2);
+
         if (estimatedPose.isPresent()) {
             if (estimatedPose.get()[0] != null) {
                 if (useMegaTag2) {
-                    Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get()[0].timestampSeconds, estimatedPose.get()[0].pose, VecBuilder.fill(.7, .7, 9999999));
+                    swerveLocalizer.addMeasurement(estimatedPose.get()[0].timestampSeconds, estimatedPose.get()[0].pose, VecBuilder.fill(.7, .7, 9999999));
                 } else {
-                    Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get()[0].timestampSeconds, estimatedPose.get()[0].pose, VecBuilder.fill(.5, .5, 9999999));
+                    swerveLocalizer.addMeasurement(estimatedPose.get()[0].timestampSeconds, estimatedPose.get()[0].pose, VecBuilder.fill(.5, .5, 9999999));
                 }
                 Logger.recordOutput("LimelightL/estimatedPose", estimatedPose.get()[0].pose);
             }
             Logger.recordOutput("LimelightL/hasEstimate", estimatedPose.get()[0] != null);
             if (estimatedPose.get()[1] != null) {
                 if (useMegaTag2) {
-                    Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get()[1].timestampSeconds, estimatedPose.get()[1].pose, VecBuilder.fill(.7, .7, 9999999));
+                    swerveLocalizer.addMeasurement(estimatedPose.get()[1].timestampSeconds, estimatedPose.get()[1].pose, VecBuilder.fill(.7, .7, 9999999));
                 } else {
-                    Swerve.getInstance().getLocalizer().addMeasurement(estimatedPose.get()[1].timestampSeconds, estimatedPose.get()[1].pose, VecBuilder.fill(.5, .5, 9999999));
+                    swerveLocalizer.addMeasurement(estimatedPose.get()[1].timestampSeconds, estimatedPose.get()[1].pose, VecBuilder.fill(.5, .5, 9999999));
                 }
                 Logger.recordOutput("LimelightR/estimatedPose", estimatedPose.get()[1].pose);
             }

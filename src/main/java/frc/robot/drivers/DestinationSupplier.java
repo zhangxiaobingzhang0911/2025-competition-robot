@@ -33,7 +33,9 @@ public class DestinationSupplier implements Updatable {
     private int targetTagID = 0;
     private boolean coralRight = false;
     private boolean useCoral = false;
+    @Getter
     private elevatorSetpoint currentElevSetpointCoral = elevatorSetpoint.L2;
+    @Getter
     private elevatorSetpoint currentElevSetpointAlgae = elevatorSetpoint.P1;
     @Getter
     private AlgaeScoringMode algaeScoringMode = AlgaeScoringMode.NET;

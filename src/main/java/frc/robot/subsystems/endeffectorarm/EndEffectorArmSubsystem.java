@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotConstants;
 import frc.robot.RobotContainer;
 import frc.robot.display.SuperstructureVisualizer;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.drivers.GamepieceTracker;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
@@ -24,15 +25,17 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     private static double coralIntakeAngle = CORAL_INTAKE_ANGLE.get();
     private static double coralOuttakeAngle = CORAL_OUTTAKE_ANGLE.get();
     private static double coralPreShootAngle = CORAL_PRESHOOT_ANGLE.get();
+    private static double coralPreShootAngleL1 = CORAL_PRESHOOT_ANGLE_L1.get();
+
     private static double algaeIntakeAngle = ALGAE_INTAKE_ANGLE.get();
     private static double algaeNetPreShootAngle = ALGAE_NET_PRESHOOT_ANGLE.get();
     private static double algaeProcessorPreShootAngle = ALGAE_PROCESSOR_PRESHOOT_ANGLE.get();
     private static double algaeProcessorShootVoltage = ALGAE_PROCESSOR_SHOOT_VOLTAGE.get();
     private static double coralIntakeVoltage = CORAL_INTAKE_VOLTAGE.get();
     private static double coralOuttakeVoltage = CORAL_OUTTAKE_VOLTAGE.get();
-    private static double coralPreShootVoltage = CORAL_PRESHOOT_VOLTAGE.get();
+    private static double coralShootVoltageL1 = CORAL_SHOOT_VOLTAGE_L1.get();
     private static double algaeIntakeVoltage = ALGAE_INTAKE_VOLTAGE.get();
-    private static double algaePreShootVoltage = ALGAE_PRESHOOT_VOLTAGE.get();
+
     private static double coralHoldVoltage = CORAL_HOLD_VOLTAGE.get();
     private static double algaeHoldVoltage = ALGAE_HOLD_VOLTAGE.get();
     // Add these constants near the other static variables
@@ -109,7 +112,11 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         }
 
         // Update danger flag based on arm position
-        RobotContainer.endeffectorIsDanger = !(isNearAngle(coralIntakeAngle) || (isNearAngle(coralPreShootAngle) && hasCoral()));
+        RobotContainer.endeffectorIsDanger = !(
+            isNearAngle(coralIntakeAngle) || 
+            (isNearAngle(coralPreShootAngle) && hasCoral()) || 
+            (isNearAngle(coralPreShootAngleL1) && hasCoral())
+        );
 
         // Calculate current state transition
         SystemState newState;
@@ -159,7 +166,11 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 break;
 
             case CORAL_PRESHOOTING:
-                armPivotIO.setPivotAngle(coralPreShootAngle);
+                if (DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1) {
+                    armPivotIO.setPivotAngle(coralPreShootAngleL1);
+                } else {
+                    armPivotIO.setPivotAngle(coralPreShootAngle);
+                }
                 break;
             case ALGAE_INTAKING:
                 armRollerIO.setVoltage(algaeIntakeVoltage);
@@ -199,7 +210,11 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 break;
 
             case CORAL_SHOOTING:
-                armRollerIO.setVoltage(coralShootVoltage);
+                if (DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1) {
+                    armRollerIO.setVoltage(coralShootVoltageL1);
+                } else {
+                    armRollerIO.setVoltage(coralShootVoltage);
+                }
                 break;
         }
 
@@ -209,15 +224,15 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             coralIntakeAngle = CORAL_INTAKE_ANGLE.get();
             coralOuttakeAngle = CORAL_OUTTAKE_ANGLE.get();
             coralPreShootAngle = CORAL_PRESHOOT_ANGLE.get();
+            coralPreShootAngleL1 = CORAL_PRESHOOT_ANGLE_L1.get();
             algaeIntakeAngle = ALGAE_INTAKE_ANGLE.get();
             algaeNetPreShootAngle = ALGAE_NET_PRESHOOT_ANGLE.get();
             algaeProcessorPreShootAngle = ALGAE_PROCESSOR_PRESHOOT_ANGLE.get();
 
             coralIntakeVoltage = CORAL_INTAKE_VOLTAGE.get();
             coralOuttakeVoltage = CORAL_OUTTAKE_VOLTAGE.get();
-            coralPreShootVoltage = CORAL_PRESHOOT_VOLTAGE.get();
+            coralShootVoltageL1 = CORAL_SHOOT_VOLTAGE_L1.get();
             algaeIntakeVoltage = ALGAE_INTAKE_VOLTAGE.get();
-            algaePreShootVoltage = ALGAE_PRESHOOT_VOLTAGE.get();
             coralHoldVoltage = CORAL_HOLD_VOLTAGE.get();
             algaeHoldVoltage = ALGAE_HOLD_VOLTAGE.get();
 
@@ -367,7 +382,11 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      * @return True if both angle is near the preshoot angle and contains a coral
      */
     public boolean isShootReady() {
-        return isNearAngle(coralPreShootAngle);
+        if (DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1) {
+            return isNearAngle(coralPreShootAngleL1);
+        } else {
+            return isNearAngle(coralPreShootAngle);
+        }
     }
 
     /**

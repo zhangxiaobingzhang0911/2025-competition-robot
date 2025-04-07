@@ -71,8 +71,12 @@ public class ReefAimCommand extends Command {
         if (DestinationSupplier.getInstance().getCurrentGamePiece() == DestinationSupplier.GamePiece.ALGAE_INTAKING) {
             finalDestinationPose = DestinationSupplier.getFinalAlgaeTarget(tagPose);
         } else {
-            rightReef = DestinationSupplier.getInstance().getCurrentBranch();
-            finalDestinationPose = DestinationSupplier.getFinalCoralTarget(tagPose, rightReef);
+            if (DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1) {
+                finalDestinationPose = DestinationSupplier.getFinalAlgaeTarget(tagPose);
+            } else {
+                rightReef = DestinationSupplier.getInstance().getCurrentBranch();
+                finalDestinationPose = DestinationSupplier.getFinalCoralTarget(tagPose, rightReef);
+            }
         }
         indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMING);
     }

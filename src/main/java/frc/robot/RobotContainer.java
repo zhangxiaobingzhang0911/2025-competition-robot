@@ -262,8 +262,6 @@ public class RobotContainer {
                 // Intake L1
                 new ShootHoldCommand(intakeSubsystem, () -> driverController.rightTrigger().getAsBoolean()),
                 new ConditionalCommand(
-                        // Elevator Coral
-                        new PutCoralCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
                         new ConditionalCommand(
                                 // Elevator Algae Net
                                 new PutAlgaeNetCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
@@ -271,7 +269,9 @@ public class RobotContainer {
                                 new PutAlgaeProcessorCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
                                 () -> destinationSupplier.getAlgaeScoringMode() == DestinationSupplier.AlgaeScoringMode.NET
                         ),
-                        () -> GamepieceTracker.getInstance().isEndeffectorHasCoral()
+                        // Elevator Coral
+                        new PutCoralCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                        () -> !GamepieceTracker.getInstance().isEndeffectorHasCoral()
                 ),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
     }

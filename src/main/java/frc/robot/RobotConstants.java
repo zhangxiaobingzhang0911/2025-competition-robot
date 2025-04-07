@@ -411,9 +411,9 @@ public final class RobotConstants {
         public static final TunableNumber ALGAE_PROCESSOR_EXTENSION_METER = new TunableNumber("ELEVATOR SETPOINTS/ALGAE_PROCESSOR",
                 0.12);
         public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
-                0.55);
+                0.3);
         public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
-                0.55);
+                0.4);
         public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
                 0.75);
         public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",

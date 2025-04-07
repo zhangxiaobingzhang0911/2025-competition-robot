@@ -37,7 +37,7 @@ public final class RobotConstants {
     public static final boolean VisionCamera = false;
     // Judge whether the team is 10541
     // During Huston, is10541 should always be TRUE
-    public static final String Serial10541 = "03415993";
+    public static final String Serial10541 = "0327BA65";
     public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541) && Robot.isReal();
     public static String CANIVORE_CAN_BUS_NAME = is10541 ? "10541Canivore0" : "6941Canivore0";
     public static String CLIMBER_CAN_BUS = is10541 ? "rio" : "6941Canivore0";

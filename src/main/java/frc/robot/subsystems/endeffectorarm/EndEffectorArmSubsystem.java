@@ -165,12 +165,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 armPivotIO.setPivotAngle(coralPreShootAngle);
                 break;
             case ALGAE_INTAKING:
-                if (!hasAlgae()) {
-                    armRollerIO.setVoltage(algaeIntakeVoltage);
-                    armPivotIO.setPivotAngle(algaeIntakeAngle);
-                } else {
-                    armRollerIO.setVoltage(algaeHoldVoltage);
-                }
+                armRollerIO.setVoltage(algaeIntakeVoltage);
+                armPivotIO.setPivotAngle(algaeIntakeAngle);
                 break;
 
             case ALGAE_NET_PRESHOOTING:
@@ -178,19 +174,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 break;
 
             case ALGAE_NET_SHOOTING:
-                if (hasAlgae()) {
-                    armRollerIO.setVoltage(algaeNetShootVoltage);
-                } else {
-                    if (!algaeShootTimerStarted) {
-                        algaeShootTimer.start();
-                        algaeShootTimerStarted = true;
-                    } else if (algaeShootTimer.hasElapsed(0.3)) {
-                        setWantedState(WantedState.NEUTRAL);
-                        algaeShootTimer.stop();
-                        algaeShootTimer.reset();
-                        algaeShootTimerStarted = false;
-                    }
-                }
+                armRollerIO.setVoltage(algaeNetShootVoltage);
                 break;
 
             case ALGAE_PROCESSOR_PRESHOOTING:
@@ -198,19 +182,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 break;
 
             case ALGAE_PROCESSOR_SHOOTING:
-                if (hasAlgae()) {
-                    armRollerIO.setVoltage(algaeProcessorShootVoltage);
-                } else {
-                    if (!algaeShootTimerStarted) {
-                        algaeShootTimer.start();
-                        algaeShootTimerStarted = true;
-                    } else if (algaeShootTimer.hasElapsed(0.3)) {
-                        setWantedState(WantedState.NEUTRAL);
-                        algaeShootTimer.stop();
-                        algaeShootTimer.reset();
-                        algaeShootTimerStarted = false;
-                    }
-                }
+                armRollerIO.setVoltage(algaeProcessorShootVoltage);
                 break;
 
             case HOLDING:
@@ -221,9 +193,6 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 } else if (hasCoral()) {
                     armPivotIO.setPivotAngle(homeAngle);
                     armRollerIO.setVoltage(coralHoldVoltage);
-                } else {
-                    setWantedState(WantedState.NEUTRAL);
-                    systemState = SystemState.NEUTRAL;
                 }
                 break;
 
@@ -233,11 +202,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 break;
 
             case CORAL_SHOOTING:
-                if (hasCoral()) {
-                    armRollerIO.setVoltage(coralShootVoltage);
-                } else {
-                    setWantedState(WantedState.NEUTRAL);
-                }
+                armRollerIO.setVoltage(coralShootVoltage);
                 break;
         }
 
@@ -302,9 +267,41 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 }
                 yield SystemState.CORAL_SHOOTING;
             }
-            case ALGAE_NET_SHOOT -> SystemState.ALGAE_NET_SHOOTING;
+            case ALGAE_NET_SHOOT -> {
+                if (hasAlgae()) {
+                    yield SystemState.ALGAE_NET_SHOOTING;
+                } else {
+                    if (!algaeShootTimerStarted) {
+                        algaeShootTimer.start();
+                        algaeShootTimerStarted = true;
+                        yield SystemState.ALGAE_NET_SHOOTING;
+                    } else if (algaeShootTimer.hasElapsed(0.3)) {
+                        algaeShootTimer.stop();
+                        algaeShootTimer.reset();
+                        algaeShootTimerStarted = false;
+                        yield SystemState.HOLDING;
+                    }else yield SystemState.ALGAE_NET_SHOOTING;
+                }
+
+            }
             case ALGAE_NET_PRESHOOT -> SystemState.ALGAE_NET_PRESHOOTING;
-            case ALGAE_PROCESSOR_SHOOT -> SystemState.ALGAE_PROCESSOR_SHOOTING;
+            case ALGAE_PROCESSOR_SHOOT -> {
+                if (hasAlgae()) {
+                    yield SystemState.ALGAE_PROCESSOR_SHOOTING;
+                } else {
+                    if (!algaeShootTimerStarted) {
+                        algaeShootTimer.start();
+                        algaeShootTimerStarted = true;
+                        yield SystemState.ALGAE_PROCESSOR_SHOOTING;
+                    } else if (algaeShootTimer.hasElapsed(0.3)) {
+                        algaeShootTimer.stop();
+                        algaeShootTimer.reset();
+                        algaeShootTimerStarted = false;
+                        yield SystemState.HOLDING;
+                    }else yield SystemState.ALGAE_PROCESSOR_SHOOTING;
+                }
+
+            }
             case ALGAE_PROCESSOR_PRESHOOT -> SystemState.ALGAE_PROCESSOR_PRESHOOTING;
         };
     }

@@ -271,7 +271,7 @@ public class RobotContainer {
                                 new PutAlgaeProcessorCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
                                 () -> destinationSupplier.getAlgaeScoringMode() == DestinationSupplier.AlgaeScoringMode.NET
                         ),
-                        () -> destinationSupplier.getCurrentGamePiece() == DestinationSupplier.GamePiece.CORAL_SCORING
+                        () -> GamepieceTracker.getInstance().isEndeffectorHasCoral()
                 ),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
     }

@@ -37,7 +37,7 @@ public final class RobotConstants {
     public static final boolean VisionCamera = false;
     // Judge whether the team is 10541
     // During Huston, is10541 should always be TRUE
-    public static final String Serial10541 = "03415993";
+    public static final String Serial10541 = "0327BA65";
     public static final boolean is10541 = RobotController.getSerialNumber().matches(Serial10541) && Robot.isReal();
     public static String CANIVORE_CAN_BUS_NAME = is10541 ? "10541Canivore0" : "6941Canivore0";
     public static String CLIMBER_CAN_BUS = is10541 ? "rio" : "6941Canivore0";
@@ -306,8 +306,8 @@ public final class RobotConstants {
     public static class IntakeConstants {
         public static final int INTAKE_MOTOR_ID = 15;
         public static final int INTAKE_PIVOT_MOTOR_ID = 16;
-        public static final int INTAKE_PIVOT_ENCODER_ID = 17; //TODO:change to a usable value
-        public static final double INTAKE_PIVOT_ROTOR_ENCODER_RATIO = 1;
+        public static final int INTAKE_PIVOT_ENCODER_ID = 17; 
+        public static final double INTAKE_PIVOT_ROTOR_ENCODER_RATIO = (12.0 * 50) / 11;
 
         //Constants for intake roller
         public static final int STATOR_CURRENT_LIMIT_AMPS = 80;
@@ -329,7 +329,7 @@ public final class RobotConstants {
         public static final TunableNumber AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/avoidAngle", 90);
         public static final TunableNumber FUNNEL_AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/funnelAvoidAngle", 51);
         public static final TunableNumber SHOOT_ANGLE = new TunableNumber("INTAKE_PIVOT/shootAngle", 45);
-        public static final int INTAKE_PIVOT_ENCODER_OFFSET = 0; //TODO: change
+        public static final double INTAKE_PIVOT_ENCODER_OFFSET = -0.018473310625;
         //Motion constants for intake roller
         public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeVoltage", 15.0);
         public static final TunableNumber OUTTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/outtakeVoltage", -6.0);
@@ -389,7 +389,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
         public static final double ELEVATOR_DANGER_ZONE = 0.4180619200456253;
-        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.0;//TODO: fixme
+        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.36;//TODO: fixme
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                 300);
@@ -493,7 +493,7 @@ public final class RobotConstants {
         public static class EndEffectorArmPivotGainsClass {
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KP = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kp", 2.5);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KI = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ki", 0);
-            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0.01);
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0.1);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KA = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ka", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KV = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kv", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KS = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ks", 0.015);

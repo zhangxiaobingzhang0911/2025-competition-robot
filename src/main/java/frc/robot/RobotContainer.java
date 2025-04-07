@@ -20,7 +20,7 @@ import frc.robot.auto.fullAutos.AutoActions;
 import frc.robot.auto.fullAutos.AutoFile;
 import frc.robot.commands.GroundIntakeCommand;
 import frc.robot.commands.GroundOuttakeCommand;
-import frc.robot.commands.ZeroCommand;
+import frc.robot.commands.ZeroElevatorCommand;
 import frc.robot.commands.aimSequences.AutoAimShootCommand;
 import frc.robot.commands.aimSequences.ReefAimCommand;
 import frc.robot.commands.climb.ClimbCommand;
@@ -197,8 +197,7 @@ public class RobotContainer {
         driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
         driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
-
-        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
+        driverController.povDown().onTrue(new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
     }
 
     private void configureStreamDeckBindings() {

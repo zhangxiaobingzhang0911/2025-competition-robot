@@ -103,7 +103,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.motorVolts = motorVolts.getValueAsDouble();
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
-        inputs.currentAngleDeg = talonPosToAngle(currentPositionRot.getValueAsDouble());
+        inputs.currentAngleDeg = encoderPosToAngle(currentPositionRot.getValueAsDouble());
         inputs.targetAngleDeg = targetAngleDeg;
         inputs.motorVolts = motorVolts.getValueAsDouble();
 
@@ -131,24 +131,24 @@ public class IntakePivotIOReal implements IntakePivotIO {
     @Override
     public void setPivotAngle(double targetAngleDeg) {
         this.targetAngleDeg = targetAngleDeg;
-        motor.setControl(motionMagic.withPosition(angleToTalonPos(targetAngleDeg)).withEnableFOC(true));
+        motor.setControl(motionMagic.withPosition(angleToEncoderPos(targetAngleDeg)).withEnableFOC(true));
     }
 
     @Override
     public void resetAngle(double resetAngleDeg) {
-        motor.setPosition(angleToTalonPos(resetAngleDeg));
+        motor.setPosition(resetAngleDeg / 360);
     }
 
-    private double angleToTalonPos(double angleDeg) {
-        return (angleDeg / 360) * PIVOT_RATIO;
+    private double angleToEncoderPos(double angleDeg) {
+        return angleDeg / 360;
     }
 
-    private double talonPosToAngle(double rotations) {
-        return rotations * 360 / PIVOT_RATIO;
+    private double encoderPosToAngle(double rotations) {
+        return rotations * 360;
     }
 
     @Override
     public boolean isNearAngle(double targetAngleDeg, double toleranceDeg) {
-        return Math.abs(currentPositionRot.getValueAsDouble() - angleToTalonPos(targetAngleDeg)) <= angleToTalonPos(toleranceDeg);
+        return Math.abs(currentPositionRot.getValueAsDouble() - angleToEncoderPos(targetAngleDeg)) <= angleToEncoderPos(toleranceDeg);
     }
 }

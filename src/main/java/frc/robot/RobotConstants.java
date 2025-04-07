@@ -279,7 +279,7 @@ public final class RobotConstants {
     public static final class ReefAimConstants {
         public static final TunableNumber MAX_DISTANCE_REEF_LINEUP = new TunableNumber("AIM/maxLineupDistance", 1.5);
         public static final Measure<DistanceUnit> PIPE_TO_TAG = Meters.of(0.164308503);
-        public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.55);
+        public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.62);
         public static final TunableNumber X_TOLERANCE_METERS = new TunableNumber("AIM/X_TOLERANCE_METERS", 0.01);
         public static final TunableNumber Y_TOLERANCE_METERS = new TunableNumber("AIM/Y_TOLERANCE_METERS", 0.01);
         public static final TunableNumber RAISE_LIMIT_METERS = new TunableNumber("AIM/RAISE_LIMIT_METERS", 1);
@@ -348,9 +348,9 @@ public final class RobotConstants {
          * Constants for the intake pivot motor gains in the intake subsystem.
          */
         public static class IntakePivotGainsClass {
-            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 2.5);
+            public static final TunableNumber INTAKE_PIVOT_KP = new TunableNumber("INTAKE_PIVOT PID/kp", 60);
             public static final TunableNumber INTAKE_PIVOT_KI = new TunableNumber("INTAKE_PIVOT PID/ki", 0);
-            public static final TunableNumber INTAKE_PIVOT_KD = new TunableNumber("INTAKE_PIVOT PID/kd", 0);
+            public static final TunableNumber INTAKE_PIVOT_KD = new TunableNumber("INTAKE_PIVOT PID/kd", 1);
         }
     }
 
@@ -400,9 +400,10 @@ public final class RobotConstants {
         public static final TunableNumber MAX_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/max",
                 1.4);
         public static final TunableNumber HOLD_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/idle",
-                0.5);
+                0.6);
         public static final TunableNumber HOME_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOME",
-                0.12);
+                0.10
+        );
         public static final TunableNumber HOLD_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOLD INTAKE",
                 0.16);
         public static final TunableNumber ALGAE_SCORE_EXTENSION_METER = new TunableNumber("ELEVATOR SETPOINTS/ALGAE_SCORE",
@@ -422,7 +423,7 @@ public final class RobotConstants {
 
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 40);
-        public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT = new TunableNumber("Elevator min safe height", 0.45);
+        public static final TunableNumber ELEVATOR_MIN_SAFE_HEIGHT = new TunableNumber("Elevator min safe height", 0.55);
 
     }
 

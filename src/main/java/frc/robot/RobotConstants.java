@@ -112,7 +112,7 @@ public final class RobotConstants {
 
         public static final double statorCurrent = 110;
         public static final double supplyCurrent = 50;
-        public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0.5;
+        public static final double VOLTAGE_CLOSED_LOOP_RAMP_PERIOD = 0;//0.5
         public static final double deadband = 0.05;
         public static final double rotationalDeadband = 0.05;
 
@@ -311,7 +311,7 @@ public final class RobotConstants {
 
         //Constants for intake roller
         public static final int STATOR_CURRENT_LIMIT_AMPS = 80;
-        public static final int SUPPLY_CURRENT_LIMIT_AMPS = 40;
+        public static final int SUPPLY_CURRENT_LIMIT_AMPS = 80;
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERT = false;
         public static final double REDUCTION = 1;
@@ -405,8 +405,10 @@ public final class RobotConstants {
                 0.12);
         public static final TunableNumber HOLD_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOLD INTAKE",
                 0.16);
-        public static final TunableNumber ALGAE_SCORE_EXTENSION_METER = new TunableNumber("ELEVATOR SETPOINTS/ALGAE_SCORE",
+        public static final TunableNumber ALGAE_NET_EXTENSION_METER = new TunableNumber("ELEVATOR SETPOINTS/ALGAE_NET",
                 1.4);
+        public static final TunableNumber ALGAE_PROCESSOR_EXTENSION_METER = new TunableNumber("ELEVATOR SETPOINTS/ALGAE_PROCESSOR",
+                0.12);
         public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
                 0.45);
         public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
@@ -470,7 +472,8 @@ public final class RobotConstants {
         public static final TunableNumber CORAL_OUTTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralOuttakeAngle", 0);
         public static final TunableNumber CORAL_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralPreShootAngle", 220);
         public static final TunableNumber ALGAE_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeIntakeAngle", 0);
-        public static final TunableNumber ALGAE_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaePreShootAngle", 245.0);
+        public static final TunableNumber ALGAE_NET_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeNetPreShootAngle", 245.0);
+        public static final TunableNumber ALGAE_PROCESSOR_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeProcessorPreShootAngle", 0.0);
 
         // Roller voltages for different operations
         public static final TunableNumber CORAL_INTAKE_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralIntakeVoltage", 12.0);
@@ -481,7 +484,8 @@ public final class RobotConstants {
         public static final TunableNumber CORAL_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralHoldVoltage", 0.5);
         public static final TunableNumber ALGAE_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeHoldVoltage", 1.5);
         public static final TunableNumber CORAL_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralShootVoltage", -12.0);
-        public static final TunableNumber ALGAE_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeShootVoltage", -12.0);
+        public static final TunableNumber ALGAE_NET_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeNetShootVoltage", -12.0);
+        public static final TunableNumber ALGAE_PROCESSOR_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeProcessorShootVoltage", -12.0);
 
         /**
          * Constants for the EndEffectorArm pivot motor gains.

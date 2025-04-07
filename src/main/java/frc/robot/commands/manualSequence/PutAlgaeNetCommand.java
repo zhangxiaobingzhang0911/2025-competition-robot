@@ -10,21 +10,21 @@ import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-public class PutAlgaeCommand extends ParallelCommandGroup {
-    public PutAlgaeCommand(CommandXboxController driverController, EndEffectorArmSubsystem endeffectorArmSubsystem,
-                           ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, IndicatorSubsystem indicatorSubsystem) {
+public class PutAlgaeNetCommand extends ParallelCommandGroup {
+    public PutAlgaeNetCommand(CommandXboxController driverController, EndEffectorArmSubsystem endeffectorArmSubsystem,
+                              ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, IndicatorSubsystem indicatorSubsystem) {
         addRequirements(endeffectorArmSubsystem, elevatorSubsystem, intakeSubsystem);
         addCommands(
                 Commands.parallel(
-                        Commands.runOnce(() -> endeffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_PRESHOOT)),
-                        Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.ALGAE_SCORE_EXTENSION_METER.get())),
+                        Commands.runOnce(() -> endeffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_NET_PRESHOOT)),
+                        Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.ALGAE_NET_EXTENSION_METER.get())),
                         Commands.sequence(
                                 Commands.waitUntil(() -> driverController.rightTrigger().getAsBoolean()),
-                                Commands.runOnce(() -> endeffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_SHOOT)),
+                                Commands.runOnce(() -> endeffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_NET_SHOOT)),
                                 Commands.waitSeconds(100)
                         )
                 ).finallyDo(() -> {
-                    if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
+                    if ((!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae())) {
                         elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get());
                     } else {
                         elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get());

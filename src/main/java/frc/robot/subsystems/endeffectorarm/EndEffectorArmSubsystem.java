@@ -19,13 +19,15 @@ import static frc.robot.RobotConstants.EndEffectorArmConstants.*;
 
 public class EndEffectorArmSubsystem extends RollerSubsystem {
     public static final String NAME = "EndEffectorArm";
+    private static final double algaeProcessorShootVoltage = ALGAE_PROCESSOR_SHOOT_VOLTAGE.get();
     // Static variables to hold the current values from TunableNumbers
     private static double homeAngle = HOME_ANGLE.get();
     private static double coralIntakeAngle = CORAL_INTAKE_ANGLE.get();
     private static double coralOuttakeAngle = CORAL_OUTTAKE_ANGLE.get();
     private static double coralPreShootAngle = CORAL_PRESHOOT_ANGLE.get();
     private static double algaeIntakeAngle = ALGAE_INTAKE_ANGLE.get();
-    private static double algaePreShootAngle = ALGAE_PRESHOOT_ANGLE.get();
+    private static double algaeNetPreShootAngle = ALGAE_NET_PRESHOOT_ANGLE.get();
+    private static double algaeProcessorPreShootAngle = ALGAE_PROCESSOR_PRESHOOT_ANGLE.get();
     private static double coralIntakeVoltage = CORAL_INTAKE_VOLTAGE.get();
     private static double coralOuttakeVoltage = CORAL_OUTTAKE_VOLTAGE.get();
     private static double coralPreShootVoltage = CORAL_PRESHOOT_VOLTAGE.get();
@@ -35,7 +37,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     private static double algaeHoldVoltage = ALGAE_HOLD_VOLTAGE.get();
     // Add these constants near the other static variables
     private static double coralShootVoltage = CORAL_SHOOT_VOLTAGE.get();
-    private static double algaeShootVoltage = ALGAE_SHOOT_VOLTAGE.get();
+    private static double algaeNetShootVoltage = ALGAE_NET_SHOOT_VOLTAGE.get();
     private final Timer algaeShootTimer = new Timer();
     // IO devices and their inputs
     private final EndEffectorArmPivotIO armPivotIO;
@@ -101,7 +103,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             if (systemState == SystemState.ALGAE_INTAKING && isNearAngle(algaeIntakeAngle)) {
                 GamepieceTracker.getInstance().setEndeffectorHasAlgae(true);
             }
-            if (systemState == SystemState.ALGAE_SHOOTING) {
+            if (systemState == SystemState.ALGAE_NET_SHOOTING) {
                 GamepieceTracker.getInstance().setEndeffectorHasAlgae(false);
             }
         }
@@ -166,8 +168,44 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 }
                 break;
 
-            case ALGAE_PRESHOOTING:
-                armPivotIO.setPivotAngle(algaePreShootAngle);
+            case ALGAE_NET_PRESHOOTING:
+                armPivotIO.setPivotAngle(algaeNetPreShootAngle);
+                break;
+
+            case ALGAE_NET_SHOOTING:
+                if (hasAlgae()) {
+                    armRollerIO.setVoltage(algaeNetShootVoltage);
+                } else {
+                    if (!algaeShootTimerStarted) {
+                        algaeShootTimer.start();
+                        algaeShootTimerStarted = true;
+                    } else if (algaeShootTimer.hasElapsed(0.3)) {
+                        setWantedState(WantedState.NEUTRAL);
+                        algaeShootTimer.stop();
+                        algaeShootTimer.reset();
+                        algaeShootTimerStarted = false;
+                    }
+                }
+                break;
+
+            case ALGAE_PROCESSOR_PRESHOOTING:
+                armPivotIO.setPivotAngle(algaeProcessorPreShootAngle);
+                break;
+
+            case ALGAE_PROCESSOR_SHOOTING:
+                if (hasAlgae()) {
+                    armRollerIO.setVoltage(algaeProcessorShootVoltage);
+                } else {
+                    if (!algaeShootTimerStarted) {
+                        algaeShootTimer.start();
+                        algaeShootTimerStarted = true;
+                    } else if (algaeShootTimer.hasElapsed(0.3)) {
+                        setWantedState(WantedState.NEUTRAL);
+                        algaeShootTimer.stop();
+                        algaeShootTimer.reset();
+                        algaeShootTimerStarted = false;
+                    }
+                }
                 break;
 
             case HOLDING:
@@ -196,22 +234,6 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                     setWantedState(WantedState.NEUTRAL);
                 }
                 break;
-
-            case ALGAE_SHOOTING:
-                if (hasAlgae()) {
-                    armRollerIO.setVoltage(algaeShootVoltage);
-                } else {
-                    if (!algaeShootTimerStarted) {
-                        algaeShootTimer.start();
-                        algaeShootTimerStarted = true;
-                    } else if (algaeShootTimer.hasElapsed(0.3)) {
-                        setWantedState(WantedState.NEUTRAL);
-                        algaeShootTimer.stop();
-                        algaeShootTimer.reset();
-                        algaeShootTimerStarted = false;
-                    }
-                }
-                break;
         }
 
         // Update tunable numbers if tuning is enabled
@@ -221,7 +243,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             coralOuttakeAngle = CORAL_OUTTAKE_ANGLE.get();
             coralPreShootAngle = CORAL_PRESHOOT_ANGLE.get();
             algaeIntakeAngle = ALGAE_INTAKE_ANGLE.get();
-            algaePreShootAngle = ALGAE_PRESHOOT_ANGLE.get();
+            algaeNetPreShootAngle = ALGAE_NET_PRESHOOT_ANGLE.get();
+            algaeProcessorPreShootAngle = ALGAE_PROCESSOR_PRESHOOT_ANGLE.get();
 
             coralIntakeVoltage = CORAL_INTAKE_VOLTAGE.get();
             coralOuttakeVoltage = CORAL_OUTTAKE_VOLTAGE.get();
@@ -232,7 +255,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             algaeHoldVoltage = ALGAE_HOLD_VOLTAGE.get();
 
             coralShootVoltage = CORAL_SHOOT_VOLTAGE.get();
-            algaeShootVoltage = ALGAE_SHOOT_VOLTAGE.get();
+            algaeNetShootVoltage = ALGAE_NET_SHOOT_VOLTAGE.get();
+            algaeProcessorPreShootAngle = ALGAE_PROCESSOR_PRESHOOT_ANGLE.get();
         }
     }
 
@@ -259,7 +283,6 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 }
                 yield SystemState.ALGAE_INTAKING;
             }
-            case ALGAE_PRESHOOT -> SystemState.ALGAE_PRESHOOTING;
             case HOLD -> {
                 if (!hasAlgae() && !hasCoral()) {
                     yield SystemState.NEUTRAL;
@@ -274,9 +297,10 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 }
                 yield SystemState.CORAL_SHOOTING;
             }
-            case ALGAE_SHOOT -> {
-                yield SystemState.ALGAE_SHOOTING;
-            }
+            case ALGAE_NET_SHOOT -> SystemState.ALGAE_NET_SHOOTING;
+            case ALGAE_NET_PRESHOOT -> SystemState.ALGAE_NET_PRESHOOTING;
+            case ALGAE_PROCESSOR_SHOOT -> SystemState.ALGAE_PROCESSOR_SHOOTING;
+            case ALGAE_PROCESSOR_PRESHOOT -> SystemState.ALGAE_PROCESSOR_PRESHOOTING;
         };
     }
 
@@ -336,8 +360,10 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         CORAL_PRESHOOT,
         CORAL_SHOOT,
         ALGAE_INTAKE,
-        ALGAE_PRESHOOT,
-        ALGAE_SHOOT,
+        ALGAE_NET_PRESHOOT,
+        ALGAE_NET_SHOOT,
+        ALGAE_PROCESSOR_PRESHOOT,
+        ALGAE_PROCESSOR_SHOOT,
         HOLD,
         NEUTRAL
     }
@@ -351,8 +377,10 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         CORAL_PRESHOOTING,
         CORAL_SHOOTING,
         ALGAE_INTAKING,
-        ALGAE_PRESHOOTING,
-        ALGAE_SHOOTING,
+        ALGAE_NET_PRESHOOTING,
+        ALGAE_NET_SHOOTING,
+        ALGAE_PROCESSOR_PRESHOOTING,
+        ALGAE_PROCESSOR_SHOOTING,
         HOLDING,
         NEUTRAL
     }

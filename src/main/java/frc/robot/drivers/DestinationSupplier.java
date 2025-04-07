@@ -34,7 +34,9 @@ public class DestinationSupplier implements Updatable {
     private boolean coralRight = false;
     private boolean useCoral = false;
     private elevatorSetpoint currentElevSetpointCoral = elevatorSetpoint.L2;
-    private elevatorSetpoint currentElevSetpointPoke = elevatorSetpoint.P1;
+    private elevatorSetpoint currentElevSetpointAlgae = elevatorSetpoint.P1;
+    @Getter
+    private AlgaeScoringMode algaeScoringMode = AlgaeScoringMode.NET;
     @Getter
     private GamePiece currentGamePiece = GamePiece.CORAL_SCORING;
 
@@ -250,7 +252,7 @@ public class DestinationSupplier implements Updatable {
                 SmartDashboard.putString("DestinationSupplier/currentElevSetpointCoral", setpoint.toString());
                 break;
             case P1, P2:
-                currentElevSetpointPoke = setpoint;
+                currentElevSetpointAlgae = setpoint;
                 //Logger.recordOutput("DestinationSupplier/currentElevSetpointPoke", setpoint);
                 SmartDashboard.putString("DestinationSupplier/currentElevSetpointPoke", setpoint.toString());
                 break;
@@ -276,7 +278,7 @@ public class DestinationSupplier implements Updatable {
                 default -> RobotConstants.ElevatorConstants.L2_EXTENSION_METERS.get();
             };
         } else {
-            return switch (currentElevSetpointPoke) {
+            return switch (currentElevSetpointAlgae) {
                 case P1 -> RobotConstants.ElevatorConstants.P1_EXTENSION_METERS.get();
                 case P2 -> RobotConstants.ElevatorConstants.P2_EXTENSION_METERS.get();
                 default -> RobotConstants.ElevatorConstants.P1_EXTENSION_METERS.get();
@@ -294,6 +296,11 @@ public class DestinationSupplier implements Updatable {
         this.coralRight = coralRight;
         //Logger.recordOutput("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
         SmartDashboard.putString("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
+    }
+
+    public void setAlgaeScoringMode(AlgaeScoringMode algaeScoringMode) {
+        this.algaeScoringMode = algaeScoringMode;
+        SmartDashboard.putString("DestinationSupplier/algaeScoringMode", algaeScoringMode.toString());
     }
 
     /**
@@ -381,5 +388,10 @@ public class DestinationSupplier implements Updatable {
     public enum GamePiece {
         CORAL_SCORING,
         ALGAE_INTAKING
+    }
+
+    public enum AlgaeScoringMode {
+        NET,
+        PROCESSOR
     }
 }

@@ -29,7 +29,8 @@ import frc.robot.commands.climb.IdleClimbCommand;
 import frc.robot.commands.climb.PreClimbCommand;
 import frc.robot.commands.l1Scoring.HoldIntakeCommand;
 import frc.robot.commands.l1Scoring.ShootHoldCommand;
-import frc.robot.commands.manualSequence.PutAlgaeCommand;
+import frc.robot.commands.manualSequence.PutAlgaeNetCommand;
+import frc.robot.commands.manualSequence.PutAlgaeProcessorCommand;
 import frc.robot.commands.manualSequence.PutCoralCommand;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
@@ -206,7 +207,10 @@ public class RobotContainer {
         streamDeckController.button(3).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.AUTO)).ignoringDisable(true));
         streamDeckController.button(4).onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         streamDeckController.button(5).onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
-        streamDeckController.button(13).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)).ignoringDisable(true));
+        streamDeckController.button(6).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentGamePiece(DestinationSupplier.GamePiece.CORAL_SCORING)).ignoringDisable(true));
+        streamDeckController.button(7).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentGamePiece(DestinationSupplier.GamePiece.ALGAE_INTAKING)).ignoringDisable(true));
+        streamDeckController.button(11).onTrue(Commands.runOnce(() -> destinationSupplier.setAlgaeScoringMode(DestinationSupplier.AlgaeScoringMode.NET)).ignoringDisable(true));
+        streamDeckController.button(12).onTrue(Commands.runOnce(() -> destinationSupplier.setAlgaeScoringMode(DestinationSupplier.AlgaeScoringMode.PROCESSOR)).ignoringDisable(true));
         streamDeckController.button(14).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)).ignoringDisable(true));
         streamDeckController.button(15).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)).ignoringDisable(true));
         streamDeckController.button(16).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)).ignoringDisable(true));
@@ -261,8 +265,13 @@ public class RobotContainer {
                 new ConditionalCommand(
                         // Elevator Coral
                         new PutCoralCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
-                        // Elevator Algae
-                        new PutAlgaeCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                        new ConditionalCommand(
+                                // Elevator Algae Net
+                                new PutAlgaeNetCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                                // Elevator Algae Net
+                                new PutAlgaeProcessorCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                                () -> destinationSupplier.getAlgaeScoringMode() == DestinationSupplier.AlgaeScoringMode.NET
+                        ),
                         () -> destinationSupplier.getCurrentGamePiece() == DestinationSupplier.GamePiece.CORAL_SCORING
                 ),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);

@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -9,9 +10,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
 import frc.robot.RobotConstants;
@@ -49,15 +48,15 @@ public class IntakePivotIOReal implements IntakePivotIO {
         config.CurrentLimits.StatorCurrentLimit = 40.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        // //initialize CANcoder
-        // CANcoderConfiguration CANconfig = new CANcoderConfiguration();
-        // CANconfig.MagnetSensor.MagnetOffset =INTAKE_PIVOT_ENCODER_OFFSET;
-        // CANconfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        // caNcoder.getConfigurator().apply(CANconfig);
-        // // try the fused cancoder option, if it doesn't work, use the remote
-        // config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        // config.Feedback.FeedbackRemoteSensorID = INTAKE_PIVOT_ENCODER_ID;
-        // config.Feedback.RotorToSensorRatio = INTAKE_PIVOT_ROTOR_ENCODER_RATIO;
+        // Initialize CANcoder
+        CANcoderConfiguration CANconfig = new CANcoderConfiguration();
+        CANconfig.MagnetSensor.MagnetOffset = INTAKE_PIVOT_ENCODER_OFFSET;
+        CANconfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        caNcoder.getConfigurator().apply(CANconfig);
+        // Try the fused cancoder option, if it doesn't work, use the remote
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        config.Feedback.FeedbackRemoteSensorID = INTAKE_PIVOT_ENCODER_ID;
+        config.Feedback.RotorToSensorRatio = INTAKE_PIVOT_ROTOR_ENCODER_RATIO;
 
         config.withSlot0(new Slot0Configs()
                 .withKP(IntakePivotGainsClass.INTAKE_PIVOT_KP.get())

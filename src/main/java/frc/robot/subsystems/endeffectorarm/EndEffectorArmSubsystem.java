@@ -19,7 +19,6 @@ import static frc.robot.RobotConstants.EndEffectorArmConstants.*;
 
 public class EndEffectorArmSubsystem extends RollerSubsystem {
     public static final String NAME = "EndEffectorArm";
-    private static final double algaeProcessorShootVoltage = ALGAE_PROCESSOR_SHOOT_VOLTAGE.get();
     // Static variables to hold the current values from TunableNumbers
     private static double homeAngle = HOME_ANGLE.get();
     private static double coralIntakeAngle = CORAL_INTAKE_ANGLE.get();
@@ -28,6 +27,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     private static double algaeIntakeAngle = ALGAE_INTAKE_ANGLE.get();
     private static double algaeNetPreShootAngle = ALGAE_NET_PRESHOOT_ANGLE.get();
     private static double algaeProcessorPreShootAngle = ALGAE_PROCESSOR_PRESHOOT_ANGLE.get();
+    private static double algaeProcessorShootVoltage = ALGAE_PROCESSOR_SHOOT_VOLTAGE.get();
     private static double coralIntakeVoltage = CORAL_INTAKE_VOLTAGE.get();
     private static double coralOuttakeVoltage = CORAL_OUTTAKE_VOLTAGE.get();
     private static double coralPreShootVoltage = CORAL_PRESHOOT_VOLTAGE.get();
@@ -114,11 +114,16 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         // Calculate current state transition
         SystemState newState;
         if (RobotContainer.elevatorIsDanger) {
-            // Force CORAL_INTAKING or CORAL_OUTTAKING while elevator is in danger
+            // Force CORAL_INTAKING or CORAL_OUTTAKING or ALGAE_PROCESSOR_PRESHOOTING or
+            // ALGAE_PROCESSOR_SHOOTING while elevator is in danger
             if (wantedState == WantedState.CORAL_OUTTAKE) {
                 newState = SystemState.CORAL_OUTTAKING;
             } else if (wantedState == WantedState.CORAL_INTAKE) {
                 newState = SystemState.CORAL_INTAKING;
+            } else if (wantedState == WantedState.ALGAE_PROCESSOR_PRESHOOT) {
+                newState = SystemState.ALGAE_PROCESSOR_PRESHOOTING;
+            } else if (wantedState == WantedState.ALGAE_PROCESSOR_SHOOT) {
+                newState = SystemState.ALGAE_PROCESSOR_SHOOTING;
             } else {
                 newState = SystemState.NEUTRAL;
             }
@@ -256,7 +261,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
 
             coralShootVoltage = CORAL_SHOOT_VOLTAGE.get();
             algaeNetShootVoltage = ALGAE_NET_SHOOT_VOLTAGE.get();
-            algaeProcessorPreShootAngle = ALGAE_PROCESSOR_PRESHOOT_ANGLE.get();
+            algaeProcessorShootVoltage = ALGAE_PROCESSOR_SHOOT_VOLTAGE.get();
         }
     }
 

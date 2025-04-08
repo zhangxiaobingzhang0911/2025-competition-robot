@@ -1,4 +1,4 @@
-# FRC 10541 && 6941 IronPulse 2025 Competition Robot
+# FRC 6941 IronPulse & 10541 CarbonPulse 2025 Competition Robot
 
 ## Troubleshooting
 

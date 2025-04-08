@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.aimSequences;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -66,10 +66,19 @@ public class ReefAimCommand extends Command {
         // PID init
         xPID.reset(robotPose.getX(), swerve.getLocalizer().getMeasuredVelocity().getX());
         yPID.reset(robotPose.getY(), swerve.getLocalizer().getMeasuredVelocity().getY());
-        rightReef = DestinationSupplier.getInstance().getCurrentBranch();
-        finalDestinationPose = DestinationSupplier.getFinalCoralTarget(tagPose, rightReef);
-        indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMING);
 
+        // Choose target based on game piece
+        if (DestinationSupplier.getInstance().getCurrentGamePiece() == DestinationSupplier.GamePiece.ALGAE_INTAKING) {
+            finalDestinationPose = DestinationSupplier.getFinalAlgaeTarget(tagPose);
+        } else {
+            if (DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1) {
+                finalDestinationPose = DestinationSupplier.getFinalAlgaeTarget(tagPose);
+            } else {
+                rightReef = DestinationSupplier.getInstance().getCurrentBranch();
+                finalDestinationPose = DestinationSupplier.getFinalCoralTarget(tagPose, rightReef);
+            }
+        }
+        indicatorSubsystem.setPattern(IndicatorIO.Patterns.AIMING);
     }
 
     @Override

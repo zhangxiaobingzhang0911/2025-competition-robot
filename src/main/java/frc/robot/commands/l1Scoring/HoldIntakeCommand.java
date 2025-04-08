@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.l1Scoring;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
@@ -7,8 +7,8 @@ import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
+import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
 import static frc.robot.RobotConstants.ElevatorConstants.HOLD_INTAKE_METERS;
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
 public class HoldIntakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
@@ -36,7 +36,7 @@ public class HoldIntakeCommand extends Command {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
         }
         elevatorSubsystem.setElevatorPosition(HOLD_INTAKE_METERS.get());
-        hasCoral = hasCoral || intakeSubsystem.hasCoralBB();
+        hasCoral = hasCoral || intakeSubsystem.hasCoral();
         if (hasCoral) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOLD_OUTTAKE);
         }
@@ -45,7 +45,7 @@ public class HoldIntakeCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
         indicatorSubsystem.setPattern(IndicatorIO.Patterns.AFTER_INTAKE);
         hasCoral = false;
         if (!interrupted) RobotContainer.intakeHasCoral = true;
@@ -53,7 +53,7 @@ public class HoldIntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return !intakeSubsystem.hasCoralBB() && hasCoral;
+        return !intakeSubsystem.hasCoral() && hasCoral;
     }
 
     @Override

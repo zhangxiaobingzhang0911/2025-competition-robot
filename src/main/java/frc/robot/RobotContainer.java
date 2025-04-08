@@ -18,13 +18,23 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.basics.CustomAutoChooser;
 import frc.robot.auto.fullAutos.AutoActions;
 import frc.robot.auto.fullAutos.AutoFile;
-import frc.robot.commands.*;
+import frc.robot.commands.GroundIntakeCommand;
+import frc.robot.commands.GroundOuttakeCommand;
+import frc.robot.commands.ZeroElevatorCommand;
+import frc.robot.commands.aimSequences.AutoAimShootCommand;
+import frc.robot.commands.aimSequences.ReefAimCommand;
 import frc.robot.commands.climb.ClimbCommand;
 import frc.robot.commands.climb.ClimbResetCommand;
 import frc.robot.commands.climb.IdleClimbCommand;
 import frc.robot.commands.climb.PreClimbCommand;
+import frc.robot.commands.l1Scoring.HoldIntakeCommand;
+import frc.robot.commands.l1Scoring.ShootHoldCommand;
+import frc.robot.commands.manualSequence.PutAlgaeNetCommand;
+import frc.robot.commands.manualSequence.PutAlgaeProcessorCommand;
+import frc.robot.commands.manualSequence.PutCoralCommand;
 import frc.robot.display.Display;
 import frc.robot.drivers.DestinationSupplier;
+import frc.robot.drivers.GamepieceTracker;
 import frc.robot.subsystems.beambreak.BeambreakIOReal;
 import frc.robot.subsystems.beambreak.BeambreakIOSim;
 import frc.robot.subsystems.climber.ClimberIOReal;
@@ -33,11 +43,7 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.endeffectorarm.EndEffectorArmPivotIOSim;
-import frc.robot.subsystems.endeffectorarm.EndEffectorArmRollerIOReal;
-import frc.robot.subsystems.endeffectorarm.EndEffectorArmRollerIOSim;
-import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
-import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem.WantedState;
+import frc.robot.subsystems.endeffectorarm.*;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorIOARGB;
 import frc.robot.subsystems.indicator.IndicatorIOSim;
@@ -63,7 +69,7 @@ public class RobotContainer {
     public static boolean elevatorIsDanger;
     public static boolean intakeHasCoral = false;
     public static boolean endeffectorIsDanger = false;
- 
+
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(0);
     private final CommandGenericHID streamDeckController = new CommandGenericHID(1);
@@ -94,7 +100,7 @@ public class RobotContainer {
             elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal());
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOReal(), new IntakeRollerIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.INTAKE_BEAMBREAK_ID));
             climberSubsystem = new ClimberSubsystem(new ClimberIOReal());
-            endEffectorArmSubsystem = new EndEffectorArmSubsystem(new EndEffectorArmPivotIOSim(), new EndEffectorArmRollerIOReal(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+            endEffectorArmSubsystem = new EndEffectorArmSubsystem(new EndEffectorArmPivotIOReal(), new EndEffectorArmRollerIOReal(), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_CORAL_BEAMBREAK_ID), new BeambreakIOReal(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_ALGAE_BEAMBREAK_ID));
             limelight = new Limelight();
         } else {
             indicatorSubsystem = new IndicatorSubsystem(new IndicatorIOSim());
@@ -102,7 +108,7 @@ public class RobotContainer {
             intakeSubsystem = new IntakeSubsystem(new IntakePivotIOSim(), new IntakeRollerIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.INTAKE_BEAMBREAK_ID));
             climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
             limelight = new Limelight();
-            endEffectorArmSubsystem = new EndEffectorArmSubsystem(new EndEffectorArmPivotIOSim(), new EndEffectorArmRollerIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_MIDDLE_BEAMBREAK_ID), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTOR_EDGE_BEAMBREAK_ID));
+            endEffectorArmSubsystem = new EndEffectorArmSubsystem(new EndEffectorArmPivotIOSim(), new EndEffectorArmRollerIOSim(), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_CORAL_BEAMBREAK_ID), new BeambreakIOSim(RobotConstants.BeamBreakConstants.ENDEFFECTORARM_ALGAE_BEAMBREAK_ID));
         }
         updateManager = new UpdateManager(swerve,
                 display, destinationSupplier);
@@ -163,20 +169,35 @@ public class RobotContainer {
                     lastResetTime = Timer.getFPGATimestamp();
                     indicatorSubsystem.setPattern(IndicatorIO.Patterns.RESET_ODOM);
                 }).ignoringDisable(true));
-
+        //climbing
         driverController.povUp().whileTrue(new PreClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
-        driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
-        driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
-        driverController.povDown().onTrue(new ZeroCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
-        driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
         driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
+        //intake and outtake
+        driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
+        driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
+        driverController.leftBumper().whileTrue(
+                Commands.sequence(
+                        Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(destinationSupplier.getElevatorSetpoint(false))),
+                        Commands.waitUntil(() -> elevatorSubsystem.elevatorReady(0.03)),
+                        Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)),
+
+                        Commands.waitSeconds(100)
+
+                ).finallyDo(() -> {
+                    if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
+                        elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get());
+                    } else {
+                        elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get());
+                    }
+                    endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
+                }));
+        //scoring
         driverController.povRight().whileTrue(switchAimingModeCommand());
+        driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
         driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
-        if (Robot.isSimulation()) {
-            driverController.rightTrigger().whileTrue(switchAimingModeCommand());
-        }
+        driverController.povDown().onTrue(new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
     }
 
     private void configureStreamDeckBindings() {
@@ -185,25 +206,27 @@ public class RobotContainer {
         streamDeckController.button(3).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentControlMode(DestinationSupplier.controlMode.AUTO)).ignoringDisable(true));
         streamDeckController.button(4).onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
         streamDeckController.button(5).onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
-        streamDeckController.button(13).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)).ignoringDisable(true));
+        streamDeckController.button(6).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentGamePiece(DestinationSupplier.GamePiece.CORAL_SCORING)).ignoringDisable(true));
+        streamDeckController.button(7).onTrue(Commands.runOnce(() -> destinationSupplier.setCurrentGamePiece(DestinationSupplier.GamePiece.ALGAE_INTAKING)).ignoringDisable(true));
+        streamDeckController.button(11).onTrue(Commands.runOnce(() -> destinationSupplier.setAlgaeScoringMode(DestinationSupplier.AlgaeScoringMode.NET)).ignoringDisable(true));
+        streamDeckController.button(12).onTrue(Commands.runOnce(() -> destinationSupplier.setAlgaeScoringMode(DestinationSupplier.AlgaeScoringMode.PROCESSOR)).ignoringDisable(true));
         streamDeckController.button(14).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)).ignoringDisable(true));
         streamDeckController.button(15).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)).ignoringDisable(true));
         streamDeckController.button(16).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)).ignoringDisable(true));
+        streamDeckController.button(18).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)).ignoringDisable(true));
+        streamDeckController.button(19).onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)).ignoringDisable(true));
         streamDeckController.button(8).whileTrue(Commands.run(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.INTAKE))
                 .finallyDo(() -> destinationSupplier.setCurrentL1Mode(DestinationSupplier.L1Mode.ELEVATOR)).ignoringDisable(true));
         streamDeckController.button(10).whileTrue(Commands.run(() -> intakeSubsystem.setLowerAngle(true))).onFalse(Commands.runOnce(() -> intakeSubsystem.setLowerAngle(false)));
     }
 
     public void configureTesterBindings() {
-        testerController.a().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
-        testerController.b().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
-        testerController.x().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
-        testerController.y().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
-        testerController.leftBumper().onTrue(Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(WantedState.ALGAE_PRESHOOT)));
-
-
-        testerController.povUp().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)).ignoringDisable(true));
-        testerController.povDown().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)).ignoringDisable(true));
+        testerController.a().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L1)));
+        testerController.b().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L2)));
+        testerController.x().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L3)));
+        testerController.y().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
+        testerController.leftBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
+        testerController.rightBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
     }
 
     public Command getAutonomousCommand() {
@@ -221,7 +244,9 @@ public class RobotContainer {
                         indicatorSubsystem, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem,
                         () -> false, driverController),
                 // MANUAL
-                new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem),
+                Commands.sequence(
+                        Commands.runOnce(() -> DestinationSupplier.getInstance().setCurrentGamePiece(DestinationSupplier.GamePiece.CORAL_SCORING)),
+                        new ReefAimCommand(() -> false, elevatorSubsystem, driverController, indicatorSubsystem)),
                 () -> destinationSupplier.getCurrentControlMode() == DestinationSupplier.controlMode.AUTO);
     }
 
@@ -236,8 +261,18 @@ public class RobotContainer {
         return new ConditionalCommand(
                 // Intake L1
                 new ShootHoldCommand(intakeSubsystem, () -> driverController.rightTrigger().getAsBoolean()),
-                // Elevator
-                new PutCoralCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                new ConditionalCommand(
+                        new ConditionalCommand(
+                                // Elevator Algae Net
+                                new PutAlgaeNetCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                                // Elevator Algae Net
+                                new PutAlgaeProcessorCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                                () -> destinationSupplier.getAlgaeScoringMode() == DestinationSupplier.AlgaeScoringMode.NET
+                        ),
+                        // Elevator Coral
+                        new PutCoralCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
+                        () -> !GamepieceTracker.getInstance().isEndeffectorHasCoral()
+                ),
                 () -> destinationSupplier.getL1Mode() == DestinationSupplier.L1Mode.INTAKE);
     }
 

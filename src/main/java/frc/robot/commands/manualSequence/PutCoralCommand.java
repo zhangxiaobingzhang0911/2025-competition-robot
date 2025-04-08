@@ -1,9 +1,10 @@
-package frc.robot.commands;
+package frc.robot.commands.manualSequence;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
@@ -18,8 +19,8 @@ public class PutCoralCommand extends ParallelCommandGroup {
                         new PreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem),
                         Commands.sequence(
                                 new WaitUntilCommand(() -> (
-                                        driverController.rightTrigger().getAsBoolean() &&
-                                                endeffectorArmSubsystem.isShootReady())),
+                                        driverController.rightTrigger().getAsBoolean() 
+                                                )),
                                 new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)
                         )
                 )

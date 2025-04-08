@@ -5,8 +5,8 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotConstants;
-import frc.robot.RobotContainer;
 import frc.robot.display.SuperstructureVisualizer;
+import frc.robot.drivers.GamepieceTracker;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerIOInputsAutoLogged;
@@ -79,6 +79,17 @@ public class IntakeSubsystem extends RollerSubsystem {
 
         currentFilterValue = currentFilter.calculate(intakePivotIOInputs.statorCurrentAmps);
         Logger.recordOutput("Intake/StatorCurrent", currentFilterValue);
+
+        if (RobotBase.isReal()){
+            GamepieceTracker.getInstance().setintakeHasCoral(BBInputs.isBeambreakOn);
+        }else{
+            if (systemState == SystemState.DEPLOY_INTAKING && intakePivotIO.isNearAngle(deployAngle, 1) ){
+                GamepieceTracker.getInstance().setintakeHasCoral(true);
+            }
+            if (systemState == SystemState.SHOOTING){
+                GamepieceTracker.getInstance().setintakeHasCoral(false);
+            }
+        }
 
         if (newState != systemState) {
             systemState = newState;
@@ -246,12 +257,9 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     }
 
-    public boolean hasCoral() {
-        return timerStarted && timer.hasElapsed(0.1);
-    }
 
-    public boolean hasCoralBB() {
-        return BBInputs.isBeambreakOn;
+    public boolean hasCoral() {
+        return GamepieceTracker.getInstance().isIntakeHasCoral();
     }
 
 

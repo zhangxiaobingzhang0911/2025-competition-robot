@@ -11,8 +11,7 @@ public class ZeroElevatorCommand extends SequentialCommandGroup {
         addRequirements(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem);
         addCommands(
                 Commands.parallel(
-                        Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.CORAL_OUTTAKE)),
-                        Commands.runOnce(() -> intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL)),
+                        Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.NEUTRAL)),
                         Commands.runOnce(() -> elevatorSubsystem.setElevatorState(ElevatorSubsystem.WantedState.ZERO))
                 )
         );

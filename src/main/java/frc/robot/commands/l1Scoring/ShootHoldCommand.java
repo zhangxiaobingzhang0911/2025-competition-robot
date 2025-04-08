@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.l1Scoring;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,7 +28,7 @@ public class ShootHoldCommand extends Command {
         hasShoot = shoot.getAsBoolean() || hasShoot;
         if (hasShoot) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.SHOOT);
-            if (!intakeSubsystem.hasCoralBB() && !timer.isRunning()) {
+            if (!intakeSubsystem.hasCoral() && !timer.isRunning()) {
                 timer.start();
             }
         }

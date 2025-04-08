@@ -9,7 +9,8 @@ import frc.robot.display.SuperstructureVisualizer;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.RobotConstants.ElevatorConstants.*;
+import static frc.robot.RobotConstants.ElevatorConstants.ELEVATOR_MIN_SAFE_HEIGHT;
+import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
 import static frc.robot.RobotContainer.elevatorIsDanger;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -23,7 +24,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Getter
     private SystemState systemState = SystemState.POSITION_GOING;
     @Getter
-    private double wantedPosition = IDLE_EXTENSION_METERS.get();
+    private double wantedPosition = HOLD_EXTENSION_METERS.get();
 
     public ElevatorSubsystem(ElevatorIO io) {
         this.io = io;
@@ -59,7 +60,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         // set movements based on state
         switch (systemState) {
             case POSITION_GOING:
-                //worked, but need clean up
                 if (wantedPosition < (ELEVATOR_MIN_SAFE_HEIGHT.get()) && RobotContainer.endeffectorIsDanger) {
                     io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get());
                 } else {
@@ -72,7 +72,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             //TODO verify utility, may delete
             case IDLING:
                 io.setElevatorVoltage(0);
-                io.setElevatorTarget(IDLE_EXTENSION_METERS.get());
+                io.setElevatorTarget(HOLD_EXTENSION_METERS.get());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown systemState: " + systemState);
@@ -132,7 +132,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean elevatorIsDanger() {
-        return (inputs.positionMeters <  ELEVATOR_MIN_SAFE_HEIGHT.get() - 0.01);
+        return (inputs.positionMeters < ELEVATOR_MIN_SAFE_HEIGHT.get() - 0.01);
     }
 
 

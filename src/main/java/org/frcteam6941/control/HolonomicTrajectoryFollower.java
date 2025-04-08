@@ -82,7 +82,7 @@ public class HolonomicTrajectoryFollower extends PathPlannerTrajectoryFollowerBa
  
         if (this.lockAngle) {
             rotation = this.thetaController.calculate(currentPose.getRotation().getDegrees(),
-                    lastState.heading.getDegrees());
+                    lastState.pose.getRotation().getDegrees());
         }
  
         return new HolonomicDriveSignal(

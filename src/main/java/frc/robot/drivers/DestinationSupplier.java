@@ -33,8 +33,14 @@ public class DestinationSupplier implements Updatable {
     private int targetTagID = 0;
     private boolean coralRight = false;
     private boolean useCoral = false;
+    @Getter
     private elevatorSetpoint currentElevSetpointCoral = elevatorSetpoint.L2;
-    private elevatorSetpoint currentElevSetpointPoke = elevatorSetpoint.P1;
+    @Getter
+    private elevatorSetpoint currentElevSetpointAlgae = elevatorSetpoint.P1;
+    @Getter
+    private AlgaeScoringMode algaeScoringMode = AlgaeScoringMode.NET;
+    @Getter
+    private GamePiece currentGamePiece = GamePiece.CORAL_SCORING;
 
     private DestinationSupplier() {
         swerve = Swerve.getInstance();
@@ -49,9 +55,9 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Calculates the optimal drive target position based on the robot's current position and goal position
-     * 
+     *
      * @param robot The current pose (position and rotation) of the robot
-     * @param goal The target pose to drive towards
+     * @param goal  The target pose to drive towards
      * @return A modified goal pose that accounts for optimal approach positioning
      */
     public static Pose2d getDriveTarget(Pose2d robot, Pose2d goal) {
@@ -75,8 +81,8 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Calculates the final target position for coral scoring based on the tag pose
-     * 
-     * @param goal The initial goal pose
+     *
+     * @param goal      The initial goal pose
      * @param rightReef Whether to target the right reef relative to the AprilTag
      * @return Modified goal pose to tag pose accounting for coral scoring position
      */
@@ -90,8 +96,23 @@ public class DestinationSupplier implements Updatable {
     }
 
     /**
+     * Calculates the final target position for algae scoring based on the tag pose
+     *
+     * @param goal The initial goal pose
+     * @return Modified goal pose to tag pose accounting for algae scoring position
+     */
+    public static Pose2d getFinalAlgaeTarget(Pose2d goal) {
+        goal = goal.transformBy(new Transform2d(
+                new Translation2d(
+                        RobotConstants.ReefAimConstants.ROBOT_TO_ALGAE_METERS.get(),
+                        RobotConstants.ReefAimConstants.ALGAE_TO_TAG_METERS.get()),
+                new Rotation2d()));
+        return goal;
+    }
+
+    /**
      * Determines if it's safe to raise the elevator based on robot position
-     * 
+     *
      * @param robotPose Current pose of the robot
      * @param rightReef Whether targeting the right reef relative to the AprilTag
      * @return true if the robot is within safe distance to raise elevator, false otherwise
@@ -142,11 +163,21 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Gets the nearest AprilTag pose to the robot's current position
-     * 
+     *
      * @param robotPose Current pose of the robot
      * @return Pose2d of the nearest AprilTag, accounting for edge cases and controller input
      */
     public static Pose2d getNearestTag(Pose2d robotPose) {
+        return FieldConstants.officialAprilTagType.getLayout().getTagPose(getNearestTagID(robotPose)).get().toPose2d();
+    }
+
+    /**
+     * Gets the ID of the nearest AprilTag to the robot's current position
+     *
+     * @param robotPose Current pose of the robot
+     * @return ID of the nearest AprilTag, accounting for edge cases and controller input
+     */
+    public static int getNearestTagID(Pose2d robotPose) {
         XboxController driverController = new XboxController(0);
         double ControllerX = driverController.getLeftX();
         double ControllerY = driverController.getLeftY();
@@ -173,7 +204,7 @@ public class DestinationSupplier implements Updatable {
         if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX != 0 && ControllerY != 0) {
             minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
         }
-        return FieldConstants.officialAprilTagType.getLayout().getTagPose(minDistanceID).get().toPose2d();
+        return minDistanceID;
     }
 
     private static int solveEdgeCase(double controllerX, double controllerY, int minDistanceID, int secondMinDistanceID) {
@@ -212,7 +243,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Updates the elevator setpoint for either coral or poke positions
-     * 
+     *
      * @param setpoint The desired elevator setpoint (L1-L4 for coral, P1-P2 for poke)
      */
     public void updateElevatorSetpoint(elevatorSetpoint setpoint) {
@@ -223,7 +254,7 @@ public class DestinationSupplier implements Updatable {
                 SmartDashboard.putString("DestinationSupplier/currentElevSetpointCoral", setpoint.toString());
                 break;
             case P1, P2:
-                currentElevSetpointPoke = setpoint;
+                currentElevSetpointAlgae = setpoint;
                 //Logger.recordOutput("DestinationSupplier/currentElevSetpointPoke", setpoint);
                 SmartDashboard.putString("DestinationSupplier/currentElevSetpointPoke", setpoint.toString());
                 break;
@@ -234,7 +265,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Gets the current elevator setpoint value in meters
-     * 
+     *
      * @param useCoral Whether to use coral scoring position (true) or poke position (false)
      * @return The elevator extension distance in meters
      */
@@ -249,7 +280,7 @@ public class DestinationSupplier implements Updatable {
                 default -> RobotConstants.ElevatorConstants.L2_EXTENSION_METERS.get();
             };
         } else {
-            return switch (currentElevSetpointPoke) {
+            return switch (currentElevSetpointAlgae) {
                 case P1 -> RobotConstants.ElevatorConstants.P1_EXTENSION_METERS.get();
                 case P2 -> RobotConstants.ElevatorConstants.P2_EXTENSION_METERS.get();
                 default -> RobotConstants.ElevatorConstants.P1_EXTENSION_METERS.get();
@@ -259,9 +290,9 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Updates which reef branch to target
-     * 
+     *
      * @param coralRight When true, targets the right reef relative to the AprilTag when facing it
-     * (i.e. when you are facing the tag, rightReef = true means the tag on your right is the target)
+     *                   (i.e. when you are facing the tag, rightReef = true means the tag on your right is the target)
      */
     public void updateBranch(boolean coralRight) {
         this.coralRight = coralRight;
@@ -269,9 +300,14 @@ public class DestinationSupplier implements Updatable {
         SmartDashboard.putString("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
     }
 
+    public void setAlgaeScoringMode(AlgaeScoringMode algaeScoringMode) {
+        this.algaeScoringMode = algaeScoringMode;
+        SmartDashboard.putString("DestinationSupplier/algaeScoringMode", algaeScoringMode.toString());
+    }
+
     /**
      * Gets the current branch setting
-     * 
+     *
      * @return true if targeting right reef, false if targeting left reef
      */
     public boolean getCurrentBranch() {
@@ -280,7 +316,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Sets the current control mode for the robot
-     * 
+     *
      * @param mode The desired control mode (MANUAL, SEMI, or AUTO)
      */
     public void setCurrentControlMode(controlMode mode) {
@@ -291,7 +327,7 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Sets the current L1 operation mode
-     * 
+     *
      * @param mode The desired L1 mode (ELEVATOR or INTAKE)
      */
     public void setCurrentL1Mode(L1Mode mode) {
@@ -301,13 +337,37 @@ public class DestinationSupplier implements Updatable {
 
     /**
      * Sets the current intake operation mode
-     * 
+     *
      * @param mode The desired intake mode (TREMBLE or NORMAL)
      */
     public void setCurrentIntakeMode(IntakeMode mode) {
         this.intakeMode = mode;
         SmartDashboard.putString("DestinationSupplier/CurrentIntakeMode", mode.name());
     }
+
+    public void updatePokeSetpointByTag(int tagNumber) {
+        switch (tagNumber) {
+            case 6, 8, 10, 17, 19, 21:
+                updateElevatorSetpoint(elevatorSetpoint.P1);
+                break;
+            case 7, 9, 11, 18, 20, 22:
+                updateElevatorSetpoint(elevatorSetpoint.P2);
+                break;
+            default:
+                System.out.println("Tag number does not correspond to a valid elevator setpoint.");
+        }
+    }
+
+    /**
+     * Sets the current game piece type
+     *
+     * @param gamePiece The desired game piece (CORAL_SCORING or ALGAE_INTAKING)
+     */
+    public void setCurrentGamePiece(GamePiece gamePiece) {
+        this.currentGamePiece = gamePiece;
+        SmartDashboard.putString("DestinationSupplier/CurrentGamePiece", gamePiece.name());
+    }
+
 
     public enum elevatorSetpoint {
         L1, L2, L3, L4, P1, P2
@@ -325,5 +385,15 @@ public class DestinationSupplier implements Updatable {
     public enum IntakeMode {
         TREMBLE,
         NORMAL
+    }
+
+    public enum GamePiece {
+        CORAL_SCORING,
+        ALGAE_INTAKING
+    }
+
+    public enum AlgaeScoringMode {
+        NET,
+        PROCESSOR
     }
 }

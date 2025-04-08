@@ -52,7 +52,9 @@ public class AutoFile {
     }
 
     private Command buildTest() {
-        return Commands.none();
+        return new SequentialCommandGroup(
+            autoActions.followPath(getAutoPath("Test"), true, true, true)
+        );
     }
 
     private Command build4CoralLeft() {

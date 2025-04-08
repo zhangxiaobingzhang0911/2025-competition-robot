@@ -56,7 +56,7 @@ public class ElevatorIOSim implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         for (int i = 0; i < RobotConstants.LOOPER_DT / (1.0 / 1000.0); i++) {
             setInputTorqueCurrent(
-                    controller.calculate(simState.get(0))*15 + feedforward);
+                    controller.calculate(simState.get(0)) * 15 + feedforward);
             update(1.0 / 1000.0);
         }
 
@@ -80,7 +80,7 @@ public class ElevatorIOSim implements ElevatorIO {
                                                         0.0,
                                                         -9.8)),
                         simState,
-                        MatBuilder.fill(Nat.N1(), Nat.N1(), inputTorqueCurrent * 15),
+                        MatBuilder.fill(Nat.N1(), Nat.N1(), inputTorqueCurrent * 30),
                         dt);
         // Apply limits
         simState = VecBuilder.fill(updatedState.get(0, 0), updatedState.get(1, 0));
@@ -115,7 +115,7 @@ public class ElevatorIOSim implements ElevatorIO {
 
     @Override
     public boolean isNearExtension(double expected) {
-        return true;
+        return MathUtil.isNear(expected, radToHeight(simState.get(0)), 0.02);
     }
 
     @Override

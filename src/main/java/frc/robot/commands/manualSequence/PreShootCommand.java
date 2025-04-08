@@ -1,14 +1,16 @@
-package frc.robot.commands;
+package frc.robot.commands.manualSequence;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.drivers.DestinationSupplier;
+import frc.robot.drivers.GamepieceTracker;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
 
 public class PreShootCommand extends Command {
     private final EndEffectorArmSubsystem endEffectorArmSubsystem;
@@ -40,7 +42,12 @@ public class PreShootCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         Logger.recordOutput("Commands/Preshoot", "end");
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
+            elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
+        } else {
+            elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
+        }
+        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
     }
 
     @Override

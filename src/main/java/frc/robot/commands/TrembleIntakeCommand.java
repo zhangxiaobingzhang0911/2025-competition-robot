@@ -2,14 +2,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotConstants;
+import frc.robot.drivers.GamepieceTracker;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.indicator.IndicatorIO;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
+import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
 import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
 public class TrembleIntakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
@@ -44,9 +45,13 @@ public class TrembleIntakeCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
+            elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
+        } else {
+            elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
+        }
         if (interrupted) {
-            endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOME);
+            endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
         }
         indicatorSubsystem.setPattern(IndicatorIO.Patterns.AFTER_INTAKE);
     }

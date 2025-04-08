@@ -4,12 +4,13 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotConstants;
 import frc.robot.auto.basics.AutoGroundIntakeCommand;
 import frc.robot.auto.basics.FollowPath;
 import frc.robot.auto.basics.ReefAimAutoCommand;
 import frc.robot.commands.*;
+import frc.robot.commands.aimSequences.AutoPreShootCommand;
+import frc.robot.commands.manualSequence.PreShootCommand;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.*;
@@ -89,7 +90,7 @@ public class AutoActions {
                 new ShootCommand(indicatorSubsystem, endEffectorArmSubsystem),
                 new WaitCommand(0.05),
                 Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(
-                        RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS.get())));
+                        RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get())));
     }
 
     public Command homeEverything() {
@@ -98,7 +99,7 @@ public class AutoActions {
     }
 
     public boolean intakerHasCoral() {
-        return intakeSubsystem.hasCoralBB();
+        return intakeSubsystem.hasCoral();
     }
 
     public EndEffectorArmSubsystem.SystemState getEESystemState() {

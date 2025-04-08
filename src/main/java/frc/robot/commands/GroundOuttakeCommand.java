@@ -7,7 +7,6 @@ import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
 
 public class GroundOuttakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
@@ -24,11 +23,10 @@ public class GroundOuttakeCommand extends Command {
     @Override
     public void execute() {
         //TODO elevator may not need to home
-        if(elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())){
+        if (elevatorSubsystem.getIo().isNearExtension(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get())) {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.OUTTAKE);
             endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.CORAL_OUTTAKE);
-        }
-        else{
+        } else {
             intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
         }
         elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
@@ -37,8 +35,8 @@ public class GroundOuttakeCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOME);
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
+        elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
     }
 
     @Override

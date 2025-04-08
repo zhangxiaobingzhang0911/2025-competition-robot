@@ -7,15 +7,16 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-import static frc.robot.RobotConstants.ElevatorConstants.IDLE_EXTENSION_METERS;
+import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
 
-public class PreClimbCommand extends Command{
+public class PreClimbCommand extends Command {
     private final ClimberSubsystem climberSubsystem;
     private final ElevatorSubsystem elevatorSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     private final EndEffectorArmSubsystem endEffectorArmSubsystem;
-    public PreClimbCommand(ClimberSubsystem climberSubsystem,ElevatorSubsystem elevatorSubsystem,
-                        IntakeSubsystem intakeSubsystem,EndEffectorArmSubsystem endEffectorArmSubsystem){
+
+    public PreClimbCommand(ClimberSubsystem climberSubsystem, ElevatorSubsystem elevatorSubsystem,
+                           IntakeSubsystem intakeSubsystem, EndEffectorArmSubsystem endEffectorArmSubsystem) {
         this.climberSubsystem = climberSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
         this.endEffectorArmSubsystem = endEffectorArmSubsystem;
@@ -25,10 +26,10 @@ public class PreClimbCommand extends Command{
 
     @Override
     public void initialize() {
-        elevatorSubsystem.setElevatorPosition(IDLE_EXTENSION_METERS.get());
+        elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
         climberSubsystem.setWantedState(WantedState.DEPLOY);
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.CORAL_OUTTAKE);
+        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.NEUTRAL);
     }
 
     @Override

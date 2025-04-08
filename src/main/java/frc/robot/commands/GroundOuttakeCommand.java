@@ -37,7 +37,6 @@ public class GroundOuttakeCommand extends Command {
         intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
         endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
         elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
-
     }
 
     @Override

@@ -5,9 +5,8 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotConstants;
-import frc.robot.RobotContainer;
 import frc.robot.display.SuperstructureVisualizer;
-import frc.robot.drivers.DestinationSupplier;
+import frc.robot.drivers.GamepieceTracker;
 import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerIOInputsAutoLogged;
@@ -25,9 +24,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     private static double outtakeAngle = OUTTAKE_ANGLE.get();
     private static double shootVoltage = SHOOT_VOLTAGE.get();
     private static double outtakeHoldVoltage = OUT_TAKE_HOLD.get();
-    private static double avoidAngle = AVOID_ANGLE.get();
     private static double homeAngle = HOME_ANGLE.get();
-    private static double funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
     private static double intakeVoltage = INTAKE_VOLTAGE.get();
     private static double intakeHoldVoltage = INTAKE_HOLD_VOLTAGE.get();
     private static double outtakeVoltage = OUTTAKE_VOLTAGE.get();
@@ -44,6 +41,7 @@ public class IntakeSubsystem extends RollerSubsystem {
     public boolean hasHomed = false;
     Timer timer = new Timer();
     private boolean shouldOuttake = false;
+    @Setter
     private WantedState wantedState = WantedState.HOME;
     @Getter
     private SystemState systemState = SystemState.HOMING;
@@ -76,14 +74,22 @@ public class IntakeSubsystem extends RollerSubsystem {
         Logger.processInputs(NAME + "/Beambreak", BBInputs);
         Logger.recordOutput("Intake/SystemState", systemState.toString());
 
-        RobotContainer.intakeIsDanger = intakeIsDanger();
-        RobotContainer.intakeIsAvoiding = intakeIsAvoiding();
-        Logger.recordOutput("Flags/intakeIsDanger", intakeIsDanger());
 
         SuperstructureVisualizer.getInstance().updateIntake(intakePivotIOInputs.currentAngleDeg);
 
         currentFilterValue = currentFilter.calculate(intakePivotIOInputs.statorCurrentAmps);
         Logger.recordOutput("Intake/StatorCurrent", currentFilterValue);
+
+        if (RobotBase.isReal()){
+            GamepieceTracker.getInstance().setintakeHasCoral(BBInputs.isBeambreakOn);
+        }else{
+            if (systemState == SystemState.DEPLOY_INTAKING && intakePivotIO.isNearAngle(deployAngle, 1) ){
+                GamepieceTracker.getInstance().setintakeHasCoral(true);
+            }
+            if (systemState == SystemState.SHOOTING){
+                GamepieceTracker.getInstance().setintakeHasCoral(false);
+            }
+        }
 
         if (newState != systemState) {
             systemState = newState;
@@ -117,20 +123,12 @@ public class IntakeSubsystem extends RollerSubsystem {
                 intakeRollerIO.setVoltage(0);
                 intakePivotIO.setPivotAngle(shootAngle);
                 break;
-            case AVOIDING:
-                intakeRollerIO.stop();
-                intakePivotIO.setPivotAngle(avoidAngle);
-                break;
             case HOMING:
                 intakeRollerIO.stop();
                 intakePivotIO.setPivotAngle(homeAngle);
                 break;
             case GROUNDZEROING:
                 zeroIntakeGround();
-                break;
-            case FUNNEL_AVOIDING:
-                intakeRollerIO.stop();
-                intakePivotIO.setPivotAngle(funnelAvoidAngle);
                 break;
             case DEPLOY_INTAKE_HOLDING:
                 rollerHoldIntake();
@@ -141,8 +139,6 @@ public class IntakeSubsystem extends RollerSubsystem {
 
         if (RobotConstants.TUNING) {
             deployAngle = DEPLOY_ANGLE.get();
-            avoidAngle = AVOID_ANGLE.get();
-            funnelAvoidAngle = FUNNEL_AVOID_ANGLE.get();
             outtakeVoltage = OUTTAKE_VOLTAGE.get();
             shootVoltage = SHOOT_VOLTAGE.get();
             outtakeAngle = OUTTAKE_ANGLE.get();
@@ -171,24 +167,12 @@ public class IntakeSubsystem extends RollerSubsystem {
             case TREMBLE_INTAKE -> SystemState.TREMBLE_INTAKING;
             case OUTTAKE -> SystemState.OUTTAKING;
             case HOLD_OUTTAKE -> SystemState.HOLD_OUTTAKING;
-            case AVOID -> SystemState.AVOIDING;
-            case FUNNEL_AVOID -> SystemState.FUNNEL_AVOIDING;
-            case HOME -> {
-                if (RobotContainer.elevatorIsDanger) {
-                    yield SystemState.AVOIDING;
-                } else {
-                    yield SystemState.HOMING;
-                }
-            }
+            case HOME -> SystemState.HOMING;
             case SHOOT -> SystemState.SHOOTING;
             case DEPLOY_SHOOT -> SystemState.DEPLOY_SHOOTING;
             case GROUNDZERO -> SystemState.GROUNDZEROING;
             case OFF -> SystemState.OFF;
         };
-    }
-
-    public void setWantedState(WantedState wantedState) {
-        this.wantedState = wantedState;
     }
 
     public void trembleIntake() {
@@ -273,12 +257,9 @@ public class IntakeSubsystem extends RollerSubsystem {
 
     }
 
-    public boolean hasCoral() {
-        return timerStarted && timer.hasElapsed(0.1);
-    }
 
-    public boolean hasCoralBB() {
-        return BBInputs.isBeambreakOn;
+    public boolean hasCoral() {
+        return GamepieceTracker.getInstance().isIntakeHasCoral();
     }
 
 
@@ -291,18 +272,12 @@ public class IntakeSubsystem extends RollerSubsystem {
         return intakePivotIOInputs.currentAngleDeg < INTAKE_DANGER_ZONE - 2;
     }
 
-    private boolean intakeIsAvoiding() {
-        return intakePivotIOInputs.currentAngleDeg > 50;
-    }
-
     public enum WantedState {
         DEPLOY_WITHOUT_ROLL,
         DEPLOY_INTAKE,
         TREMBLE_INTAKE,
         OUTTAKE,
         HOLD_OUTTAKE,
-        AVOID,
-        FUNNEL_AVOID,
         HOME,
         GROUNDZERO,
         DEPLOY_SHOOT,
@@ -317,8 +292,6 @@ public class IntakeSubsystem extends RollerSubsystem {
         TREMBLE_INTAKING,
         OUTTAKING,
         HOLD_OUTTAKING,
-        AVOIDING,
-        FUNNEL_AVOIDING,
         HOMING,
         GROUNDZEROING,
         DEPLOY_SHOOTING,

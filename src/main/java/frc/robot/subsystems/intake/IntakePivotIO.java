@@ -17,6 +17,10 @@ public interface IntakePivotIO {
     default void resetAngle(double resetAngleDeg) {
     }
 
+    default boolean isNearAngle(double targetAngleDeg, double toleranceDeg) {
+        return false;
+    }
+
     @AutoLog
     class IntakePivotIOInputs {
         public double targetAngleDeg = 0.0;

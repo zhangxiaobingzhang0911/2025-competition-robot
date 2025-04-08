@@ -51,8 +51,8 @@ public class ElevatorIOReal implements ElevatorIO {
         CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
         currentLimitsConfigs.StatorCurrentLimitEnable = true;
         currentLimitsConfigs.SupplyCurrentLimitEnable = true;
-        currentLimitsConfigs.StatorCurrentLimit = 80.0;
-        currentLimitsConfigs.SupplyCurrentLimit = 30.0;
+        currentLimitsConfigs.StatorCurrentLimit = 100.0;
+        currentLimitsConfigs.SupplyCurrentLimit = 50.0;
 
         leader.setPosition(heightToTalonPos(ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED));
         follower.setPosition(heightToTalonPos(ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED));
@@ -149,7 +149,7 @@ public class ElevatorIOReal implements ElevatorIO {
     @Override
     public void setElevatorTarget(double meters) {
         setpointMeters = meters;
-        leader.setControl(motionRequest.withPosition(heightToTalonPos(meters)));
+        leader.setControl(motionRequest.withPosition(heightToTalonPos(Math.min(meters, MAX_EXTENSION_METERS.get()))));
     }
 
     @Override

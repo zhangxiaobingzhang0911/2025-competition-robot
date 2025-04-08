@@ -2,15 +2,15 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.*;
 import frc.robot.RobotConstants;
@@ -29,6 +29,8 @@ public class IntakePivotIOReal implements IntakePivotIO {
     private final StatusSignal<Temperature> tempCelsius = motor.getDeviceTemp();
     private final StatusSignal<Angle> currentPositionRot = motor.getPosition();
 
+    private final CANcoder caNcoder = new CANcoder(INTAKE_PIVOT_ENCODER_ID, RobotConstants.CANIVORE_CAN_BUS_NAME);
+
 
     private final VoltageOut voltageOut = new VoltageOut(0.0).withEnableFOC(false);
     private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0.0).withEnableFOC(true);
@@ -46,7 +48,15 @@ public class IntakePivotIOReal implements IntakePivotIO {
         config.CurrentLimits.StatorCurrentLimit = 40.0;
         config.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        motor.setPosition(angleToTalonPos(0));
+        // Initialize CANcoder
+        CANcoderConfiguration CANconfig = new CANcoderConfiguration();
+        CANconfig.MagnetSensor.MagnetOffset = INTAKE_PIVOT_ENCODER_OFFSET;
+        CANconfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        caNcoder.getConfigurator().apply(CANconfig);
+        // Try the fused cancoder option, if it doesn't work, use the remote
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        config.Feedback.FeedbackRemoteSensorID = INTAKE_PIVOT_ENCODER_ID;
+        config.Feedback.RotorToSensorRatio = INTAKE_PIVOT_ROTOR_ENCODER_RATIO;
 
         config.withSlot0(new Slot0Configs()
                 .withKP(IntakePivotGainsClass.INTAKE_PIVOT_KP.get())
@@ -93,7 +103,7 @@ public class IntakePivotIOReal implements IntakePivotIO {
         inputs.motorVolts = motorVolts.getValueAsDouble();
         inputs.supplyCurrentAmps = supplyCurrentAmps.getValueAsDouble();
         inputs.statorCurrentAmps = statorCurrentAmps.getValueAsDouble();
-        inputs.currentAngleDeg = talonPosToAngle(currentPositionRot.getValueAsDouble());
+        inputs.currentAngleDeg = encoderPosToAngle(currentPositionRot.getValueAsDouble());
         inputs.targetAngleDeg = targetAngleDeg;
         inputs.motorVolts = motorVolts.getValueAsDouble();
 
@@ -121,19 +131,24 @@ public class IntakePivotIOReal implements IntakePivotIO {
     @Override
     public void setPivotAngle(double targetAngleDeg) {
         this.targetAngleDeg = targetAngleDeg;
-        motor.setControl(motionMagic.withPosition(angleToTalonPos(targetAngleDeg)));
+        motor.setControl(motionMagic.withPosition(angleToEncoderPos(targetAngleDeg)).withEnableFOC(true));
     }
 
     @Override
     public void resetAngle(double resetAngleDeg) {
-        motor.setPosition(angleToTalonPos(resetAngleDeg));
+        motor.setPosition(resetAngleDeg / 360);
     }
 
-    private double angleToTalonPos(double angleDeg) {
-        return (angleDeg / 360) * PIVOT_RATIO;
+    private double angleToEncoderPos(double angleDeg) {
+        return angleDeg / 360;
     }
 
-    private double talonPosToAngle(double rotations) {
-        return rotations * 360 / PIVOT_RATIO;
+    private double encoderPosToAngle(double rotations) {
+        return rotations * 360;
+    }
+
+    @Override
+    public boolean isNearAngle(double targetAngleDeg, double toleranceDeg) {
+        return Math.abs(currentPositionRot.getValueAsDouble() - angleToEncoderPos(targetAngleDeg)) <= angleToEncoderPos(toleranceDeg);
     }
 }

@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.swerve.Swerve;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import static frc.robot.RobotConstants.DriverCamera;
@@ -24,7 +24,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         // logger initialization
-        //Logger.addDataReceiver(new NT4Publisher());
+        Logger.addDataReceiver(new NT4Publisher());
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.start();
@@ -41,9 +41,6 @@ public class Robot extends LoggedRobot {
         // If network is bad or rio is in high cpu usage, disable it
         if (DriverCamera) {
             CameraServer.startAutomaticCapture("Driver Camera", "/dev/video0");
-            //JSONObject config = new JSONObject();
-            //config.put("absolute_exposure", 100);
-            //CameraServer.getServer("Driver Camera").setConfigJson(config.toJSONString());
         }
         if (VisionCamera) {
             //TODO add vision camera
@@ -100,14 +97,12 @@ public class Robot extends LoggedRobot {
         robotContainer.getUpdateManager().invokeStop();
         swerve.normal();
         swerve.cancelFollow();
-        DestinationSupplier.getInstance().setUseVision(true);
     }
 
     @Override
     public void teleopInit() {
         swerve.normal();
         robotContainer.getUpdateManager().invokeStart();
-        DestinationSupplier.getInstance().setUseVision(true);
         robotContainer.setMegaTag2(true);
     }
 
@@ -128,7 +123,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testPeriodic() {
-
     }
 
     @Override

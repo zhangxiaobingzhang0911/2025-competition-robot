@@ -306,7 +306,7 @@ public final class RobotConstants {
     public static class IntakeConstants {
         public static final int INTAKE_MOTOR_ID = 15;
         public static final int INTAKE_PIVOT_MOTOR_ID = 16;
-        public static final int INTAKE_PIVOT_ENCODER_ID = 17; 
+        public static final int INTAKE_PIVOT_ENCODER_ID = 17;
         public static final double INTAKE_PIVOT_ROTOR_ENCODER_RATIO = (12.0 * 50) / 11;
 
         //Constants for intake roller
@@ -389,7 +389,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
         public static final double ELEVATOR_DANGER_ZONE = 0.4180619200456253;
-        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.36;//TODO: fixme
+        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.0;//TODO: fixme
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                 300);
@@ -402,8 +402,7 @@ public final class RobotConstants {
         public static final TunableNumber HOLD_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/idle",
                 0.6);
         public static final TunableNumber HOME_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOME",
-                0.10
-        );
+                0.13);
         public static final TunableNumber HOLD_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOLD INTAKE",
                 0.16);
         public static final TunableNumber ALGAE_NET_EXTENSION_METER = new TunableNumber("ELEVATOR SETPOINTS/ALGAE_NET",
@@ -413,9 +412,9 @@ public final class RobotConstants {
         public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
                 0.3);
         public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
-                0.4);
+                0.395);
         public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
-                0.75);
+                0.8);
         public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
                 1.4);
         public static final TunableNumber P1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P1",

@@ -279,7 +279,7 @@ public final class RobotConstants {
     public static final class ReefAimConstants {
         public static final TunableNumber MAX_DISTANCE_REEF_LINEUP = new TunableNumber("AIM/maxLineupDistance", 1.5);
         public static final Measure<DistanceUnit> PIPE_TO_TAG = Meters.of(0.164308503);
-        public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.62);
+        public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.60);
         public static final TunableNumber X_TOLERANCE_METERS = new TunableNumber("AIM/X_TOLERANCE_METERS", 0.01);
         public static final TunableNumber Y_TOLERANCE_METERS = new TunableNumber("AIM/Y_TOLERANCE_METERS", 0.01);
         public static final TunableNumber RAISE_LIMIT_METERS = new TunableNumber("AIM/RAISE_LIMIT_METERS", 1);
@@ -412,7 +412,7 @@ public final class RobotConstants {
         public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
                 0.3);
         public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
-                0.395);
+                0.415);
         public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
                 0.82
 

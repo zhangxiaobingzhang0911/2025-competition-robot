@@ -497,7 +497,7 @@ public final class RobotConstants {
         public static class EndEffectorArmPivotGainsClass {
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KP = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kp", 2.5);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KI = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ki", 0);
-            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0.1);
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0.3);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KA = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ka", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KV = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kv", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KS = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ks", 0.015);

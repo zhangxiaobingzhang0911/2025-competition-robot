@@ -10,7 +10,6 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
-import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
 
 public class PreShootCommand extends Command {
     private final EndEffectorArmSubsystem endEffectorArmSubsystem;
@@ -43,7 +42,7 @@ public class PreShootCommand extends Command {
     public void end(boolean interrupted) {
         Logger.recordOutput("Commands/Preshoot", "end");
         if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
-            elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
+            elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
         } else {
             elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
         }

@@ -41,6 +41,9 @@ public class DestinationSupplier implements Updatable {
     private AlgaeScoringMode algaeScoringMode = AlgaeScoringMode.NET;
     @Getter
     private GamePiece currentGamePiece = GamePiece.CORAL_SCORING;
+    @Getter
+    @Setter
+    public boolean useSuperCycle = true;
 
     private DestinationSupplier() {
         swerve = Swerve.getInstance();
@@ -152,7 +155,7 @@ public class DestinationSupplier implements Updatable {
         Logger.recordOutput("EdgeCase/ControllerY", ControllerY);
         if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get()) {
             Logger.recordOutput("EdgeCase/IsEdgeCase", true);
-            if (ControllerX != 0 && ControllerY != 0) {
+            if (Math.abs(ControllerX) >= 0.05 && Math.abs(ControllerY) >=0.05) {
                 minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
             }
         } else {
@@ -201,7 +204,7 @@ public class DestinationSupplier implements Updatable {
                 minDistance = distance;
             }
         }
-        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && ControllerX != 0 && ControllerY != 0) {
+        if ((secondMinDistance - minDistance) < RobotConstants.ReefAimConstants.Edge_Case_Max_Delta.get() && Math.abs(ControllerX) >= 0.05 && Math.abs(ControllerY) >= 0.05) {
             minDistanceID = solveEdgeCase(ControllerX, ControllerY, minDistanceID, secondMinDistanceID);
         }
         return minDistanceID;
@@ -366,6 +369,15 @@ public class DestinationSupplier implements Updatable {
     public void setCurrentGamePiece(GamePiece gamePiece) {
         this.currentGamePiece = gamePiece;
         SmartDashboard.putString("DestinationSupplier/CurrentGamePiece", gamePiece.name());
+    }
+
+    /**
+     * Switch if using super cycle
+     *
+     */
+    public void switchUseSuperCycle(){
+        useSuperCycle = !useSuperCycle;
+        SmartDashboard.putBoolean("DestinationSupplier/UseSuperCycle", useSuperCycle);
     }
 
 

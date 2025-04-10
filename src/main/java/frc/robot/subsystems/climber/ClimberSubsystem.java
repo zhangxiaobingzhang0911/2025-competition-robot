@@ -12,7 +12,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
     private final TunableNumber deployAngle = new TunableNumber("CLIMBER/deployAngle", 900);
     private final TunableNumber idleAngle = new TunableNumber("CLIMBER/idleAngle", 600);
-    private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -300);
+    private final TunableNumber climbAngle = new TunableNumber("CLIMBER/climbAngle", -270);
     @Setter
     private WantedState wantedState = WantedState.IDLE;
     private SystemState systemState = SystemState.IDLING;

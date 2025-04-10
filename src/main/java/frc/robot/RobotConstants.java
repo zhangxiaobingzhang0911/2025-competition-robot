@@ -279,7 +279,7 @@ public final class RobotConstants {
     public static final class ReefAimConstants {
         public static final TunableNumber MAX_DISTANCE_REEF_LINEUP = new TunableNumber("AIM/maxLineupDistance", 1.5);
         public static final Measure<DistanceUnit> PIPE_TO_TAG = Meters.of(0.164308503);
-        public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.62);
+        public static final TunableNumber ROBOT_TO_PIPE_METERS = new TunableNumber("AIM/ROBOT_TO_PIPE_METERS", 0.60);
         public static final TunableNumber X_TOLERANCE_METERS = new TunableNumber("AIM/X_TOLERANCE_METERS", 0.01);
         public static final TunableNumber Y_TOLERANCE_METERS = new TunableNumber("AIM/Y_TOLERANCE_METERS", 0.01);
         public static final TunableNumber RAISE_LIMIT_METERS = new TunableNumber("AIM/RAISE_LIMIT_METERS", 1);
@@ -306,7 +306,7 @@ public final class RobotConstants {
     public static class IntakeConstants {
         public static final int INTAKE_MOTOR_ID = 15;
         public static final int INTAKE_PIVOT_MOTOR_ID = 16;
-        public static final int INTAKE_PIVOT_ENCODER_ID = 17; 
+        public static final int INTAKE_PIVOT_ENCODER_ID = 17;
         public static final double INTAKE_PIVOT_ROTOR_ENCODER_RATIO = (12.0 * 50) / 11;
 
         //Constants for intake roller
@@ -389,7 +389,7 @@ public final class RobotConstants {
         public static final double ELEVATOR_SPOOL_DIAMETER = 0.04 + 0.003; //0.04m for spool diameter, 0.003 for rope diameter
         public static final double ELEVATOR_GEAR_RATIO = 3.0;
         public static final double ELEVATOR_DANGER_ZONE = 0.4180619200456253;
-        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.36;//TODO: fixme
+        public static final double ELEVATOR_DEFAULT_POSITION_WHEN_DISABLED = 0.0;//TODO: fixme
 
         public static final TunableNumber motionAcceleration = new TunableNumber("Elevator/MotionAcceleration",
                 300);
@@ -402,8 +402,7 @@ public final class RobotConstants {
         public static final TunableNumber HOLD_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/idle",
                 0.6);
         public static final TunableNumber HOME_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOME",
-                0.10
-        );
+                0.13);
         public static final TunableNumber HOLD_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/HOLD INTAKE",
                 0.16);
         public static final TunableNumber ALGAE_NET_EXTENSION_METER = new TunableNumber("ELEVATOR SETPOINTS/ALGAE_NET",
@@ -413,9 +412,11 @@ public final class RobotConstants {
         public static final TunableNumber L1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L1",
                 0.3);
         public static final TunableNumber L2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L2",
-                0.4);
+                0.415);
         public static final TunableNumber L3_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L3",
-                0.75);
+                0.82
+
+        );
         public static final TunableNumber L4_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/L4",
                 1.4);
         public static final TunableNumber P1_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P1",
@@ -496,7 +497,7 @@ public final class RobotConstants {
         public static class EndEffectorArmPivotGainsClass {
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KP = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kp", 2.5);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KI = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ki", 0);
-            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0.1);
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0.3);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KA = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ka", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KV = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kv", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KS = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ks", 0.015);

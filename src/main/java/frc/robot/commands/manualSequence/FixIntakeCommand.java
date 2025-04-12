@@ -1,12 +1,10 @@
 package frc.robot.commands.manualSequence;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.drivers.GamepieceTracker;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-import static frc.robot.RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS;
 import static frc.robot.RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS;
 
 public class FixIntakeCommand extends Command {
@@ -24,19 +22,23 @@ public class FixIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
-        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
-        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.NEUTRAL);
+        if (elevatorSubsystem.elevatorReady(0.01)) {
+            if (elevatorSubsystem.getWantedPosition() == 0.25) {
+                intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
+                elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
+                endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
+            } else if (elevatorSubsystem.getWantedPosition() == HOME_EXTENSION_METERS.get()) {
+                elevatorSubsystem.setElevatorPosition(0.25);//TODO: Constants
+                intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.OUTTAKE);
+                endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.CORAL_INTAKE);
+            }
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.HOME);
-        if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
-            elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
-        } else {
-            elevatorSubsystem.setElevatorPosition(HOLD_EXTENSION_METERS.get());
-        }
+        intakeSubsystem.setWantedState(IntakeSubsystem.WantedState.DEPLOY_WITHOUT_ROLL);
+        elevatorSubsystem.setElevatorPosition(HOME_EXTENSION_METERS.get());
         endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
     }
 

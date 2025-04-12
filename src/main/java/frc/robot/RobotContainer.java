@@ -177,7 +177,7 @@ public class RobotContainer {
         driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         // Intake and outtake
         driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
-        driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
+        driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem));
         driverController.leftBumper().whileTrue(
                 Commands.sequence(
                         Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(destinationSupplier.getElevatorSetpoint(false))),

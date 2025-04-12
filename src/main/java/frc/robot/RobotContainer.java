@@ -195,12 +195,12 @@ public class RobotContainer {
         // Scoring
         driverController.povRight().whileTrue(switchAimingModeCommand());
         driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
-        driverController.leftStick().onTrue(switchPreMoveModeCommand().beforeStarting(Commands.runOnce(() -> destinationSupplier.updateBranch(false))).ignoringDisable(true));
-        driverController.rightStick().onTrue(switchPreMoveModeCommand().beforeStarting(Commands.runOnce(() -> destinationSupplier.updateBranch(true))).ignoringDisable(true));
+        driverController.leftStick().whileTrue(switchAimingModeCommand().beforeStarting(Commands.runOnce(() -> destinationSupplier.updateBranch(false))).ignoringDisable(true));
+        driverController.rightStick().whileTrue(switchAimingModeCommand().beforeStarting(Commands.runOnce(() -> destinationSupplier.updateBranch(true))).ignoringDisable(true));
         driverController.povDown().onTrue(new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
 
         //Intake Stuck Fix
-        driverController.back().whileTrue(new FixIntakeCommand(elevatorSubsystem,intakeSubsystem,endEffectorArmSubsystem));
+        driverController.back().whileTrue(new FixIntakeCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
     }
 
     private void configureStreamDeckBindings() {

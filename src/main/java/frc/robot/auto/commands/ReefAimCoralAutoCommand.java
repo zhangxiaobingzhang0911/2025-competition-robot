@@ -1,4 +1,4 @@
-package frc.robot.auto.basics;
+package frc.robot.auto.commands;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,7 +17,7 @@ import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.RobotConstants.ReefAimConstants;
 
-public class ReefAimAutoCommand extends Command {
+public class ReefAimCoralAutoCommand extends Command {
     private static final int[] FLIP_TAG_NUMBERS = {7, 8, 9, 10, 11, 6};
     private static final int[] NON_FLIP_TAG_NUMBERS = {18, 17, 22, 21, 20, 19};
     private final Swerve swerve = Swerve.getInstance();
@@ -44,7 +44,7 @@ public class ReefAimAutoCommand extends Command {
     private Translation2d translationalVelocity;
     private Pose2d robotPose, tagPose, destinationPose, finalDestinationPose;
 
-    public ReefAimAutoCommand(ElevatorSubsystem elevatorSubsystem, char tagChar) {
+    public ReefAimCoralAutoCommand(ElevatorSubsystem elevatorSubsystem, char tagChar) {
         addRequirements(swerve);
         this.elevatorSubsystem = elevatorSubsystem;
         rightReef = (tagChar % 2) == 0;
@@ -84,7 +84,7 @@ public class ReefAimAutoCommand extends Command {
         }
 
         robotPose = swerve.getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp());
-        destinationPose = DestinationSupplier.getDriveTarget(robotPose,finalDestinationPose);
+        destinationPose = DestinationSupplier.getDriveTarget(robotPose, finalDestinationPose);
 
         xPID.setGoal(destinationPose.getTranslation().getX());
         yPID.setGoal(destinationPose.getTranslation().getY());
@@ -93,10 +93,10 @@ public class ReefAimAutoCommand extends Command {
         translationalVelocity = new Translation2d(xPID.calculate(robotPose.getX()), yPID.calculate(robotPose.getY()));
         swerve.drive(translationalVelocity, 0.0, true, false);
         Display.getInstance().setAimingTarget(destinationPose);
-        Logger.recordOutput("ReefAimCommand/tagPose", tagPose);
-        Logger.recordOutput("ReefAimCommand/destinationPose", destinationPose);
-        Logger.recordOutput("ReefAimCommand/finalDestinationPose", finalDestinationPose);
-        Logger.recordOutput("ReefAimCommand/translationalVelocity", translationalVelocity);
+        Logger.recordOutput("ReefAimCoralAutoCommand/tagPose", tagPose);
+        Logger.recordOutput("ReefAimCoralAutoCommand/destinationPose", destinationPose);
+        Logger.recordOutput("ReefAimCoralAutoCommand/finalDestinationPose", finalDestinationPose);
+        Logger.recordOutput("ReefAimCoralAutoCommand/translationalVelocity", translationalVelocity);
     }
 
     @Override
@@ -104,9 +104,9 @@ public class ReefAimAutoCommand extends Command {
         xFinished = Math.abs(robotPose.getX() - finalDestinationPose.getX()) < ReefAimConstants.X_TOLERANCE_METERS.get();
         yFinished = Math.abs(robotPose.getY() - finalDestinationPose.getY()) < ReefAimConstants.Y_TOLERANCE_METERS.get();
         omegaFinished = Swerve.getInstance().aimingReady(ReefAimConstants.OMEGA_TOLERANCE_DEGREES.get(), 5);
-        Logger.recordOutput("ReefAimCommandAuto/xFinished", xFinished);
-        Logger.recordOutput("ReefAimCommandAuto/yFinished", yFinished);
-        Logger.recordOutput("ReefAimCommandAuto/omegaFinished", omegaFinished);
+        Logger.recordOutput("ReefAimCoralAutoCommand/xFinished", xFinished);
+        Logger.recordOutput("ReefAimCoralAutoCommand/yFinished", yFinished);
+        Logger.recordOutput("ReefAimCoralAutoCommand/omegaFinished", omegaFinished);
         return xFinished && yFinished && omegaFinished;
     }
 

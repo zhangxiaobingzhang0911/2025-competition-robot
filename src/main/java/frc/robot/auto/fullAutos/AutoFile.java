@@ -46,13 +46,23 @@ public class AutoFile {
         return switch (autoName) {
             case "4CoralLeft" -> build4CoralLeft();
             case "4CoralRight" -> build4CoralRight();
+            case "1Coral1AlgaeMiddle" -> build1Coral1AlgaeMiddle();
             case "Test" -> buildTest();
             default -> Commands.none();
         };
     }
 
     private Command buildTest() {
-        return autoActions.followPath(getAutoPath("EF-I3"), true, true, false);
+        return autoActions.shootAlgaeNet();
+    }
+
+    private Command build1Coral1AlgaeMiddle() {
+        return new SequentialCommandGroup(
+                autoActions.AutoAimShoot(L4, 'H'), // H-left G-right
+                autoActions.intakeAlgae(),
+                autoActions.followPath(getAutoPath("HG-Net"), true, true, false),
+                autoActions.shootAlgaeNet()
+        );
     }
 
     private Command build4CoralLeft() {

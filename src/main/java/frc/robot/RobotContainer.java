@@ -29,6 +29,7 @@ import frc.robot.commands.climb.IdleClimbCommand;
 import frc.robot.commands.climb.PreClimbCommand;
 import frc.robot.commands.l1Scoring.HoldIntakeCommand;
 import frc.robot.commands.l1Scoring.ShootHoldCommand;
+import frc.robot.commands.manualSequence.FixIntakeCommand;
 import frc.robot.commands.manualSequence.PutAlgaeNetCommand;
 import frc.robot.commands.manualSequence.PutAlgaeProcessorCommand;
 import frc.robot.commands.manualSequence.PutCoralCommand;
@@ -197,6 +198,9 @@ public class RobotContainer {
         driverController.leftStick().onTrue(switchPreMoveModeCommand().beforeStarting(Commands.runOnce(() -> destinationSupplier.updateBranch(false))).ignoringDisable(true));
         driverController.rightStick().onTrue(switchPreMoveModeCommand().beforeStarting(Commands.runOnce(() -> destinationSupplier.updateBranch(true))).ignoringDisable(true));
         driverController.povDown().onTrue(new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
+
+        //Intake Stuck Fix
+        driverController.back().whileTrue(new FixIntakeCommand(elevatorSubsystem,intakeSubsystem,endEffectorArmSubsystem));
     }
 
     private void configureStreamDeckBindings() {

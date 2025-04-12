@@ -65,7 +65,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
 
 
-    // flag states
+    // Flag states
     public static boolean elevatorIsDanger;
     public static boolean intakeHasCoral = false;
     public static boolean endeffectorIsDanger = false;
@@ -129,6 +129,7 @@ public class RobotContainer {
     private void configureAutoChooser() {
         autoChooser.addOption("4CoralLeft", "4CoralLeft");
         autoChooser.addOption("4CoralRight", "4CoralRight");
+        autoChooser.addOption("1Coral1AlgaeMiddle", "1Coral1AlgaeMiddle");
         autoChooser.addOption("Test", "Test");
         autoChooser.addOption("None", "None");
     }
@@ -169,11 +170,11 @@ public class RobotContainer {
                     lastResetTime = Timer.getFPGATimestamp();
                     indicatorSubsystem.setPattern(IndicatorIO.Patterns.RESET_ODOM);
                 }).ignoringDisable(true));
-        //climbing
+        // Climbing
         driverController.povUp().whileTrue(new PreClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.povLeft().whileTrue(new IdleClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
-        //intake and outtake
+        // Intake and outtake
         driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
         driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
         driverController.leftBumper().whileTrue(
@@ -181,9 +182,7 @@ public class RobotContainer {
                         Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(destinationSupplier.getElevatorSetpoint(false))),
                         Commands.waitUntil(() -> elevatorSubsystem.elevatorReady(0.03)),
                         Commands.runOnce(() -> endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_INTAKE)),
-
                         Commands.waitSeconds(100)
-
                 ).finallyDo(() -> {
                     if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
                         elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get());
@@ -192,11 +191,11 @@ public class RobotContainer {
                     }
                     endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
                 }));
-        //scoring
+        // Scoring
         driverController.povRight().whileTrue(switchAimingModeCommand());
         driverController.rightBumper().whileTrue(switchPreMoveModeCommand());
-        driverController.leftStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(false)).ignoringDisable(true));
-        driverController.rightStick().onTrue(Commands.runOnce(() -> destinationSupplier.updateBranch(true)).ignoringDisable(true));
+        driverController.leftStick().onTrue(switchPreMoveModeCommand().beforeStarting(Commands.runOnce(() -> destinationSupplier.updateBranch(false))).ignoringDisable(true));
+        driverController.rightStick().onTrue(switchPreMoveModeCommand().beforeStarting(Commands.runOnce(() -> destinationSupplier.updateBranch(true))).ignoringDisable(true));
         driverController.povDown().onTrue(new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
     }
 
@@ -264,7 +263,7 @@ public class RobotContainer {
                         new ConditionalCommand(
                                 // Elevator Algae Net
                                 new PutAlgaeNetCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
-                                // Elevator Algae Net
+                                // Elevator Algae Processor
                                 new PutAlgaeProcessorCommand(driverController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem),
                                 () -> destinationSupplier.getAlgaeScoringMode() == DestinationSupplier.AlgaeScoringMode.NET
                         ),

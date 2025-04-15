@@ -34,7 +34,6 @@ public final class RobotConstants {
     public static final double LOOPER_DT = 1 / 50.0;
     public static final boolean TUNING = true;
     public static final boolean DriverCamera = true;
-    public static final boolean VisionCamera = false;
     // Judge whether the team is 10541
     // During Huston, is10541 should always be TRUE
     public static final String Serial10541 = "0327BA65";
@@ -466,7 +465,7 @@ public final class RobotConstants {
 
         // Pivot motor configuration
         public static final double ROTOR_SENSOR_RATIO = 1.0 / 8 * 64 / 18 * 60;
-        public static final double END_EFFECTOR_ARM_ENCODER_OFFSET = -0.193843;
+        public static final double END_EFFECTOR_ARM_ENCODER_OFFSET = 0.0661628126;
 
         // Pivot angles for different positions (in degrees)
         public static final TunableNumber HOME_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/homeAngle", 135);

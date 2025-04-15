@@ -465,7 +465,7 @@ public final class RobotConstants {
 
         // Pivot motor configuration
         public static final double ROTOR_SENSOR_RATIO = 1.0 / 8 * 64 / 18 * 60;
-        public static final double END_EFFECTOR_ARM_ENCODER_OFFSET = 0.0661628126;
+        public static final double END_EFFECTOR_ARM_ENCODER_OFFSET = 0.0661628126 + 0.008;
 
         // Pivot angles for different positions (in degrees)
         public static final TunableNumber HOME_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/homeAngle", 135);
@@ -474,7 +474,7 @@ public final class RobotConstants {
         public static final TunableNumber CORAL_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralPreShootAngle", 220);
         public static final TunableNumber CORAL_PRESHOOT_ANGLE_L1 = new TunableNumber("END_EFFECTOR_ARM_PIVOT/coralPreShootAngleL1", 200);
         public static final TunableNumber ALGAE_INTAKE_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeIntakeAngle", 0);
-        public static final TunableNumber ALGAE_NET_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeNetPreShootAngle", 245.0);
+        public static final TunableNumber ALGAE_NET_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeNetPreShootAngle", 230.0);
         public static final TunableNumber ALGAE_PROCESSOR_PRESHOOT_ANGLE = new TunableNumber("END_EFFECTOR_ARM_PIVOT/algaeProcessorPreShootAngle", 0.0);
 
         // Roller voltages for different operations
@@ -487,8 +487,8 @@ public final class RobotConstants {
         public static final TunableNumber ALGAE_HOLD_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeHoldVoltage", 1.5);
         public static final TunableNumber CORAL_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralShootVoltage", -12.0);
         public static final TunableNumber CORAL_SHOOT_VOLTAGE_L1 = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralShootVoltageL1", -2.0);
-        public static final TunableNumber ALGAE_NET_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeNetShootVoltage", -12.0);
-        public static final TunableNumber ALGAE_PROCESSOR_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeProcessorShootVoltage", -12.0);
+        public static final TunableNumber ALGAE_NET_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeNetShootVoltage", -15.0);
+        public static final TunableNumber ALGAE_PROCESSOR_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeProcessorShootVoltage", -4.0);
 
         /**
          * Constants for the EndEffectorArm pivot motor gains.
@@ -496,7 +496,7 @@ public final class RobotConstants {
         public static class EndEffectorArmPivotGainsClass {
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KP = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kp", 2.5);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KI = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ki", 0);
-            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0.3);
+            public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KD = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kd", 0.01);//0.3
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KA = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ka", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KV = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/kv", 0);
             public static final TunableNumber END_EFFECTOR_ARM_PIVOT_KS = new TunableNumber("END_EFFECTOR_ARM_PIVOT_PID/ks", 0.015);

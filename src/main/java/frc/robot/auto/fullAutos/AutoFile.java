@@ -94,7 +94,7 @@ public class AutoFile {
                                 autoActions.AutoAimShoot(L4, 'L'),
                                 autoActions.followPath(getAutoPath("L-I2"), true, true, false)
                         ),
-                        autoActions.followPath(getAutoPath("I1-I2"), true, true, false),
+                        autoActions.followPath(getAutoPath("I1-I2"), true, true, false).until(autoActions::isIntakeFinished),
                         autoActions::isIntakeFinished
                 ),
                 autoActions.waitFor(0.5).until(autoActions::isIntakeFinished),
@@ -105,7 +105,7 @@ public class AutoFile {
                                 autoActions.followPath(getAutoPath("B-I3"), true, true, false)
                         ),
                         //autoActions.waitFor(3),
-                        autoActions.followPath(getAutoPath("I2-I3"), true, true, false),
+                        autoActions.followPath(getAutoPath("I2-I3"), true, true, false).until(autoActions::isIntakeFinished),
                         autoActions::isIntakeFinished
                 ),
                 autoActions.AutoAimShoot(L4, 'D')
@@ -123,7 +123,7 @@ public class AutoFile {
                                 autoActions.AutoAimShoot(L4, 'C'),
                                 autoActions.followPath(getAutoPath("C-I2"), true, true, false)
                         ),
-                        autoActions.followPath(getAutoPath("I3-I2"), true, true, false),
+                        autoActions.followPath(getAutoPath("I3-I2"), true, true, false).until(autoActions::isIntakeFinished),
                         autoActions::isIntakeFinished
                 ),
                 autoActions.waitFor(0.5).until(autoActions::isIntakeFinished),
@@ -134,7 +134,7 @@ public class AutoFile {
                                 autoActions.followPath(getAutoPath("A-I1"), true, true, false)
                         ),
                         //autoActions.waitFor(3),
-                        autoActions.followPath(getAutoPath("I2-I1"), true, true, false),
+                        autoActions.followPath(getAutoPath("I2-I1"), true, true, false).until(autoActions::isIntakeFinished),
                         autoActions::isIntakeFinished
                 ),
                 autoActions.AutoAimShoot(L4, 'K')

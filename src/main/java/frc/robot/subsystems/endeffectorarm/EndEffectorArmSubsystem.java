@@ -106,7 +106,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             if (systemState == SystemState.ALGAE_INTAKING && isNearAngle(algaeIntakeAngle)) {
                 GamepieceTracker.getInstance().setEndeffectorHasAlgae(true);
             }
-            if (systemState == SystemState.ALGAE_NET_SHOOTING) {
+            if (systemState == SystemState.ALGAE_NET_SHOOTING || systemState == SystemState.ALGAE_PROCESSOR_SHOOTING) {
                 GamepieceTracker.getInstance().setEndeffectorHasAlgae(false);
             }
         }

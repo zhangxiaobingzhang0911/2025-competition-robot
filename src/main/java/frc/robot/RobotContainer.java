@@ -230,6 +230,7 @@ public class RobotContainer {
         testerController.y().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
         testerController.leftBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
         testerController.rightBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
+        testerController.povUp().whileTrue(new PutAlgaeProcessorCommand(testerController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem));
     }
 
     public Command getAutonomousCommand() {

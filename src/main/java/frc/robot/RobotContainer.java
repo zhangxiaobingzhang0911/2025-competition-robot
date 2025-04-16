@@ -131,6 +131,7 @@ public class RobotContainer {
         autoChooser.addOption("4CoralLeft", "4CoralLeft");
         autoChooser.addOption("4CoralRight", "4CoralRight");
         autoChooser.addOption("1Coral1AlgaeMiddle", "1Coral1AlgaeMiddle");
+        autoChooser.addOption("1Coral3AlgaeMiddle", "1Coral3AlgaeMiddle");
         autoChooser.addOption("Test", "Test");
         autoChooser.addOption("None", "None");
     }
@@ -177,7 +178,7 @@ public class RobotContainer {
         driverController.y().whileTrue(new ClimbCommand(climberSubsystem, elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem));
         // Intake and outtake
         driverController.leftTrigger().toggleOnTrue(switchIntakeModeCommand());
-        driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
+        driverController.b().toggleOnTrue(new GroundOuttakeCommand(intakeSubsystem));
         driverController.leftBumper().whileTrue(
                 Commands.sequence(
                         Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(destinationSupplier.getElevatorSetpoint(false))),
@@ -229,6 +230,7 @@ public class RobotContainer {
         testerController.y().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.L4)));
         testerController.leftBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P1)));
         testerController.rightBumper().onTrue(Commands.runOnce(() -> destinationSupplier.updateElevatorSetpoint(DestinationSupplier.elevatorSetpoint.P2)));
+        testerController.povUp().whileTrue(new PutAlgaeProcessorCommand(testerController, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem));
     }
 
     public Command getAutonomousCommand() {

@@ -440,12 +440,12 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/Driver Camera",
-              "period": 0.06,
+              "period": 0.04,
               "rotation_turns": 0,
-              "fps": 5,
+              "fps": 25,
               "resolution": [
-                300.0,
-                200.0
+                150.0,
+                100.0
               ]
             }
           },
@@ -458,7 +458,8 @@
             "type": "Large Text Display",
             "properties": {
               "topic": "/SmartDashboard/DestinationSupplier/currentElevSetpointPoke",
-              "period": 0.06
+              "period": 0.06,
+              "data_type": "string"
             }
           },
           {
@@ -472,18 +473,6 @@
               "topic": "/SmartDashboard/DestinationSupplier/CurrentControlMode",
               "period": 0.06,
               "data_type": "string"
-            }
-          },
-          {
-            "title": "Pipe",
-            "x": 0.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Large Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/DestinationSupplier/DestinationSupplier/Pipe",
-              "period": 0.06
             }
           },
           {
@@ -540,9 +529,48 @@
             }
           },
           {
-            "title": "CurrentIntakeMode",
+            "title": "CurrentGamePiece",
             "x": 256.0,
             "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/DestinationSupplier/CurrentGamePiece",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "Pipe",
+            "x": 0.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/DestinationSupplier/Pipe",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "algaeScoringMode",
+            "x": 384.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/DestinationSupplier/algaeScoringMode",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "CurrentIntakeMode",
+            "x": 512.0,
+            "y": 128.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Large Text Display",
@@ -551,6 +579,23 @@
               "period": 0.06,
               "data_type": "string"
             }
+          },
+          {
+            "title": "UseSuperCycle",
+            "x": 512.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/SmartDashboard/DestinationSupplier/UseSuperCycle",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
           }
         ]
       }
@@ -558,731 +603,8 @@
     {
       "name": "Vision",
       "grid_layout": {
-        "layouts": [
-          {
-            "title": "config",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 768.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "brightness",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_0/config/brightness",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "buffersize",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_0/config/buffersize",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_auto_exposure",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_0/config/camera_auto_exposure",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_exposure",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_0/config/camera_exposure",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_gain",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_0/config/camera_gain",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_id",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_0/config/camera_id",
-                  "period": 0.5,
-                  "data_type": "string",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_resolution_height",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_0/config/camera_resolution_height",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_resolution_width",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_0/config/camera_resolution_width",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "contrast",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_0/config/contrast",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "fiducial_size_m",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_0/config/fiducial_size_m",
-                  "period": 0.5,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "fps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_0/config/fps",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "config",
-            "x": 256.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 768.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "brightness",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_1/config/brightness",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "buffersize",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_1/config/buffersize",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_auto_exposure",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_1/config/camera_auto_exposure",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_exposure",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_1/config/camera_exposure",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_gain",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_1/config/camera_gain",
-                  "period": 0.06,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_id",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_1/config/camera_id",
-                  "period": 0.5,
-                  "data_type": "string",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_resolution_height",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_1/config/camera_resolution_height",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_resolution_width",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_1/config/camera_resolution_width",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "contrast",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_1/config/contrast",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "fiducial_size_m",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_1/config/fiducial_size_m",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "fps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_1/config/fps",
-                  "period": 0.06,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "config",
-            "x": 512.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 768.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "brightness",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_2/config/brightness",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "buffersize",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_2/config/buffersize",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_auto_exposure",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_2/config/camera_auto_exposure",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_exposure",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_2/config/camera_exposure",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_gain",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_2/config/camera_gain",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_id",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_2/config/camera_id",
-                  "period": 0.5,
-                  "data_type": "string",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_resolution_height",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_2/config/camera_resolution_height",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_resolution_width",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_2/config/camera_resolution_width",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "contrast",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_2/config/contrast",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "fiducial_size_m",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_2/config/fiducial_size_m",
-                  "period": 0.5,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "fps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_2/config/fps",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              }
-            ]
-          },
-          {
-            "title": "config",
-            "x": 768.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 768.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "brightness",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_3/config/brightness",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "buffersize",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_3/config/buffersize",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_auto_exposure",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_3/config/camera_auto_exposure",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_exposure",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_3/config/camera_exposure",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_gain",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_3/config/camera_gain",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_id",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_3/config/camera_id",
-                  "period": 0.5,
-                  "data_type": "string",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "camera_resolution_height",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_3/config/camera_resolution_height",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "camera_resolution_width",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_3/config/camera_resolution_width",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "contrast",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_3/config/contrast",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "fiducial_size_m",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_3/config/fiducial_size_m",
-                  "period": 0.5,
-                  "data_type": "double",
-                  "show_submit_button": false
-                }
-              },
-              {
-                "title": "fps",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 128.0,
-                "height": 128.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/northstar_3/config/fps",
-                  "period": 0.5,
-                  "data_type": "int",
-                  "show_submit_button": false
-                }
-              }
-            ]
-          }
-        ],
+        "layouts": [],
         "containers": [
-          {
-            "title": "fps",
-            "x": 0.0,
-            "y": 768.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Large Text Display",
-            "properties": {
-              "topic": "/northstar_0/output/fps",
-              "period": 0.06,
-              "data_type": "int"
-            }
-          },
-          {
-            "title": "observations",
-            "x": 128.0,
-            "y": 768.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/northstar_0/output/observations",
-              "period": 0.06,
-              "data_type": "double[]",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "fps",
-            "x": 256.0,
-            "y": 768.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Large Text Display",
-            "properties": {
-              "topic": "/northstar_1/output/fps",
-              "period": 0.06,
-              "data_type": "int"
-            }
-          },
-          {
-            "title": "observations",
-            "x": 384.0,
-            "y": 768.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/northstar_1/output/observations",
-              "period": 0.06,
-              "data_type": "double[]",
-              "show_submit_button": false
-            }
-          },
           {
             "title": "Field",
             "x": 1024.0,
@@ -1304,28 +626,11 @@
             }
           },
           {
-            "title": "TargetUpdated",
+            "title": "Ghost",
             "x": 1024.0,
             "y": 256.0,
             "width": 512.0,
             "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/SmartDashboard/TargetUpdated",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Ghost",
-            "x": 1024.0,
-            "y": 384.0,
-            "width": 512.0,
-            "height": 384.0,
             "type": "Text Display",
             "properties": {
               "topic": "/SmartDashboard/Field/Ghost",
@@ -1335,71 +640,39 @@
             }
           },
           {
-            "title": "latest_pose",
-            "x": 1024.0,
-            "y": 768.0,
+            "title": "limelight-leftf",
+            "x": 0.0,
+            "y": 0.0,
             "width": 512.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "height": 384.0,
+            "type": "Camera Stream",
             "properties": {
-              "topic": "/SmartDashboard/swerve/localizer/latest_pose",
+              "topic": "/CameraPublisher/limelight-leftf",
               "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
+              "rotation_turns": 0,
+              "fps": 5,
+              "resolution": [
+                300.0,
+                200.0
+              ]
             }
           },
           {
-            "title": "fps",
+            "title": "limelight-rightf",
             "x": 512.0,
-            "y": 768.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Large Text Display",
+            "y": 0.0,
+            "width": 512.0,
+            "height": 384.0,
+            "type": "Camera Stream",
             "properties": {
-              "topic": "/northstar_2/output/fps",
+              "topic": "/CameraPublisher/limelight-rightf",
               "period": 0.06,
-              "data_type": "int"
-            }
-          },
-          {
-            "title": "fps",
-            "x": 768.0,
-            "y": 768.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Large Text Display",
-            "properties": {
-              "topic": "/northstar_3/output/fps",
-              "period": 0.06,
-              "data_type": "int"
-            }
-          },
-          {
-            "title": "observations",
-            "x": 896.0,
-            "y": 768.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/northstar_3/output/observations",
-              "period": 0.06,
-              "data_type": "double[]",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "observations",
-            "x": 640.0,
-            "y": 768.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/northstar_2/output/observations",
-              "period": 0.06,
-              "data_type": "double[]",
-              "show_submit_button": false
+              "rotation_turns": 0,
+              "fps": 5,
+              "resolution": [
+                300.0,
+                200.0
+              ]
             }
           }
         ]

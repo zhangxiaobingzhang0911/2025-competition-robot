@@ -106,16 +106,17 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             if (systemState == SystemState.ALGAE_INTAKING && isNearAngle(algaeIntakeAngle)) {
                 GamepieceTracker.getInstance().setEndeffectorHasAlgae(true);
             }
-            if (systemState == SystemState.ALGAE_NET_SHOOTING) {
+            if (systemState == SystemState.ALGAE_NET_SHOOTING || systemState == SystemState.ALGAE_PROCESSOR_SHOOTING) {
                 GamepieceTracker.getInstance().setEndeffectorHasAlgae(false);
             }
         }
 
         // Update danger flag based on arm position
         RobotContainer.endeffectorIsDanger = !(
-            isNearAngle(coralIntakeAngle) || 
-            (isNearAngle(coralPreShootAngle) && hasCoral()) || 
-            (isNearAngle(coralPreShootAngleL1) && hasCoral())
+                isNearAngle(coralIntakeAngle) ||
+                        (isNearAngle(coralPreShootAngle) && hasCoral()) ||
+                        (isNearAngle(coralPreShootAngleL1) && hasCoral()) ||
+                        (isNearAngle(algaeProcessorPreShootAngle) && hasAlgae())
         );
 
         // Calculate current state transition
@@ -260,7 +261,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             case CORAL_PRESHOOT -> {
                 if (hasCoral()) {
                     yield SystemState.CORAL_PRESHOOTING;
-                }else{
+                } else {
                     yield SystemState.HOLDING;
                 }
             }
@@ -299,14 +300,14 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                         algaeShootTimerStarted = false;
                         setWantedState(WantedState.HOLD);
                         yield SystemState.HOLDING;
-                    }else yield SystemState.ALGAE_NET_SHOOTING;
+                    } else yield SystemState.ALGAE_NET_SHOOTING;
                 }
 
             }
             case ALGAE_NET_PRESHOOT -> {
                 if (hasAlgae()) {
                     yield SystemState.ALGAE_NET_PRESHOOTING;
-                }else{
+                } else {
                     yield SystemState.HOLDING;
                 }
             }
@@ -324,14 +325,14 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                         algaeShootTimerStarted = false;
                         setWantedState(WantedState.HOLD);
                         yield SystemState.HOLDING;
-                    }else yield SystemState.ALGAE_PROCESSOR_SHOOTING;
+                    } else yield SystemState.ALGAE_PROCESSOR_SHOOTING;
                 }
 
             }
             case ALGAE_PROCESSOR_PRESHOOT -> {
                 if (hasAlgae()) {
                     yield SystemState.ALGAE_PROCESSOR_PRESHOOTING;
-                }else{
+                } else {
                     yield SystemState.HOLDING;
                 }
             }

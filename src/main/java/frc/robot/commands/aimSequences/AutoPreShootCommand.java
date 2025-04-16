@@ -2,6 +2,7 @@ package frc.robot.commands.aimSequences;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.drivers.DestinationSupplier.GamePiece;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -69,6 +70,7 @@ public class AutoPreShootCommand extends Command {
 
     @Override
     public boolean isFinished() {
+        if (Robot.isSimulation()) return true;
         if (DestinationSupplier.getInstance().getCurrentGamePiece() == GamePiece.CORAL_SCORING) {
             return timer.hasElapsed(0.1)
                     && elevatorSubsystem.elevatorReady(0.007)

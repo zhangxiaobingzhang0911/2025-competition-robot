@@ -6,13 +6,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotConstants;
-import frc.robot.auto.basics.AutoGroundIntakeCommand;
 import frc.robot.auto.basics.FollowPath;
-import frc.robot.auto.basics.ReefAimAutoCommand;
+import frc.robot.auto.commands.AutoGroundIntakeCommand;
+import frc.robot.auto.commands.ReefAimAlgaeAutoCommand;
+import frc.robot.auto.commands.ReefAimCoralAutoCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ZeroElevatorCommand;
 import frc.robot.commands.aimSequences.AutoPreShootCommand;
 import frc.robot.commands.manualSequence.PreShootCommand;
+import frc.robot.commands.manualSequence.PutAlgaeNetCommand;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
@@ -89,7 +91,7 @@ public class AutoActions {
         return Commands.sequence(
                 Commands.parallel(
                         setLevel(setpoint),
-                        new ReefAimAutoCommand(elevatorSubsystem, tagChar),
+                        new ReefAimCoralAutoCommand(elevatorSubsystem, tagChar),
                         new AutoPreShootCommand(indicatorSubsystem, endEffectorArmSubsystem, intakeSubsystem, elevatorSubsystem)
                 ),
                 new WaitCommand(0.2),
@@ -121,5 +123,21 @@ public class AutoActions {
                 new ZeroElevatorCommand(elevatorSubsystem, intakeSubsystem, endEffectorArmSubsystem),
                 new WaitUntilCommand(() -> (elevatorSubsystem.getSystemState() != ElevatorSubsystem.SystemState.ZEROING)),
                 new AutoGroundIntakeCommand(indicatorSubsystem, intakeSubsystem, endEffectorArmSubsystem, elevatorSubsystem));
+    }
+
+    public Command intakeAlgae() {
+        return Commands.parallel(
+                Commands.runOnce(() ->
+                        DestinationSupplier.getInstance().setCurrentGamePiece(DestinationSupplier.GamePiece.ALGAE_INTAKING)),
+                new AutoPreShootCommand(indicatorSubsystem, endEffectorArmSubsystem, intakeSubsystem, elevatorSubsystem),
+                new ReefAimAlgaeAutoCommand(elevatorSubsystem, indicatorSubsystem)
+        ).finallyDo(() -> {
+            endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
+            elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get());
+        });
+    }
+
+    public Command shootAlgaeNet() {
+        return new PutAlgaeNetCommand(1, endEffectorArmSubsystem, elevatorSubsystem, intakeSubsystem, indicatorSubsystem);
     }
 }

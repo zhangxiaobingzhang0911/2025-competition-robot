@@ -34,6 +34,29 @@ public class PutAlgaeNetCommand extends ParallelCommandGroup {
         );
     }
 
+    public PutAlgaeNetCommand(double time, EndEffectorArmSubsystem endeffectorArmSubsystem,
+                              ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, IndicatorSubsystem indicatorSubsystem) {
+        addRequirements(endeffectorArmSubsystem, elevatorSubsystem, intakeSubsystem);
+        addCommands(
+                Commands.parallel(
+                        Commands.runOnce(() -> endeffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_NET_PRESHOOT)),
+                        Commands.runOnce(() -> elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.ALGAE_NET_EXTENSION_METER.get())),
+                        Commands.sequence(
+                                Commands.waitSeconds(time),
+                                Commands.runOnce(() -> endeffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_NET_SHOOT)),
+                                Commands.waitSeconds(1)
+                        )
+                ).finallyDo(() -> {
+                    if ((!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae())) {
+                        elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOME_EXTENSION_METERS.get());
+                    } else {
+                        elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.HOLD_EXTENSION_METERS.get());
+                    }
+                    endeffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOLD);
+                })
+        );
+    }
+
     @Override
     public InterruptionBehavior getInterruptionBehavior() {
         return InterruptionBehavior.kCancelIncoming;

@@ -14,7 +14,6 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import static frc.robot.RobotConstants.DriverCamera;
-import static frc.robot.RobotConstants.VisionCamera;
 
 public class Robot extends LoggedRobot {
     private final Swerve swerve = Swerve.getInstance();
@@ -42,10 +41,6 @@ public class Robot extends LoggedRobot {
         if (DriverCamera) {
             CameraServer.startAutomaticCapture("Driver Camera", "/dev/video0");
         }
-        if (VisionCamera) {
-            //TODO add vision camera
-        }
-
         robotContainer = new RobotContainer();
     }
 

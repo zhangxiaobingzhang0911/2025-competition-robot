@@ -193,7 +193,7 @@ public final class RobotConstants {
         private static final int BACK_LEFT_DRIVE_MOTOR_ID = 2;
         private static final int BACK_LEFT_STEER_MOTOR_ID = 1;
         private static final int BACK_LEFT_ENCODER_ID = 0;
-        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? -0.1082763438 : -0.354248046875;
+        private static final double BACK_LEFT_ENCODER_OFFSET = is10541 ? 0.0383297031 : -0.354248046875;
         private static final Measure<DistanceUnit> backLeftXPos = Meters.of(-0.29);
         private static final Measure<DistanceUnit> backLeftYPos = Meters.of(0.29);
         public static final LegacySwerveModuleConstants BackLeft = ConstantCreator.createModuleConstants(

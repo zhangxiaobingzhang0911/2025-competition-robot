@@ -116,7 +116,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 isNearAngle(coralIntakeAngle) ||
                         (isNearAngle(coralPreShootAngle) && hasCoral()) ||
                         (isNearAngle(coralPreShootAngleL1) && hasCoral()) ||
-                        (isNearAngle(algaeProcessorPreShootAngle) && hasAlgae())
+                        (isNearAngle(algaeProcessorPreShootAngle, 10) && hasAlgae())
         );
 
         // Calculate current state transition
@@ -347,6 +347,11 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
      */
     public boolean isNearAngle(double targetAngleDeg) {
         return MathUtil.isNear(targetAngleDeg, armPivotIOInputs.currentAngleDeg, 5);
+        //TODO：isNear angle value
+    }
+
+    public boolean isNearAngle(double targetAngleDeg, double tolerance) {
+        return MathUtil.isNear(targetAngleDeg, armPivotIOInputs.currentAngleDeg, tolerance);
         //TODO：isNear angle value
     }
 

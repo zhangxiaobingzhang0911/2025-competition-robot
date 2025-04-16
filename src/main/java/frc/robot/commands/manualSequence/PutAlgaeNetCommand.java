@@ -44,7 +44,7 @@ public class PutAlgaeNetCommand extends ParallelCommandGroup {
                         Commands.sequence(
                                 Commands.waitSeconds(time),
                                 Commands.runOnce(() -> endeffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.ALGAE_NET_SHOOT)),
-                                Commands.waitSeconds(100)
+                                Commands.waitSeconds(1)
                         )
                 ).finallyDo(() -> {
                     if ((!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae())) {

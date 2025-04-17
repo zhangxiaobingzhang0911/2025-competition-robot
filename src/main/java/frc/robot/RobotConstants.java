@@ -421,7 +421,7 @@ public final class RobotConstants {
         public static final TunableNumber P2_EXTENSION_METERS = new TunableNumber("ELEVATOR SETPOINTS/P2",
                 0.88);
         public static final TunableNumber PRE_INTAKE_METERS = new TunableNumber("ELEVATOR SETPOINTS/PRE_INTAKE",
-                0.58);
+                0.65);
 
         public static final TunableNumber ELEVATOR_ZEROING_CURRENT = new TunableNumber("Elevator zeroing current",
                 40);

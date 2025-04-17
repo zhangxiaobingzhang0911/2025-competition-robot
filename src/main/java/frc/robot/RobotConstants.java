@@ -514,4 +514,7 @@ public final class RobotConstants {
             public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KA = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/ka", 0);
             public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KV = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/kv", 0);
             public static final TunableNumber END_EFFECTOR_ARM_ROLLER_KS = new TunableNumber("END_EFFECTOR_ARM_ROLLER_PID/ks", 0);
+        }
+    }
+}
        

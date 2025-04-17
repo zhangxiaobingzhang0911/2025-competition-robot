@@ -40,7 +40,9 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                                                 Commands.parallel(
                                                         Commands.runOnce(() ->
                                                                 DestinationSupplier.getInstance().setCurrentGamePiece(GamePiece.CORAL_SCORING)),
-                                                        new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem),
+                                                        Commands.sequence(
+                                                                new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem),
+                                                                Commands.waitSeconds(0.3)),
                                                         new AutoPreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem)
                                                 ),
                                                 new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)

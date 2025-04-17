@@ -103,6 +103,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void zeroElevator() {
+        Logger.recordOutput("Elevator/hasReachedNearZero", hasReachedNearZero);
         if (!io.isNearZeroExtension() && !hasReachedNearZero) {
             if (RobotContainer.endeffectorIsDanger) {
                 // safer

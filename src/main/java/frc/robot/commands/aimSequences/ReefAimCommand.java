@@ -122,6 +122,7 @@ public class ReefAimCommand extends Command {
         Logger.recordOutput("ReefAimCommand/finalDestinationPose", finalDestinationPose);
         Logger.recordOutput("ReefAimCommand/translationalVelocity", translationalVelocity);
         Logger.recordOutput("ReefAimCommand/controllerVelocity", controllerVelocity);
+        Logger.recordOutput("ReefAimCommand/shouldFlip", AllianceFlipUtil.shouldFlip());
     }
 
     @Override

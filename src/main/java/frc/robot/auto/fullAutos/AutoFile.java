@@ -62,7 +62,8 @@ public class AutoFile {
                 autoActions.AutoAimShoot(L4, 'H'), // H-left G-right
                 autoActions.intakeAlgae(),
                 autoActions.followPath(getAutoPath("HG-Net"), true, true, false),
-                autoActions.shootAlgaeNet()
+                autoActions.shootAlgaeNet(),
+                autoActions.followPath(getAutoPath("Net-Leave"), true, true, false)
         );
     }
 

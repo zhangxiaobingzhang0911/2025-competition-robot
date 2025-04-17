@@ -130,6 +130,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 case CORAL_PRESHOOT -> SystemState.CORAL_PRESHOOTING;
                 case ALGAE_PROCESSOR_PRESHOOT -> SystemState.ALGAE_PROCESSOR_PRESHOOTING;
                 case ALGAE_PROCESSOR_SHOOT -> SystemState.ALGAE_PROCESSOR_SHOOTING;
+                case ALGAE_INTAKE -> SystemState.ALGAE_INTAKING;
                 default -> systemState;
             };
         } else {

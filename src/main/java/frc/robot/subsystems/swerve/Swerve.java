@@ -124,7 +124,7 @@ public class Swerve implements Updatable, Subsystem {
         swerveKinematics = new SwerveDriveKinematics(
                 RobotConstants.SwerveConstants.modulePlacements);
         swerveLocalizer = new SwerveDeltaCoarseLocalizer(swerveKinematics, 50,
-                20, 20, getModulePositions());
+                10, 20, getModulePositions());
 
         gyro.setYaw(0.0);
         swerveLocalizer.reset(new Pose2d(), getModulePositions());
@@ -168,6 +168,10 @@ public class Swerve implements Updatable, Subsystem {
             instance = new Swerve();
         }
         return instance;
+    }
+
+    public ChassisSpeeds getSwerveVelocity() {
+        return swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
     // Convert module states to chassis speeds.

@@ -25,6 +25,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     private static double coralIntakeAngle = CORAL_INTAKE_ANGLE.get();
     private static double coralOuttakeAngle = CORAL_OUTTAKE_ANGLE.get();
     private static double coralPreShootAngle = CORAL_PRESHOOT_ANGLE.get();
+    private static double coralPreShootAngleL4 = CORAL_PRESHOOT_ANGLE_L4.get();
     private static double coralPreShootAngleL1 = CORAL_PRESHOOT_ANGLE_L1.get();
 
     private static double algaeIntakeAngle = ALGAE_INTAKE_ANGLE.get();
@@ -116,6 +117,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 isNearAngle(coralIntakeAngle) ||
                         (isNearAngle(coralPreShootAngle) && hasCoral()) ||
                         (isNearAngle(coralPreShootAngleL1) && hasCoral()) ||
+                        (isNearAngle(coralPreShootAngleL4) && hasCoral()) ||
                         (isNearAngle(algaeProcessorPreShootAngle, 10) && hasAlgae())
         );
 
@@ -170,7 +172,11 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             case CORAL_PRESHOOTING:
                 if (DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1) {
                     armPivotIO.setPivotAngle(coralPreShootAngleL1);
-                } else {
+                }
+                else if(DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L4){
+                    armPivotIO.setPivotAngle(coralPreShootAngleL4);
+                }
+                else {
                     armPivotIO.setPivotAngle(coralPreShootAngle);
                 }
                 break;
@@ -226,6 +232,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             coralIntakeAngle = CORAL_INTAKE_ANGLE.get();
             coralOuttakeAngle = CORAL_OUTTAKE_ANGLE.get();
             coralPreShootAngle = CORAL_PRESHOOT_ANGLE.get();
+            coralPreShootAngleL4 = CORAL_PRESHOOT_ANGLE_L4.get();
             coralPreShootAngleL1 = CORAL_PRESHOOT_ANGLE_L1.get();
             algaeIntakeAngle = ALGAE_INTAKE_ANGLE.get();
             algaeNetPreShootAngle = ALGAE_NET_PRESHOOT_ANGLE.get();
@@ -391,6 +398,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     public boolean isShootReady() {
         if (DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1) {
             return isNearAngle(coralPreShootAngleL1);
+        } else if(DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1){
+            return isNearAngle(coralPreShootAngleL4);
         } else {
             return isNearAngle(coralPreShootAngle);
         }

@@ -70,11 +70,11 @@ public class AutoFile {
     private Command build1Coral3AlgaeMiddle() {
         return new SequentialCommandGroup(
                 autoActions.AutoAimShoot(L4, 'H'), // H-left G-right
-                autoActions.intakeAlgae().withTimeout(2),
+                autoActions.intakeAlgae().withTimeout(1),
                 autoActions.followPath(getAutoPath("HG-Net"), true, true, false),
                 autoActions.shootAlgaeNet(),
                 autoActions.followPath(getAutoPath("Net-EF"), true, true, false),
-                autoActions.intakeAlgae().withTimeout(2),
+                autoActions.intakeAlgae().withTimeout(1),
                 autoActions.followPath(getAutoPath("EF-Net"), true, true, false),
                 autoActions.shootAlgaeNet(),
                 autoActions.followPath(getAutoPath("Net-IJ"), true, true, false),

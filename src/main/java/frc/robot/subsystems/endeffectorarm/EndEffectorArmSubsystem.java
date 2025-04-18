@@ -398,7 +398,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     public boolean isShootReady() {
         if (DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1) {
             return isNearAngle(coralPreShootAngleL1);
-        } else if(DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1){
+        } else if(DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L4){
             return isNearAngle(coralPreShootAngleL4);
         } else {
             return isNearAngle(coralPreShootAngle);

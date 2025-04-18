@@ -78,9 +78,7 @@ public class AutoFile {
                 autoActions.followPath(getAutoPath("EF-Net"), true, true, false),
                 autoActions.shootAlgaeNet(),
                 autoActions.followPath(getAutoPath("Net-IJ"), true, true, false),
-                autoActions.intakeAlgae().withTimeout(2),
-                autoActions.followPath(getAutoPath("IJ-Net"), true, true, false),
-                autoActions.shootAlgaeNet()
+                autoActions.intakeAlgae()
         );
     }
 //    private Command build1Coral3AlgaeMiddle() {

@@ -322,7 +322,7 @@ public final class RobotConstants {
         public static final TunableNumber INTAKE_PIVOT_CRUISE_VELOCITY = new TunableNumber("INTAKE_PIVOT/cruiseVelocity", 250);
         public static final TunableNumber INTAKE_PIVOT_ACCELERATION = new TunableNumber("INTAKE_PIVOT/acceleration", 250);
         public static final TunableNumber INTAKE_PIVOT_JERK = new TunableNumber("INTAKE_PIVOT/jerk", 0);
-        public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 113.5);
+        public static final TunableNumber DEPLOY_ANGLE = new TunableNumber("INTAKE_PIVOT/deployAngle", 112.5);
         public static final TunableNumber OUTTAKE_ANGLE = new TunableNumber("INTAKE_PIVOT/outtakeAngle", 105);
         public static final TunableNumber HOME_ANGLE = new TunableNumber("INTAKE_PIVOT/homeAngle", 40);
         public static final TunableNumber AVOID_ANGLE = new TunableNumber("INTAKE_PIVOT/avoidAngle", 90);
@@ -336,8 +336,8 @@ public final class RobotConstants {
         public static final TunableNumber INTAKE_HOLD_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intakeHoldVoltage", 5.0);
         public static final TunableNumber OUT_TAKE_HOLD = new TunableNumber("INTAKE_ROLLER/outtakeHoldVoltage", -1.0);
 
-        public static final TunableNumber OUTTAKE_TIME = new TunableNumber("INTAKE_ROLLER/outtake time", 0.4);
-        public static final TunableNumber INTAKE_TIME = new TunableNumber("INTAKE_ROLLER/intake time", 0.55);
+        public static final TunableNumber OUTTAKE_TIME = new TunableNumber("INTAKE_ROLLER/outtake time", 0.3);
+        public static final TunableNumber INTAKE_TIME = new TunableNumber("INTAKE_ROLLER/intake time", 0.4);
         // public static final TunableNumber INTAKE_VOLTAGE = new TunableNumber("INTAKE_ROLLER/intake time",10);
 
         //Constants for intake pivot

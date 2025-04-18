@@ -141,4 +141,23 @@ public class AutoFile {
                 autoActions.AutoAimShoot(L4, 'K')
         );
     }
+//private Command build4CoralRight() {
+//    return new SequentialCommandGroup(
+//            autoActions.AutoAimShoot(L4, 'F'),
+//            autoActions.followPath(getAutoPath("EF-I3"), true, true, false),
+//            autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
+//            Commands.either(
+//                    Commands.sequence(
+//                            autoActions.homeEverything(),
+//                            autoActions.AutoAimShoot(L4, 'C'),
+//                            autoActions.followPath(getAutoPath("C-I2"), true, true, false)
+//                    ),
+//                    autoActions.followPath(getAutoPath("I3-I2"), true, true, false).until(autoActions::isIntakeFinished),
+//                    autoActions::isIntakeFinished
+//            ),
+//            autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
+//            autoActions.homeEverything(),
+//            autoActions.AutoAimShoot(L4, 'A'),
+//            autoActions.intakeAlgae()
+//    };
 }

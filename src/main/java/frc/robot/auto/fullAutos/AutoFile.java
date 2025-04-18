@@ -70,19 +70,35 @@ public class AutoFile {
     private Command build1Coral3AlgaeMiddle() {
         return new SequentialCommandGroup(
                 autoActions.AutoAimShoot(L4, 'H'), // H-left G-right
-                autoActions.intakeAlgae(),
+                autoActions.intakeAlgae().withTimeout(2),
                 autoActions.followPath(getAutoPath("HG-Net"), true, true, false),
                 autoActions.shootAlgaeNet(),
                 autoActions.followPath(getAutoPath("Net-EF"), true, true, false),
-                autoActions.intakeAlgae(),
+                autoActions.intakeAlgae().withTimeout(2),
                 autoActions.followPath(getAutoPath("EF-Net"), true, true, false),
                 autoActions.shootAlgaeNet(),
                 autoActions.followPath(getAutoPath("Net-IJ"), true, true, false),
-                autoActions.intakeAlgae(),
+                autoActions.intakeAlgae().withTimeout(2),
                 autoActions.followPath(getAutoPath("IJ-Net"), true, true, false),
                 autoActions.shootAlgaeNet()
         );
     }
+//    private Command build1Coral3AlgaeMiddle() {
+//        return new SequentialCommandGroup(
+//                autoActions.AutoAimShoot(L4, 'H'), // H-left G-right
+//                autoActions.intakeAlgae(),
+//                autoActions.followPath(getAutoPath("HG-Net"), true, true, false),
+//                autoActions.shootAlgaeNet(),
+//                autoActions.followPath(getAutoPath("Net-EF"), true, true, false),
+//                autoActions.intakeAlgae(),
+//                autoActions.followPath(getAutoPath("EF-Net"), true, true, false),
+//                autoActions.shootAlgaeNet(),
+//                autoActions.followPath(getAutoPath("Net-IJ"), true, true, false),
+//                autoActions.intakeAlgae(),
+//                autoActions.followPath(getAutoPath("IJ-Net"), true, true, false),
+//                autoActions.shootAlgaeNet()
+//        );
+//    }
 
     private Command build4CoralLeft() {
         return new SequentialCommandGroup(
@@ -99,65 +115,86 @@ public class AutoFile {
                         autoActions::isIntakeFinished
                 ),
                 autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
-                Commands.either(
-                        Commands.sequence(
-                                autoActions.homeEverything(),
-                                autoActions.AutoAimShoot(L4, 'B'),
-                                autoActions.followPath(getAutoPath("B-I3"), true, true, false)
-                        ),
-                        //autoActions.waitFor(3),
-                        autoActions.followPath(getAutoPath("I2-I3"), true, true, false).until(autoActions::isIntakeFinished),
-                        autoActions::isIntakeFinished
-                ),
-                autoActions.AutoAimShoot(L4, 'D')
+                autoActions.homeEverything(),
+                autoActions.AutoAimShoot(L4, 'B'),
+                autoActions.intakeAlgae()
         );
     }
+//    private Command build4CoralLeft() {
+//        return new SequentialCommandGroup(
+//                autoActions.AutoAimShoot(L4, 'I'),
+//                autoActions.followPath(getAutoPath("IJ-I1"), true, true, false),
+//                autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
+//                Commands.either(
+//                        Commands.sequence(
+//                                autoActions.homeEverything(),
+//                                autoActions.AutoAimShoot(L4, 'L'),
+//                                autoActions.followPath(getAutoPath("L-I2"), true, true, false)
+//                        ),
+//                        autoActions.followPath(getAutoPath("I1-I2"), true, true, false).until(autoActions::isIntakeFinished),
+//                        autoActions::isIntakeFinished
+//                ),
+//                autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
+//                Commands.either(
+//                        Commands.sequence(
+//                                autoActions.homeEverything(),
+//                                autoActions.AutoAimShoot(L4, 'B'),
+//                                autoActions.followPath(getAutoPath("B-I3"), true, true, false)
+//                        ),
+//                        //autoActions.waitFor(3),
+//                        autoActions.followPath(getAutoPath("I2-I3"), true, true, false).until(autoActions::isIntakeFinished),
+//                        autoActions::isIntakeFinished
+//                ),
+//                autoActions.AutoAimShoot(L4, 'D')
+//        );
+//    }
 
+//    private Command build4CoralRight() {
+//        return new SequentialCommandGroup(
+//                autoActions.AutoAimShoot(L4, 'F'),
+//                autoActions.followPath(getAutoPath("EF-I3"), true, true, false),
+//                autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
+//                Commands.either(
+//                        Commands.sequence(
+//                                autoActions.homeEverything(),
+//                                autoActions.AutoAimShoot(L4, 'C'),
+//                                autoActions.followPath(getAutoPath("C-I2"), true, true, false)
+//                        ),
+//                        autoActions.followPath(getAutoPath("I3-I2"), true, true, false).until(autoActions::isIntakeFinished),
+//                        autoActions::isIntakeFinished
+//                ),
+//                autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
+//                Commands.either(
+//                        Commands.sequence(
+//                                autoActions.homeEverything(),
+//                                autoActions.AutoAimShoot(L4, 'A'),
+//                                autoActions.followPath(getAutoPath("A-I1"), true, true, false)
+//                        ),
+//                        //autoActions.waitFor(3),
+//                        autoActions.followPath(getAutoPath("I2-I1"), true, true, false).until(autoActions::isIntakeFinished),
+//                        autoActions::isIntakeFinished
+//                ),
+//                autoActions.AutoAimShoot(L4, 'K')
+//        );
+//    }
     private Command build4CoralRight() {
         return new SequentialCommandGroup(
-                autoActions.AutoAimShoot(L4, 'F'),
-                autoActions.followPath(getAutoPath("EF-I3"), true, true, false),
-                autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
-                Commands.either(
-                        Commands.sequence(
-                                autoActions.homeEverything(),
-                                autoActions.AutoAimShoot(L4, 'C'),
-                                autoActions.followPath(getAutoPath("C-I2"), true, true, false)
-                        ),
-                        autoActions.followPath(getAutoPath("I3-I2"), true, true, false).until(autoActions::isIntakeFinished),
-                        autoActions::isIntakeFinished
-                ),
-                autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
-                Commands.either(
-                        Commands.sequence(
-                                autoActions.homeEverything(),
-                                autoActions.AutoAimShoot(L4, 'A'),
-                                autoActions.followPath(getAutoPath("A-I1"), true, true, false)
-                        ),
-                        //autoActions.waitFor(3),
-                        autoActions.followPath(getAutoPath("I2-I1"), true, true, false).until(autoActions::isIntakeFinished),
-                        autoActions::isIntakeFinished
-                ),
-                autoActions.AutoAimShoot(L4, 'K')
+            autoActions.AutoAimShoot(L4, 'F'),
+            autoActions.followPath(getAutoPath("EF-I3"), true, true, false),
+            autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
+            Commands.either(
+                    Commands.sequence(
+                            autoActions.homeEverything(),
+                            autoActions.AutoAimShoot(L4, 'C'),
+                            autoActions.followPath(getAutoPath("C-I2"), true, true, false)
+                    ),
+                    autoActions.followPath(getAutoPath("I3-I2"), true, true, false).until(autoActions::isIntakeFinished),
+                    autoActions::isIntakeFinished
+            ),
+            autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
+            autoActions.homeEverything(),
+            autoActions.AutoAimShoot(L4, 'A'),
+            autoActions.intakeAlgae()
         );
-    }
-//private Command build4CoralRight() {
-//    return new SequentialCommandGroup(
-//            autoActions.AutoAimShoot(L4, 'F'),
-//            autoActions.followPath(getAutoPath("EF-I3"), true, true, false),
-//            autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
-//            Commands.either(
-//                    Commands.sequence(
-//                            autoActions.homeEverything(),
-//                            autoActions.AutoAimShoot(L4, 'C'),
-//                            autoActions.followPath(getAutoPath("C-I2"), true, true, false)
-//                    ),
-//                    autoActions.followPath(getAutoPath("I3-I2"), true, true, false).until(autoActions::isIntakeFinished),
-//                    autoActions::isIntakeFinished
-//            ),
-//            autoActions.waitFor(1.5).until(autoActions::isIntakeFinished),
-//            autoActions.homeEverything(),
-//            autoActions.AutoAimShoot(L4, 'A'),
-//            autoActions.intakeAlgae()
-//    };
+    };
 }

@@ -531,6 +531,7 @@ public class Swerve implements Updatable, Subsystem {
         Logger.recordOutput("swerve/PathPlanner/IsPathFollowing", trajectoryFollower.isPathFollowing());
         Logger.recordOutput("swerve/localizer/GyroAngle", gyro.getYaw());
         Logger.recordOutput("swerve/localizer/MeasuredVelocity", swerveLocalizer.getMeasuredVelocity());
+        Logger.recordOutput("swerve/localizer/MeasuredVelocityDirect", getSwerveVelocity());
         Logger.recordOutput("swerve/localizer/MeasuredAcceleration", swerveLocalizer.getMeasuredAcceleration());
         DestinationSupplier.isEdgeCase(swerveLocalizer.getCoarseFieldPose(Timer.getFPGATimestamp()));
         trajectoryFollower.sendData();

@@ -291,7 +291,9 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             }
             case NEUTRAL -> SystemState.NEUTRAL;
             case CORAL_SHOOT -> {
+                System.out.println("entering coral shoot");
                 if (isShootingFinishedDelayed.update(isShootFinished(), RobotConstants.EndEffectorArmConstants.CORAL_SHOOT_DELAY_TIME.get())) {
+                    System.out.println("inside");
                     setWantedState(WantedState.HOLD);
                     yield SystemState.HOLDING;
                 }

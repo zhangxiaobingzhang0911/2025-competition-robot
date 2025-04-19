@@ -15,14 +15,14 @@ public class PutCoralCommand extends ParallelCommandGroup {
                            ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, IndicatorSubsystem indicatorSubsystem) {
         addRequirements(endeffectorArmSubsystem, elevatorSubsystem, intakeSubsystem);
         addCommands(
+                Commands.print("Entering put coral"),
                 Commands.deadline(
                         new PreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem),
                         Commands.sequence(
                                 new WaitUntilCommand(() -> (
                                         driverController.rightTrigger().getAsBoolean() 
                                                 )),
-                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem),
-                                Commands.waitSeconds(100.0)
+                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)
                         )
                 )
         );

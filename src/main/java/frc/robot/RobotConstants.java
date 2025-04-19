@@ -491,7 +491,7 @@ public final class RobotConstants {
         public static final TunableNumber CORAL_SHOOT_VOLTAGE_L1 = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralShootVoltageL1", -2.0);
         public static final TunableNumber ALGAE_NET_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeNetShootVoltage", -15.0);
         public static final TunableNumber ALGAE_PROCESSOR_SHOOT_VOLTAGE = new TunableNumber("END_EFFECTOR_ARM_ROLLER/algaeProcessorShootVoltage", -4.0);
-        public static final TunableNumber CORAL_SHOOT_DELAY_TIME = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralShootDelayTime", 0.15);
+        public static final TunableNumber CORAL_SHOOT_DELAY_TIME = new TunableNumber("END_EFFECTOR_ARM_ROLLER/coralShootDelayTime", 0.2);
         /**
          * Constants for the EndEffectorArm pivot motor gains.
          */

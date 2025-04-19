@@ -46,7 +46,6 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                                                                 Commands.waitSeconds(0.3)),
                                                         new AutoPreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem)
                                                 ),
-                                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem),
                                                 Commands.print("Entering waiting for change"),
                                                 Commands.waitSeconds(100),
                                                 Commands.print("End waiting for change")
@@ -55,6 +54,9 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                                                 new WaitUntilCommand(() ->
                                                         (driverController.rightTrigger().getAsBoolean() && Robot.isReal())),
                                                 new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)
+                                                Commands.print("Entering waiting for change"),
+                                                Commands.waitSeconds(100),
+                                                Commands.print("End waiting for change")
                                         )
                                 ),
                                 // and then intake algae if using super cycle

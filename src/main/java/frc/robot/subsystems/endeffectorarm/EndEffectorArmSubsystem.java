@@ -62,7 +62,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     @Getter
     private SystemState systemState = SystemState.HOLDING;
 
-    private TimeDelayedBoolean isShootingFinishedDelayed = new TimeDelayedBoolean();
+    private Timer isCoralShootingStartedTimer = new Timer();
 
 
     /**
@@ -291,13 +291,19 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             }
             case NEUTRAL -> SystemState.NEUTRAL;
             case CORAL_SHOOT -> {
-                System.out.println("entering coral shoot");
-                if (isShootingFinishedDelayed.update(isShootFinished(), RobotConstants.EndEffectorArmConstants.CORAL_SHOOT_DELAY_TIME.get())) {
-                    System.out.println("inside");
-                    setWantedState(WantedState.HOLD);
-                    yield SystemState.HOLDING;
+                if (!isShootFinished()) {
+                    yield SystemState.CORAL_SHOOTING;
+                } else {
+                    if (!isCoralShootingStartedTimer.isRunning()) {
+                        isCoralShootingStartedTimer.start();
+                        yield SystemState.CORAL_SHOOTING;
+                    } else if (isCoralShootingStartedTimer.hasElapsed(CORAL_SHOOT_DELAY_TIME.get())) {
+                        isCoralShootingStartedTimer.stop();
+                        isCoralShootingStartedTimer.reset();
+                        setWantedState(WantedState.HOLD);
+                        yield SystemState.HOLDING;
+                    } else yield SystemState.CORAL_SHOOTING;
                 }
-                yield SystemState.CORAL_SHOOTING;
             }
             case ALGAE_NET_SHOOT -> {
                 if (hasAlgae()) {

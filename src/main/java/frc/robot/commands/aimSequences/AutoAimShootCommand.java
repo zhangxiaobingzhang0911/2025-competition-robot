@@ -53,7 +53,7 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                                         Commands.sequence(
                                                 new WaitUntilCommand(() ->
                                                         (driverController.rightTrigger().getAsBoolean() && Robot.isReal())),
-                                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)
+                                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem),
                                                 Commands.print("Entering waiting for change"),
                                                 Commands.waitSeconds(100),
                                                 Commands.print("End waiting for change")

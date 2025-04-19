@@ -12,6 +12,7 @@ import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerSubsystem;
+import frc.robot.utils.TimeDelayedBoolean;
 import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.Logger;
@@ -60,6 +61,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     private WantedState wantedState = WantedState.HOLD;
     @Getter
     private SystemState systemState = SystemState.HOLDING;
+
+    private TimeDelayedBoolean isShootingFinishedDelayed = new TimeDelayedBoolean();
 
 
     /**
@@ -288,7 +291,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             }
             case NEUTRAL -> SystemState.NEUTRAL;
             case CORAL_SHOOT -> {
-                if (isShootFinished()) {
+                if (isShootingFinishedDelayed.update(isShootFinished(), RobotConstants.EndEffectorArmConstants.CORAL_SHOOT_DELAY_TIME.get())) {
                     setWantedState(WantedState.HOLD);
                     yield SystemState.HOLDING;
                 }

@@ -2,6 +2,7 @@ package frc.robot.commands.aimSequences;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
@@ -45,7 +46,8 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                                                                 Commands.waitSeconds(0.3)),
                                                         new AutoPreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem)
                                                 ),
-                                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)
+                                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem),
+                                                new WaitCommand(RobotConstants.EndEffectorArmConstants.CORAL_SHOOT_DELAY_TIME.get())
                                         ),
                                         Commands.sequence(
                                                 new WaitUntilCommand(() ->

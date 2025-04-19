@@ -47,7 +47,9 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                                                         new AutoPreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem)
                                                 ),
                                                 new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem),
-                                                new WaitCommand(RobotConstants.EndEffectorArmConstants.CORAL_SHOOT_DELAY_TIME.get())
+                                                Commands.print("Entering waiting for change"),
+                                                Commands.waitSeconds(100),
+                                                Commands.print("End waiting for change")
                                         ),
                                         Commands.sequence(
                                                 new WaitUntilCommand(() ->
@@ -72,6 +74,7 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                         ),
                         endeffectorArmSubsystem::hasCoral
                 ).finallyDo(() -> {
+
                     endeffectorArmSubsystem.setWantedState(WantedState.HOLD);
                     if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
                         elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.PRE_INTAKE_METERS.get());

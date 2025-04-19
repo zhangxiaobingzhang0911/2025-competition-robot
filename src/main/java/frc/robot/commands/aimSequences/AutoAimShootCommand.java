@@ -44,6 +44,7 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                                                         Commands.sequence(
                                                                 new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem),
                                                                 Commands.waitSeconds(0.3)),
+                                                        Commands.print("shoot11111"),
                                                         new AutoPreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem)
                                                 ),
                                                 Commands.print("Entering waiting for change"),
@@ -53,6 +54,7 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                                         Commands.sequence(
                                                 new WaitUntilCommand(() ->
                                                         (driverController.rightTrigger().getAsBoolean() && Robot.isReal())),
+                                                Commands.print("shoot222222"),
                                                 new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem),
                                                 Commands.print("Entering waiting for change"),
                                                 Commands.waitSeconds(100),

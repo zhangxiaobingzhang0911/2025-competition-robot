@@ -4,7 +4,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.RobotContainer;
 import frc.robot.commands.ShootCommand;
+import frc.robot.drivers.DestinationSupplier;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
@@ -15,15 +17,22 @@ public class PutCoralCommand extends ParallelCommandGroup {
                            ElevatorSubsystem elevatorSubsystem, IntakeSubsystem intakeSubsystem, IndicatorSubsystem indicatorSubsystem) {
         addRequirements(endeffectorArmSubsystem, elevatorSubsystem, intakeSubsystem);
         addCommands(
-                Commands.print("Entering put coral"),
                 Commands.deadline(
                         new PreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem),
                         Commands.sequence(
                                 new WaitUntilCommand(() -> (
                                         driverController.rightTrigger().getAsBoolean() 
                                                 )),
+                                Commands.runOnce(() -> {
+                                    if(DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L2)
+                                        RobotContainer.overrideEndEffectorDanger = true;
+                                }),
                                 new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)
                         )
+                ).finallyDo(
+                        () -> {
+                            RobotContainer.overrideEndEffectorDanger = false;
+                        }
                 )
         );
     }

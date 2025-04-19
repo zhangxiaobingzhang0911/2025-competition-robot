@@ -152,6 +152,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         Logger.recordOutput("EndEffectorArm/SystemState", systemState.toString());
 
         Logger.recordOutput("Flags/eeIsDanger", RobotContainer.endeffectorIsDanger);
+        Logger.recordOutput("Flags/eeIsDangerOverride", RobotContainer.overrideEndEffectorDanger);
 
         SuperstructureVisualizer.getInstance().updateEndEffector(armPivotIOInputs.currentAngleDeg);
 

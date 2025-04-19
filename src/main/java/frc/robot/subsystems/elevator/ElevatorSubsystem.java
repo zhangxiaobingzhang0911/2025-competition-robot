@@ -60,7 +60,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         // set movements based on state
         switch (systemState) {
             case POSITION_GOING:
-                if (wantedPosition < (ELEVATOR_MIN_SAFE_HEIGHT.get()) && RobotContainer.endeffectorIsDanger) {
+                if (wantedPosition < (ELEVATOR_MIN_SAFE_HEIGHT.get()) && RobotContainer.endeffectorIsDanger && !RobotContainer.overrideEndEffectorDanger) {
                     io.setElevatorTarget(ELEVATOR_MIN_SAFE_HEIGHT.get());
                 } else {
                     io.setElevatorTarget(wantedPosition);

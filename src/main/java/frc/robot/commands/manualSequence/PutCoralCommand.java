@@ -21,7 +21,8 @@ public class PutCoralCommand extends ParallelCommandGroup {
                                 new WaitUntilCommand(() -> (
                                         driverController.rightTrigger().getAsBoolean() 
                                                 )),
-                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)
+                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem),
+                                Commands.waitSeconds(100.0)
                         )
                 )
         );

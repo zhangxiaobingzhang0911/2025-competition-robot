@@ -64,8 +64,10 @@ public class ReefAimCommand extends Command {
         robotPose = swerve.getLocalizer().getCoarseFieldPose(Timer.getFPGATimestamp());
         tagPose = DestinationSupplier.getNearestTag(robotPose);
         // PID init
-        xPID.reset(robotPose.getX(), swerve.getLocalizer().getMeasuredVelocity().getX());
-        yPID.reset(robotPose.getY(), swerve.getLocalizer().getMeasuredVelocity().getY());
+//        xPID.reset(robotPose.getX(), swerve.getLocalizer().getMeasuredVelocity().getX());
+//        yPID.reset(robotPose.getY(), swerve.getLocalizer().getMeasuredVelocity().getY());
+        xPID.reset(robotPose.getX(), swerve.getSwerveVelocity().vxMetersPerSecond);
+        yPID.reset(robotPose.getY(), swerve.getSwerveVelocity().vyMetersPerSecond);
 
         // Choose target based on game piece
         if (DestinationSupplier.getInstance().getCurrentGamePiece() == DestinationSupplier.GamePiece.ALGAE_INTAKING) {
@@ -122,6 +124,7 @@ public class ReefAimCommand extends Command {
         Logger.recordOutput("ReefAimCommand/finalDestinationPose", finalDestinationPose);
         Logger.recordOutput("ReefAimCommand/translationalVelocity", translationalVelocity);
         Logger.recordOutput("ReefAimCommand/controllerVelocity", controllerVelocity);
+        Logger.recordOutput("ReefAimCommand/shouldFlip", AllianceFlipUtil.shouldFlip());
     }
 
     @Override

@@ -2,10 +2,12 @@ package frc.robot.commands.aimSequences;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
+import frc.robot.RobotContainer;
 import frc.robot.commands.ShootCommand;
 import frc.robot.drivers.DestinationSupplier;
 import frc.robot.drivers.DestinationSupplier.GamePiece;
@@ -40,15 +42,22 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                                                 Commands.parallel(
                                                         Commands.runOnce(() ->
                                                                 DestinationSupplier.getInstance().setCurrentGamePiece(GamePiece.CORAL_SCORING)),
-                                                        new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem),
+                                                        Commands.sequence(
+                                                                new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem),
+                                                                Commands.waitSeconds(0.3)),
+                                                        Commands.runOnce(() -> {
+                                                            if(DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L2)
+                                                                RobotContainer.overrideEndEffectorDanger = true;
+                                                        }),
                                                         new AutoPreShootCommand(indicatorSubsystem, endeffectorArmSubsystem, intakeSubsystem, elevatorSubsystem)
                                                 ),
-                                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)
+                                                Commands.waitSeconds(RobotConstants.EndEffectorArmConstants.CORAL_SHOOT_DELAY_TIME.get())
                                         ),
                                         Commands.sequence(
                                                 new WaitUntilCommand(() ->
                                                         (driverController.rightTrigger().getAsBoolean() && Robot.isReal())),
-                                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem)
+                                                new ShootCommand(indicatorSubsystem, endeffectorArmSubsystem),
+                                                Commands.waitSeconds(RobotConstants.EndEffectorArmConstants.CORAL_SHOOT_DELAY_TIME.get())
                                         )
                                 ),
                                 // and then intake algae if using super cycle
@@ -59,7 +68,7 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                                         new ReefAimCommand(stop, elevatorSubsystem, driverController, indicatorSubsystem)
                                 ).onlyIf(() -> DestinationSupplier.getInstance().useSuperCycle)
                         ),
-                        //if dont have coral then just intake algae
+                        //if don't have coral then just intake algae
                         Commands.parallel(
                                 Commands.runOnce(() ->
                                         DestinationSupplier.getInstance().setCurrentGamePiece(GamePiece.ALGAE_INTAKING)),
@@ -68,6 +77,7 @@ public class AutoAimShootCommand extends SequentialCommandGroup {
                         ),
                         endeffectorArmSubsystem::hasCoral
                 ).finallyDo(() -> {
+                    RobotContainer.overrideEndEffectorDanger = false;
                     endeffectorArmSubsystem.setWantedState(WantedState.HOLD);
                     if (!GamepieceTracker.getInstance().isEndeffectorHasCoral() && !GamepieceTracker.getInstance().isEndeffectorHasAlgae()) {
                         elevatorSubsystem.setElevatorPosition(RobotConstants.ElevatorConstants.PRE_INTAKE_METERS.get());

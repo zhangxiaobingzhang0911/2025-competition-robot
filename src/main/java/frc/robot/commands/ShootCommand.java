@@ -1,13 +1,14 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
 import frc.robot.subsystems.endeffectorarm.EndEffectorArmSubsystem;
 import frc.robot.subsystems.indicator.IndicatorSubsystem;
 
 public class ShootCommand extends Command {
     private final EndEffectorArmSubsystem endEffectorArmSubsystem;
     private final IndicatorSubsystem indicatorSubsystem;
+    private final Timer timer = new Timer();
 
     public ShootCommand(IndicatorSubsystem indicatorSubsystem, EndEffectorArmSubsystem endEffectorArmSubsystem) {
         this.endEffectorArmSubsystem = endEffectorArmSubsystem;
@@ -21,12 +22,15 @@ public class ShootCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return Robot.isSimulation() || endEffectorArmSubsystem.isShootFinished();
+        if (endEffectorArmSubsystem.isShootFinished() && !timer.isRunning()) {
+            timer.start();
+        }
+        return timer.hasElapsed(0.3);
     }
 
     @Override
     public void end(boolean interrupted) {
-//        endEffectorArmSubsystem.setWantedState(EndEffectorArmSubsystem.WantedState.HOME);
-//        indicatorSubsystem.setPattern(IndicatorIO.Patterns.SHOOT);
+        timer.stop();
+        timer.reset();
     }
 }

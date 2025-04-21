@@ -124,7 +124,7 @@ public class Swerve implements Updatable, Subsystem {
         swerveKinematics = new SwerveDriveKinematics(
                 RobotConstants.SwerveConstants.modulePlacements);
         swerveLocalizer = new SwerveDeltaCoarseLocalizer(swerveKinematics, 50,
-                20, 20, getModulePositions());
+                10, 20, getModulePositions());
 
         gyro.setYaw(0.0);
         swerveLocalizer.reset(new Pose2d(), getModulePositions());
@@ -168,6 +168,10 @@ public class Swerve implements Updatable, Subsystem {
             instance = new Swerve();
         }
         return instance;
+    }
+
+    public ChassisSpeeds getSwerveVelocity() {
+        return swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
     // Convert module states to chassis speeds.
@@ -527,6 +531,7 @@ public class Swerve implements Updatable, Subsystem {
         Logger.recordOutput("swerve/PathPlanner/IsPathFollowing", trajectoryFollower.isPathFollowing());
         Logger.recordOutput("swerve/localizer/GyroAngle", gyro.getYaw());
         Logger.recordOutput("swerve/localizer/MeasuredVelocity", swerveLocalizer.getMeasuredVelocity());
+        Logger.recordOutput("swerve/localizer/MeasuredVelocityDirect", getSwerveVelocity());
         Logger.recordOutput("swerve/localizer/MeasuredAcceleration", swerveLocalizer.getMeasuredAcceleration());
         DestinationSupplier.isEdgeCase(swerveLocalizer.getCoarseFieldPose(Timer.getFPGATimestamp()));
         trajectoryFollower.sendData();

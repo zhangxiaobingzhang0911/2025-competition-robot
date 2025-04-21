@@ -170,7 +170,8 @@ public class ElevatorIOReal implements ElevatorIO {
 
     @Override
     public boolean isNearZeroExtension() {
-        return MathUtil.isNear(0.07, talonPosToHeight(leader.getPosition().getValueAsDouble()), 0.01);
+        return talonPosToHeight(leader.getPosition().getValueAsDouble()) <= 0.08;
+        //return MathUtil.isNear(0.07, talonPosToHeight(leader.getPosition().getValueAsDouble()), 0.01);
     }
 
     @Override

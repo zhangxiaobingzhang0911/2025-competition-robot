@@ -12,6 +12,7 @@ import frc.robot.subsystems.beambreak.BeambreakIO;
 import frc.robot.subsystems.beambreak.BeambreakIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerIOInputsAutoLogged;
 import frc.robot.subsystems.roller.RollerSubsystem;
+import frc.robot.utils.TimeDelayedBoolean;
 import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.Logger;
@@ -25,6 +26,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     private static double coralIntakeAngle = CORAL_INTAKE_ANGLE.get();
     private static double coralOuttakeAngle = CORAL_OUTTAKE_ANGLE.get();
     private static double coralPreShootAngle = CORAL_PRESHOOT_ANGLE.get();
+    private static double coralPreShootAngleL4 = CORAL_PRESHOOT_ANGLE_L4.get();
     private static double coralPreShootAngleL1 = CORAL_PRESHOOT_ANGLE_L1.get();
 
     private static double algaeIntakeAngle = ALGAE_INTAKE_ANGLE.get();
@@ -59,6 +61,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     private WantedState wantedState = WantedState.HOLD;
     @Getter
     private SystemState systemState = SystemState.HOLDING;
+
+    private Timer isCoralShootingStartedTimer = new Timer();
 
 
     /**
@@ -116,7 +120,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 isNearAngle(coralIntakeAngle) ||
                         (isNearAngle(coralPreShootAngle) && hasCoral()) ||
                         (isNearAngle(coralPreShootAngleL1) && hasCoral()) ||
-                        (isNearAngle(algaeProcessorPreShootAngle) && hasAlgae())
+                        (isNearAngle(coralPreShootAngleL4) && hasCoral()) ||
+                        (isNearAngle(algaeProcessorPreShootAngle, 10) && hasAlgae())
         );
 
         // Calculate current state transition
@@ -130,6 +135,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
                 case CORAL_PRESHOOT -> SystemState.CORAL_PRESHOOTING;
                 case ALGAE_PROCESSOR_PRESHOOT -> SystemState.ALGAE_PROCESSOR_PRESHOOTING;
                 case ALGAE_PROCESSOR_SHOOT -> SystemState.ALGAE_PROCESSOR_SHOOTING;
+                case ALGAE_INTAKE -> SystemState.ALGAE_INTAKING;
                 default -> systemState;
             };
         } else {
@@ -146,6 +152,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         Logger.recordOutput("EndEffectorArm/SystemState", systemState.toString());
 
         Logger.recordOutput("Flags/eeIsDanger", RobotContainer.endeffectorIsDanger);
+        Logger.recordOutput("Flags/eeIsDangerOverride", RobotContainer.overrideEndEffectorDanger);
 
         SuperstructureVisualizer.getInstance().updateEndEffector(armPivotIOInputs.currentAngleDeg);
 
@@ -169,7 +176,11 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             case CORAL_PRESHOOTING:
                 if (DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1) {
                     armPivotIO.setPivotAngle(coralPreShootAngleL1);
-                } else {
+                }
+                else if(DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L4){
+                    armPivotIO.setPivotAngle(coralPreShootAngleL4);
+                }
+                else {
                     armPivotIO.setPivotAngle(coralPreShootAngle);
                 }
                 break;
@@ -225,6 +236,7 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             coralIntakeAngle = CORAL_INTAKE_ANGLE.get();
             coralOuttakeAngle = CORAL_OUTTAKE_ANGLE.get();
             coralPreShootAngle = CORAL_PRESHOOT_ANGLE.get();
+            coralPreShootAngleL4 = CORAL_PRESHOOT_ANGLE_L4.get();
             coralPreShootAngleL1 = CORAL_PRESHOOT_ANGLE_L1.get();
             algaeIntakeAngle = ALGAE_INTAKE_ANGLE.get();
             algaeNetPreShootAngle = ALGAE_NET_PRESHOOT_ANGLE.get();
@@ -280,11 +292,19 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
             }
             case NEUTRAL -> SystemState.NEUTRAL;
             case CORAL_SHOOT -> {
-                if (isShootFinished()) {
-                    setWantedState(WantedState.HOLD);
-                    yield SystemState.HOLDING;
+                if (!isShootFinished()) {
+                    yield SystemState.CORAL_SHOOTING;
+                } else {
+                    if (!isCoralShootingStartedTimer.isRunning()) {
+                        isCoralShootingStartedTimer.start();
+                        yield SystemState.CORAL_SHOOTING;
+                    } else if (isCoralShootingStartedTimer.hasElapsed(CORAL_SHOOT_DELAY_TIME.get())) {
+                        isCoralShootingStartedTimer.stop();
+                        isCoralShootingStartedTimer.reset();
+                        setWantedState(WantedState.HOLD);
+                        yield SystemState.HOLDING;
+                    } else yield SystemState.CORAL_SHOOTING;
                 }
-                yield SystemState.CORAL_SHOOTING;
             }
             case ALGAE_NET_SHOOT -> {
                 if (hasAlgae()) {
@@ -350,6 +370,11 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
         //TODO：isNear angle value
     }
 
+    public boolean isNearAngle(double targetAngleDeg, double tolerance) {
+        return MathUtil.isNear(targetAngleDeg, armPivotIOInputs.currentAngleDeg, tolerance);
+        //TODO：isNear angle value
+    }
+
     /**
      * Checks if the mechanism has coral
      *
@@ -385,6 +410,8 @@ public class EndEffectorArmSubsystem extends RollerSubsystem {
     public boolean isShootReady() {
         if (DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L1) {
             return isNearAngle(coralPreShootAngleL1);
+        } else if(DestinationSupplier.getInstance().getCurrentElevSetpointCoral() == DestinationSupplier.elevatorSetpoint.L4){
+            return isNearAngle(coralPreShootAngleL4);
         } else {
             return isNearAngle(coralPreShootAngle);
         }

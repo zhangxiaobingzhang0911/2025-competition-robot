@@ -253,12 +253,12 @@ public class DestinationSupplier implements Updatable {
         switch (setpoint) {
             case L1, L2, L3, L4:
                 currentElevSetpointCoral = setpoint;
-                //Logger.recordOutput("DestinationSupplier/currentElevSetpointCoral", setpoint);
+                Logger.recordOutput("DestinationSupplier/currentElevSetpointCoral", setpoint);
                 SmartDashboard.putString("DestinationSupplier/currentElevSetpointCoral", setpoint.toString());
                 break;
             case P1, P2:
                 currentElevSetpointAlgae = setpoint;
-                //Logger.recordOutput("DestinationSupplier/currentElevSetpointPoke", setpoint);
+                Logger.recordOutput("DestinationSupplier/currentElevSetpointPoke", setpoint);
                 SmartDashboard.putString("DestinationSupplier/currentElevSetpointPoke", setpoint.toString());
                 break;
             default:
@@ -299,12 +299,13 @@ public class DestinationSupplier implements Updatable {
      */
     public void updateBranch(boolean coralRight) {
         this.coralRight = coralRight;
-        //Logger.recordOutput("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
+        Logger.recordOutput("DestinationSupplier/Pipe", coralRight);
         SmartDashboard.putString("DestinationSupplier/Pipe", coralRight ? "Right" : "Left");
     }
 
     public void setAlgaeScoringMode(AlgaeScoringMode algaeScoringMode) {
         this.algaeScoringMode = algaeScoringMode;
+        Logger.recordOutput("DestinationSupplier/algaeScoringMode", algaeScoringMode);
         SmartDashboard.putString("DestinationSupplier/algaeScoringMode", algaeScoringMode.toString());
     }
 
@@ -324,7 +325,7 @@ public class DestinationSupplier implements Updatable {
      */
     public void setCurrentControlMode(controlMode mode) {
         this.currentControlMode = mode;
-        //Logger.recordOutput("DestinationSupplier/CurrentControlMode", mode);
+        Logger.recordOutput("DestinationSupplier/CurrentControlMode", mode);
         SmartDashboard.putString("DestinationSupplier/CurrentControlMode", mode.name());
     }
 
@@ -335,6 +336,7 @@ public class DestinationSupplier implements Updatable {
      */
     public void setCurrentL1Mode(L1Mode mode) {
         this.l1Mode = mode;
+        Logger.recordOutput("DestinationSupplier/CurrentL1Mode", mode);
         SmartDashboard.putString("DestinationSupplier/CurrentL1Mode", mode.name());
     }
 
@@ -345,6 +347,7 @@ public class DestinationSupplier implements Updatable {
      */
     public void setCurrentIntakeMode(IntakeMode mode) {
         this.intakeMode = mode;
+        Logger.recordOutput("DestinationSupplier/CurrentIntakeMode", mode);
         SmartDashboard.putString("DestinationSupplier/CurrentIntakeMode", mode.name());
     }
 
@@ -368,6 +371,7 @@ public class DestinationSupplier implements Updatable {
      */
     public void setCurrentGamePiece(GamePiece gamePiece) {
         this.currentGamePiece = gamePiece;
+        Logger.recordOutput("DestinationSupplier/CurrentGamePiece", gamePiece);
         SmartDashboard.putString("DestinationSupplier/CurrentGamePiece", gamePiece.name());
     }
 
@@ -376,6 +380,7 @@ public class DestinationSupplier implements Updatable {
      */
     public void switchUseSuperCycle() {
         useSuperCycle = !useSuperCycle;
+        Logger.recordOutput("DestinationSupplier/UseSuperCycle", useSuperCycle);
         SmartDashboard.putBoolean("DestinationSupplier/UseSuperCycle", useSuperCycle);
     }
 
